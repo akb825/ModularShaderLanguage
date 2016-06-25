@@ -240,17 +240,18 @@ struct Token
 		AtomicUint,             ///< @c atomic_uint
 
 		// Pre-processor
-		Hash,         ///< @c \#
-		Include,      ///< @c \#include
-		Pragma,       ///< @c \#pragma
-		Define,       ///< @c \#define
-		Ifdef,        ///< @c \#ifdef
-		Ifndef,       ///< @c \#ifndef
-		PreprocIf,    ///< @c \#if
-		PreprocElif,  ///< @c \#elif
-		PreprocElse,  ///< @c \#else
-		PreprocEndif, ///< @c \#endif
-		IncludePath,  ///< Include path surrounded by "" or <>.
+		Hash,          ///< @c \#
+		Include,       ///< @c \#include
+		Pragma,        ///< @c \#pragma
+		Define,        ///< @c \#define
+		Ifdef,         ///< @c \#ifdef
+		Ifndef,        ///< @c \#ifndef
+		PreprocIf,     ///< @c \#if
+		PreprocElif,   ///< @c \#elif
+		PreprocElse,   ///< @c \#else
+		PreprocEndif,  ///< @c \#endif
+		PreprocConcat, ///< @c \#\# for concatinating tokens in the pre-processor.
+		IncludePath,   ///< Include path surrounded by "" or <>.
 
 		// Literals
 		IntLiteral,    ///< Integer literal.
@@ -540,6 +541,7 @@ inline Token::Category Token::getCategory(Type type)
 		case Type::PreprocElif:
 		case Type::PreprocElse:
 		case Type::PreprocEndif:
+		case Type::PreprocConcat:
 		case Type::IncludePath:
 			return Category::Preprocessor;
 

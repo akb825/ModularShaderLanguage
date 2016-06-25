@@ -94,7 +94,7 @@ whitespace [ \t\f\t]
 %%
 
 {whitespace}+ addToken(yyextra, msl::Token::Type::Whitespace, yytext);
-(\r\n)|\n     addNewline(yyextra, yytext);
+(\r\n)|\n     addNewline(yyextra, yytext); BEGIN(INITIAL);
 \\(\r\n)|\n   addNewline(yyextra, yytext);
 
 \/\/(.|\\((\r\n)|\n))* addComment(yyextra, yytext);
@@ -300,6 +300,7 @@ whitespace [ \t\f\t]
 #{whitespace}*elif         addToken(yyextra, msl::Token::Type::PreprocElif, yytext);
 #{whitespace}*else         addToken(yyextra, msl::Token::Type::PreprocElse, yytext);
 #{whitespace}*endif        addToken(yyextra, msl::Token::Type::PreprocEndif, yytext);
+##                         addToken(yyextra, msl::Token::Type::PreprocConcat, yytext);
 <INCLUDE>(\<.*\>)|(\".*\") addToken(yyextra, msl::Token::Type::IncludePath, yytext); BEGIN(INITIAL);
 
 0[uU]?                                  addToken(yyextra, msl::Token::Type::IntLiteral, yytext);
