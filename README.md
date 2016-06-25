@@ -96,4 +96,4 @@ The directory structure of the include files is:
 For example:
 
 	#include <MSL/Frontend/Config.h>
-	#include <MSL/Targets/GLSL/GLSLTarget.h>
+	#include <MSL/Frontend/Parse/Lexer.h>

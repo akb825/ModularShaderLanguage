@@ -10,7 +10,7 @@ target_include_directories(msl_frontend PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 find_program(FLEX_EXE flex)
 if (FLEX_EXE)
 	add_custom_command(OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/${flexOutput}
-		COMMAND ${FLEX_EXE} ARGS -o ${flexOutput} -R ${flexSource}
+		COMMAND ${FLEX_EXE} ARGS -o ${flexOutput} -R --prefix=msl ${flexSource}
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 		DEPENDS ${flexSource}
 		COMMENT "Generating lexer..." VERBATIM)

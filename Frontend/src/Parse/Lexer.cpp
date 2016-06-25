@@ -16,14 +16,18 @@
  * limitations under the License.
  */
 
-#include "Parse/Lexer.h"
+#include <MSL/Frontend/Parse/Lexer.h>
 #include <algorithm>
 #include <cstring>
 
+#if MSL_GCC || MSL_CLANG
+#pragma GCC diagnostic ignored "-Wunused-function"
+#endif
 
 
 
-#line 27 "src/Parse/Lexer.cpp"
+
+#line 31 "src/Parse/Lexer.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -176,7 +180,7 @@ typedef void* yyscan_t;
 #define YY_STATE_EOF(state) (YY_END_OF_BUFFER + state + 1)
 
 /* Special action meaning "start processing a new file". */
-#define YY_NEW_FILE yyrestart(yyin ,yyscanner )
+#define YY_NEW_FILE mslrestart(yyin ,yyscanner )
 
 #define YY_END_OF_BUFFER_CHAR 0
 
@@ -287,7 +291,7 @@ struct yy_buffer_state
 	 * possible backing-up.
 	 *
 	 * When we actually see the EOF, we change the status to "new"
-	 * (via yyrestart()), so that the user can continue scanning by
+	 * (via mslrestart()), so that the user can continue scanning by
 	 * just pointing yyin at a new input file.
 	 */
 #define YY_BUFFER_EOF_PENDING 2
@@ -310,36 +314,36 @@ struct yy_buffer_state
  */
 #define YY_CURRENT_BUFFER_LVALUE yyg->yy_buffer_stack[yyg->yy_buffer_stack_top]
 
-void yyrestart (FILE *input_file ,yyscan_t yyscanner );
-void yy_switch_to_buffer (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-YY_BUFFER_STATE yy_create_buffer (FILE *file,int size ,yyscan_t yyscanner );
-void yy_delete_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void yy_flush_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
-void yypush_buffer_state (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
-void yypop_buffer_state (yyscan_t yyscanner );
+void mslrestart (FILE *input_file ,yyscan_t yyscanner );
+void msl_switch_to_buffer (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
+YY_BUFFER_STATE msl_create_buffer (FILE *file,int size ,yyscan_t yyscanner );
+void msl_delete_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
+void msl_flush_buffer (YY_BUFFER_STATE b ,yyscan_t yyscanner );
+void mslpush_buffer_state (YY_BUFFER_STATE new_buffer ,yyscan_t yyscanner );
+void mslpop_buffer_state (yyscan_t yyscanner );
 
-static void yyensure_buffer_stack (yyscan_t yyscanner );
-static void yy_load_buffer_state (yyscan_t yyscanner );
-static void yy_init_buffer (YY_BUFFER_STATE b,FILE *file ,yyscan_t yyscanner );
+static void mslensure_buffer_stack (yyscan_t yyscanner );
+static void msl_load_buffer_state (yyscan_t yyscanner );
+static void msl_init_buffer (YY_BUFFER_STATE b,FILE *file ,yyscan_t yyscanner );
 
-#define YY_FLUSH_BUFFER yy_flush_buffer(YY_CURRENT_BUFFER ,yyscanner)
+#define YY_FLUSH_BUFFER msl_flush_buffer(YY_CURRENT_BUFFER ,yyscanner)
 
-YY_BUFFER_STATE yy_scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
-YY_BUFFER_STATE yy_scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
-YY_BUFFER_STATE yy_scan_bytes (yyconst char *bytes,yy_size_t len ,yyscan_t yyscanner );
+YY_BUFFER_STATE msl_scan_buffer (char *base,yy_size_t size ,yyscan_t yyscanner );
+YY_BUFFER_STATE msl_scan_string (yyconst char *yy_str ,yyscan_t yyscanner );
+YY_BUFFER_STATE msl_scan_bytes (yyconst char *bytes,yy_size_t len ,yyscan_t yyscanner );
 
-void *yyalloc (yy_size_t ,yyscan_t yyscanner );
-void *yyrealloc (void *,yy_size_t ,yyscan_t yyscanner );
-void yyfree (void * ,yyscan_t yyscanner );
+void *mslalloc (yy_size_t ,yyscan_t yyscanner );
+void *mslrealloc (void *,yy_size_t ,yyscan_t yyscanner );
+void mslfree (void * ,yyscan_t yyscanner );
 
-#define yy_new_buffer yy_create_buffer
+#define yy_new_buffer msl_create_buffer
 
 #define yy_set_interactive(is_interactive) \
 	{ \
 	if ( ! YY_CURRENT_BUFFER ){ \
-        yyensure_buffer_stack (yyscanner); \
+        mslensure_buffer_stack (yyscanner); \
 		YY_CURRENT_BUFFER_LVALUE =    \
-            yy_create_buffer(yyin,YY_BUF_SIZE ,yyscanner); \
+            msl_create_buffer(yyin,YY_BUF_SIZE ,yyscanner); \
 	} \
 	YY_CURRENT_BUFFER_LVALUE->yy_is_interactive = is_interactive; \
 	}
@@ -347,9 +351,9 @@ void yyfree (void * ,yyscan_t yyscanner );
 #define yy_set_bol(at_bol) \
 	{ \
 	if ( ! YY_CURRENT_BUFFER ){\
-        yyensure_buffer_stack (yyscanner); \
+        mslensure_buffer_stack (yyscanner); \
 		YY_CURRENT_BUFFER_LVALUE =    \
-            yy_create_buffer(yyin,YY_BUF_SIZE ,yyscanner); \
+            msl_create_buffer(yyin,YY_BUF_SIZE ,yyscanner); \
 	} \
 	YY_CURRENT_BUFFER_LVALUE->yy_at_bol = at_bol; \
 	}
@@ -950,38 +954,58 @@ static yyconst flex_int16_t yy_chk[1087] =
 #define YY_RESTORE_YY_MORE_OFFSET
 #line 1 "src/Parse/Lexer.lex"
 
-#line 25 "src/Parse/Lexer.lex"
+#line 29 "src/Parse/Lexer.lex"
+namespace
+{
+
 struct LexerInfo
 {
-	explicit LexerInfo(const std::string& str)
+	explicit LexerInfo(const std::string& str, std::size_t start, std::size_t length)
 		: input(&str)
-		, pos(0)
+		, pos(std::min(start, input->size()))
 		, line(0)
 		, column(0)
+		, curToken(nullptr)
 	{
+		// Initialize the line and column number.
+		for (std::size_t i = 0; i < start; ++i)
+		{
+			if ((*input)[i] == '\n')
+			{
+				++line;
+				column = 0;
+			}
+			else
+				++column;
+		}
 	}
 
 	const std::string* input;
-	unsigned int pos;
-	unsigned int line;
-	unsigned int column;
-	std::vector<msl::Token> tokens;
+	std::size_t pos;
+	std::size_t line;
+	std::size_t column;
+	std::size_t end;
+	msl::Token* curToken;
 };
 
 void addToken(LexerInfo* info, msl::Token::Type type, const char* text)
 {
-	unsigned int length = static_cast<unsigned int>(std::strlen(text));
-	info->tokens.emplace_back(type, info->pos, length, info->line, info->column);
+	std::size_t length = std::strlen(text);
+	assert(info->curToken);
+	*info->curToken = msl::Token(type, info->pos, length, info->line, info->column);
 	info->pos += length;
+	assert(info->pos <= info->end);
 	info->column += length;
 }
 
 void addNewline(LexerInfo* info, const char* text)
 {
 	unsigned int length = static_cast<unsigned int>(std::strlen(text));
-	info->tokens.emplace_back(msl::Token::Type::Newline, info->pos, length, info->line,
+	assert(info->curToken);
+	*info->curToken = msl::Token(msl::Token::Type::Newline, info->pos, length, info->line,
 		info->column);
 	info->pos += length;
+	assert(info->pos <= info->end);
 	++info->line;
 	info->column = 0;
 }
@@ -989,9 +1013,11 @@ void addNewline(LexerInfo* info, const char* text)
 void addComment(LexerInfo* info, const char* text)
 {
 	unsigned int length = static_cast<unsigned int>(std::strlen(text));
-	info->tokens.emplace_back(msl::Token::Type::Comment, info->pos, length, info->line,
+	assert(info->curToken);
+	*info->curToken = msl::Token(msl::Token::Type::Comment, info->pos, length, info->line,
 		info->column);
 	info->pos += length;
+	assert(info->pos <= info->end);
 
 	// Update the line and column based on newlines within the comment.
 	for (unsigned int i = 0; i < length; ++i)
@@ -1006,17 +1032,20 @@ void addComment(LexerInfo* info, const char* text)
 	}
 }
 
+} // namespace
+
+#define YY_DECL static bool msllex (yyscan_t yyscanner)
 #define YY_EXTRA_TYPE LexerInfo*
 #define YY_NO_INPUT
 #define YY_NO_UNPUT
 #define YY_INPUT(buf, result, max_size) \
 	{ \
-		result = std::min(max_size, yyextra->input->size() - yyextra->pos); \
+		result = std::min(max_size, yyextra->end - yyextra->pos); \
 		std::memcpy(buf, yyextra->input->c_str() + yyextra->pos, result); \
 		yyextra->pos += result; \
 	}
 
-#line 1020 "src/Parse/Lexer.cpp"
+#line 1049 "src/Parse/Lexer.cpp"
 
 #define INITIAL 0
 #define INCLUDE 1
@@ -1069,42 +1098,42 @@ struct yyguts_t
 
 static int yy_init_globals (yyscan_t yyscanner );
 
-int yylex_init (yyscan_t* scanner);
+int msllex_init (yyscan_t* scanner);
 
-int yylex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
+int msllex_init_extra (YY_EXTRA_TYPE user_defined,yyscan_t* scanner);
 
 /* Accessor methods to globals.
    These are made visible to non-reentrant scanners for convenience. */
 
-int yylex_destroy (yyscan_t yyscanner );
+int msllex_destroy (yyscan_t yyscanner );
 
-int yyget_debug (yyscan_t yyscanner );
+int mslget_debug (yyscan_t yyscanner );
 
-void yyset_debug (int debug_flag ,yyscan_t yyscanner );
+void mslset_debug (int debug_flag ,yyscan_t yyscanner );
 
-YY_EXTRA_TYPE yyget_extra (yyscan_t yyscanner );
+YY_EXTRA_TYPE mslget_extra (yyscan_t yyscanner );
 
-void yyset_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
+void mslset_extra (YY_EXTRA_TYPE user_defined ,yyscan_t yyscanner );
 
-FILE *yyget_in (yyscan_t yyscanner );
+FILE *mslget_in (yyscan_t yyscanner );
 
-void yyset_in  (FILE * _in_str ,yyscan_t yyscanner );
+void mslset_in  (FILE * _in_str ,yyscan_t yyscanner );
 
-FILE *yyget_out (yyscan_t yyscanner );
+FILE *mslget_out (yyscan_t yyscanner );
 
-void yyset_out  (FILE * _out_str ,yyscan_t yyscanner );
+void mslset_out  (FILE * _out_str ,yyscan_t yyscanner );
 
-yy_size_t yyget_leng (yyscan_t yyscanner );
+yy_size_t mslget_leng (yyscan_t yyscanner );
 
-char *yyget_text (yyscan_t yyscanner );
+char *mslget_text (yyscan_t yyscanner );
 
-int yyget_lineno (yyscan_t yyscanner );
+int mslget_lineno (yyscan_t yyscanner );
 
-void yyset_lineno (int _line_number ,yyscan_t yyscanner );
+void mslset_lineno (int _line_number ,yyscan_t yyscanner );
 
-int yyget_column  (yyscan_t yyscanner );
+int mslget_column  (yyscan_t yyscanner );
 
-void yyset_column (int _column_no ,yyscan_t yyscanner );
+void mslset_column (int _column_no ,yyscan_t yyscanner );
 
 /* Macros after this point can all be overridden by user definitions in
  * section 1.
@@ -1112,9 +1141,9 @@ void yyset_column (int _column_no ,yyscan_t yyscanner );
 
 #ifndef YY_SKIP_YYWRAP
 #ifdef __cplusplus
-extern "C" int yywrap (yyscan_t yyscanner );
+extern "C" int mslwrap (yyscan_t yyscanner );
 #else
-extern int yywrap (yyscan_t yyscanner );
+extern int mslwrap (yyscan_t yyscanner );
 #endif
 #endif
 
@@ -1222,9 +1251,9 @@ static int input (yyscan_t yyscanner );
 #ifndef YY_DECL
 #define YY_DECL_IS_OURS 1
 
-extern int yylex (yyscan_t yyscanner);
+extern int msllex (yyscan_t yyscanner);
 
-#define YY_DECL int yylex (yyscan_t yyscanner)
+#define YY_DECL int msllex (yyscan_t yyscanner)
 #endif /* !YY_DECL */
 
 /* Code executed at the beginning of each rule, after yytext and yyleng
@@ -1269,19 +1298,19 @@ YY_DECL
 			yyout = stdout;
 
 		if ( ! YY_CURRENT_BUFFER ) {
-			yyensure_buffer_stack (yyscanner);
+			mslensure_buffer_stack (yyscanner);
 			YY_CURRENT_BUFFER_LVALUE =
-				yy_create_buffer(yyin,YY_BUF_SIZE ,yyscanner);
+				msl_create_buffer(yyin,YY_BUF_SIZE ,yyscanner);
 		}
 
-		yy_load_buffer_state(yyscanner );
+		msl_load_buffer_state(yyscanner );
 		}
 
 	{
-#line 94 "src/Parse/Lexer.lex"
+#line 123 "src/Parse/Lexer.lex"
 
 
-#line 1285 "src/Parse/Lexer.cpp"
+#line 1314 "src/Parse/Lexer.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1340,1064 +1369,1064 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 96 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Whitespace, yytext);
+#line 125 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Whitespace, yytext); return true;
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 97 "src/Parse/Lexer.lex"
-addNewline(yyextra, yytext); BEGIN(INITIAL);
+#line 126 "src/Parse/Lexer.lex"
+addNewline(yyextra, yytext); BEGIN(INITIAL); return true;
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 98 "src/Parse/Lexer.lex"
-addNewline(yyextra, yytext);
+#line 127 "src/Parse/Lexer.lex"
+addNewline(yyextra, yytext); return true;
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 100 "src/Parse/Lexer.lex"
-addComment(yyextra, yytext);
+#line 129 "src/Parse/Lexer.lex"
+addComment(yyextra, yytext); return true;
 	YY_BREAK
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 101 "src/Parse/Lexer.lex"
-addComment(yyextra, yytext);
+#line 130 "src/Parse/Lexer.lex"
+addComment(yyextra, yytext); return true;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 103 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Exclamation, yytext);
+#line 132 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Exclamation, yytext); return true;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 104 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Percent, yytext);
+#line 133 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Percent, yytext); return true;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 105 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Tilde, yytext);
+#line 134 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Tilde, yytext); return true;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 106 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Carot, yytext);
+#line 135 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Carot, yytext); return true;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 107 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Amperstand, yytext);
+#line 136 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Amperstand, yytext); return true;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 108 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Bar, yytext);
+#line 137 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Bar, yytext); return true;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 109 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Asterisk, yytext);
+#line 138 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Asterisk, yytext); return true;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 110 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Slash, yytext);
+#line 139 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Slash, yytext); return true;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 111 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Plus, yytext);
+#line 140 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Plus, yytext); return true;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 112 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Dash, yytext);
+#line 141 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Dash, yytext); return true;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 113 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Equal, yytext);
+#line 142 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Equal, yytext); return true;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 114 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::LeftParen, yytext);
+#line 143 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::LeftParen, yytext); return true;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 115 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::RightParen, yytext);
+#line 144 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::RightParen, yytext); return true;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 116 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::LeftBracket, yytext);
+#line 145 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::LeftBracket, yytext); return true;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 117 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::RightBracket, yytext);
+#line 146 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::RightBracket, yytext); return true;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 118 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::LeftBrace, yytext);
+#line 147 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::LeftBrace, yytext); return true;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 119 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::RightBrace, yytext);
+#line 148 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::RightBrace, yytext); return true;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 120 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::LeftAngle, yytext);
+#line 149 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::LeftAngle, yytext); return true;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 121 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::RightAngle, yytext);
+#line 150 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::RightAngle, yytext); return true;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 122 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Question, yytext);
+#line 151 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Question, yytext); return true;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 123 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Colon, yytext);
+#line 152 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Colon, yytext); return true;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 124 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Dot, yytext);
+#line 153 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Dot, yytext); return true;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 125 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Comma, yytext);
+#line 154 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Comma, yytext); return true;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 126 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Semicolon, yytext);
+#line 155 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Semicolon, yytext); return true;
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 128 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::BoolAnd, yytext);
+#line 157 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::BoolAnd, yytext); return true;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 129 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::BoolOr, yytext);
+#line 158 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::BoolOr, yytext); return true;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 130 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::BoolXor, yytext);
+#line 159 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::BoolXor, yytext); return true;
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 131 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::LeftShift, yytext);
+#line 160 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::LeftShift, yytext); return true;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 132 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::RightShift, yytext);
+#line 161 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::RightShift, yytext); return true;
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 133 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::EqualCompare, yytext);
+#line 162 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::EqualCompare, yytext); return true;
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 134 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::NotEqual, yytext);
+#line 163 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::NotEqual, yytext); return true;
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 135 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::LessEual, yytext);
+#line 164 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::LessEual, yytext); return true;
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 136 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::GreaterEqual, yytext);
+#line 165 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::GreaterEqual, yytext); return true;
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 137 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::XorEqual, yytext);
+#line 166 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::XorEqual, yytext); return true;
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 138 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::AndEqual, yytext);
+#line 167 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::AndEqual, yytext); return true;
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 139 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::OrEqual, yytext);
+#line 168 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::OrEqual, yytext); return true;
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 140 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::MultiplyEqual, yytext);
+#line 169 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::MultiplyEqual, yytext); return true;
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 141 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DivideEqual, yytext);
+#line 170 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DivideEqual, yytext); return true;
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 142 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::PlusEqual, yytext);
+#line 171 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::PlusEqual, yytext); return true;
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 143 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::MinusEqual, yytext);
+#line 172 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::MinusEqual, yytext); return true;
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 145 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::BoolAndEqual, yytext);
+#line 174 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::BoolAndEqual, yytext); return true;
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 146 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::BoolOrEqual, yytext);
+#line 175 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::BoolOrEqual, yytext); return true;
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 147 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::BoolXorEqual, yytext);
+#line 176 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::BoolXorEqual, yytext); return true;
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 148 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::BoolLeftShiftEqual, yytext);
+#line 177 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::BoolLeftShiftEqual, yytext); return true;
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 149 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::BoolRightShiftEqual, yytext);
+#line 178 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::BoolRightShiftEqual, yytext); return true;
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 151 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Const, yytext);
+#line 180 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Const, yytext); return true;
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 152 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Centroid, yytext);
+#line 181 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Centroid, yytext); return true;
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 153 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Break, yytext);
+#line 182 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Break, yytext); return true;
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 154 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Continue, yytext);
+#line 183 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Continue, yytext); return true;
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 155 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Do, yytext);
+#line 184 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Do, yytext); return true;
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 156 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Else, yytext);
+#line 185 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Else, yytext); return true;
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 157 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::For, yytext);
+#line 186 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::For, yytext); return true;
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 158 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::If, yytext);
+#line 187 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::If, yytext); return true;
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 159 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Discard, yytext);
+#line 188 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Discard, yytext); return true;
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 160 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Return, yytext);
+#line 189 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Return, yytext); return true;
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 161 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Switch, yytext);
+#line 190 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Switch, yytext); return true;
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 162 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Case, yytext);
+#line 191 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Case, yytext); return true;
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 163 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Default, yytext);
+#line 192 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Default, yytext); return true;
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 164 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Uniform, yytext);
+#line 193 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Uniform, yytext); return true;
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 165 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Patch, yytext);
+#line 194 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Patch, yytext); return true;
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 166 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sample, yytext);
+#line 195 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Sample, yytext); return true;
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 167 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Buffer, yytext);
+#line 196 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Buffer, yytext); return true;
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 168 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Shared, yytext);
+#line 197 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Shared, yytext); return true;
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 169 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Coherent, yytext);
+#line 198 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Coherent, yytext); return true;
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 170 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Volatile, yytext);
+#line 199 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Volatile, yytext); return true;
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 171 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Restrict, yytext);
+#line 200 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Restrict, yytext); return true;
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 172 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ReadOnly, yytext);
+#line 201 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::ReadOnly, yytext); return true;
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 173 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::WriteOnly, yytext);
+#line 202 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::WriteOnly, yytext); return true;
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 174 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::NonPerspective, yytext);
+#line 203 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::NonPerspective, yytext); return true;
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 175 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Flat, yytext);
+#line 204 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Flat, yytext); return true;
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 176 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Smooth, yytext);
+#line 205 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Smooth, yytext); return true;
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 177 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Struct, yytext);
+#line 206 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Struct, yytext); return true;
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 178 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Void, yytext);
+#line 207 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Void, yytext); return true;
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 179 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::While, yytext);
+#line 208 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::While, yytext); return true;
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 181 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Bool, yytext);
+#line 210 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Bool, yytext); return true;
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 182 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Float, yytext);
+#line 211 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Float, yytext); return true;
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 183 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Double, yytext);
+#line 212 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Double, yytext); return true;
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 184 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Int, yytext);
+#line 213 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Int, yytext); return true;
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 185 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Uint, yytext);
+#line 214 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Uint, yytext); return true;
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 186 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::BVec2, yytext);
+#line 215 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::BVec2, yytext); return true;
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 187 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::BVec3, yytext);
+#line 216 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::BVec3, yytext); return true;
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 188 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::BVec4, yytext);
+#line 217 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::BVec4, yytext); return true;
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 189 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IVec2, yytext);
+#line 218 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IVec2, yytext); return true;
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 190 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IVec3, yytext);
+#line 219 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IVec3, yytext); return true;
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 191 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IVec4, yytext);
+#line 220 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IVec4, yytext); return true;
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 192 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UVec2, yytext);
+#line 221 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::UVec2, yytext); return true;
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 193 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UVec3, yytext);
+#line 222 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::UVec3, yytext); return true;
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 194 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UVec4, yytext);
+#line 223 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::UVec4, yytext); return true;
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 195 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Vec2, yytext);
+#line 224 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Vec2, yytext); return true;
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 196 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Vec3, yytext);
+#line 225 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Vec3, yytext); return true;
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-#line 197 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Vec4, yytext);
+#line 226 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Vec4, yytext); return true;
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 198 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DVec2, yytext);
+#line 227 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DVec2, yytext); return true;
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 199 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DVec3, yytext);
+#line 228 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DVec3, yytext); return true;
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 200 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DVec4, yytext);
+#line 229 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DVec4, yytext); return true;
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 201 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat2, yytext);
+#line 230 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Mat2, yytext); return true;
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 202 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat3, yytext);
+#line 231 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Mat3, yytext); return true;
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 203 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat4, yytext);
+#line 232 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Mat4, yytext); return true;
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 204 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat2, yytext);
+#line 233 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DMat2, yytext); return true;
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 205 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat3, yytext);
+#line 234 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DMat3, yytext); return true;
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 206 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat4, yytext);
+#line 235 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DMat4, yytext); return true;
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
-#line 207 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat2x2, yytext);
+#line 236 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Mat2x2, yytext); return true;
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 208 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat2x3, yytext);
+#line 237 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Mat2x3, yytext); return true;
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 209 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat2x4, yytext);
+#line 238 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Mat2x4, yytext); return true;
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
-#line 210 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat3x2, yytext);
+#line 239 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Mat3x2, yytext); return true;
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-#line 211 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat3x3, yytext);
+#line 240 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Mat3x3, yytext); return true;
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 212 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat3x4, yytext);
+#line 241 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Mat3x4, yytext); return true;
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-#line 213 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat4x2, yytext);
+#line 242 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Mat4x2, yytext); return true;
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
-#line 214 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat4x3, yytext);
+#line 243 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Mat4x3, yytext); return true;
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
-#line 215 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat4x4, yytext);
+#line 244 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Mat4x4, yytext); return true;
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
-#line 216 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat2x2, yytext);
+#line 245 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DMat2x2, yytext); return true;
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
-#line 217 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat2x3, yytext);
+#line 246 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DMat2x3, yytext); return true;
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
-#line 218 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat2x4, yytext);
+#line 247 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DMat2x4, yytext); return true;
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
-#line 219 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat3x2, yytext);
+#line 248 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DMat3x2, yytext); return true;
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
-#line 220 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat3x3, yytext);
+#line 249 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DMat3x3, yytext); return true;
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
-#line 221 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat3x4, yytext);
+#line 250 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DMat3x4, yytext); return true;
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
-#line 222 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat4x2, yytext);
+#line 251 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DMat4x2, yytext); return true;
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
-#line 223 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat4x3, yytext);
+#line 252 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DMat4x3, yytext); return true;
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
-#line 224 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat4x4, yytext);
+#line 253 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DMat4x4, yytext); return true;
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
-#line 225 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler1D, yytext);
+#line 254 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Sampler1D, yytext); return true;
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
-#line 226 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler2D, yytext);
+#line 255 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Sampler2D, yytext); return true;
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
-#line 227 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler3D, yytext);
+#line 256 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Sampler3D, yytext); return true;
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
-#line 228 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::SamplerCube, yytext);
+#line 257 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::SamplerCube, yytext); return true;
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
-#line 229 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler1DShadow, yytext);
+#line 258 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Sampler1DShadow, yytext); return true;
 	YY_BREAK
 case 129:
 YY_RULE_SETUP
-#line 230 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler2DShadow, yytext);
+#line 259 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Sampler2DShadow, yytext); return true;
 	YY_BREAK
 case 130:
 YY_RULE_SETUP
-#line 231 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::SamplerCubeShadow, yytext);
+#line 260 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::SamplerCubeShadow, yytext); return true;
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
-#line 232 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler1DArray, yytext);
+#line 261 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Sampler1DArray, yytext); return true;
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
-#line 233 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler2DArray, yytext);
+#line 262 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Sampler2DArray, yytext); return true;
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 234 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler1DArrayShadow, yytext);
+#line 263 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Sampler1DArrayShadow, yytext); return true;
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
-#line 235 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler2DArrayShadow, yytext);
+#line 264 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Sampler2DArrayShadow, yytext); return true;
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
-#line 236 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISampler1D, yytext);
+#line 265 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::ISampler1D, yytext); return true;
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
-#line 237 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISampler2D, yytext);
+#line 266 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::ISampler2D, yytext); return true;
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
-#line 238 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISampler3D, yytext);
+#line 267 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::ISampler3D, yytext); return true;
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
-#line 239 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISamplerCube, yytext);
+#line 268 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::ISamplerCube, yytext); return true;
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
-#line 240 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISampler1DArray, yytext);
+#line 269 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::ISampler1DArray, yytext); return true;
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
-#line 241 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISampler2DArray, yytext);
+#line 270 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::ISampler2DArray, yytext); return true;
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
-#line 242 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USampler1D, yytext);
+#line 271 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::USampler1D, yytext); return true;
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
-#line 243 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USampler2D, yytext);
+#line 272 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::USampler2D, yytext); return true;
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
-#line 244 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USampler3D, yytext);
+#line 273 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::USampler3D, yytext); return true;
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
-#line 245 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USamplerCube, yytext);
+#line 274 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::USamplerCube, yytext); return true;
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
-#line 246 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USampler1DArray, yytext);
+#line 275 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::USampler1DArray, yytext); return true;
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
-#line 247 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USampler2DArray, yytext);
+#line 276 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::USampler2DArray, yytext); return true;
 	YY_BREAK
 case 147:
 YY_RULE_SETUP
-#line 248 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::SamplerBuffer, yytext);
+#line 277 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::SamplerBuffer, yytext); return true;
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
-#line 249 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISamplerBuffer, yytext);
+#line 278 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::ISamplerBuffer, yytext); return true;
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
-#line 250 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USamplerBuffer, yytext);
+#line 279 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::USamplerBuffer, yytext); return true;
 	YY_BREAK
 case 150:
 YY_RULE_SETUP
-#line 251 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::SamplerCubeArray, yytext);
+#line 280 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::SamplerCubeArray, yytext); return true;
 	YY_BREAK
 case 151:
 YY_RULE_SETUP
-#line 252 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::SamplerCubeArrayShadow, yytext);
+#line 281 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::SamplerCubeArrayShadow, yytext); return true;
 	YY_BREAK
 case 152:
 YY_RULE_SETUP
-#line 253 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISamplerCubeArray, yytext);
+#line 282 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::ISamplerCubeArray, yytext); return true;
 	YY_BREAK
 case 153:
 YY_RULE_SETUP
-#line 254 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USamplerCubeArray, yytext);
+#line 283 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::USamplerCubeArray, yytext); return true;
 	YY_BREAK
 case 154:
 YY_RULE_SETUP
-#line 255 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler2DMS, yytext);
+#line 284 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Sampler2DMS, yytext); return true;
 	YY_BREAK
 case 155:
 YY_RULE_SETUP
-#line 256 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISampler2DMS, yytext);
+#line 285 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::ISampler2DMS, yytext); return true;
 	YY_BREAK
 case 156:
 YY_RULE_SETUP
-#line 257 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USampler2DMS, yytext);
+#line 286 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::USampler2DMS, yytext); return true;
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
-#line 258 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler2DMSArray, yytext);
+#line 287 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Sampler2DMSArray, yytext); return true;
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
-#line 259 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISampler2DMSArray, yytext);
+#line 288 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::ISampler2DMSArray, yytext); return true;
 	YY_BREAK
 case 159:
 YY_RULE_SETUP
-#line 260 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USampler2DMSArray, yytext);
+#line 289 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::USampler2DMSArray, yytext); return true;
 	YY_BREAK
 case 160:
 YY_RULE_SETUP
-#line 261 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Image1D, yytext);
+#line 290 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Image1D, yytext); return true;
 	YY_BREAK
 case 161:
 YY_RULE_SETUP
-#line 262 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImage1D, yytext);
+#line 291 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IImage1D, yytext); return true;
 	YY_BREAK
 case 162:
 YY_RULE_SETUP
-#line 263 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImage1D, yytext);
+#line 292 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::UImage1D, yytext); return true;
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
-#line 264 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Image2D, yytext);
+#line 293 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Image2D, yytext); return true;
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
-#line 265 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImage2D, yytext);
+#line 294 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IImage2D, yytext); return true;
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
-#line 266 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImage2D, yytext);
+#line 295 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::UImage2D, yytext); return true;
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
-#line 267 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Image3D, yytext);
+#line 296 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Image3D, yytext); return true;
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
-#line 268 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImage3D, yytext);
+#line 297 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IImage3D, yytext); return true;
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-#line 269 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImage3D, yytext);
+#line 298 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::UImage3D, yytext); return true;
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
-#line 270 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ImageCube, yytext);
+#line 299 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::ImageCube, yytext); return true;
 	YY_BREAK
 case 170:
 YY_RULE_SETUP
-#line 271 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImageCube, yytext);
+#line 300 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IImageCube, yytext); return true;
 	YY_BREAK
 case 171:
 YY_RULE_SETUP
-#line 272 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImageCube, yytext);
+#line 301 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::UImageCube, yytext); return true;
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
-#line 273 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ImageBuffer, yytext);
+#line 302 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::ImageBuffer, yytext); return true;
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
-#line 274 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImageBuffer, yytext);
+#line 303 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IImageBuffer, yytext); return true;
 	YY_BREAK
 case 174:
 YY_RULE_SETUP
-#line 275 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImageBuffer, yytext);
+#line 304 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::UImageBuffer, yytext); return true;
 	YY_BREAK
 case 175:
 YY_RULE_SETUP
-#line 276 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Image1DArray, yytext);
+#line 305 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Image1DArray, yytext); return true;
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
-#line 277 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImage1DArray, yytext);
+#line 306 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IImage1DArray, yytext); return true;
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
-#line 278 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImage1DArray, yytext);
+#line 307 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::UImage1DArray, yytext); return true;
 	YY_BREAK
 case 178:
 YY_RULE_SETUP
-#line 279 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Image2DArray, yytext);
+#line 308 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Image2DArray, yytext); return true;
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
-#line 280 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImage2DArray, yytext);
+#line 309 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IImage2DArray, yytext); return true;
 	YY_BREAK
 case 180:
 YY_RULE_SETUP
-#line 281 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImage2DArray, yytext);
+#line 310 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::UImage2DArray, yytext); return true;
 	YY_BREAK
 case 181:
 YY_RULE_SETUP
-#line 282 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ImageCubeArray, yytext);
+#line 311 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::ImageCubeArray, yytext); return true;
 	YY_BREAK
 case 182:
 YY_RULE_SETUP
-#line 283 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImageCubeArray, yytext);
+#line 312 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IImageCubeArray, yytext); return true;
 	YY_BREAK
 case 183:
 YY_RULE_SETUP
-#line 284 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImageCubeArray, yytext);
+#line 313 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::UImageCubeArray, yytext); return true;
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
-#line 285 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Image2DMS, yytext);
+#line 314 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Image2DMS, yytext); return true;
 	YY_BREAK
 case 185:
 YY_RULE_SETUP
-#line 286 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImage2DMS, yytext);
+#line 315 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IImage2DMS, yytext); return true;
 	YY_BREAK
 case 186:
 YY_RULE_SETUP
-#line 287 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImage2DMS, yytext);
+#line 316 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::UImage2DMS, yytext); return true;
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
-#line 288 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Image2DMSArray, yytext);
+#line 317 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Image2DMSArray, yytext); return true;
 	YY_BREAK
 case 188:
 YY_RULE_SETUP
-#line 289 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImage2DMSArray, yytext);
+#line 318 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IImage2DMSArray, yytext); return true;
 	YY_BREAK
 case 189:
 YY_RULE_SETUP
-#line 290 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImage2DMSArray, yytext);
+#line 319 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::UImage2DMSArray, yytext); return true;
 	YY_BREAK
 case 190:
 YY_RULE_SETUP
-#line 291 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::AtomicUint, yytext);
+#line 320 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::AtomicUint, yytext); return true;
 	YY_BREAK
 case 191:
 YY_RULE_SETUP
-#line 293 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Hash, yytext);
+#line 322 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Hash, yytext); return true;
 	YY_BREAK
 case 192:
 YY_RULE_SETUP
-#line 294 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Include, yytext); BEGIN(INCLUDE);
+#line 323 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Include, yytext); BEGIN(INCLUDE); return true;
 	YY_BREAK
 case 193:
 YY_RULE_SETUP
-#line 295 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Pragma, yytext);
+#line 324 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Pragma, yytext); return true;
 	YY_BREAK
 case 194:
 YY_RULE_SETUP
-#line 296 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Define, yytext);
+#line 325 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Define, yytext); return true;
 	YY_BREAK
 case 195:
 YY_RULE_SETUP
-#line 297 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Ifdef, yytext);
+#line 326 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Ifdef, yytext); return true;
 	YY_BREAK
 case 196:
 YY_RULE_SETUP
-#line 298 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Ifndef, yytext);
+#line 327 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Ifndef, yytext); return true;
 	YY_BREAK
 case 197:
 YY_RULE_SETUP
-#line 299 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::PreprocIf, yytext);
+#line 328 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::PreprocIf, yytext); return true;
 	YY_BREAK
 case 198:
 YY_RULE_SETUP
-#line 300 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::PreprocElif, yytext);
+#line 329 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::PreprocElif, yytext); return true;
 	YY_BREAK
 case 199:
 YY_RULE_SETUP
-#line 301 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::PreprocElse, yytext);
+#line 330 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::PreprocElse, yytext); return true;
 	YY_BREAK
 case 200:
 YY_RULE_SETUP
-#line 302 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::PreprocEndif, yytext);
+#line 331 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::PreprocEndif, yytext); return true;
 	YY_BREAK
 case 201:
 YY_RULE_SETUP
-#line 303 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::PreprocConcat, yytext);
+#line 332 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::PreprocConcat, yytext); return true;
 	YY_BREAK
 case 202:
 YY_RULE_SETUP
-#line 304 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IncludePath, yytext); BEGIN(INITIAL);
+#line 333 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IncludePath, yytext); BEGIN(INITIAL); return true;
 	YY_BREAK
 case 203:
 YY_RULE_SETUP
-#line 306 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IntLiteral, yytext);
+#line 335 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IntLiteral, yytext); return true;
 	YY_BREAK
 case 204:
 YY_RULE_SETUP
-#line 307 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IntLiteral, yytext);
+#line 336 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IntLiteral, yytext); return true;
 	YY_BREAK
 case 205:
 YY_RULE_SETUP
-#line 308 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IntLiteral, yytext);
+#line 337 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IntLiteral, yytext); return true;
 	YY_BREAK
 case 206:
 YY_RULE_SETUP
-#line 309 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IntLiteral, yytext);
+#line 338 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::IntLiteral, yytext); return true;
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
-#line 310 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::FloatLiteral, yytext);
+#line 339 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::FloatLiteral, yytext); return true;
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
-#line 311 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DoubleLiteral, yytext);
+#line 340 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::DoubleLiteral, yytext); return true;
 	YY_BREAK
 case 209:
 YY_RULE_SETUP
-#line 313 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Identifier, yytext);
+#line 342 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Identifier, yytext); return true;
 	YY_BREAK
 case 210:
 YY_RULE_SETUP
-#line 315 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Invalid, yytext);
+#line 344 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Invalid, yytext); return true;
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
-#line 317 "src/Parse/Lexer.lex"
+#line 346 "src/Parse/Lexer.lex"
 ECHO;
 	YY_BREAK
-#line 2401 "src/Parse/Lexer.cpp"
+#line 2430 "src/Parse/Lexer.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(INCLUDE):
 	yyterminate();
@@ -2416,7 +2445,7 @@ case YY_STATE_EOF(INCLUDE):
 			/* We're scanning a new file or input source.  It's
 			 * possible that this happened because the user
 			 * just pointed yyin at a new source and called
-			 * yylex().  If so, then we have to assure
+			 * msllex().  If so, then we have to assure
 			 * consistency between YY_CURRENT_BUFFER and our
 			 * globals.  Here is the right place to do so, because
 			 * this is the first action (other than possibly a
@@ -2476,7 +2505,7 @@ case YY_STATE_EOF(INCLUDE):
 				{
 				yyg->yy_did_buffer_switch_on_eof = 0;
 
-				if ( yywrap(yyscanner ) )
+				if ( mslwrap(yyscanner ) )
 					{
 					/* Note: because we've taken care in
 					 * yy_get_next_buffer() to have set up
@@ -2530,7 +2559,7 @@ case YY_STATE_EOF(INCLUDE):
 	} /* end of action switch */
 		} /* end of scanning one token */
 	} /* end of user's declarations */
-} /* end of yylex */
+} /* end of msllex */
 
 /* yy_get_next_buffer - try to read in a new buffer
  *
@@ -2609,7 +2638,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 
 				b->yy_ch_buf = (char *)
 					/* Include room in for 2 EOB chars. */
-					yyrealloc((void *) b->yy_ch_buf,b->yy_buf_size + 2 ,yyscanner );
+					mslrealloc((void *) b->yy_ch_buf,b->yy_buf_size + 2 ,yyscanner );
 				}
 			else
 				/* Can't grow it, we don't own it. */
@@ -2641,7 +2670,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 		if ( number_to_move == YY_MORE_ADJ )
 			{
 			ret_val = EOB_ACT_END_OF_FILE;
-			yyrestart(yyin  ,yyscanner);
+			mslrestart(yyin  ,yyscanner);
 			}
 
 		else
@@ -2658,7 +2687,7 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 	if ((yy_size_t) (yyg->yy_n_chars + number_to_move) > YY_CURRENT_BUFFER_LVALUE->yy_buf_size) {
 		/* Extend the array by 50%, plus the number we really need. */
 		yy_size_t new_size = yyg->yy_n_chars + number_to_move + (yyg->yy_n_chars >> 1);
-		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) yyrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf,new_size ,yyscanner );
+		YY_CURRENT_BUFFER_LVALUE->yy_ch_buf = (char *) mslrealloc((void *) YY_CURRENT_BUFFER_LVALUE->yy_ch_buf,new_size ,yyscanner );
 		if ( ! YY_CURRENT_BUFFER_LVALUE->yy_ch_buf )
 			YY_FATAL_ERROR( "out of dynamic memory in yy_get_next_buffer()" );
 	}
@@ -2816,13 +2845,13 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 					 */
 
 					/* Reset buffer status. */
-					yyrestart(yyin ,yyscanner);
+					mslrestart(yyin ,yyscanner);
 
 					/*FALLTHROUGH*/
 
 				case EOB_ACT_END_OF_FILE:
 					{
-					if ( yywrap(yyscanner ) )
+					if ( mslwrap(yyscanner ) )
 						return EOF;
 
 					if ( ! yyg->yy_did_buffer_switch_on_eof )
@@ -2854,34 +2883,34 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
  * @param yyscanner The scanner object.
  * @note This function does not reset the start condition to @c INITIAL .
  */
-    void yyrestart  (FILE * input_file , yyscan_t yyscanner)
+    void mslrestart  (FILE * input_file , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 	if ( ! YY_CURRENT_BUFFER ){
-        yyensure_buffer_stack (yyscanner);
+        mslensure_buffer_stack (yyscanner);
 		YY_CURRENT_BUFFER_LVALUE =
-            yy_create_buffer(yyin,YY_BUF_SIZE ,yyscanner);
+            msl_create_buffer(yyin,YY_BUF_SIZE ,yyscanner);
 	}
 
-	yy_init_buffer(YY_CURRENT_BUFFER,input_file ,yyscanner);
-	yy_load_buffer_state(yyscanner );
+	msl_init_buffer(YY_CURRENT_BUFFER,input_file ,yyscanner);
+	msl_load_buffer_state(yyscanner );
 }
 
 /** Switch to a different input buffer.
  * @param new_buffer The new input buffer.
  * @param yyscanner The scanner object.
  */
-    void yy_switch_to_buffer  (YY_BUFFER_STATE  new_buffer , yyscan_t yyscanner)
+    void msl_switch_to_buffer  (YY_BUFFER_STATE  new_buffer , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
 	/* TODO. We should be able to replace this entire function body
 	 * with
-	 *		yypop_buffer_state();
-	 *		yypush_buffer_state(new_buffer);
+	 *		mslpop_buffer_state();
+	 *		mslpush_buffer_state(new_buffer);
      */
-	yyensure_buffer_stack (yyscanner);
+	mslensure_buffer_stack (yyscanner);
 	if ( YY_CURRENT_BUFFER == new_buffer )
 		return;
 
@@ -2894,17 +2923,17 @@ static int yy_get_next_buffer (yyscan_t yyscanner)
 		}
 
 	YY_CURRENT_BUFFER_LVALUE = new_buffer;
-	yy_load_buffer_state(yyscanner );
+	msl_load_buffer_state(yyscanner );
 
 	/* We don't actually know whether we did this switch during
-	 * EOF (yywrap()) processing, but the only time this flag
-	 * is looked at is after yywrap() is called, so it's safe
+	 * EOF (mslwrap()) processing, but the only time this flag
+	 * is looked at is after mslwrap() is called, so it's safe
 	 * to go ahead and always set it.
 	 */
 	yyg->yy_did_buffer_switch_on_eof = 1;
 }
 
-static void yy_load_buffer_state  (yyscan_t yyscanner)
+static void msl_load_buffer_state  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	yyg->yy_n_chars = YY_CURRENT_BUFFER_LVALUE->yy_n_chars;
@@ -2919,35 +2948,35 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
  * @param yyscanner The scanner object.
  * @return the allocated buffer state.
  */
-    YY_BUFFER_STATE yy_create_buffer  (FILE * file, int  size , yyscan_t yyscanner)
+    YY_BUFFER_STATE msl_create_buffer  (FILE * file, int  size , yyscan_t yyscanner)
 {
 	YY_BUFFER_STATE b;
     
-	b = (YY_BUFFER_STATE) yyalloc(sizeof( struct yy_buffer_state ) ,yyscanner );
+	b = (YY_BUFFER_STATE) mslalloc(sizeof( struct yy_buffer_state ) ,yyscanner );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in msl_create_buffer()" );
 
 	b->yy_buf_size = (yy_size_t)size;
 
 	/* yy_ch_buf has to be 2 characters longer than the size given because
 	 * we need to put in 2 end-of-buffer characters.
 	 */
-	b->yy_ch_buf = (char *) yyalloc(b->yy_buf_size + 2 ,yyscanner );
+	b->yy_ch_buf = (char *) mslalloc(b->yy_buf_size + 2 ,yyscanner );
 	if ( ! b->yy_ch_buf )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_create_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in msl_create_buffer()" );
 
 	b->yy_is_our_buffer = 1;
 
-	yy_init_buffer(b,file ,yyscanner);
+	msl_init_buffer(b,file ,yyscanner);
 
 	return b;
 }
 
 /** Destroy the buffer.
- * @param b a buffer created with yy_create_buffer()
+ * @param b a buffer created with msl_create_buffer()
  * @param yyscanner The scanner object.
  */
-    void yy_delete_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
+    void msl_delete_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
@@ -2958,28 +2987,28 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
 		YY_CURRENT_BUFFER_LVALUE = (YY_BUFFER_STATE) 0;
 
 	if ( b->yy_is_our_buffer )
-		yyfree((void *) b->yy_ch_buf ,yyscanner );
+		mslfree((void *) b->yy_ch_buf ,yyscanner );
 
-	yyfree((void *) b ,yyscanner );
+	mslfree((void *) b ,yyscanner );
 }
 
 /* Initializes or reinitializes a buffer.
  * This function is sometimes called more than once on the same buffer,
- * such as during a yyrestart() or at EOF.
+ * such as during a mslrestart() or at EOF.
  */
-    static void yy_init_buffer  (YY_BUFFER_STATE  b, FILE * file , yyscan_t yyscanner)
+    static void msl_init_buffer  (YY_BUFFER_STATE  b, FILE * file , yyscan_t yyscanner)
 
 {
 	int oerrno = errno;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
-	yy_flush_buffer(b ,yyscanner);
+	msl_flush_buffer(b ,yyscanner);
 
 	b->yy_input_file = file;
 	b->yy_fill_buffer = 1;
 
-    /* If b is the current buffer, then yy_init_buffer was _probably_
-     * called from yyrestart() or through yy_get_next_buffer.
+    /* If b is the current buffer, then msl_init_buffer was _probably_
+     * called from mslrestart() or through yy_get_next_buffer.
      * In that case, we don't want to reset the lineno or column.
      */
     if (b != YY_CURRENT_BUFFER){
@@ -2996,7 +3025,7 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
  * @param b the buffer state to be flushed, usually @c YY_CURRENT_BUFFER.
  * @param yyscanner The scanner object.
  */
-    void yy_flush_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
+    void msl_flush_buffer (YY_BUFFER_STATE  b , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	if ( ! b )
@@ -3017,7 +3046,7 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
 	b->yy_buffer_status = YY_BUFFER_NEW;
 
 	if ( b == YY_CURRENT_BUFFER )
-		yy_load_buffer_state(yyscanner );
+		msl_load_buffer_state(yyscanner );
 }
 
 /** Pushes the new state onto the stack. The new state becomes
@@ -3026,15 +3055,15 @@ static void yy_load_buffer_state  (yyscan_t yyscanner)
  *  @param new_buffer The new state.
  *  @param yyscanner The scanner object.
  */
-void yypush_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner)
+void mslpush_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	if (new_buffer == NULL)
 		return;
 
-	yyensure_buffer_stack(yyscanner);
+	mslensure_buffer_stack(yyscanner);
 
-	/* This block is copied from yy_switch_to_buffer. */
+	/* This block is copied from msl_switch_to_buffer. */
 	if ( YY_CURRENT_BUFFER )
 		{
 		/* Flush out information for old buffer. */
@@ -3048,8 +3077,8 @@ void yypush_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner)
 		yyg->yy_buffer_stack_top++;
 	YY_CURRENT_BUFFER_LVALUE = new_buffer;
 
-	/* copied from yy_switch_to_buffer. */
-	yy_load_buffer_state(yyscanner );
+	/* copied from msl_switch_to_buffer. */
+	msl_load_buffer_state(yyscanner );
 	yyg->yy_did_buffer_switch_on_eof = 1;
 }
 
@@ -3057,19 +3086,19 @@ void yypush_buffer_state (YY_BUFFER_STATE new_buffer , yyscan_t yyscanner)
  *  The next element becomes the new top.
  *  @param yyscanner The scanner object.
  */
-void yypop_buffer_state (yyscan_t yyscanner)
+void mslpop_buffer_state (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	if (!YY_CURRENT_BUFFER)
 		return;
 
-	yy_delete_buffer(YY_CURRENT_BUFFER ,yyscanner);
+	msl_delete_buffer(YY_CURRENT_BUFFER ,yyscanner);
 	YY_CURRENT_BUFFER_LVALUE = NULL;
 	if (yyg->yy_buffer_stack_top > 0)
 		--yyg->yy_buffer_stack_top;
 
 	if (YY_CURRENT_BUFFER) {
-		yy_load_buffer_state(yyscanner );
+		msl_load_buffer_state(yyscanner );
 		yyg->yy_did_buffer_switch_on_eof = 1;
 	}
 }
@@ -3077,7 +3106,7 @@ void yypop_buffer_state (yyscan_t yyscanner)
 /* Allocates the stack if it does not exist.
  *  Guarantees space for at least one push.
  */
-static void yyensure_buffer_stack (yyscan_t yyscanner)
+static void mslensure_buffer_stack (yyscan_t yyscanner)
 {
 	yy_size_t num_to_alloc;
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
@@ -3089,11 +3118,11 @@ static void yyensure_buffer_stack (yyscan_t yyscanner)
 		 * immediate realloc on the next call.
          */
       num_to_alloc = 1; /* After all that talk, this was set to 1 anyways... */
-		yyg->yy_buffer_stack = (struct yy_buffer_state**)yyalloc
+		yyg->yy_buffer_stack = (struct yy_buffer_state**)mslalloc
 								(num_to_alloc * sizeof(struct yy_buffer_state*)
 								, yyscanner);
 		if ( ! yyg->yy_buffer_stack )
-			YY_FATAL_ERROR( "out of dynamic memory in yyensure_buffer_stack()" );
+			YY_FATAL_ERROR( "out of dynamic memory in mslensure_buffer_stack()" );
 								  
 		memset(yyg->yy_buffer_stack, 0, num_to_alloc * sizeof(struct yy_buffer_state*));
 				
@@ -3108,12 +3137,12 @@ static void yyensure_buffer_stack (yyscan_t yyscanner)
 		yy_size_t grow_size = 8 /* arbitrary grow size */;
 
 		num_to_alloc = yyg->yy_buffer_stack_max + grow_size;
-		yyg->yy_buffer_stack = (struct yy_buffer_state**)yyrealloc
+		yyg->yy_buffer_stack = (struct yy_buffer_state**)mslrealloc
 								(yyg->yy_buffer_stack,
 								num_to_alloc * sizeof(struct yy_buffer_state*)
 								, yyscanner);
 		if ( ! yyg->yy_buffer_stack )
-			YY_FATAL_ERROR( "out of dynamic memory in yyensure_buffer_stack()" );
+			YY_FATAL_ERROR( "out of dynamic memory in mslensure_buffer_stack()" );
 
 		/* zero only the new slots.*/
 		memset(yyg->yy_buffer_stack + yyg->yy_buffer_stack_max, 0, grow_size * sizeof(struct yy_buffer_state*));
@@ -3127,7 +3156,7 @@ static void yyensure_buffer_stack (yyscan_t yyscanner)
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object. 
  */
-YY_BUFFER_STATE yy_scan_buffer  (char * base, yy_size_t  size , yyscan_t yyscanner)
+YY_BUFFER_STATE msl_scan_buffer  (char * base, yy_size_t  size , yyscan_t yyscanner)
 {
 	YY_BUFFER_STATE b;
     
@@ -3137,9 +3166,9 @@ YY_BUFFER_STATE yy_scan_buffer  (char * base, yy_size_t  size , yyscan_t yyscann
 		/* They forgot to leave room for the EOB's. */
 		return 0;
 
-	b = (YY_BUFFER_STATE) yyalloc(sizeof( struct yy_buffer_state ) ,yyscanner );
+	b = (YY_BUFFER_STATE) mslalloc(sizeof( struct yy_buffer_state ) ,yyscanner );
 	if ( ! b )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_buffer()" );
+		YY_FATAL_ERROR( "out of dynamic memory in msl_scan_buffer()" );
 
 	b->yy_buf_size = size - 2;	/* "- 2" to take care of EOB's */
 	b->yy_buf_pos = b->yy_ch_buf = base;
@@ -3151,33 +3180,33 @@ YY_BUFFER_STATE yy_scan_buffer  (char * base, yy_size_t  size , yyscan_t yyscann
 	b->yy_fill_buffer = 0;
 	b->yy_buffer_status = YY_BUFFER_NEW;
 
-	yy_switch_to_buffer(b ,yyscanner );
+	msl_switch_to_buffer(b ,yyscanner );
 
 	return b;
 }
 
-/** Setup the input buffer state to scan a string. The next call to yylex() will
+/** Setup the input buffer state to scan a string. The next call to msllex() will
  * scan from a @e copy of @a str.
  * @param yystr a NUL-terminated string to scan
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object.
  * @note If you want to scan bytes that may contain NUL values, then use
- *       yy_scan_bytes() instead.
+ *       msl_scan_bytes() instead.
  */
-YY_BUFFER_STATE yy_scan_string (yyconst char * yystr , yyscan_t yyscanner)
+YY_BUFFER_STATE msl_scan_string (yyconst char * yystr , yyscan_t yyscanner)
 {
     
-	return yy_scan_bytes(yystr,strlen(yystr) ,yyscanner);
+	return msl_scan_bytes(yystr,strlen(yystr) ,yyscanner);
 }
 
-/** Setup the input buffer state to scan the given bytes. The next call to yylex() will
+/** Setup the input buffer state to scan the given bytes. The next call to msllex() will
  * scan from a @e copy of @a bytes.
  * @param yybytes the byte buffer to scan
  * @param _yybytes_len the number of bytes in the buffer pointed to by @a bytes.
  * @param yyscanner The scanner object.
  * @return the newly allocated buffer state object.
  */
-YY_BUFFER_STATE yy_scan_bytes  (yyconst char * yybytes, yy_size_t  _yybytes_len , yyscan_t yyscanner)
+YY_BUFFER_STATE msl_scan_bytes  (yyconst char * yybytes, yy_size_t  _yybytes_len , yyscan_t yyscanner)
 {
 	YY_BUFFER_STATE b;
 	char *buf;
@@ -3186,18 +3215,18 @@ YY_BUFFER_STATE yy_scan_bytes  (yyconst char * yybytes, yy_size_t  _yybytes_len 
     
 	/* Get memory for full buffer, including space for trailing EOB's. */
 	n = _yybytes_len + 2;
-	buf = (char *) yyalloc(n ,yyscanner );
+	buf = (char *) mslalloc(n ,yyscanner );
 	if ( ! buf )
-		YY_FATAL_ERROR( "out of dynamic memory in yy_scan_bytes()" );
+		YY_FATAL_ERROR( "out of dynamic memory in msl_scan_bytes()" );
 
 	for ( i = 0; i < _yybytes_len; ++i )
 		buf[i] = yybytes[i];
 
 	buf[_yybytes_len] = buf[_yybytes_len+1] = YY_END_OF_BUFFER_CHAR;
 
-	b = yy_scan_buffer(buf,n ,yyscanner);
+	b = msl_scan_buffer(buf,n ,yyscanner);
 	if ( ! b )
-		YY_FATAL_ERROR( "bad buffer in yy_scan_bytes()" );
+		YY_FATAL_ERROR( "bad buffer in msl_scan_bytes()" );
 
 	/* It's okay to grow etc. this buffer, and we should throw it
 	 * away when we're done.
@@ -3241,7 +3270,7 @@ static void yy_fatal_error (yyconst char* msg , yyscan_t yyscanner)
 /** Get the user-defined data for this scanner.
  * @param yyscanner The scanner object.
  */
-YY_EXTRA_TYPE yyget_extra  (yyscan_t yyscanner)
+YY_EXTRA_TYPE mslget_extra  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyextra;
@@ -3250,7 +3279,7 @@ YY_EXTRA_TYPE yyget_extra  (yyscan_t yyscanner)
 /** Get the current line number.
  * @param yyscanner The scanner object.
  */
-int yyget_lineno  (yyscan_t yyscanner)
+int mslget_lineno  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     
@@ -3263,7 +3292,7 @@ int yyget_lineno  (yyscan_t yyscanner)
 /** Get the current column number.
  * @param yyscanner The scanner object.
  */
-int yyget_column  (yyscan_t yyscanner)
+int mslget_column  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     
@@ -3276,7 +3305,7 @@ int yyget_column  (yyscan_t yyscanner)
 /** Get the input stream.
  * @param yyscanner The scanner object.
  */
-FILE *yyget_in  (yyscan_t yyscanner)
+FILE *mslget_in  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyin;
@@ -3285,7 +3314,7 @@ FILE *yyget_in  (yyscan_t yyscanner)
 /** Get the output stream.
  * @param yyscanner The scanner object.
  */
-FILE *yyget_out  (yyscan_t yyscanner)
+FILE *mslget_out  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyout;
@@ -3294,7 +3323,7 @@ FILE *yyget_out  (yyscan_t yyscanner)
 /** Get the length of the current token.
  * @param yyscanner The scanner object.
  */
-yy_size_t yyget_leng  (yyscan_t yyscanner)
+yy_size_t mslget_leng  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yyleng;
@@ -3304,7 +3333,7 @@ yy_size_t yyget_leng  (yyscan_t yyscanner)
  * @param yyscanner The scanner object.
  */
 
-char *yyget_text  (yyscan_t yyscanner)
+char *mslget_text  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yytext;
@@ -3314,7 +3343,7 @@ char *yyget_text  (yyscan_t yyscanner)
  * @param user_defined The data to be associated with this scanner.
  * @param yyscanner The scanner object.
  */
-void yyset_extra (YY_EXTRA_TYPE  user_defined , yyscan_t yyscanner)
+void mslset_extra (YY_EXTRA_TYPE  user_defined , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yyextra = user_defined ;
@@ -3324,13 +3353,13 @@ void yyset_extra (YY_EXTRA_TYPE  user_defined , yyscan_t yyscanner)
  * @param _line_number line number
  * @param yyscanner The scanner object.
  */
-void yyset_lineno (int  _line_number , yyscan_t yyscanner)
+void mslset_lineno (int  _line_number , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
         /* lineno is only valid if an input buffer exists. */
         if (! YY_CURRENT_BUFFER )
-           YY_FATAL_ERROR( "yyset_lineno called with no buffer" );
+           YY_FATAL_ERROR( "mslset_lineno called with no buffer" );
     
     yylineno = _line_number;
 }
@@ -3339,13 +3368,13 @@ void yyset_lineno (int  _line_number , yyscan_t yyscanner)
  * @param _column_no column number
  * @param yyscanner The scanner object.
  */
-void yyset_column (int  _column_no , yyscan_t yyscanner)
+void mslset_column (int  _column_no , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
         /* column is only valid if an input buffer exists. */
         if (! YY_CURRENT_BUFFER )
-           YY_FATAL_ERROR( "yyset_column called with no buffer" );
+           YY_FATAL_ERROR( "mslset_column called with no buffer" );
     
     yycolumn = _column_no;
 }
@@ -3354,27 +3383,27 @@ void yyset_column (int  _column_no , yyscan_t yyscanner)
  * input buffer.
  * @param _in_str A readable stream.
  * @param yyscanner The scanner object.
- * @see yy_switch_to_buffer
+ * @see msl_switch_to_buffer
  */
-void yyset_in (FILE *  _in_str , yyscan_t yyscanner)
+void mslset_in (FILE *  _in_str , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yyin = _in_str ;
 }
 
-void yyset_out (FILE *  _out_str , yyscan_t yyscanner)
+void mslset_out (FILE *  _out_str , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yyout = _out_str ;
 }
 
-int yyget_debug  (yyscan_t yyscanner)
+int mslget_debug  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     return yy_flex_debug;
 }
 
-void yyset_debug (int  _bdebug , yyscan_t yyscanner)
+void mslset_debug (int  _bdebug , yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     yy_flex_debug = _bdebug ;
@@ -3384,12 +3413,12 @@ void yyset_debug (int  _bdebug , yyscan_t yyscanner)
 
 /* User-visible API */
 
-/* yylex_init is special because it creates the scanner itself, so it is
+/* msllex_init is special because it creates the scanner itself, so it is
  * the ONLY reentrant function that doesn't take the scanner as the last argument.
  * That's why we explicitly handle the declaration, instead of using our macros.
  */
 
-int yylex_init(yyscan_t* ptr_yy_globals)
+int msllex_init(yyscan_t* ptr_yy_globals)
 
 {
     if (ptr_yy_globals == NULL){
@@ -3397,7 +3426,7 @@ int yylex_init(yyscan_t* ptr_yy_globals)
         return 1;
     }
 
-    *ptr_yy_globals = (yyscan_t) yyalloc ( sizeof( struct yyguts_t ), NULL );
+    *ptr_yy_globals = (yyscan_t) mslalloc ( sizeof( struct yyguts_t ), NULL );
 
     if (*ptr_yy_globals == NULL){
         errno = ENOMEM;
@@ -3410,27 +3439,27 @@ int yylex_init(yyscan_t* ptr_yy_globals)
     return yy_init_globals ( *ptr_yy_globals );
 }
 
-/* yylex_init_extra has the same functionality as yylex_init, but follows the
+/* msllex_init_extra has the same functionality as msllex_init, but follows the
  * convention of taking the scanner as the last argument. Note however, that
  * this is a *pointer* to a scanner, as it will be allocated by this call (and
  * is the reason, too, why this function also must handle its own declaration).
- * The user defined value in the first argument will be available to yyalloc in
+ * The user defined value in the first argument will be available to mslalloc in
  * the yyextra field.
  */
 
-int yylex_init_extra(YY_EXTRA_TYPE yy_user_defined,yyscan_t* ptr_yy_globals )
+int msllex_init_extra(YY_EXTRA_TYPE yy_user_defined,yyscan_t* ptr_yy_globals )
 
 {
     struct yyguts_t dummy_yyguts;
 
-    yyset_extra (yy_user_defined, &dummy_yyguts);
+    mslset_extra (yy_user_defined, &dummy_yyguts);
 
     if (ptr_yy_globals == NULL){
         errno = EINVAL;
         return 1;
     }
 	
-    *ptr_yy_globals = (yyscan_t) yyalloc ( sizeof( struct yyguts_t ), &dummy_yyguts );
+    *ptr_yy_globals = (yyscan_t) mslalloc ( sizeof( struct yyguts_t ), &dummy_yyguts );
 	
     if (*ptr_yy_globals == NULL){
         errno = ENOMEM;
@@ -3441,7 +3470,7 @@ int yylex_init_extra(YY_EXTRA_TYPE yy_user_defined,yyscan_t* ptr_yy_globals )
     yy_init_globals. Leave at 0x00 for releases. */
     memset(*ptr_yy_globals,0x00,sizeof(struct yyguts_t));
     
-    yyset_extra (yy_user_defined, *ptr_yy_globals);
+    mslset_extra (yy_user_defined, *ptr_yy_globals);
     
     return yy_init_globals ( *ptr_yy_globals );
 }
@@ -3450,7 +3479,7 @@ static int yy_init_globals (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
     /* Initialization is the same as for the non-reentrant scanner.
-     * This function is called from yylex_destroy(), so don't allocate here.
+     * This function is called from msllex_destroy(), so don't allocate here.
      */
 
     yyg->yy_buffer_stack = 0;
@@ -3474,37 +3503,37 @@ static int yy_init_globals (yyscan_t yyscanner)
 #endif
 
     /* For future reference: Set errno on error, since we are called by
-     * yylex_init()
+     * msllex_init()
      */
     return 0;
 }
 
-/* yylex_destroy is for both reentrant and non-reentrant scanners. */
-int yylex_destroy  (yyscan_t yyscanner)
+/* msllex_destroy is for both reentrant and non-reentrant scanners. */
+int msllex_destroy  (yyscan_t yyscanner)
 {
     struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 
     /* Pop the buffer stack, destroying each element. */
 	while(YY_CURRENT_BUFFER){
-		yy_delete_buffer(YY_CURRENT_BUFFER ,yyscanner );
+		msl_delete_buffer(YY_CURRENT_BUFFER ,yyscanner );
 		YY_CURRENT_BUFFER_LVALUE = NULL;
-		yypop_buffer_state(yyscanner);
+		mslpop_buffer_state(yyscanner);
 	}
 
 	/* Destroy the stack itself. */
-	yyfree(yyg->yy_buffer_stack ,yyscanner);
+	mslfree(yyg->yy_buffer_stack ,yyscanner);
 	yyg->yy_buffer_stack = NULL;
 
     /* Destroy the start condition stack. */
-        yyfree(yyg->yy_start_stack ,yyscanner );
+        mslfree(yyg->yy_start_stack ,yyscanner );
         yyg->yy_start_stack = NULL;
 
     /* Reset the globals. This is important in a non-reentrant scanner so the next time
-     * yylex() is called, initialization will occur. */
+     * msllex() is called, initialization will occur. */
     yy_init_globals( yyscanner);
 
     /* Destroy the main struct (reentrant only). */
-    yyfree ( yyscanner , yyscanner );
+    mslfree ( yyscanner , yyscanner );
     yyscanner = NULL;
     return 0;
 }
@@ -3536,14 +3565,14 @@ static int yy_flex_strlen (yyconst char * s , yyscan_t yyscanner)
 }
 #endif
 
-void *yyalloc (yy_size_t  size , yyscan_t yyscanner)
+void *mslalloc (yy_size_t  size , yyscan_t yyscanner)
 {
 	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	(void)yyg;
 	return (void *) malloc( size );
 }
 
-void *yyrealloc  (void * ptr, yy_size_t  size , yyscan_t yyscanner)
+void *mslrealloc  (void * ptr, yy_size_t  size , yyscan_t yyscanner)
 {
 	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	(void)yyg;
@@ -3558,32 +3587,77 @@ void *yyrealloc  (void * ptr, yy_size_t  size , yyscan_t yyscanner)
 	return (void *) realloc( (char *) ptr, size );
 }
 
-void yyfree (void * ptr , yyscan_t yyscanner)
+void mslfree (void * ptr , yyscan_t yyscanner)
 {
 	struct yyguts_t * yyg = (struct yyguts_t*)yyscanner;
 	(void)yyg;
-	free( (char *) ptr );	/* see yyrealloc() for (char *) cast */
+	free( (char *) ptr );	/* see mslrealloc() for (char *) cast */
 }
 
 #define YYTABLES_NAME "yytables"
 
-#line 317 "src/Parse/Lexer.lex"
+#line 346 "src/Parse/Lexer.lex"
 
 
 
 namespace msl
 {
 
-std::vector<Token> Lexer::tokenize(const std::string& input)
+class Lexer::Impl
 {
-	LexerInfo info(input);
-	yyscan_t scanner;
-	if (yylex_init_extra(&info,&scanner) != 0)
-		return std::vector<Token>();
+public:
+	Impl(const std::string& input, std::size_t start, std::size_t length)
+		: m_info(input, start, length)
+	{
+		msllex_init_extra(&m_info,&m_scanner);
+	}
 
-	yylex(scanner);
-	yylex_destroy(scanner);
-	return std::move(info.tokens);
+	~Impl()
+	{
+		msllex_destroy(m_scanner);
+	}
+
+	yyscan_t m_scanner;
+	LexerInfo m_info;
+};
+
+std::vector<Token> Lexer::tokenize(const std::string& input, std::size_t start, std::size_t length)
+{
+	std::vector<Token> tokens;
+	Token curToken;
+
+	Lexer lexer(input, start, length);
+	while (lexer.nextToken(curToken))
+		tokens.push_back(curToken);
+
+	return tokens;
+}
+
+Lexer::Lexer(const std::string& input, std::size_t start, std::size_t length)
+	: m_impl(new Impl(input, start, length))
+{
+}
+
+Lexer::~Lexer()
+{
+}
+
+Lexer::Lexer(Lexer&& other)
+	: m_impl(std::move(other.m_impl))
+{
+}
+
+Lexer& Lexer::operator=(Lexer&& other)
+{
+	m_impl = std::move(other.m_impl);
+	return *this;
+}
+
+bool Lexer::nextToken(Token& token)
+{
+	assert(m_impl);
+	m_impl->m_info.curToken = &token;
+	return msllex(m_impl->m_scanner);
 }
 
 } // msl

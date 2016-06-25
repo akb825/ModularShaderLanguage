@@ -18,7 +18,7 @@
 
 #include <MSL/Frontend/Config.h>
 #include <cassert>
-#include <string>
+#include <cstddef>
 
 /**
  * @file
@@ -299,8 +299,8 @@ struct Token
 	 * @param line_ The line of the token.
 	 * @param column_ The column of the token in the line.
 	 */
-	Token(Type type_, unsigned int start_, unsigned int length_, unsigned int line_,
-		unsigned int column_);
+	Token(Type type_, std::size_t start_, std::size_t length_, std::size_t line_,
+		std::size_t column_);
 
 	/**
 	 * @brief the type of the token.
@@ -310,22 +310,22 @@ struct Token
 	/**
 	 * @brief The start index of the token in the string.
 	 */
-	unsigned int start;
+	std::size_t start;
 
 	/**
 	 * @brief The length of the token.
 	 */
-	unsigned int length;
+	std::size_t length;
 
 	/**
 	 * @brief The line number of te token.
 	 */
-	unsigned int line;
+	std::size_t line;
 
 	/**
 	 * @brief The column of the token within the line.
 	 */
-	unsigned int column;
+	std::size_t column;
 };
 
 inline Token::Category Token::getCategory(Type type)
@@ -571,8 +571,8 @@ inline Token::Token()
 {
 }
 
-inline Token::Token(Type type_, unsigned int start_, unsigned int length_, unsigned int line_,
-	unsigned int column_)
+inline Token::Token(Type type_, std::size_t start_, std::size_t length_, std::size_t line_,
+	std::size_t column_)
 	: type(type_)
 	, start(start_)
 	, length(length_)
