@@ -23,6 +23,11 @@
 #pragma GCC diagnostic ignored "-Wunused-function"
 #endif
 
+#if MSL_WINDOWS
+#define YY_NO_UNISTD_H
+#include <io.h>
+#endif
+
 }
 
 %{
