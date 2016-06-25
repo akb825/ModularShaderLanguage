@@ -344,7 +344,7 @@ whitespace [ \t\f\t]
 [0-9]*\.[0-0]*([eE][+-]?[0-9]+)?[fF]?   addToken(yyextra, msl::Token::Type::FloatLiteral, yytext); return true;
 [0-9]*\.[0-0]*([eE][+-]?[0-9]+)?(lf|LF) addToken(yyextra, msl::Token::Type::DoubleLiteral, yytext); return true;
 
-[a-zA-Z][0-9a-zA-Z]+ addToken(yyextra, msl::Token::Type::Identifier, yytext); return true;
+[_a-zA-Z][_0-9a-zA-Z]+ addToken(yyextra, msl::Token::Type::Identifier, yytext); return true;
 
 [^ \t\f\t\r\n]+ addToken(yyextra, msl::Token::Type::Invalid, yytext); return true;
 
