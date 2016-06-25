@@ -174,7 +174,6 @@ whitespace [ \t\f\t]
 "nonperspective" addToken(yyextra, msl::Token::Type::NonPerspective, yytext);
 "flat"           addToken(yyextra, msl::Token::Type::Flat, yytext);
 "smooth"         addToken(yyextra, msl::Token::Type::Smooth, yytext);
-"atomic_uint"    addToken(yyextra, msl::Token::Type::AtomicUint, yytext);
 "struct"         addToken(yyextra, msl::Token::Type::Struct, yytext);
 "void"           addToken(yyextra, msl::Token::Type::Void, yytext);
 "while"          addToken(yyextra, msl::Token::Type::While, yytext);
@@ -289,6 +288,7 @@ whitespace [ \t\f\t]
 "Image2DMSArray"         addToken(yyextra, msl::Token::Type::Image2DMSArray, yytext);
 "IImage2DMSArray"        addToken(yyextra, msl::Token::Type::IImage2DMSArray, yytext);
 "UImage2DMSArray"        addToken(yyextra, msl::Token::Type::UImage2DMSArray, yytext);
+"atomic_uint"            addToken(yyextra, msl::Token::Type::AtomicUint, yytext);
 
 "#"                        addToken(yyextra, msl::Token::Type::Hash, yytext);
 #{whitespace}*include      addToken(yyextra, msl::Token::Type::Include, yytext); BEGIN(INCLUDE);

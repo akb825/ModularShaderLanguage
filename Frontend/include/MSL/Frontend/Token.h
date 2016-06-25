@@ -122,7 +122,6 @@ struct Token
 		NonPerspective, ///< @c nonperspective
 		Flat,           ///< @c flat
 		Smooth,         ///< @c smooth
-		AtomicUint,     ///< @c atomic_uint
 		Struct,         ///< @c struct
 		Void,           ///< @c void
 		While,          ///< @c while
@@ -238,6 +237,7 @@ struct Token
 		Image2DMSArray,         ///< @c Image2DMSArray
 		IImage2DMSArray,        ///< @c IImage2DMSArray
 		UImage2DMSArray,        ///< @c UImage2DMSArray
+		AtomicUint,             ///< @c atomic_uint
 
 		// Pre-processor
 		Hash,         ///< @c \#
@@ -412,7 +412,6 @@ inline Token::Category Token::getCategory(Type type)
 		case Type::NonPerspective:
 		case Type::Flat:
 		case Type::Smooth:
-		case Type::AtomicUint:
 		case Type::Struct:
 		case Type::Void:
 		case Type::While:
@@ -528,6 +527,7 @@ inline Token::Category Token::getCategory(Type type)
 		case Type::Image2DMSArray:
 		case Type::IImage2DMSArray:
 		case Type::UImage2DMSArray:
+		case Type::AtomicUint:
 			return Category::Type;
 
 		case Type::Hash:

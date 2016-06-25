@@ -415,66 +415,66 @@ static yyconst flex_int16_t yy_accept[746] =
       208,  208,    3,   48,  208,  208,  208,  208,  208,  208,
       208,  208,  208,  208,  208,  208,  208,  208,  208,  208,
 
-      208,  208,  208,  208,   57,  208,   84,  208,  208,  208,
+      208,  208,  208,  208,   57,  208,   83,  208,  208,  208,
       208,  208,  208,  208,  208,  208,  208,  208,  208,  208,
       208,  208,  208,  208,  208,  208,  208,  208,   47,  201,
       201,   49,    0,    0,    0,  197,    0,    0,  209,  209,
       209,  209,  209,  209,  209,  209,    0,    5,    4,    4,
-      208,  208,  208,  208,  208,  208,  208,  208,   81,  208,
-      208,  208,   62,   96,  208,  208,  208,  208,  208,  208,
-      208,  208,  208,  208,   56,   75,  208,  208,  208,  101,
-      102,  103,  208,  208,  208,  208,  208,  208,  208,  208,
-      208,  208,  208,   85,  208,  208,   95,   97,   79,  208,
+      208,  208,  208,  208,  208,  208,  208,  208,   80,  208,
+      208,  208,   62,   95,  208,  208,  208,  208,  208,  208,
+      208,  208,  208,  208,   56,   75,  208,  208,  208,  100,
+      101,  102,  208,  208,  208,  208,  208,  208,  208,  208,
+      208,  208,  208,   84,  208,  208,   94,   96,   78,  208,
 
       208,  208,    0,    0,    0,    0,    0,    0,    0,    0,
       209,  198,  199,  209,  209,  209,  209,  209,    5,  208,
-      208,  208,  208,  208,  208,  208,   87,   53,  208,   86,
-       88,  208,  208,   51,  208,   99,  208,  208,  104,  105,
-      106,  208,   98,  100,   82,   90,   89,   91,  208,  208,
+      208,  208,  208,  208,  208,  208,   86,   53,  208,   85,
+       87,  208,  208,   51,  208,   98,  208,  208,  103,  104,
+      105,  208,   97,   99,   81,   89,   88,   90,  208,  208,
       208,  208,   65,  208,  208,  208,  208,  208,  208,  208,
-      208,   93,  208,   92,   94,  208,   80,  208,    0,  198,
+      208,   92,  208,   91,   93,  208,   79,  208,    0,  198,
       199,    0,    0,    0,    0,    0,  209,  200,  195,  209,
       209,  209,  208,  208,  208,  208,  208,  208,  208,  208,
       208,  208,  208,   67,  208,  208,  208,  208,  208,  208,
 
-      208,  208,   83,  107,  108,  109,  110,  111,  112,  113,
-      114,  115,  208,  208,  208,   60,   66,   68,   76,   78,
+      208,  208,   82,  106,  107,  108,  109,  110,  111,  112,
+      113,  114,  208,  208,  208,   60,   66,   68,   76,   77,
        61,  208,  208,  208,    0,  200,  195,    0,    0,    0,
       194,  196,  209,  193,  208,  208,  208,  208,  208,  208,
-      161,  164,  167,  208,  208,  208,  208,  208,  208,  208,
-      208,  208,  209,  208,  208,  208,   63,   59,  116,  117,
-      118,  119,  120,  121,  122,  123,  124,  208,  208,  208,
-       64,  208,  208,  194,  196,    0,  193,  192,  162,  165,
-      168,  208,  208,  208,  208,  208,  208,  208,  208,  208,
-      208,  208,  208,  208,  163,  166,  169,  208,  208,  208,
+      160,  163,  166,  208,  208,  208,  208,  208,  208,  208,
+      208,  208,  209,  208,  208,  208,   63,   59,  115,  116,
+      117,  118,  119,  120,  121,  122,  123,  208,  208,  208,
+       64,  208,  208,  194,  196,    0,  193,  192,  161,  164,
+      167,  208,  208,  208,  208,  208,  208,  208,  208,  208,
+      208,  208,  208,  208,  162,  165,  168,  208,  208,  208,
 
       209,   52,   69,   54,  208,   72,   71,   70,  208,  192,
       208,  208,  208,  208,  208,  208,  208,  208,  208,  208,
-      208,  208,  185,  208,  170,  125,  126,  127,  208,  208,
+      208,  208,  184,  208,  169,  124,  125,  126,  208,  208,
       208,  208,  208,  208,  208,  208,  208,  208,  208,  208,
-      209,  208,   73,  208,  208,  186,  208,  171,  136,  137,
-      138,  208,  208,  208,  208,  208,  208,  208,  208,  208,
-      208,  208,  208,  208,  208,  208,  208,  187,  208,  172,
-      142,  143,  144,  208,  208,  209,  208,  208,  208,  208,
+      209,  208,   73,  208,  208,  185,  208,  170,  135,  136,
+      137,  208,  208,  208,  208,  208,  208,  208,  208,  208,
+      208,  208,  208,  208,  208,  208,  208,  186,  208,  171,
+      141,  142,  143,  208,  208,  209,  208,  208,  208,  208,
       208,  208,  208,  208,  208,  208,  208,  208,  208,  208,
-      173,  208,  208,  208,  208,  155,  208,  208,  128,  208,
+      172,  208,  208,  208,  208,  154,  208,  208,  127,  208,
 
-      208,  208,  208,  208,  208,  208,  208,  208,  208,   77,
-      208,  208,  208,  208,  174,  208,  208,  208,  156,  208,
-      139,  176,  179,  208,  208,  208,  208,  208,  208,  208,
-      208,  208,  208,  208,  208,  208,  175,  208,  208,  208,
-      157,  208,  145,  208,  177,  180,  208,  208,  208,  208,
+      208,  208,  208,  208,  208,  208,  208,  208,  208,  190,
+      208,  208,  208,  208,  173,  208,  208,  208,  155,  208,
+      138,  175,  178,  208,  208,  208,  208,  208,  208,  208,
+      208,  208,  208,  208,  208,  208,  174,  208,  208,  208,
+      156,  208,  144,  208,  176,  179,  208,  208,  208,  208,
       208,  208,  208,  208,  208,  208,  208,  208,  208,  208,
-      148,  208,  208,  178,  181,  208,  208,  208,  208,  208,
-      208,  208,  208,  208,  208,  208,  208,  208,  149,  208,
-      188,  182,  132,  208,  133,  208,  208,  208,  208,  208,
-      208,  208,  208,  208,  150,  208,   74,  189,  183,  140,
+      147,  208,  208,  177,  180,  208,  208,  208,  208,  208,
+      208,  208,  208,  208,  208,  208,  208,  208,  148,  208,
+      187,  181,  131,  208,  132,  208,  208,  208,  208,  208,
+      208,  208,  208,  208,  149,  208,   74,  188,  182,  139,
 
-      141,  208,  208,  208,  129,  208,  208,  130,  208,  208,
-      190,  184,  146,  147,  208,  208,  208,  208,  208,  208,
-      158,  151,  208,  208,  208,  159,  153,  208,  208,  208,
-      131,  160,  154,  208,  208,  208,  208,  208,  208,  134,
-      135,  208,  208,  152,    0
+      140,  208,  208,  208,  128,  208,  208,  129,  208,  208,
+      189,  183,  145,  146,  208,  208,  208,  208,  208,  208,
+      157,  150,  208,  208,  208,  158,  152,  208,  208,  208,
+      130,  159,  153,  208,  208,  208,  208,  208,  208,  133,
+      134,  208,  208,  151,    0
     } ;
 
 static yyconst YY_CHAR yy_ec[256] =
@@ -1725,572 +1725,572 @@ addToken(yyextra, msl::Token::Type::Smooth, yytext);
 case 77:
 YY_RULE_SETUP
 #line 177 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::AtomicUint, yytext);
+addToken(yyextra, msl::Token::Type::Struct, yytext);
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
 #line 178 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Struct, yytext);
+addToken(yyextra, msl::Token::Type::Void, yytext);
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
 #line 179 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Void, yytext);
+addToken(yyextra, msl::Token::Type::While, yytext);
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 180 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::While, yytext);
+#line 181 "src/Parse/Lexer.lex"
+addToken(yyextra, msl::Token::Type::Bool, yytext);
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
 #line 182 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Bool, yytext);
+addToken(yyextra, msl::Token::Type::Float, yytext);
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
 #line 183 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Float, yytext);
+addToken(yyextra, msl::Token::Type::Double, yytext);
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
 #line 184 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Double, yytext);
+addToken(yyextra, msl::Token::Type::Int, yytext);
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
 #line 185 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Int, yytext);
+addToken(yyextra, msl::Token::Type::Uint, yytext);
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
 #line 186 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Uint, yytext);
+addToken(yyextra, msl::Token::Type::BVec2, yytext);
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
 #line 187 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::BVec2, yytext);
+addToken(yyextra, msl::Token::Type::BVec3, yytext);
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
 #line 188 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::BVec3, yytext);
+addToken(yyextra, msl::Token::Type::BVec4, yytext);
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
 #line 189 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::BVec4, yytext);
+addToken(yyextra, msl::Token::Type::IVec2, yytext);
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
 #line 190 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IVec2, yytext);
+addToken(yyextra, msl::Token::Type::IVec3, yytext);
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
 #line 191 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IVec3, yytext);
+addToken(yyextra, msl::Token::Type::IVec4, yytext);
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
 #line 192 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IVec4, yytext);
+addToken(yyextra, msl::Token::Type::UVec2, yytext);
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
 #line 193 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UVec2, yytext);
+addToken(yyextra, msl::Token::Type::UVec3, yytext);
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
 #line 194 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UVec3, yytext);
+addToken(yyextra, msl::Token::Type::UVec4, yytext);
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
 #line 195 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UVec4, yytext);
+addToken(yyextra, msl::Token::Type::Vec2, yytext);
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
 #line 196 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Vec2, yytext);
+addToken(yyextra, msl::Token::Type::Vec3, yytext);
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
 #line 197 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Vec3, yytext);
+addToken(yyextra, msl::Token::Type::Vec4, yytext);
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
 #line 198 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Vec4, yytext);
+addToken(yyextra, msl::Token::Type::DVec2, yytext);
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
 #line 199 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DVec2, yytext);
+addToken(yyextra, msl::Token::Type::DVec3, yytext);
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
 #line 200 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DVec3, yytext);
+addToken(yyextra, msl::Token::Type::DVec4, yytext);
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
 #line 201 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DVec4, yytext);
+addToken(yyextra, msl::Token::Type::Mat2, yytext);
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
 #line 202 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat2, yytext);
+addToken(yyextra, msl::Token::Type::Mat3, yytext);
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
 #line 203 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat3, yytext);
+addToken(yyextra, msl::Token::Type::Mat4, yytext);
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
 #line 204 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat4, yytext);
+addToken(yyextra, msl::Token::Type::DMat2, yytext);
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
 #line 205 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat2, yytext);
+addToken(yyextra, msl::Token::Type::DMat3, yytext);
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
 #line 206 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat3, yytext);
+addToken(yyextra, msl::Token::Type::DMat4, yytext);
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
 #line 207 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat4, yytext);
+addToken(yyextra, msl::Token::Type::Mat2x2, yytext);
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
 #line 208 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat2x2, yytext);
+addToken(yyextra, msl::Token::Type::Mat2x3, yytext);
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
 #line 209 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat2x3, yytext);
+addToken(yyextra, msl::Token::Type::Mat2x4, yytext);
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
 #line 210 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat2x4, yytext);
+addToken(yyextra, msl::Token::Type::Mat3x2, yytext);
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
 #line 211 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat3x2, yytext);
+addToken(yyextra, msl::Token::Type::Mat3x3, yytext);
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
 #line 212 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat3x3, yytext);
+addToken(yyextra, msl::Token::Type::Mat3x4, yytext);
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
 #line 213 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat3x4, yytext);
+addToken(yyextra, msl::Token::Type::Mat4x2, yytext);
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
 #line 214 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat4x2, yytext);
+addToken(yyextra, msl::Token::Type::Mat4x3, yytext);
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
 #line 215 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat4x3, yytext);
+addToken(yyextra, msl::Token::Type::Mat4x4, yytext);
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
 #line 216 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Mat4x4, yytext);
+addToken(yyextra, msl::Token::Type::DMat2x2, yytext);
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
 #line 217 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat2x2, yytext);
+addToken(yyextra, msl::Token::Type::DMat2x3, yytext);
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
 #line 218 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat2x3, yytext);
+addToken(yyextra, msl::Token::Type::DMat2x4, yytext);
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
 #line 219 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat2x4, yytext);
+addToken(yyextra, msl::Token::Type::DMat3x2, yytext);
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
 #line 220 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat3x2, yytext);
+addToken(yyextra, msl::Token::Type::DMat3x3, yytext);
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
 #line 221 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat3x3, yytext);
+addToken(yyextra, msl::Token::Type::DMat3x4, yytext);
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
 #line 222 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat3x4, yytext);
+addToken(yyextra, msl::Token::Type::DMat4x2, yytext);
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
 #line 223 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat4x2, yytext);
+addToken(yyextra, msl::Token::Type::DMat4x3, yytext);
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
 #line 224 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat4x3, yytext);
+addToken(yyextra, msl::Token::Type::DMat4x4, yytext);
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
 #line 225 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::DMat4x4, yytext);
+addToken(yyextra, msl::Token::Type::Sampler1D, yytext);
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
 #line 226 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler1D, yytext);
+addToken(yyextra, msl::Token::Type::Sampler2D, yytext);
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
 #line 227 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler2D, yytext);
+addToken(yyextra, msl::Token::Type::Sampler3D, yytext);
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
 #line 228 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler3D, yytext);
+addToken(yyextra, msl::Token::Type::SamplerCube, yytext);
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
 #line 229 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::SamplerCube, yytext);
+addToken(yyextra, msl::Token::Type::Sampler1DShadow, yytext);
 	YY_BREAK
 case 129:
 YY_RULE_SETUP
 #line 230 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler1DShadow, yytext);
+addToken(yyextra, msl::Token::Type::Sampler2DShadow, yytext);
 	YY_BREAK
 case 130:
 YY_RULE_SETUP
 #line 231 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler2DShadow, yytext);
+addToken(yyextra, msl::Token::Type::SamplerCubeShadow, yytext);
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
 #line 232 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::SamplerCubeShadow, yytext);
+addToken(yyextra, msl::Token::Type::Sampler1DArray, yytext);
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
 #line 233 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler1DArray, yytext);
+addToken(yyextra, msl::Token::Type::Sampler2DArray, yytext);
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
 #line 234 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler2DArray, yytext);
+addToken(yyextra, msl::Token::Type::Sampler1DArrayShadow, yytext);
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
 #line 235 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler1DArrayShadow, yytext);
+addToken(yyextra, msl::Token::Type::Sampler2DArrayShadow, yytext);
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
 #line 236 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler2DArrayShadow, yytext);
+addToken(yyextra, msl::Token::Type::ISampler1D, yytext);
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
 #line 237 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISampler1D, yytext);
+addToken(yyextra, msl::Token::Type::ISampler2D, yytext);
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
 #line 238 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISampler2D, yytext);
+addToken(yyextra, msl::Token::Type::ISampler3D, yytext);
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
 #line 239 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISampler3D, yytext);
+addToken(yyextra, msl::Token::Type::ISamplerCube, yytext);
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
 #line 240 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISamplerCube, yytext);
+addToken(yyextra, msl::Token::Type::ISampler1DArray, yytext);
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
 #line 241 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISampler1DArray, yytext);
+addToken(yyextra, msl::Token::Type::ISampler2DArray, yytext);
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
 #line 242 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISampler2DArray, yytext);
+addToken(yyextra, msl::Token::Type::USampler1D, yytext);
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
 #line 243 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USampler1D, yytext);
+addToken(yyextra, msl::Token::Type::USampler2D, yytext);
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
 #line 244 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USampler2D, yytext);
+addToken(yyextra, msl::Token::Type::USampler3D, yytext);
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
 #line 245 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USampler3D, yytext);
+addToken(yyextra, msl::Token::Type::USamplerCube, yytext);
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
 #line 246 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USamplerCube, yytext);
+addToken(yyextra, msl::Token::Type::USampler1DArray, yytext);
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
 #line 247 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USampler1DArray, yytext);
+addToken(yyextra, msl::Token::Type::USampler2DArray, yytext);
 	YY_BREAK
 case 147:
 YY_RULE_SETUP
 #line 248 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USampler2DArray, yytext);
+addToken(yyextra, msl::Token::Type::SamplerBuffer, yytext);
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
 #line 249 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::SamplerBuffer, yytext);
+addToken(yyextra, msl::Token::Type::ISamplerBuffer, yytext);
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
 #line 250 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISamplerBuffer, yytext);
+addToken(yyextra, msl::Token::Type::USamplerBuffer, yytext);
 	YY_BREAK
 case 150:
 YY_RULE_SETUP
 #line 251 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USamplerBuffer, yytext);
+addToken(yyextra, msl::Token::Type::SamplerCubeArray, yytext);
 	YY_BREAK
 case 151:
 YY_RULE_SETUP
 #line 252 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::SamplerCubeArray, yytext);
+addToken(yyextra, msl::Token::Type::SamplerCubeArrayShadow, yytext);
 	YY_BREAK
 case 152:
 YY_RULE_SETUP
 #line 253 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::SamplerCubeArrayShadow, yytext);
+addToken(yyextra, msl::Token::Type::ISamplerCubeArray, yytext);
 	YY_BREAK
 case 153:
 YY_RULE_SETUP
 #line 254 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISamplerCubeArray, yytext);
+addToken(yyextra, msl::Token::Type::USamplerCubeArray, yytext);
 	YY_BREAK
 case 154:
 YY_RULE_SETUP
 #line 255 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USamplerCubeArray, yytext);
+addToken(yyextra, msl::Token::Type::Sampler2DMS, yytext);
 	YY_BREAK
 case 155:
 YY_RULE_SETUP
 #line 256 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler2DMS, yytext);
+addToken(yyextra, msl::Token::Type::ISampler2DMS, yytext);
 	YY_BREAK
 case 156:
 YY_RULE_SETUP
 #line 257 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISampler2DMS, yytext);
+addToken(yyextra, msl::Token::Type::USampler2DMS, yytext);
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
 #line 258 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USampler2DMS, yytext);
+addToken(yyextra, msl::Token::Type::Sampler2DMSArray, yytext);
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
 #line 259 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Sampler2DMSArray, yytext);
+addToken(yyextra, msl::Token::Type::ISampler2DMSArray, yytext);
 	YY_BREAK
 case 159:
 YY_RULE_SETUP
 #line 260 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ISampler2DMSArray, yytext);
+addToken(yyextra, msl::Token::Type::USampler2DMSArray, yytext);
 	YY_BREAK
 case 160:
 YY_RULE_SETUP
 #line 261 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::USampler2DMSArray, yytext);
+addToken(yyextra, msl::Token::Type::Image1D, yytext);
 	YY_BREAK
 case 161:
 YY_RULE_SETUP
 #line 262 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Image1D, yytext);
+addToken(yyextra, msl::Token::Type::IImage1D, yytext);
 	YY_BREAK
 case 162:
 YY_RULE_SETUP
 #line 263 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImage1D, yytext);
+addToken(yyextra, msl::Token::Type::UImage1D, yytext);
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
 #line 264 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImage1D, yytext);
+addToken(yyextra, msl::Token::Type::Image2D, yytext);
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
 #line 265 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Image2D, yytext);
+addToken(yyextra, msl::Token::Type::IImage2D, yytext);
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
 #line 266 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImage2D, yytext);
+addToken(yyextra, msl::Token::Type::UImage2D, yytext);
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
 #line 267 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImage2D, yytext);
+addToken(yyextra, msl::Token::Type::Image3D, yytext);
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
 #line 268 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Image3D, yytext);
+addToken(yyextra, msl::Token::Type::IImage3D, yytext);
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
 #line 269 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImage3D, yytext);
+addToken(yyextra, msl::Token::Type::UImage3D, yytext);
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
 #line 270 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImage3D, yytext);
+addToken(yyextra, msl::Token::Type::ImageCube, yytext);
 	YY_BREAK
 case 170:
 YY_RULE_SETUP
 #line 271 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ImageCube, yytext);
+addToken(yyextra, msl::Token::Type::IImageCube, yytext);
 	YY_BREAK
 case 171:
 YY_RULE_SETUP
 #line 272 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImageCube, yytext);
+addToken(yyextra, msl::Token::Type::UImageCube, yytext);
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
 #line 273 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImageCube, yytext);
+addToken(yyextra, msl::Token::Type::ImageBuffer, yytext);
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
 #line 274 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ImageBuffer, yytext);
+addToken(yyextra, msl::Token::Type::IImageBuffer, yytext);
 	YY_BREAK
 case 174:
 YY_RULE_SETUP
 #line 275 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImageBuffer, yytext);
+addToken(yyextra, msl::Token::Type::UImageBuffer, yytext);
 	YY_BREAK
 case 175:
 YY_RULE_SETUP
 #line 276 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImageBuffer, yytext);
+addToken(yyextra, msl::Token::Type::Image1DArray, yytext);
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
 #line 277 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Image1DArray, yytext);
+addToken(yyextra, msl::Token::Type::IImage1DArray, yytext);
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
 #line 278 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImage1DArray, yytext);
+addToken(yyextra, msl::Token::Type::UImage1DArray, yytext);
 	YY_BREAK
 case 178:
 YY_RULE_SETUP
 #line 279 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImage1DArray, yytext);
+addToken(yyextra, msl::Token::Type::Image2DArray, yytext);
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
 #line 280 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Image2DArray, yytext);
+addToken(yyextra, msl::Token::Type::IImage2DArray, yytext);
 	YY_BREAK
 case 180:
 YY_RULE_SETUP
 #line 281 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImage2DArray, yytext);
+addToken(yyextra, msl::Token::Type::UImage2DArray, yytext);
 	YY_BREAK
 case 181:
 YY_RULE_SETUP
 #line 282 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImage2DArray, yytext);
+addToken(yyextra, msl::Token::Type::ImageCubeArray, yytext);
 	YY_BREAK
 case 182:
 YY_RULE_SETUP
 #line 283 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::ImageCubeArray, yytext);
+addToken(yyextra, msl::Token::Type::IImageCubeArray, yytext);
 	YY_BREAK
 case 183:
 YY_RULE_SETUP
 #line 284 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImageCubeArray, yytext);
+addToken(yyextra, msl::Token::Type::UImageCubeArray, yytext);
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
 #line 285 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImageCubeArray, yytext);
+addToken(yyextra, msl::Token::Type::Image2DMS, yytext);
 	YY_BREAK
 case 185:
 YY_RULE_SETUP
 #line 286 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Image2DMS, yytext);
+addToken(yyextra, msl::Token::Type::IImage2DMS, yytext);
 	YY_BREAK
 case 186:
 YY_RULE_SETUP
 #line 287 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImage2DMS, yytext);
+addToken(yyextra, msl::Token::Type::UImage2DMS, yytext);
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
 #line 288 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImage2DMS, yytext);
+addToken(yyextra, msl::Token::Type::Image2DMSArray, yytext);
 	YY_BREAK
 case 188:
 YY_RULE_SETUP
 #line 289 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::Image2DMSArray, yytext);
+addToken(yyextra, msl::Token::Type::IImage2DMSArray, yytext);
 	YY_BREAK
 case 189:
 YY_RULE_SETUP
 #line 290 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::IImage2DMSArray, yytext);
+addToken(yyextra, msl::Token::Type::UImage2DMSArray, yytext);
 	YY_BREAK
 case 190:
 YY_RULE_SETUP
 #line 291 "src/Parse/Lexer.lex"
-addToken(yyextra, msl::Token::Type::UImage2DMSArray, yytext);
+addToken(yyextra, msl::Token::Type::AtomicUint, yytext);
 	YY_BREAK
 case 191:
 YY_RULE_SETUP
