@@ -1,9 +1,11 @@
-set(flexSource src/Parse/Lexer.flex)
+set(flexSource src/Parse/Lexer.lex)
 set(flexOutput src/Parse/Lexer.cpp)
 
 file(GLOB_RECURSE sources src/*.cpp src/*.h include/*.h)
 set(sources ${sources} ${flexSource})
 add_library(msl_frontend ${MSL_LIB} ${sources})
+
+target_include_directories(msl_frontend PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 find_program(FLEX_EXE flex)
 if (FLEX_EXE)

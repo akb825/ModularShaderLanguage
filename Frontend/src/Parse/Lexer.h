@@ -1,4 +1,3 @@
-%top{
 /*
  * Copyright 2016 Aaron Barany
  *
@@ -14,21 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-}
 
-%{
-#define YY_NO_INPUT
-#define YY_NO_UNPUT
-#define YY_INPUT(buf, result, max_size) \
-	{ \
-	}
-%}
+#pragma once
 
+#include <MSL/Frontend/Token.h>
+#include <vector>
 
-%%
+namespace msl
+{
 
-	/* Rules */
+class Lexer
+{
+public:
+	static std::vector<Token> tokenize(const std::string& input);
+};
 
-%%
-
-/* Code */
+} // namespace msl

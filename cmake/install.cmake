@@ -31,27 +31,27 @@ function(install_library)
 	if (MSL_SHARED)
 		if (MSVC)
 			set_property(TARGET ${ARGS_TARGET} APPEND PROPERTY COMPILE_DEFINITIONS
-				DS_${moduleUpper}_BUILD)
+				MSL_${moduleUpper}_BUILD)
 			file(WRITE ${exportPath}
 				"#pragma once\n\n"
-				"#ifdef DS_${moduleUpper}_BUILD\n"
-				"#define DS_${moduleUpper}_EXPORT __declspec(dllexport)\n"
+				"#ifdef MSL_${moduleUpper}_BUILD\n"
+				"#define MSL_${moduleUpper}_EXPORT __declspec(dllexport)\n"
 				"#else\n"
-				"#define DS_${moduleUpper}_EXPORT __declspec(dllimport)\n"
+				"#define MSL_${moduleUpper}_EXPORT __declspec(dllimport)\n"
 				"#endif\n")
 		elseif (CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")
 			file(WRITE ${exportPath}
 				"#pragma once\n\n"
-				"#define DS_${moduleUpper}_EXPORT __attribute__((visibility(\"default\")))\n")
+				"#define MSL_${moduleUpper}_EXPORT __attribute__((visibility(\"default\")))\n")
 		else()
 			file(WRITE ${exportPath}
 				"#pragma once\n\n"
-				"#define DS_${moduleUpper}_EXPORT\n")
+				"#define MSL_${moduleUpper}_EXPORT\n")
 		endif()
 	else()
 		file(WRITE ${exportPath}
 			"#pragma once\n\n"
-			"#define DS_${moduleUpper}_EXPORT\n")
+			"#define MSL_${moduleUpper}_EXPORT\n")
 	endif()
 
 	install(TARGETS ${ARGS_TARGET} EXPORT ${moduleName}Targets
