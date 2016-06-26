@@ -339,10 +339,12 @@ whitespace [ \t\f\t]
 
 0[uU]?                                  addToken(yyextra, msl::Token::Type::IntLiteral, yytext); return true;
 [1-9][0-9]*[uU]?                        addToken(yyextra, msl::Token::Type::IntLiteral, yytext); return true;
-0[0-7]*[uU]?                            addToken(yyextra, msl::Token::Type::IntLiteral, yytext); return true;
-0[xX][0-9a-fA-F]*[uU]?                  addToken(yyextra, msl::Token::Type::IntLiteral, yytext); return true;
-[0-9]*\.[0-0]*([eE][+-]?[0-9]+)?[fF]?   addToken(yyextra, msl::Token::Type::FloatLiteral, yytext); return true;
-[0-9]*\.[0-0]*([eE][+-]?[0-9]+)?(lf|LF) addToken(yyextra, msl::Token::Type::DoubleLiteral, yytext); return true;
+0[0-7]+[uU]?                            addToken(yyextra, msl::Token::Type::IntLiteral, yytext); return true;
+0[xX][0-9a-fA-F]+[uU]?                  addToken(yyextra, msl::Token::Type::IntLiteral, yytext); return true;
+[0-9]+\.[0-9]*([eE][+-]?[0-9]+)?[fF]?   addToken(yyextra, msl::Token::Type::FloatLiteral, yytext); return true;
+[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?[fF]?   addToken(yyextra, msl::Token::Type::FloatLiteral, yytext); return true;
+[0-9]+\.[0-9]*([eE][+-]?[0-9]+)?(lf|LF) addToken(yyextra, msl::Token::Type::DoubleLiteral, yytext); return true;
+[0-9]*\.[0-9]+([eE][+-]?[0-9]+)?(lf|LF) addToken(yyextra, msl::Token::Type::DoubleLiteral, yytext); return true;
 
 [_a-zA-Z][_0-9a-zA-Z]+ addToken(yyextra, msl::Token::Type::Identifier, yytext); return true;
 
