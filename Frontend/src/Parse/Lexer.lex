@@ -39,6 +39,8 @@ struct LexerInfo
 	explicit LexerInfo(const std::string& str, std::size_t start, std::size_t length)
 		: input(&str)
 		, pos(std::min(start, input->size()))
+		, end(std::min(length, input->size()))
+		, tokenPos(pos)
 		, line(0)
 		, column(0)
 		, curToken(nullptr)
@@ -58,9 +60,10 @@ struct LexerInfo
 
 	const std::string* input;
 	std::size_t pos;
+	std::size_t end;
+	std::size_t tokenPos;
 	std::size_t line;
 	std::size_t column;
-	std::size_t end;
 	msl::Token* curToken;
 };
 
@@ -68,35 +71,34 @@ void addToken(LexerInfo* info, msl::Token::Type type, const char* text)
 {
 	std::size_t length = std::strlen(text);
 	assert(info->curToken);
-	*info->curToken = msl::Token(type, info->pos, length, info->line, info->column);
-	info->pos += length;
-	assert(info->pos <= info->end);
+	*info->curToken = msl::Token(type, info->tokenPos, length, info->line, info->column);
+	info->tokenPos += length;
+	assert(info->tokenPos <= info->end);
 	info->column += length;
 }
 
-void addNewline(LexerInfo* info, const char* text)
+void addNewline(LexerInfo* info, msl::Token::Type type, const char* text)
 {
-	unsigned int length = static_cast<unsigned int>(std::strlen(text));
+	std::size_t length = std::strlen(text);
 	assert(info->curToken);
-	*info->curToken = msl::Token(msl::Token::Type::Newline, info->pos, length, info->line,
-		info->column);
-	info->pos += length;
-	assert(info->pos <= info->end);
+	*info->curToken = msl::Token(type, info->tokenPos, length, info->line, info->column);
+	info->tokenPos += length;
+	assert(info->tokenPos <= info->end);
 	++info->line;
 	info->column = 0;
 }
 
 void addComment(LexerInfo* info, const char* text)
 {
-	unsigned int length = static_cast<unsigned int>(std::strlen(text));
+	std::size_t length = std::strlen(text);
 	assert(info->curToken);
-	*info->curToken = msl::Token(msl::Token::Type::Comment, info->pos, length, info->line,
+	*info->curToken = msl::Token(msl::Token::Type::Comment, info->tokenPos, length, info->line,
 		info->column);
-	info->pos += length;
-	assert(info->pos <= info->end);
+	info->tokenPos += length;
+	assert(info->tokenPos <= info->end);
 
 	// Update the line and column based on newlines within the comment.
-	for (unsigned int i = 0; i < length; ++i)
+	for (std::size_t i = 0; i < length; ++i)
 	{
 		if (text[i] == '\n')
 		{
@@ -114,25 +116,32 @@ void addComment(LexerInfo* info, const char* text)
 #define YY_EXTRA_TYPE LexerInfo*
 #define YY_NO_INPUT
 #define YY_NO_UNPUT
+#define YY_SKIP_YYWRAP
 #define YY_INPUT(buf, result, max_size) \
 	{ \
 		result = std::min(max_size, yyextra->end - yyextra->pos); \
+		assert(yyextra->pos + result <= yyextra->input->size()); \
 		std::memcpy(buf, yyextra->input->c_str() + yyextra->pos, result); \
 		yyextra->pos += result; \
 	}
+
+bool mslwrap(yyscan_t)
+{
+	return true;
+}
 %}
 
-whitespace [ \t\f\t]
+whitespace [ \t\f\v]
 %s INCLUDE
 
 %%
 
 {whitespace}+ addToken(yyextra, msl::Token::Type::Whitespace, yytext); return true;
-(\r\n)|\n     addNewline(yyextra, yytext); BEGIN(INITIAL); return true;
-\\(\r\n)|\n   addNewline(yyextra, yytext); return true;
+(\r\n)|\n     addNewline(yyextra, msl::Token::Type::Newline, yytext); BEGIN(INITIAL); return true;
+\\((\r\n)|\n) addNewline(yyextra, msl::Token::Type::EscapedNewline, yytext); return true;
 
-\/\/(.|\\((\r\n)|\n))* addComment(yyextra, yytext); return true;
-\/\*(.|\n)*\*\/        addComment(yyextra, yytext); return true;
+\/\/([^\r\n]|\\((\r\n)|\n))* addComment(yyextra, yytext); return true;
+\/\*(.|\n)*\*\/              addComment(yyextra, yytext); return true;
 
 "!" addToken(yyextra, msl::Token::Type::Exclamation, yytext); return true;
 "%" addToken(yyextra, msl::Token::Type::Percent, yytext); return true;
@@ -147,8 +156,8 @@ whitespace [ \t\f\t]
 "=" addToken(yyextra, msl::Token::Type::Equal, yytext); return true;
 "(" addToken(yyextra, msl::Token::Type::LeftParen, yytext); return true;
 ")" addToken(yyextra, msl::Token::Type::RightParen, yytext); return true;
-"[" addToken(yyextra, msl::Token::Type::LeftBracket, yytext); return true;
-"]" addToken(yyextra, msl::Token::Type::RightBracket, yytext); return true;
+"[" addToken(yyextra, msl::Token::Type::LeftSquare, yytext); return true;
+"]" addToken(yyextra, msl::Token::Type::RightSquare, yytext); return true;
 "{" addToken(yyextra, msl::Token::Type::LeftBrace, yytext); return true;
 "}" addToken(yyextra, msl::Token::Type::RightBrace, yytext); return true;
 "<" addToken(yyextra, msl::Token::Type::LeftAngle, yytext); return true;
@@ -166,12 +175,12 @@ whitespace [ \t\f\t]
 ">>" addToken(yyextra, msl::Token::Type::RightShift, yytext); return true;
 "==" addToken(yyextra, msl::Token::Type::EqualCompare, yytext); return true;
 "!=" addToken(yyextra, msl::Token::Type::NotEqual, yytext); return true;
-"<=" addToken(yyextra, msl::Token::Type::LessEual, yytext); return true;
+"<=" addToken(yyextra, msl::Token::Type::LessEqual, yytext); return true;
 ">=" addToken(yyextra, msl::Token::Type::GreaterEqual, yytext); return true;
 "^=" addToken(yyextra, msl::Token::Type::XorEqual, yytext); return true;
 "&=" addToken(yyextra, msl::Token::Type::AndEqual, yytext); return true;
 "|=" addToken(yyextra, msl::Token::Type::OrEqual, yytext); return true;
-"*-" addToken(yyextra, msl::Token::Type::MultiplyEqual, yytext); return true;
+"*=" addToken(yyextra, msl::Token::Type::MultiplyEqual, yytext); return true;
 "/=" addToken(yyextra, msl::Token::Type::DivideEqual, yytext); return true;
 "+=" addToken(yyextra, msl::Token::Type::PlusEqual, yytext); return true;
 "-=" addToken(yyextra, msl::Token::Type::MinusEqual, yytext); return true;
@@ -179,8 +188,8 @@ whitespace [ \t\f\t]
 "&&=" addToken(yyextra, msl::Token::Type::BoolAndEqual, yytext); return true;
 "||=" addToken(yyextra, msl::Token::Type::BoolOrEqual, yytext); return true;
 "^^=" addToken(yyextra, msl::Token::Type::BoolXorEqual, yytext); return true;
-"<<=" addToken(yyextra, msl::Token::Type::BoolLeftShiftEqual, yytext); return true;
-">>=" addToken(yyextra, msl::Token::Type::BoolRightShiftEqual, yytext); return true;
+"<<=" addToken(yyextra, msl::Token::Type::LeftShiftEqual, yytext); return true;
+">>=" addToken(yyextra, msl::Token::Type::RightShiftEqual, yytext); return true;
 
 "const"          addToken(yyextra, msl::Token::Type::Const, yytext); return true;
 "centroid"       addToken(yyextra, msl::Token::Type::Centroid, yytext); return true;
@@ -216,21 +225,21 @@ whitespace [ \t\f\t]
 "float"                  addToken(yyextra, msl::Token::Type::Float, yytext); return true;
 "double"                 addToken(yyextra, msl::Token::Type::Double, yytext); return true;
 "int"                    addToken(yyextra, msl::Token::Type::Int, yytext); return true;
-"uint"                   addToken(yyextra, msl::Token::Type::Uint, yytext); return true;
+"uint"                   addToken(yyextra, msl::Token::Type::UInt, yytext); return true;
 "bvec2"                  addToken(yyextra, msl::Token::Type::BVec2, yytext); return true;
-"bcec3"                  addToken(yyextra, msl::Token::Type::BVec3, yytext); return true;
+"bvec3"                  addToken(yyextra, msl::Token::Type::BVec3, yytext); return true;
 "bvec4"                  addToken(yyextra, msl::Token::Type::BVec4, yytext); return true;
 "ivec2"                  addToken(yyextra, msl::Token::Type::IVec2, yytext); return true;
-"icec3"                  addToken(yyextra, msl::Token::Type::IVec3, yytext); return true;
+"ivec3"                  addToken(yyextra, msl::Token::Type::IVec3, yytext); return true;
 "ivec4"                  addToken(yyextra, msl::Token::Type::IVec4, yytext); return true;
 "uvec2"                  addToken(yyextra, msl::Token::Type::UVec2, yytext); return true;
-"ucec3"                  addToken(yyextra, msl::Token::Type::UVec3, yytext); return true;
+"uvec3"                  addToken(yyextra, msl::Token::Type::UVec3, yytext); return true;
 "uvec4"                  addToken(yyextra, msl::Token::Type::UVec4, yytext); return true;
 "vec2"                   addToken(yyextra, msl::Token::Type::Vec2, yytext); return true;
-"cec3"                   addToken(yyextra, msl::Token::Type::Vec3, yytext); return true;
+"vec3"                   addToken(yyextra, msl::Token::Type::Vec3, yytext); return true;
 "vec4"                   addToken(yyextra, msl::Token::Type::Vec4, yytext); return true;
 "dvec2"                  addToken(yyextra, msl::Token::Type::DVec2, yytext); return true;
-"dcec3"                  addToken(yyextra, msl::Token::Type::DVec3, yytext); return true;
+"dvec3"                  addToken(yyextra, msl::Token::Type::DVec3, yytext); return true;
 "dvec4"                  addToken(yyextra, msl::Token::Type::DVec4, yytext); return true;
 "mat2"                   addToken(yyextra, msl::Token::Type::Mat2, yytext); return true;
 "mat3"                   addToken(yyextra, msl::Token::Type::Mat3, yytext); return true;
@@ -256,73 +265,73 @@ whitespace [ \t\f\t]
 "dmat4x2"                addToken(yyextra, msl::Token::Type::DMat4x2, yytext); return true;
 "dmat4x3"                addToken(yyextra, msl::Token::Type::DMat4x3, yytext); return true;
 "dmat4x4"                addToken(yyextra, msl::Token::Type::DMat4x4, yytext); return true;
-"Sampler1D"              addToken(yyextra, msl::Token::Type::Sampler1D, yytext); return true;
-"Sampler2D"              addToken(yyextra, msl::Token::Type::Sampler2D, yytext); return true;
-"Sampler3D"              addToken(yyextra, msl::Token::Type::Sampler3D, yytext); return true;
-"SamplerCube"            addToken(yyextra, msl::Token::Type::SamplerCube, yytext); return true;
-"Sampler1DShadow"        addToken(yyextra, msl::Token::Type::Sampler1DShadow, yytext); return true;
-"Sampler2DShadow"        addToken(yyextra, msl::Token::Type::Sampler2DShadow, yytext); return true;
-"SamplerCubeShadow"      addToken(yyextra, msl::Token::Type::SamplerCubeShadow, yytext); return true;
-"Sampler1DArray"         addToken(yyextra, msl::Token::Type::Sampler1DArray, yytext); return true;
-"Sampler2DArray"         addToken(yyextra, msl::Token::Type::Sampler2DArray, yytext); return true;
-"Sampler1DArrayShadow"   addToken(yyextra, msl::Token::Type::Sampler1DArrayShadow, yytext); return true;
-"Sampler2DArrayShadow"   addToken(yyextra, msl::Token::Type::Sampler2DArrayShadow, yytext); return true;
-"ISampler1D"             addToken(yyextra, msl::Token::Type::ISampler1D, yytext); return true;
-"ISampler2D"             addToken(yyextra, msl::Token::Type::ISampler2D, yytext); return true;
-"ISampler3D"             addToken(yyextra, msl::Token::Type::ISampler3D, yytext); return true;
-"ISamplerCube"           addToken(yyextra, msl::Token::Type::ISamplerCube, yytext); return true;
-"ISampler1DArray"        addToken(yyextra, msl::Token::Type::ISampler1DArray, yytext); return true;
-"ISampler2DArray"        addToken(yyextra, msl::Token::Type::ISampler2DArray, yytext); return true;
-"USampler1D"             addToken(yyextra, msl::Token::Type::USampler1D, yytext); return true;
-"USampler2D"             addToken(yyextra, msl::Token::Type::USampler2D, yytext); return true;
-"USampler3D"             addToken(yyextra, msl::Token::Type::USampler3D, yytext); return true;
-"USamplerCube"           addToken(yyextra, msl::Token::Type::USamplerCube, yytext); return true;
-"USampler1DArray"        addToken(yyextra, msl::Token::Type::USampler1DArray, yytext); return true;
-"USampler2DArray"        addToken(yyextra, msl::Token::Type::USampler2DArray, yytext); return true;
-"SamplerBuffer"          addToken(yyextra, msl::Token::Type::SamplerBuffer, yytext); return true;
-"ISamplerBuffer"         addToken(yyextra, msl::Token::Type::ISamplerBuffer, yytext); return true;
-"USamplerBuffer"         addToken(yyextra, msl::Token::Type::USamplerBuffer, yytext); return true;
-"SamplerCubeArray"       addToken(yyextra, msl::Token::Type::SamplerCubeArray, yytext); return true;
-"SamplerCubeArrayShadow" addToken(yyextra, msl::Token::Type::SamplerCubeArrayShadow, yytext); return true;
-"ISamplerCubeArray"      addToken(yyextra, msl::Token::Type::ISamplerCubeArray, yytext); return true;
-"USamplerCubeArray"      addToken(yyextra, msl::Token::Type::USamplerCubeArray, yytext); return true;
-"Sampler2DMS"            addToken(yyextra, msl::Token::Type::Sampler2DMS, yytext); return true;
-"ISampler2DMS"           addToken(yyextra, msl::Token::Type::ISampler2DMS, yytext); return true;
-"USampler2DMS"           addToken(yyextra, msl::Token::Type::USampler2DMS, yytext); return true;
-"Sampler2DMSArray"       addToken(yyextra, msl::Token::Type::Sampler2DMSArray, yytext); return true;
-"ISampler2DMSArray"      addToken(yyextra, msl::Token::Type::ISampler2DMSArray, yytext); return true;
-"USampler2DMSArray"      addToken(yyextra, msl::Token::Type::USampler2DMSArray, yytext); return true;
-"Image1D"                addToken(yyextra, msl::Token::Type::Image1D, yytext); return true;
-"IImage1D"               addToken(yyextra, msl::Token::Type::IImage1D, yytext); return true;
-"UImage1D"               addToken(yyextra, msl::Token::Type::UImage1D, yytext); return true;
-"Image2D"                addToken(yyextra, msl::Token::Type::Image2D, yytext); return true;
-"IImage2D"               addToken(yyextra, msl::Token::Type::IImage2D, yytext); return true;
-"UImage2D"               addToken(yyextra, msl::Token::Type::UImage2D, yytext); return true;
-"Image3D"                addToken(yyextra, msl::Token::Type::Image3D, yytext); return true;
-"IImage3D"               addToken(yyextra, msl::Token::Type::IImage3D, yytext); return true;
-"UImage3D"               addToken(yyextra, msl::Token::Type::UImage3D, yytext); return true;
-"ImageCube"              addToken(yyextra, msl::Token::Type::ImageCube, yytext); return true;
-"IImageCube"             addToken(yyextra, msl::Token::Type::IImageCube, yytext); return true;
-"UImageCube"             addToken(yyextra, msl::Token::Type::UImageCube, yytext); return true;
-"ImageBuffer"            addToken(yyextra, msl::Token::Type::ImageBuffer, yytext); return true;
-"IImageBuffer"           addToken(yyextra, msl::Token::Type::IImageBuffer, yytext); return true;
-"UImageBuffer"           addToken(yyextra, msl::Token::Type::UImageBuffer, yytext); return true;
-"Image1DArray"           addToken(yyextra, msl::Token::Type::Image1DArray, yytext); return true;
-"IImage1DArray"          addToken(yyextra, msl::Token::Type::IImage1DArray, yytext); return true;
-"UImage1DArray"          addToken(yyextra, msl::Token::Type::UImage1DArray, yytext); return true;
-"Image2DArray"           addToken(yyextra, msl::Token::Type::Image2DArray, yytext); return true;
-"IImage2DArray"          addToken(yyextra, msl::Token::Type::IImage2DArray, yytext); return true;
-"UImage2DArray"          addToken(yyextra, msl::Token::Type::UImage2DArray, yytext); return true;
-"ImageCubeArray"         addToken(yyextra, msl::Token::Type::ImageCubeArray, yytext); return true;
-"IImageCubeArray"        addToken(yyextra, msl::Token::Type::IImageCubeArray, yytext); return true;
-"UImageCubeArray"        addToken(yyextra, msl::Token::Type::UImageCubeArray, yytext); return true;
-"Image2DMS"              addToken(yyextra, msl::Token::Type::Image2DMS, yytext); return true;
-"IImage2DMS"             addToken(yyextra, msl::Token::Type::IImage2DMS, yytext); return true;
-"UImage2DMS"             addToken(yyextra, msl::Token::Type::UImage2DMS, yytext); return true;
-"Image2DMSArray"         addToken(yyextra, msl::Token::Type::Image2DMSArray, yytext); return true;
-"IImage2DMSArray"        addToken(yyextra, msl::Token::Type::IImage2DMSArray, yytext); return true;
-"UImage2DMSArray"        addToken(yyextra, msl::Token::Type::UImage2DMSArray, yytext); return true;
-"atomic_uint"            addToken(yyextra, msl::Token::Type::AtomicUint, yytext); return true;
+"sampler1D"              addToken(yyextra, msl::Token::Type::Sampler1D, yytext); return true;
+"sampler2D"              addToken(yyextra, msl::Token::Type::Sampler2D, yytext); return true;
+"sampler3D"              addToken(yyextra, msl::Token::Type::Sampler3D, yytext); return true;
+"samplerCube"            addToken(yyextra, msl::Token::Type::SamplerCube, yytext); return true;
+"sampler1DShadow"        addToken(yyextra, msl::Token::Type::Sampler1DShadow, yytext); return true;
+"sampler2DShadow"        addToken(yyextra, msl::Token::Type::Sampler2DShadow, yytext); return true;
+"samplerCubeShadow"      addToken(yyextra, msl::Token::Type::SamplerCubeShadow, yytext); return true;
+"sampler1DArray"         addToken(yyextra, msl::Token::Type::Sampler1DArray, yytext); return true;
+"sampler2DArray"         addToken(yyextra, msl::Token::Type::Sampler2DArray, yytext); return true;
+"sampler1DArrayShadow"   addToken(yyextra, msl::Token::Type::Sampler1DArrayShadow, yytext); return true;
+"sampler2DArrayShadow"   addToken(yyextra, msl::Token::Type::Sampler2DArrayShadow, yytext); return true;
+"isampler1D"             addToken(yyextra, msl::Token::Type::ISampler1D, yytext); return true;
+"isampler2D"             addToken(yyextra, msl::Token::Type::ISampler2D, yytext); return true;
+"isampler3D"             addToken(yyextra, msl::Token::Type::ISampler3D, yytext); return true;
+"isamplerCube"           addToken(yyextra, msl::Token::Type::ISamplerCube, yytext); return true;
+"isampler1DArray"        addToken(yyextra, msl::Token::Type::ISampler1DArray, yytext); return true;
+"isampler2DArray"        addToken(yyextra, msl::Token::Type::ISampler2DArray, yytext); return true;
+"usampler1D"             addToken(yyextra, msl::Token::Type::USampler1D, yytext); return true;
+"usampler2D"             addToken(yyextra, msl::Token::Type::USampler2D, yytext); return true;
+"usampler3D"             addToken(yyextra, msl::Token::Type::USampler3D, yytext); return true;
+"usamplerCube"           addToken(yyextra, msl::Token::Type::USamplerCube, yytext); return true;
+"usampler1DArray"        addToken(yyextra, msl::Token::Type::USampler1DArray, yytext); return true;
+"usampler2DArray"        addToken(yyextra, msl::Token::Type::USampler2DArray, yytext); return true;
+"samplerBuffer"          addToken(yyextra, msl::Token::Type::SamplerBuffer, yytext); return true;
+"isamplerBuffer"         addToken(yyextra, msl::Token::Type::ISamplerBuffer, yytext); return true;
+"usamplerBuffer"         addToken(yyextra, msl::Token::Type::USamplerBuffer, yytext); return true;
+"samplerCubeArray"       addToken(yyextra, msl::Token::Type::SamplerCubeArray, yytext); return true;
+"samplerCubeArrayShadow" addToken(yyextra, msl::Token::Type::SamplerCubeArrayShadow, yytext); return true;
+"isamplerCubeArray"      addToken(yyextra, msl::Token::Type::ISamplerCubeArray, yytext); return true;
+"usamplerCubeArray"      addToken(yyextra, msl::Token::Type::USamplerCubeArray, yytext); return true;
+"sampler2DMS"            addToken(yyextra, msl::Token::Type::Sampler2DMS, yytext); return true;
+"isampler2DMS"           addToken(yyextra, msl::Token::Type::ISampler2DMS, yytext); return true;
+"usampler2DMS"           addToken(yyextra, msl::Token::Type::USampler2DMS, yytext); return true;
+"sampler2DMSArray"       addToken(yyextra, msl::Token::Type::Sampler2DMSArray, yytext); return true;
+"isampler2DMSArray"      addToken(yyextra, msl::Token::Type::ISampler2DMSArray, yytext); return true;
+"usampler2DMSArray"      addToken(yyextra, msl::Token::Type::USampler2DMSArray, yytext); return true;
+"image1D"                addToken(yyextra, msl::Token::Type::Image1D, yytext); return true;
+"iimage1D"               addToken(yyextra, msl::Token::Type::IImage1D, yytext); return true;
+"uimage1D"               addToken(yyextra, msl::Token::Type::UImage1D, yytext); return true;
+"image2D"                addToken(yyextra, msl::Token::Type::Image2D, yytext); return true;
+"iimage2D"               addToken(yyextra, msl::Token::Type::IImage2D, yytext); return true;
+"uimage2D"               addToken(yyextra, msl::Token::Type::UImage2D, yytext); return true;
+"image3D"                addToken(yyextra, msl::Token::Type::Image3D, yytext); return true;
+"iimage3D"               addToken(yyextra, msl::Token::Type::IImage3D, yytext); return true;
+"uimage3D"               addToken(yyextra, msl::Token::Type::UImage3D, yytext); return true;
+"imageCube"              addToken(yyextra, msl::Token::Type::ImageCube, yytext); return true;
+"iimageCube"             addToken(yyextra, msl::Token::Type::IImageCube, yytext); return true;
+"uimageCube"             addToken(yyextra, msl::Token::Type::UImageCube, yytext); return true;
+"imageBuffer"            addToken(yyextra, msl::Token::Type::ImageBuffer, yytext); return true;
+"iimageBuffer"           addToken(yyextra, msl::Token::Type::IImageBuffer, yytext); return true;
+"uimageBuffer"           addToken(yyextra, msl::Token::Type::UImageBuffer, yytext); return true;
+"image1DArray"           addToken(yyextra, msl::Token::Type::Image1DArray, yytext); return true;
+"iimage1DArray"          addToken(yyextra, msl::Token::Type::IImage1DArray, yytext); return true;
+"uimage1DArray"          addToken(yyextra, msl::Token::Type::UImage1DArray, yytext); return true;
+"image2DArray"           addToken(yyextra, msl::Token::Type::Image2DArray, yytext); return true;
+"iimage2DArray"          addToken(yyextra, msl::Token::Type::IImage2DArray, yytext); return true;
+"uimage2DArray"          addToken(yyextra, msl::Token::Type::UImage2DArray, yytext); return true;
+"imageCubeArray"         addToken(yyextra, msl::Token::Type::ImageCubeArray, yytext); return true;
+"iimageCubeArray"        addToken(yyextra, msl::Token::Type::IImageCubeArray, yytext); return true;
+"uimageCubeArray"        addToken(yyextra, msl::Token::Type::UImageCubeArray, yytext); return true;
+"image2DMS"              addToken(yyextra, msl::Token::Type::Image2DMS, yytext); return true;
+"iimage2DMS"             addToken(yyextra, msl::Token::Type::IImage2DMS, yytext); return true;
+"uimage2DMS"             addToken(yyextra, msl::Token::Type::UImage2DMS, yytext); return true;
+"image2DMSArray"         addToken(yyextra, msl::Token::Type::Image2DMSArray, yytext); return true;
+"iimage2DMSArray"        addToken(yyextra, msl::Token::Type::IImage2DMSArray, yytext); return true;
+"uimage2DMSArray"        addToken(yyextra, msl::Token::Type::UImage2DMSArray, yytext); return true;
+"atomic_uint"            addToken(yyextra, msl::Token::Type::AtomicUInt, yytext); return true;
 
 "#"                        addToken(yyextra, msl::Token::Type::Hash, yytext); return true;
 #{whitespace}*include      addToken(yyextra, msl::Token::Type::Include, yytext); BEGIN(INCLUDE); return true;
@@ -346,9 +355,9 @@ whitespace [ \t\f\t]
 [0-9]+\.[0-9]*([eE][+-]?[0-9]+)?(lf|LF) addToken(yyextra, msl::Token::Type::DoubleLiteral, yytext); return true;
 [0-9]*\.[0-9]+([eE][+-]?[0-9]+)?(lf|LF) addToken(yyextra, msl::Token::Type::DoubleLiteral, yytext); return true;
 
-[_a-zA-Z][_0-9a-zA-Z]+ addToken(yyextra, msl::Token::Type::Identifier, yytext); return true;
+[_a-zA-Z][_0-9a-zA-Z]* addToken(yyextra, msl::Token::Type::Identifier, yytext); return true;
 
-[^ \t\f\t\r\n]+ addToken(yyextra, msl::Token::Type::Invalid, yytext); return true;
+[^ \t\f\t\r\n!%~^&|*/+\-=()[\]{}<>?:.,;]+ addToken(yyextra, msl::Token::Type::Invalid, yytext); return true;
 
 %%
 

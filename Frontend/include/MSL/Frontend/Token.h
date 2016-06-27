@@ -58,8 +58,8 @@ struct Token
 		Equal,        ///< @c =
 		LeftParen,    ///< @c (
 		RightParen,   ///< @c )
-		LeftBracket,  ///< @c [
-		RightBracket, ///< @c ]
+		LeftSquare,   ///< @c [
+		RightSquare,  ///< @c ]
 		LeftBrace,    ///< @c {
 		RightBrace,   ///< @c }
 		LeftAngle,    ///< @c <
@@ -78,7 +78,7 @@ struct Token
 		RightShift,    ///< @c >>
 		EqualCompare,  ///< @c ==
 		NotEqual,      ///< @c !=
-		LessEual,      ///< @c <=
+		LessEqual,     ///< @c <=
 		GreaterEqual,  ///< @c >=
 		XorEqual,      ///< @c ^=
 		AndEqual,      ///< @c &=
@@ -89,11 +89,11 @@ struct Token
 		MinusEqual,    ///< @c -=
 
 		// Tripple symbols
-		BoolAndEqual,        ///< @c &&=
-		BoolOrEqual,         ///< @c ||=
-		BoolXorEqual,        ///< @c ^^=
-		BoolLeftShiftEqual,  ///< @c <<=
-		BoolRightShiftEqual, ///< @c >>=
+		BoolAndEqual,    ///< @c &&=
+		BoolOrEqual,     ///< @c ||=
+		BoolXorEqual,    ///< @c ^^=
+		LeftShiftEqual,  ///< @c <<=
+		RightShiftEqual, ///< @c >>=
 
 		// Keywords
 		Const,          ///< @c const
@@ -131,7 +131,7 @@ struct Token
 		Float,                  ///< @c float
 		Double,                 ///< @c double
 		Int,                    ///< @c int
-		Uint,                   ///< @c uint
+		UInt,                   ///< @c uint
 		BVec2,                  ///< @c bvec2
 		BVec3,                  ///< @c bcec3
 		BVec4,                  ///< @c bvec4
@@ -237,7 +237,7 @@ struct Token
 		Image2DMSArray,         ///< @c Image2DMSArray
 		IImage2DMSArray,        ///< @c IImage2DMSArray
 		UImage2DMSArray,        ///< @c UImage2DMSArray
-		AtomicUint,             ///< @c atomic_uint
+		AtomicUInt,             ///< @c atomic_uint
 
 		// Pre-processor
 		Hash,          ///< @c \#
@@ -303,6 +303,20 @@ struct Token
 		std::size_t column_);
 
 	/**
+	 * @brief Equality operator.
+	 * @param other The other token to check.
+	 * @return True if this == other.
+	 */
+	bool operator==(const Token& other) const;
+
+	/**
+	 * @brief Inequality operator.
+	 * @param other The other token to check.
+	 * @return True if this != other.
+	 */
+	bool operator!=(const Token& other) const;
+
+	/**
 	 * @brief the type of the token.
 	 */
 	Type type;
@@ -353,8 +367,8 @@ inline Token::Category Token::getCategory(Type type)
 		case Type::Equal:
 		case Type::LeftParen:
 		case Type::RightParen:
-		case Type::LeftBracket:
-		case Type::RightBracket:
+		case Type::LeftSquare:
+		case Type::RightSquare:
 		case Type::LeftBrace:
 		case Type::RightBrace:
 		case Type::LeftAngle:
@@ -371,7 +385,7 @@ inline Token::Category Token::getCategory(Type type)
 		case Type::RightShift:
 		case Type::EqualCompare:
 		case Type::NotEqual:
-		case Type::LessEual:
+		case Type::LessEqual:
 		case Type::GreaterEqual:
 		case Type::XorEqual:
 		case Type::AndEqual:
@@ -383,8 +397,8 @@ inline Token::Category Token::getCategory(Type type)
 		case Type::BoolAndEqual:
 		case Type::BoolOrEqual:
 		case Type::BoolXorEqual:
-		case Type::BoolLeftShiftEqual:
-		case Type::BoolRightShiftEqual:
+		case Type::LeftShiftEqual:
+		case Type::RightShiftEqual:
 			return Category::Symbol;
 
 		case Type::Const:
@@ -422,7 +436,7 @@ inline Token::Category Token::getCategory(Type type)
 		case Type::Float:
 		case Type::Double:
 		case Type::Int:
-		case Type::Uint:
+		case Type::UInt:
 		case Type::BVec2:
 		case Type::BVec3:
 		case Type::BVec4:
@@ -528,7 +542,7 @@ inline Token::Category Token::getCategory(Type type)
 		case Type::Image2DMSArray:
 		case Type::IImage2DMSArray:
 		case Type::UImage2DMSArray:
-		case Type::AtomicUint:
+		case Type::AtomicUInt:
 			return Category::Type;
 
 		case Type::Hash:
@@ -579,6 +593,17 @@ inline Token::Token(Type type_, std::size_t start_, std::size_t length_, std::si
 	, line(line_)
 	, column(column_)
 {
+}
+
+inline bool Token::operator==(const Token& other) const
+{
+	return type == other.type && start == other.start && length == other.length &&
+		line == other.line && column == other.column;
+}
+
+inline bool Token::operator!=(const Token& other) const
+{
+	return !(*this == other);
 }
 
 } // namespace msl
