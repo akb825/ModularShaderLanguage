@@ -24,6 +24,10 @@
 #pragma GCC diagnostic ignored "-Wunused-function"
 #endif
 
+#if MSL_GCC
+#pragma GCC diagnostic ignored "-Wsubobject-linkage"
+#endif
+
 #if MSL_WINDOWS
 #define YY_NO_UNISTD_H
 #include <io.h>
@@ -32,7 +36,7 @@
 
 
 
-#line 36 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.cpp"
+#line 40 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -1938,7 +1942,7 @@ static yyconst flex_int16_t yy_chk[5543] =
 #define YY_RESTORE_YY_MORE_OFFSET
 #line 1 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 
-#line 34 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 38 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 namespace
 {
 
@@ -2038,7 +2042,7 @@ bool mslwrap(yyscan_t)
 	return true;
 }
 
-#line 2042 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.cpp"
+#line 2046 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.cpp"
 
 #define INITIAL 0
 #define INCLUDE 1
@@ -2300,10 +2304,10 @@ YY_DECL
 		}
 
 	{
-#line 137 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 141 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 
 
-#line 2307 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.cpp"
+#line 2311 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.cpp"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -2362,1074 +2366,1074 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 139 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 143 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Whitespace, yytext); return true;
 	YY_BREAK
 case 2:
 /* rule 2 can match eol */
 YY_RULE_SETUP
-#line 140 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 144 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addNewline(yyextra, msl::Token::Type::Newline, yytext); BEGIN(INITIAL); return true;
 	YY_BREAK
 case 3:
 /* rule 3 can match eol */
 YY_RULE_SETUP
-#line 141 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 145 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addNewline(yyextra, msl::Token::Type::EscapedNewline, yytext); return true;
 	YY_BREAK
 case 4:
 /* rule 4 can match eol */
 YY_RULE_SETUP
-#line 143 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 147 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addComment(yyextra, yytext); return true;
 	YY_BREAK
 case 5:
 /* rule 5 can match eol */
 YY_RULE_SETUP
-#line 144 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 148 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addComment(yyextra, yytext); return true;
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 146 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 150 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Exclamation, yytext); return true;
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 147 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 151 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Percent, yytext); return true;
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 148 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 152 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Tilde, yytext); return true;
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 149 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 153 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Carot, yytext); return true;
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 150 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 154 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Amperstand, yytext); return true;
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 151 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 155 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Bar, yytext); return true;
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 152 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 156 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Asterisk, yytext); return true;
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 153 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 157 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Slash, yytext); return true;
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 154 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 158 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Plus, yytext); return true;
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 155 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 159 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Dash, yytext); return true;
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 156 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 160 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Equal, yytext); return true;
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 157 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 161 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::LeftParen, yytext); return true;
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 158 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 162 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::RightParen, yytext); return true;
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 159 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 163 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::LeftSquare, yytext); return true;
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 160 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 164 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::RightSquare, yytext); return true;
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 161 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 165 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::LeftBrace, yytext); return true;
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 162 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 166 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::RightBrace, yytext); return true;
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 163 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 167 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::LeftAngle, yytext); return true;
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 164 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 168 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::RightAngle, yytext); return true;
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 165 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 169 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Question, yytext); return true;
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 166 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 170 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Colon, yytext); return true;
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 167 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 171 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Dot, yytext); return true;
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 168 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 172 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Comma, yytext); return true;
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 169 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 173 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Semicolon, yytext); return true;
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 171 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 175 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::BoolAnd, yytext); return true;
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 172 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 176 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::BoolOr, yytext); return true;
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 173 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 177 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::BoolXor, yytext); return true;
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 174 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 178 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::LeftShift, yytext); return true;
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 175 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 179 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::RightShift, yytext); return true;
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 176 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 180 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::EqualCompare, yytext); return true;
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 177 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 181 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::NotEqual, yytext); return true;
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 178 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 182 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::LessEqual, yytext); return true;
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 179 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 183 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::GreaterEqual, yytext); return true;
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 180 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 184 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::XorEqual, yytext); return true;
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 181 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 185 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::AndEqual, yytext); return true;
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 182 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 186 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::OrEqual, yytext); return true;
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 183 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 187 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::MultiplyEqual, yytext); return true;
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 184 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 188 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DivideEqual, yytext); return true;
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 185 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 189 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::PlusEqual, yytext); return true;
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 186 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 190 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::MinusEqual, yytext); return true;
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 188 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 192 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::BoolAndEqual, yytext); return true;
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 189 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 193 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::BoolOrEqual, yytext); return true;
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 190 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 194 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::BoolXorEqual, yytext); return true;
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 191 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 195 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::LeftShiftEqual, yytext); return true;
 	YY_BREAK
 case 50:
 YY_RULE_SETUP
-#line 192 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 196 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::RightShiftEqual, yytext); return true;
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 194 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 198 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Const, yytext); return true;
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 195 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 199 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Centroid, yytext); return true;
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 196 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 200 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Break, yytext); return true;
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 197 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 201 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Continue, yytext); return true;
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 198 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 202 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Do, yytext); return true;
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 199 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 203 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Else, yytext); return true;
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 200 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 204 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::For, yytext); return true;
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 201 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 205 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::If, yytext); return true;
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 202 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 206 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Discard, yytext); return true;
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 203 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 207 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Return, yytext); return true;
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 204 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 208 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Switch, yytext); return true;
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 205 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 209 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Case, yytext); return true;
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 206 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 210 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Default, yytext); return true;
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 207 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 211 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Uniform, yytext); return true;
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 208 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 212 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Patch, yytext); return true;
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 209 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 213 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Sample, yytext); return true;
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 210 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 214 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Buffer, yytext); return true;
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 211 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 215 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Shared, yytext); return true;
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 212 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 216 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Coherent, yytext); return true;
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 213 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 217 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Volatile, yytext); return true;
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 214 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 218 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Restrict, yytext); return true;
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 215 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 219 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::ReadOnly, yytext); return true;
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 216 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 220 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::WriteOnly, yytext); return true;
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 217 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 221 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::NonPerspective, yytext); return true;
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 218 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 222 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Flat, yytext); return true;
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 219 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 223 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Smooth, yytext); return true;
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 220 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 224 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Struct, yytext); return true;
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 221 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 225 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Void, yytext); return true;
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 222 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 226 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::While, yytext); return true;
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 224 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 228 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Bool, yytext); return true;
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 225 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 229 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Float, yytext); return true;
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 226 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 230 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Double, yytext); return true;
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 227 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 231 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Int, yytext); return true;
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 228 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 232 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::UInt, yytext); return true;
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 229 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 233 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::BVec2, yytext); return true;
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 230 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 234 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::BVec3, yytext); return true;
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 231 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 235 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::BVec4, yytext); return true;
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 232 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 236 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IVec2, yytext); return true;
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 233 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 237 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IVec3, yytext); return true;
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 234 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 238 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IVec4, yytext); return true;
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 235 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 239 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::UVec2, yytext); return true;
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 236 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 240 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::UVec3, yytext); return true;
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 237 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 241 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::UVec4, yytext); return true;
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 238 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 242 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Vec2, yytext); return true;
 	YY_BREAK
 case 95:
 YY_RULE_SETUP
-#line 239 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 243 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Vec3, yytext); return true;
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-#line 240 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 244 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Vec4, yytext); return true;
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 241 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 245 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DVec2, yytext); return true;
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 242 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 246 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DVec3, yytext); return true;
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 243 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 247 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DVec4, yytext); return true;
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 244 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 248 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Mat2, yytext); return true;
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 245 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 249 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Mat3, yytext); return true;
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 246 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 250 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Mat4, yytext); return true;
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 247 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 251 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DMat2, yytext); return true;
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 248 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 252 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DMat3, yytext); return true;
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 249 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 253 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DMat4, yytext); return true;
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
-#line 250 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 254 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Mat2x2, yytext); return true;
 	YY_BREAK
 case 107:
 YY_RULE_SETUP
-#line 251 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 255 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Mat2x3, yytext); return true;
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 252 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 256 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Mat2x4, yytext); return true;
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
-#line 253 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 257 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Mat3x2, yytext); return true;
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-#line 254 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 258 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Mat3x3, yytext); return true;
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 255 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 259 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Mat3x4, yytext); return true;
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-#line 256 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 260 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Mat4x2, yytext); return true;
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
-#line 257 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 261 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Mat4x3, yytext); return true;
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
-#line 258 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 262 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Mat4x4, yytext); return true;
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
-#line 259 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 263 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DMat2x2, yytext); return true;
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
-#line 260 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 264 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DMat2x3, yytext); return true;
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
-#line 261 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 265 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DMat2x4, yytext); return true;
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
-#line 262 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 266 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DMat3x2, yytext); return true;
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
-#line 263 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 267 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DMat3x3, yytext); return true;
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
-#line 264 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 268 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DMat3x4, yytext); return true;
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
-#line 265 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 269 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DMat4x2, yytext); return true;
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
-#line 266 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 270 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DMat4x3, yytext); return true;
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
-#line 267 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 271 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DMat4x4, yytext); return true;
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
-#line 268 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 272 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Sampler1D, yytext); return true;
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
-#line 269 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 273 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Sampler2D, yytext); return true;
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
-#line 270 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 274 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Sampler3D, yytext); return true;
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
-#line 271 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 275 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::SamplerCube, yytext); return true;
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
-#line 272 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 276 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Sampler1DShadow, yytext); return true;
 	YY_BREAK
 case 129:
 YY_RULE_SETUP
-#line 273 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 277 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Sampler2DShadow, yytext); return true;
 	YY_BREAK
 case 130:
 YY_RULE_SETUP
-#line 274 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 278 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::SamplerCubeShadow, yytext); return true;
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
-#line 275 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 279 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Sampler1DArray, yytext); return true;
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
-#line 276 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 280 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Sampler2DArray, yytext); return true;
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 277 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 281 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Sampler1DArrayShadow, yytext); return true;
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
-#line 278 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 282 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Sampler2DArrayShadow, yytext); return true;
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
-#line 279 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 283 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::ISampler1D, yytext); return true;
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
-#line 280 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 284 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::ISampler2D, yytext); return true;
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
-#line 281 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 285 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::ISampler3D, yytext); return true;
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
-#line 282 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 286 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::ISamplerCube, yytext); return true;
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
-#line 283 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 287 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::ISampler1DArray, yytext); return true;
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
-#line 284 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 288 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::ISampler2DArray, yytext); return true;
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
-#line 285 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 289 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::USampler1D, yytext); return true;
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
-#line 286 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 290 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::USampler2D, yytext); return true;
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
-#line 287 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 291 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::USampler3D, yytext); return true;
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
-#line 288 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 292 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::USamplerCube, yytext); return true;
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
-#line 289 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 293 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::USampler1DArray, yytext); return true;
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
-#line 290 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 294 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::USampler2DArray, yytext); return true;
 	YY_BREAK
 case 147:
 YY_RULE_SETUP
-#line 291 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 295 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::SamplerBuffer, yytext); return true;
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
-#line 292 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 296 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::ISamplerBuffer, yytext); return true;
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
-#line 293 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 297 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::USamplerBuffer, yytext); return true;
 	YY_BREAK
 case 150:
 YY_RULE_SETUP
-#line 294 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 298 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::SamplerCubeArray, yytext); return true;
 	YY_BREAK
 case 151:
 YY_RULE_SETUP
-#line 295 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 299 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::SamplerCubeArrayShadow, yytext); return true;
 	YY_BREAK
 case 152:
 YY_RULE_SETUP
-#line 296 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 300 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::ISamplerCubeArray, yytext); return true;
 	YY_BREAK
 case 153:
 YY_RULE_SETUP
-#line 297 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 301 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::USamplerCubeArray, yytext); return true;
 	YY_BREAK
 case 154:
 YY_RULE_SETUP
-#line 298 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 302 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Sampler2DMS, yytext); return true;
 	YY_BREAK
 case 155:
 YY_RULE_SETUP
-#line 299 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 303 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::ISampler2DMS, yytext); return true;
 	YY_BREAK
 case 156:
 YY_RULE_SETUP
-#line 300 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 304 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::USampler2DMS, yytext); return true;
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
-#line 301 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 305 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Sampler2DMSArray, yytext); return true;
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
-#line 302 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 306 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::ISampler2DMSArray, yytext); return true;
 	YY_BREAK
 case 159:
 YY_RULE_SETUP
-#line 303 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 307 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::USampler2DMSArray, yytext); return true;
 	YY_BREAK
 case 160:
 YY_RULE_SETUP
-#line 304 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 308 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Image1D, yytext); return true;
 	YY_BREAK
 case 161:
 YY_RULE_SETUP
-#line 305 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 309 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IImage1D, yytext); return true;
 	YY_BREAK
 case 162:
 YY_RULE_SETUP
-#line 306 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 310 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::UImage1D, yytext); return true;
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
-#line 307 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 311 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Image2D, yytext); return true;
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
-#line 308 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 312 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IImage2D, yytext); return true;
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
-#line 309 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 313 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::UImage2D, yytext); return true;
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
-#line 310 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 314 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Image3D, yytext); return true;
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
-#line 311 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 315 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IImage3D, yytext); return true;
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-#line 312 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 316 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::UImage3D, yytext); return true;
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
-#line 313 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 317 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::ImageCube, yytext); return true;
 	YY_BREAK
 case 170:
 YY_RULE_SETUP
-#line 314 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 318 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IImageCube, yytext); return true;
 	YY_BREAK
 case 171:
 YY_RULE_SETUP
-#line 315 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 319 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::UImageCube, yytext); return true;
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
-#line 316 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 320 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::ImageBuffer, yytext); return true;
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
-#line 317 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 321 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IImageBuffer, yytext); return true;
 	YY_BREAK
 case 174:
 YY_RULE_SETUP
-#line 318 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 322 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::UImageBuffer, yytext); return true;
 	YY_BREAK
 case 175:
 YY_RULE_SETUP
-#line 319 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 323 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Image1DArray, yytext); return true;
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
-#line 320 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 324 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IImage1DArray, yytext); return true;
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
-#line 321 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 325 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::UImage1DArray, yytext); return true;
 	YY_BREAK
 case 178:
 YY_RULE_SETUP
-#line 322 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 326 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Image2DArray, yytext); return true;
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
-#line 323 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 327 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IImage2DArray, yytext); return true;
 	YY_BREAK
 case 180:
 YY_RULE_SETUP
-#line 324 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 328 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::UImage2DArray, yytext); return true;
 	YY_BREAK
 case 181:
 YY_RULE_SETUP
-#line 325 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 329 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::ImageCubeArray, yytext); return true;
 	YY_BREAK
 case 182:
 YY_RULE_SETUP
-#line 326 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 330 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IImageCubeArray, yytext); return true;
 	YY_BREAK
 case 183:
 YY_RULE_SETUP
-#line 327 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 331 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::UImageCubeArray, yytext); return true;
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
-#line 328 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 332 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Image2DMS, yytext); return true;
 	YY_BREAK
 case 185:
 YY_RULE_SETUP
-#line 329 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 333 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IImage2DMS, yytext); return true;
 	YY_BREAK
 case 186:
 YY_RULE_SETUP
-#line 330 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 334 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::UImage2DMS, yytext); return true;
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
-#line 331 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 335 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Image2DMSArray, yytext); return true;
 	YY_BREAK
 case 188:
 YY_RULE_SETUP
-#line 332 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 336 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IImage2DMSArray, yytext); return true;
 	YY_BREAK
 case 189:
 YY_RULE_SETUP
-#line 333 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 337 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::UImage2DMSArray, yytext); return true;
 	YY_BREAK
 case 190:
 YY_RULE_SETUP
-#line 334 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 338 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::AtomicUInt, yytext); return true;
 	YY_BREAK
 case 191:
 YY_RULE_SETUP
-#line 336 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 340 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Hash, yytext); return true;
 	YY_BREAK
 case 192:
 YY_RULE_SETUP
-#line 337 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 341 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Include, yytext); BEGIN(INCLUDE); return true;
 	YY_BREAK
 case 193:
 YY_RULE_SETUP
-#line 338 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 342 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Pragma, yytext); return true;
 	YY_BREAK
 case 194:
 YY_RULE_SETUP
-#line 339 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 343 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Define, yytext); return true;
 	YY_BREAK
 case 195:
 YY_RULE_SETUP
-#line 340 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 344 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Ifdef, yytext); return true;
 	YY_BREAK
 case 196:
 YY_RULE_SETUP
-#line 341 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 345 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Ifndef, yytext); return true;
 	YY_BREAK
 case 197:
 YY_RULE_SETUP
-#line 342 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 346 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::PreprocIf, yytext); return true;
 	YY_BREAK
 case 198:
 YY_RULE_SETUP
-#line 343 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 347 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::PreprocElif, yytext); return true;
 	YY_BREAK
 case 199:
 YY_RULE_SETUP
-#line 344 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 348 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::PreprocElse, yytext); return true;
 	YY_BREAK
 case 200:
 YY_RULE_SETUP
-#line 345 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 349 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::PreprocEndif, yytext); return true;
 	YY_BREAK
 case 201:
 YY_RULE_SETUP
-#line 346 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 350 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::PreprocConcat, yytext); return true;
 	YY_BREAK
 case 202:
 YY_RULE_SETUP
-#line 347 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 351 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IncludePath, yytext); BEGIN(INITIAL); return true;
 	YY_BREAK
 case 203:
 YY_RULE_SETUP
-#line 349 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 353 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IntLiteral, yytext); return true;
 	YY_BREAK
 case 204:
 YY_RULE_SETUP
-#line 350 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 354 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IntLiteral, yytext); return true;
 	YY_BREAK
 case 205:
 YY_RULE_SETUP
-#line 351 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 355 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IntLiteral, yytext); return true;
 	YY_BREAK
 case 206:
 YY_RULE_SETUP
-#line 352 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 356 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::IntLiteral, yytext); return true;
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
-#line 353 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 357 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::FloatLiteral, yytext); return true;
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
-#line 354 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 358 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::FloatLiteral, yytext); return true;
 	YY_BREAK
 case 209:
 YY_RULE_SETUP
-#line 355 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 359 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DoubleLiteral, yytext); return true;
 	YY_BREAK
 case 210:
 YY_RULE_SETUP
-#line 356 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 360 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::DoubleLiteral, yytext); return true;
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
-#line 358 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 362 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Identifier, yytext); return true;
 	YY_BREAK
 case 212:
 YY_RULE_SETUP
-#line 360 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 364 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 addToken(yyextra, msl::Token::Type::Invalid, yytext); return true;
 	YY_BREAK
 case 213:
 YY_RULE_SETUP
-#line 362 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 366 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 ECHO;
 	YY_BREAK
-#line 3433 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.cpp"
+#line 3437 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(INCLUDE):
 	yyterminate();
@@ -4599,7 +4603,7 @@ void mslfree (void * ptr , yyscan_t yyscanner)
 
 #define YYTABLES_NAME "yytables"
 
-#line 362 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
+#line 366 "/home/abarany/Development/ModularShaderLanguage/Frontend/src/Parse/Lexer.lex"
 
 
 
