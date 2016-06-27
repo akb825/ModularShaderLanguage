@@ -20,7 +20,7 @@
 
 /**
  * @file
- * @brief File that contains the parser for Modular Shader Language files.
+ * @brief File that contains the entry point for the frontend for Modular Shader Language files.
  */
 
 /**
