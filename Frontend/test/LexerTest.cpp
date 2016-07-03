@@ -25,7 +25,7 @@ void addToken(std::vector<Token>& tokens, const std::string& input, Token::Type 
 	const std::string& str)
 {
 	if (tokens.empty())
-		tokens.emplace_back(type, 0, str.size(), 0, 0);
+		tokens.emplace_back(type, 0, 0, str.size(), 0, 0);
 	else
 	{
 		const Token& lastToken = tokens.back();
@@ -42,14 +42,14 @@ void addToken(std::vector<Token>& tokens, const std::string& input, Token::Type 
 				++column;
 		}
 
-		tokens.emplace_back(type, lastToken.start + lastToken.length, str.size(), line, column);
+		tokens.emplace_back(type, 0, lastToken.start + lastToken.length, str.size(), line, column);
 	}
 }
 
 TEST(LexerTest, Whitespace)
 {
 	std::string input = " \t\n\t \\\n \t\r\n\t \\\r\n \t\f\v";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::Whitespace, " \t");
@@ -77,7 +77,7 @@ TEST(LexerTest, Comment)
 		"   * C style comment.\r\n"
 		"   */\n"
 		"/* Unterminated";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::Whitespace, "\t");
@@ -108,7 +108,7 @@ TEST(LexerTest, Comment)
 TEST(LexerTest, SingleSymbols)
 {
 	std::string input = "!%~^&|*/+-(=)[]{}<>?:.,;";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::Exclamation, "!");
@@ -142,7 +142,7 @@ TEST(LexerTest, SingleSymbols)
 TEST(LexerTest, DoubleSymbols)
 {
 	std::string input = "&&||^^<<>>!===<=>=^=&=|=*=/=+=-=";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::BoolAnd, "&&");
@@ -168,7 +168,7 @@ TEST(LexerTest, DoubleSymbols)
 TEST(LexerTest, TrippleSymbols)
 {
 	std::string input = "&&=||=^^=<<=>>=";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::BoolAndEqual, "&&=");
@@ -185,7 +185,7 @@ TEST(LexerTest, Keyword)
 	std::string input = "const centroid break continue do else for if discard return switch case "
 		"default uniform patch sample buffer shared coherent volatile restrict readonly writeonly "
 		"nonperspective flat smooth struct void while";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::Const, "const");
@@ -252,7 +252,7 @@ TEST(LexerTest, Keyword)
 TEST(LexerTest, KeywordNoSpace)
 {
 	std::string input = "constbreak";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::Identifier, "constbreak");
@@ -263,7 +263,7 @@ TEST(LexerTest, KeywordNoSpace)
 TEST(LexerTest, ScalarTypes)
 {
 	std::string input = "bool float double int uint atomic_uint";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::Bool, "bool");
@@ -285,7 +285,7 @@ TEST(LexerTest, VectorTypes)
 {
 	std::string input = "bvec2 bvec3 bvec4 ivec2 ivec3 ivec4 uvec2 uvec3 uvec4 vec2 vec3 vec4 "
 		"dvec2 dvec3 dvec4";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::BVec2, "bvec2");
@@ -326,7 +326,7 @@ TEST(LexerTest, MatrixTypes)
 	std::string input = "mat2 mat3 mat4 dmat2 dmat3 dmat4 mat2x2 mat2x3 mat2x4 "
 		"mat3x2 mat3x3 mat3x4 mat4x2 mat4x3 mat4x4 dmat2x2 dmat2x3 dmat2x4 "
 		"dmat3x2 dmat3x3 dmat3x4 dmat4x2 dmat4x3 dmat4x4";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::Mat2, "mat2");
@@ -389,7 +389,7 @@ TEST(LexerTest, SamplerTypes)
 		"isamplerBuffer usamplerBuffer samplerCubeArray samplerCubeArrayShadow isamplerCubeArray "
 		"usamplerCubeArray sampler2DMS isampler2DMS usampler2DMS sampler2DMSArray "
 		"isampler2DMSArray usampler2DMSArray";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::Sampler1D, "sampler1D");
@@ -474,7 +474,7 @@ TEST(LexerTest, ImageTypes)
 		"image1DArray iimage1DArray uimage1DArray image2DArray iimage2DArray uimage2DArray "
 		"imageCubeArray iimageCubeArray uimageCubeArray image2DMS iimage2DMS uimage2DMS "
 		"image2DMSArray iimage2DMSArray uimage2DMSArray";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::Image1D, "image1D");
@@ -544,7 +544,7 @@ TEST(LexerTest, PreProcessor)
 {
 	std::string input = "# #pragma #define #ifdef #ifndef #if #elif #else #endif ## "
 		"# pragma # define # ifdef # ifndef # if # elif # else # endif";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::Hash, "#");
@@ -600,7 +600,7 @@ TEST(LexerTest, Include)
 		"#include <test.h> \"test.h\"\n"
 		"#include <test.h\"\n"
 		"#include \"test.h>";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::Include, "#include");
@@ -664,7 +664,7 @@ TEST(LexerTest, IntLiteral)
 	std::string input = "0 0u 0U 1234567890 1234567890u 1234567890U 01234567 01234567u 01234567U "
 		"0x1234567890abcdef 0x1234567890abcdefu 0X1234567890ABCDEFU 0123456789 12u34 012u34 "
 		"0x12u34";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::IntLiteral, "0");
@@ -706,7 +706,7 @@ TEST(LexerTest, FloatLiteral)
 {
 	std::string input = "0. 0.f 0.F .0 .0f .0F 1.23 1.23f 1.23F 1.23e4 1.23e+4 1.23e-4 1.23e4f "
 		"1.23e+4f 1.23e-4f 1.23E4F 1.23E+4F 1.23E-4F 0f .f .e3 a1.0e3";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::FloatLiteral, "0.");
@@ -763,7 +763,7 @@ TEST(LexerTest, DoubleLiteral)
 {
 	std::string input = "0.lf 0.LF .0lf .0LF 1.23lf 1.23LF 1.23e4lf 1.23e+4lf 1.23e-4lf 1.23E4LF "
 		"1.23E+4LF 1.23E-4LF 0lf .lf .e3lf a1.0e3lf";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::DoubleLiteral, "0.lf");
@@ -807,7 +807,7 @@ TEST(LexerTest, DoubleLiteral)
 TEST(LexerTest, Identifier)
 {
 	std::string input = "az09AZ _a_z0_9A_Z 09azAZ a.b0-c1+d3";
-	std::vector<Token> tokens = Lexer::tokenize(input);
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
 	addToken(expectedTokens, input, Token::Type::Identifier, "az09AZ");
@@ -825,6 +825,27 @@ TEST(LexerTest, Identifier)
 	addToken(expectedTokens, input, Token::Type::Identifier, "d3");
 
 	EXPECT_EQ(expectedTokens, tokens);
+}
+
+TEST(LexerTest, AddMessage)
+{
+	std::string file = "test.msl";
+	std::string input = "az09AZ\n"
+		"_a_z0_9A_Z 09azAZ a.b0-c1+d3";
+	std::vector<Token> tokens = Lexer::tokenize(0, input);
+
+	Output output;
+	for (const Token& token : tokens)
+		token.addMessage(output, file, input);
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_EQ(file, messages[0].file);
+	EXPECT_EQ(1, messages[0].line);
+	EXPECT_EQ(11, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("Invalid token '09azAZ'", messages[0].message);
 }
 
 } // namespace msl

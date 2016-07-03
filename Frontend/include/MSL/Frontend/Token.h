@@ -17,8 +17,8 @@
 #pragma once
 
 #include <MSL/Frontend/Config.h>
+#include <MSL/Frontend/Output.h>
 #include <cassert>
-#include <cstddef>
 
 /**
  * @file
@@ -284,42 +284,62 @@ struct Token
 	 * @param type The token type.
 	 * @return The token category.
 	 */
-	static Category getCategory(Type type);
+	static inline Category getCategory(Type type);
 
 	/**
 	 * @brief Default constructor.
 	 */
-	Token();
+	inline Token();
 
 	/**
 	 * @brief Constructs the token.
 	 * @param type_ The type of the token.
+	 * @param file_ The index of the file the token belongs to.
 	 * @param start_ The start index of the token in the string.
 	 * @param length_ The length of the token.
 	 * @param line_ The line of the token.
 	 * @param column_ The column of the token in the line.
 	 */
-	Token(Type type_, std::size_t start_, std::size_t length_, std::size_t line_,
-		std::size_t column_);
+	inline Token(Type type_, std::size_t file_, std::size_t start_, std::size_t length_,
+		std::size_t line_, std::size_t column_);
 
 	/**
 	 * @brief Equality operator.
 	 * @param other The other token to check.
 	 * @return True if this == other.
 	 */
-	bool operator==(const Token& other) const;
+	inline bool operator==(const Token& other) const;
 
 	/**
 	 * @brief Inequality operator.
 	 * @param other The other token to check.
 	 * @return True if this != other.
 	 */
-	bool operator!=(const Token& other) const;
+	inline bool operator!=(const Token& other) const;
+
+	/**
+	 * @brief Returns whether or not the token is valid.
+	 * @return True if the token is valid.
+	 */
+	inline bool isValid() const;
+
+	/**
+	 * @brief Adds messages if an error occurred.
+	 * @param[inout] output The output to add any messages to.
+	 * @param fileName The name of the file the token belongs to.
+	 * @param input The original input.
+	 */
+	inline void addMessage(Output& output, const std::string& fileName, const std::string& input) const;
 
 	/**
 	 * @brief the type of the token.
 	 */
 	Type type;
+
+	/**
+	 * @brief The index of the file the token belongs to.
+	 */
+	std::size_t file;
 
 	/**
 	 * @brief The start index of the token in the string.
@@ -332,7 +352,7 @@ struct Token
 	std::size_t length;
 
 	/**
-	 * @brief The line number of te token.
+	 * @brief The line number of the token.
 	 */
 	std::size_t line;
 
@@ -578,6 +598,7 @@ inline Token::Category Token::getCategory(Type type)
 
 inline Token::Token()
 	: type(Type::Invalid)
+	, file(0)
 	, start(0)
 	, length(0)
 	, line(0)
@@ -585,9 +606,10 @@ inline Token::Token()
 {
 }
 
-inline Token::Token(Type type_, std::size_t start_, std::size_t length_, std::size_t line_,
-	std::size_t column_)
+inline Token::Token(Type type_, std::size_t file_, std::size_t start_, std::size_t length_,
+	std::size_t line_, std::size_t column_)
 	: type(type_)
+	, file(file_)
 	, start(start_)
 	, length(length_)
 	, line(line_)
@@ -597,13 +619,29 @@ inline Token::Token(Type type_, std::size_t start_, std::size_t length_, std::si
 
 inline bool Token::operator==(const Token& other) const
 {
-	return type == other.type && start == other.start && length == other.length &&
-		line == other.line && column == other.column;
+	return type == other.type && file == other.file && start == other.start &&
+		length == other.length && line == other.line && column == other.column;
 }
 
 inline bool Token::operator!=(const Token& other) const
 {
 	return !(*this == other);
+}
+
+inline bool Token::isValid() const
+{
+	return type != Type::Invalid;
+}
+
+inline void Token::addMessage(Output& output, const std::string& fileName,
+	const std::string& input) const
+{
+	if (!isValid())
+	{
+		output.addMessage(Output::Level::Error, fileName, static_cast<unsigned int>(line),
+			static_cast<unsigned int>(column), false,
+			"Invalid token '" + input.substr(start, length) + "'");
+	}
 }
 
 } // namespace msl

@@ -36,22 +36,24 @@ class Lexer
 public:
 	/**
 	 * @brief Splits input into tokens.
+	 * @param file The index of the file being processed.
 	 * @param input The input string.
 	 * @param start The start index.
 	 * @param length The length of the string.
 	 * @return The tokens from the input.
 	 */
-	static std::vector<Token> tokenize(const std::string& input, std::size_t start = 0,
-		std::size_t length = std::string::npos);
+	static std::vector<Token> tokenize(std::size_t file, const std::string& input,
+		std::size_t start = 0, std::size_t length = std::string::npos);
 
 	/**
 	 * @brief Constructs this with the input string and range.
+	 * @param file The index of the file being processed.
 	 * @param input The input string. This will be stored by pointer, so it must remain alive
 	 * as long as this is alive.
 	 * @param start The start index.
 	 * @param length The length of the string.
 	 */
-	explicit Lexer(const std::string& input, std::size_t start = 0,
+	explicit Lexer(std::size_t file, const std::string& input, std::size_t start = 0,
 		std::size_t length = std::string::npos);
 
 	/**

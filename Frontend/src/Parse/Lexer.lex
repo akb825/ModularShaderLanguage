@@ -40,8 +40,10 @@ namespace
 
 struct LexerInfo
 {
-	explicit LexerInfo(const std::string& str, std::size_t start, std::size_t length)
-		: input(&str)
+	explicit LexerInfo(std::size_t file_, const std::string& input_, std::size_t start,
+		std::size_t length)
+		: file(file_)
+		, input(&input_)
 		, pos(std::min(start, input->size()))
 		, end(std::min(length, input->size()))
 		, tokenPos(pos)
@@ -62,6 +64,7 @@ struct LexerInfo
 		}
 	}
 
+	std::size_t file;
 	const std::string* input;
 	std::size_t pos;
 	std::size_t end;
@@ -75,7 +78,8 @@ void addToken(LexerInfo* info, msl::Token::Type type, const char* text)
 {
 	std::size_t length = std::strlen(text);
 	assert(info->curToken);
-	*info->curToken = msl::Token(type, info->tokenPos, length, info->line, info->column);
+	*info->curToken = msl::Token(type, info->file, info->tokenPos, length, info->line,
+		info->column);
 	info->tokenPos += length;
 	assert(info->tokenPos <= info->end);
 	info->column += length;
@@ -85,7 +89,8 @@ void addNewline(LexerInfo* info, msl::Token::Type type, const char* text)
 {
 	std::size_t length = std::strlen(text);
 	assert(info->curToken);
-	*info->curToken = msl::Token(type, info->tokenPos, length, info->line, info->column);
+	*info->curToken = msl::Token(type, info->file, info->tokenPos, length, info->line,
+		info->column);
 	info->tokenPos += length;
 	assert(info->tokenPos <= info->end);
 	++info->line;
@@ -96,8 +101,8 @@ void addComment(LexerInfo* info, const char* text)
 {
 	std::size_t length = std::strlen(text);
 	assert(info->curToken);
-	*info->curToken = msl::Token(msl::Token::Type::Comment, info->tokenPos, length, info->line,
-		info->column);
+	*info->curToken = msl::Token(msl::Token::Type::Comment, info->file, info->tokenPos, length,
+		info->line, info->column);
 	info->tokenPos += length;
 	assert(info->tokenPos <= info->end);
 
@@ -371,8 +376,8 @@ namespace msl
 class Lexer::Impl
 {
 public:
-	Impl(const std::string& input, std::size_t start, std::size_t length)
-		: m_info(input, start, length)
+	Impl(std::size_t file, const std::string& input, std::size_t start, std::size_t length)
+		: m_info(file, input, start, length)
 	{
 		yylex_init_extra(&m_info, &m_scanner);
 	}
@@ -386,20 +391,21 @@ public:
 	LexerInfo m_info;
 };
 
-std::vector<Token> Lexer::tokenize(const std::string& input, std::size_t start, std::size_t length)
+std::vector<Token> Lexer::tokenize(std::size_t file, const std::string& input, std::size_t start,
+	std::size_t length)
 {
 	std::vector<Token> tokens;
 	Token curToken;
 
-	Lexer lexer(input, start, length);
+	Lexer lexer(file, input, start, length);
 	while (lexer.nextToken(curToken))
 		tokens.push_back(curToken);
 
 	return tokens;
 }
 
-Lexer::Lexer(const std::string& input, std::size_t start, std::size_t length)
-	: m_impl(new Impl(input, start, length))
+Lexer::Lexer(std::size_t file, const std::string& input, std::size_t start, std::size_t length)
+	: m_impl(new Impl(file, input, start, length))
 {
 }
 
