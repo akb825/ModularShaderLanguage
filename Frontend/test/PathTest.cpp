@@ -43,7 +43,7 @@ TEST(PathTest, IsAbsolute)
 	EXPECT_TRUE(Path::isAbsolute(absolutePath));
 	EXPECT_FALSE(Path::isAbsolute(path1));
 #if MSL_WINDOWS
-	EXPECT_FALSE(Path::isAbsolute("C:\\absolute\\path"));
+	EXPECT_TRUE(Path::isAbsolute("C:\\absolute\\path"));
 #endif
 }
 
