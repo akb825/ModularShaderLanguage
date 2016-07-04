@@ -299,9 +299,11 @@ struct Token
 	 * @param length_ The length of the token.
 	 * @param line_ The line of the token.
 	 * @param column_ The column of the token in the line.
+	 * @param original_ The original token when substituded with preprocessing. It is expected that
+	 * the storage for the original token remains valid.
 	 */
 	inline Token(Type type_, std::size_t file_, std::size_t start_, std::size_t length_,
-		std::size_t line_, std::size_t column_);
+		std::size_t line_, std::size_t column_, const Token* original_ = nullptr);
 
 	/**
 	 * @brief Equality operator.
@@ -360,6 +362,13 @@ struct Token
 	 * @brief The column of the token within the line.
 	 */
 	std::size_t column;
+
+	/**
+	 * @brief The original token when substituded with preprocessing.
+	 *
+	 * It is expected that the storage for the original token remains valid.
+	 */
+	const Token* original;
 };
 
 inline Token::Category Token::getCategory(Type type)
@@ -603,24 +612,27 @@ inline Token::Token()
 	, length(0)
 	, line(0)
 	, column(0)
+	, original(nullptr)
 {
 }
 
 inline Token::Token(Type type_, std::size_t file_, std::size_t start_, std::size_t length_,
-	std::size_t line_, std::size_t column_)
+	std::size_t line_, std::size_t column_, const Token* original_)
 	: type(type_)
 	, file(file_)
 	, start(start_)
 	, length(length_)
 	, line(line_)
 	, column(column_)
+	, original(original_)
 {
 }
 
 inline bool Token::operator==(const Token& other) const
 {
 	return type == other.type && file == other.file && start == other.start &&
-		length == other.length && line == other.line && column == other.column;
+		length == other.length && line == other.line && column == other.column &&
+		original == other.original;
 }
 
 inline bool Token::operator!=(const Token& other) const
