@@ -54,19 +54,12 @@ public:
 	struct File
 	{
 		/**
-		 * @brief The file name of the file.
-		 *
-		 * This is what was passed into loadFile().
-		 */
-		std::string fileName;
-
-		/**
 		 * @brief The full path of the file.
 		 *
 		 * This is the file name combined with the include path. This isn't necessarily an absoulte
 		 * path.
 		 */
-		std::string fullPath;
+		std::string path;
 
 		/**
 		 * @brief The contents of the file.
@@ -207,7 +200,7 @@ inline std::shared_ptr<const FileManager::File> FileManager::getFile(std::size_t
 
 inline std::size_t FileManager::getFileIndex(const File& file) const
 {
-	auto foundIter = m_fileMap.find(file.fullPath);
+	auto foundIter = m_fileMap.find(file.path);
 	if (foundIter == m_fileMap.end())
 		return invalidIndex;
 

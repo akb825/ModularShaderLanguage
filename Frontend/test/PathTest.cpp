@@ -25,17 +25,43 @@ static const char* absolutePath = "\\absolute\\path";
 static const char* path1 = "path\\one";
 static const char* path2 = "second\\path";
 static const char* combinedPath = "path\\one\\second\\path";
+
 static const char* directoryPath = "directory\\path\\";
 static const char* directoryPathTrimmed = "directory\\path";
 static const char* combinedDirectoryPath = "directory\\path\\second\\path";
+
+static const char* unnormalizedPath1 = "./first\\second/..\\/third/.\\fourth/";
+static const char* unnormalizedPath2 = "\\/first/second\\../\\third\\./fourth";
+static const char* unnormalizedPath3 = "C:\\first/second/..//third/./fourth";
+static const char* unnormalizedPath4 = "/";
+static const char* unnormalizedPath5 = ".\\first\\../..\\.second\\third";
+
+static const char* normalizedPath1 = "first\\third\\fourth";
+static const char* normalizedPath2 = "\\first\\third\\fourth";
+static const char* normalizedPath3 = "C:\\first\\third\\fourth";
+static const char* normalizedPath4 = "\\";
+static const char* normalizedPath5 = "..\\.second\\third";
 #else
 static const char* absolutePath = "/absolute/path";
 static const char* path1 = "path/one";
 static const char* path2 = "second/path";
 static const char* combinedPath = "path/one/second/path";
+
 static const char* directoryPath = "directory/path/";
 static const char* directoryPathTrimmed = "directory/path";
 static const char* combinedDirectoryPath = "directory/path/second/path";
+
+static const char* unnormalizedPath1 = "./first/second/..//third/./fourth/";
+static const char* unnormalizedPath2 = "//first/second/..//third/./fourth";
+static const char* unnormalizedPath3 = "first/second/..//third/./fourth";
+static const char* unnormalizedPath4 = "/";
+static const char* unnormalizedPath5 = "./first/../../.second/third";
+
+static const char* normalizedPath1 = "first/third/fourth";
+static const char* normalizedPath2 = "/first/third/fourth";
+static const char* normalizedPath3 = "first/third/fourth";
+static const char* normalizedPath4 = "/";
+static const char* normalizedPath5 = "../.second/third";
 #endif
 
 TEST(PathTest, IsAbsolute)
@@ -70,6 +96,16 @@ TEST(PathTest, GetFile)
 	EXPECT_EQ("one", Path::getFile(path1));
 	EXPECT_EQ("", Path::getFile(directoryPath));
 	EXPECT_EQ("file", Path::getFile("file"));
+}
+
+TEST(PathTest, Normalize)
+{
+	EXPECT_EQ("", Path::normalize(""));
+	EXPECT_EQ(normalizedPath1, Path::normalize(unnormalizedPath1));
+	EXPECT_EQ(normalizedPath2, Path::normalize(unnormalizedPath2));
+	EXPECT_EQ(normalizedPath3, Path::normalize(unnormalizedPath3));
+	EXPECT_EQ(normalizedPath4, Path::normalize(unnormalizedPath4));
+	EXPECT_EQ(normalizedPath5, Path::normalize(unnormalizedPath5));
 }
 
 } // namespace msl

@@ -15,6 +15,7 @@
  */
 
 #include <MSL/Frontend/Path.h>
+#include <vector>
 
 namespace msl
 {
@@ -73,6 +74,51 @@ std::string Path::getFile(const std::string& path)
 		return std::string();
 
 	return path.substr(index + 1);
+}
+
+std::string Path::normalize(const std::string& path)
+{
+	const char separators[] = {pathSeparator, otherPathSeparator, 0};
+	std::vector<std::string> elements;
+	std::size_t pos = 0;
+	do
+	{
+		std::size_t nextPos = path.find_first_of(separators, pos);
+		std::string nextElement;
+		if (nextPos == pos)
+			++pos;
+		else if (nextPos == std::string::npos)
+		{
+			nextElement = path.substr(pos);
+			pos = nextPos;
+		}
+		else
+		{
+			nextElement = path.substr(pos, nextPos - pos);
+			pos = nextPos + 1;
+		}
+
+		if (nextElement == ".." && !elements.empty())
+			elements.pop_back();
+		else if (!nextElement.empty() && nextElement != ".")
+			elements.push_back(std::move(nextElement));
+	} while (pos < path.size());
+
+	std::string finalPath;
+	if (path.find_first_of(separators) == 0)
+		finalPath += pathSeparator;
+
+	if (elements.empty())
+		return finalPath;
+
+	finalPath += elements[0];
+	for (std::size_t i = 1; i < elements.size(); ++i)
+	{
+		finalPath += pathSeparator;
+		finalPath += elements[i];
+	}
+
+	return finalPath;
 }
 
 } // namespace msl

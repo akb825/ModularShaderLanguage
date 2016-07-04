@@ -77,6 +77,13 @@ public:
 	 * @return The file or empty string if no file portion.
 	 */
 	static std::string getFile(const std::string& path);
+
+	/**
+	 * @brief Normalizes a path, making the separators consistent and removing . and .. elements.
+	 * @param path The path to normalize.
+	 * @return The normalized path.
+	 */
+	static std::string normalize(const std::string& path);
 };
 
 } // namespace msl

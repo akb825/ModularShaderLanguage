@@ -47,21 +47,22 @@ std::shared_ptr<const FileManager::File> FileManager::loadFile(const std::string
 	std::string contents;
 	if (ignoreIncludePaths || m_includePaths.empty() || Path::isAbsolute(fileName))
 	{
-		auto foundIter = m_fileMap.find(fileName);
+		std::string normalizedFileName = Path::normalize(fileName);
+		auto foundIter = m_fileMap.find(normalizedFileName);
 		if (foundIter != m_fileMap.end())
 			return m_files[foundIter->second];
 
-		if (!loadFileContents(contents, fileName))
+		if (!loadFileContents(contents, normalizedFileName))
 			return nullptr;
 
-		fullPath = fileName;
+		fullPath = normalizedFileName;
 	}
 	else
 	{
 		for (const std::string& includePath : m_includePaths)
 		{
-			std::string combinedPath = Path::combine(includePath, fileName);
-			auto foundIter = m_fileMap.find(fileName);
+			std::string combinedPath = Path::normalize(Path::combine(includePath, fileName));
+			auto foundIter = m_fileMap.find(combinedPath);
 			if (foundIter != m_fileMap.end())
 				return m_files[foundIter->second];
 
@@ -78,8 +79,7 @@ std::shared_ptr<const FileManager::File> FileManager::loadFile(const std::string
 
 	std::size_t fileIndex = m_files.size();
 	std::shared_ptr<File> file = std::make_shared<File>();
-	file->fileName = fileName;
-	file->fullPath = fullPath;
+	file->path = fullPath;
 	file->contents = std::move(contents);
 	file->tokens = Lexer::tokenize(fileIndex, file->contents);
 
