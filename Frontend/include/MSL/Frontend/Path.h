@@ -79,7 +79,8 @@ public:
 	static std::string getFile(const std::string& path);
 
 	/**
-	 * @brief Normalizes a path, making the separators consistent and removing . and .. elements.
+	 * @brief Normalizes a path, making the separators consistent, removing extra separators, and
+	 * removing extra . and .. elements.
 	 * @param path The path to normalize.
 	 * @return The normalized path.
 	 */
