@@ -18,13 +18,11 @@
 
 #include <MSL/Frontend/Config.h>
 #include <MSL/Frontend/Export.h>
-#include <MSL/Frontend/Token.h>
+#include <MSL/Frontend/File.h>
 #include <deque>
 #include <istream>
 #include <memory>
-#include <string>
 #include <unordered_map>
-#include <vector>
 
 /**
  * @file
@@ -47,30 +45,6 @@ public:
 	 * @brief Constant for an invalid index.
 	 */
 	static const std::size_t invalidIndex = (std::size_t)-1;
-
-	/**
-	 * @brief Structure defining the information within a file.
-	 */
-	struct File
-	{
-		/**
-		 * @brief The full path of the file.
-		 *
-		 * This is the file name combined with the include path. This isn't necessarily an absoulte
-		 * path.
-		 */
-		std::string path;
-
-		/**
-		 * @brief The contents of the file.
-		 */
-		std::string contents;
-
-		/**
-		 * @brief The tokens from the file contents.
-		 */
-		std::vector<Token> tokens;
-	};
 
 	/**
 	 * @brief Default constructor.
@@ -190,7 +164,7 @@ inline std::size_t FileManager::getFileCount() const
 	return m_files.size();
 }
 
-inline std::shared_ptr<const FileManager::File> FileManager::getFile(std::size_t index) const
+inline std::shared_ptr<const File> FileManager::getFile(std::size_t index) const
 {
 	if (index >= m_files.size())
 		return nullptr;

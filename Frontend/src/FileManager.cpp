@@ -42,7 +42,7 @@ std::string FileManager::readFromStream(std::istream &stream)
 	return retVal;
 }
 
-std::shared_ptr<const FileManager::File> FileManager::loadFile(const std::string& fileName,
+std::shared_ptr<const File> FileManager::loadFile(const std::string& fileName,
 	bool ignoreIncludePaths)
 {
 	std::string fullPath;

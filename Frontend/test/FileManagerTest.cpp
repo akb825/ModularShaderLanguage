@@ -90,7 +90,7 @@ TEST(FileManagerTest, LoadFile)
 	addToken(expectedTokensB, fileB, Token::Type::FloatLiteral, "3.14", 1);
 	addToken(expectedTokensB, fileB, Token::Type::Semicolon, ";", 1);
 
-	std::shared_ptr<const FileManager::File> loadedFileA = fileManager.loadFile("a/fileA");
+	std::shared_ptr<const File> loadedFileA = fileManager.loadFile("a/fileA");
 	ASSERT_NE(nullptr, loadedFileA);
 	EXPECT_EQ(Path::normalize("test/a/fileA"), loadedFileA->path);
 	EXPECT_EQ(fileA, loadedFileA->contents);
@@ -99,7 +99,7 @@ TEST(FileManagerTest, LoadFile)
 	EXPECT_EQ(0U, fileManager.getFileIndex(*loadedFileA));
 	EXPECT_EQ(loadedFileA, fileManager.getFile(0));
 
-	std::shared_ptr<const FileManager::File> loadedFileB = fileManager.loadFile("b/fileB");
+	std::shared_ptr<const File> loadedFileB = fileManager.loadFile("b/fileB");
 	ASSERT_NE(nullptr, loadedFileB);
 	EXPECT_EQ(Path::normalize("/b/fileB"), loadedFileB->path);
 	EXPECT_EQ(fileB, loadedFileB->contents);
@@ -114,7 +114,7 @@ TEST(FileManagerTest, LoadFile)
 	EXPECT_EQ(nullptr, fileManager.loadFile("a/fileA", true));
 	EXPECT_EQ(nullptr, fileManager.loadFile("b/fileB", true));
 
-	EXPECT_EQ(FileManager::invalidIndex, fileManager.getFileIndex(FileManager::File()));
+	EXPECT_EQ(FileManager::invalidIndex, fileManager.getFileIndex(File()));
 	EXPECT_EQ(nullptr, fileManager.getFile(fileManager.getFileCount()));
 
 	fileManager.clear();
