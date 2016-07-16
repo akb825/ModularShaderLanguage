@@ -22,6 +22,8 @@
 namespace msl
 {
 
+const std::size_t FileManager::invalidIndex;
+
 std::string FileManager::readFromStream(std::istream &stream)
 {
 	const unsigned int bufferSize = 1024;
@@ -84,7 +86,7 @@ std::shared_ptr<const FileManager::File> FileManager::loadFile(const std::string
 	file->tokens = Lexer::tokenize(fileIndex, file->contents);
 
 	m_files.push_back(file);
-	m_fileMap.emplace(fileName, fileIndex);
+	m_fileMap.emplace(fullPath, fileIndex);
 	return file;
 }
 

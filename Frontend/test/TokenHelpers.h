@@ -14,12 +14,46 @@
  * limitations under the License.
  */
 
+#pragma once
+
 #include <MSL/Frontend/Token.h>
 #include <ostream>
+#include <vector>
 
-std::ostream& operator<<(std::ostream& stream, const msl::Token& token)
+namespace msl
+{
+
+inline std::ostream& operator<<(std::ostream& stream, const msl::Token& token)
 {
 	return stream << "{type: " << (int)token.type << ", start: " << token.start <<
 		", length: " << token.length << ", line: " << token.line <<
 		", column: " << token.column << "}";
 }
+
+inline void addToken(std::vector<Token>& tokens, const std::string& input, Token::Type type,
+	const std::string& str, std::size_t file = 0)
+{
+	if (tokens.empty())
+		tokens.emplace_back(type, file, 0, str.size(), 0, 0);
+	else
+	{
+		const Token& lastToken = tokens.back();
+		std::size_t line = lastToken.line;
+		std::size_t column = lastToken.column;
+		for (std::size_t i = 0; i < lastToken.length; ++i)
+		{
+			if (input[i + lastToken.start] == '\n')
+			{
+				++line;
+				column = 0;
+			}
+			else
+				++column;
+		}
+
+		tokens.emplace_back(type, file, lastToken.start + lastToken.length, str.size(), line,
+			column);
+	}
+}
+
+} // namespace msl

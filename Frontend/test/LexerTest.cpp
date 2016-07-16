@@ -14,37 +14,12 @@
  * limitations under the License.
  */
 
-#include "TokenStream.h"
+#include "TokenHelpers.h"
 #include <MSL/Frontend/Parse/Lexer.h>
 #include <gtest/gtest.h>
 
 namespace msl
 {
-
-void addToken(std::vector<Token>& tokens, const std::string& input, Token::Type type,
-	const std::string& str)
-{
-	if (tokens.empty())
-		tokens.emplace_back(type, 0, 0, str.size(), 0, 0);
-	else
-	{
-		const Token& lastToken = tokens.back();
-		std::size_t line = lastToken.line;
-		std::size_t column = lastToken.column;
-		for (std::size_t i = 0; i < lastToken.length; ++i)
-		{
-			if (input[i + lastToken.start] == '\n')
-			{
-				++line;
-				column = 0;
-			}
-			else
-				++column;
-		}
-
-		tokens.emplace_back(type, 0, lastToken.start + lastToken.length, str.size(), line, column);
-	}
-}
 
 TEST(LexerTest, Whitespace)
 {
