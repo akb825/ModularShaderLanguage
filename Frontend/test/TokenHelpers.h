@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <MSL/Frontend/Token.h>
+#include <MSL/Frontend/Parse/Token.h>
 #include <ostream>
 #include <vector>
 

@@ -125,6 +125,8 @@ struct Token
 		Struct,         ///< @c struct
 		Void,           ///< @c void
 		While,          ///< @c while
+		True,           ///< @c true
+		False,          ///< @c false
 
 		// Types
 		Bool,                   ///< @c bool
@@ -244,6 +246,7 @@ struct Token
 		Include,       ///< @c \#include
 		Pragma,        ///< @c \#pragma
 		Define,        ///< @c \#define
+		Undef,         ///< @c \#undef
 		Ifdef,         ///< @c \#ifdef
 		Ifndef,        ///< @c \#ifndef
 		PreprocIf,     ///< @c \#if
@@ -326,12 +329,20 @@ struct Token
 	inline bool isValid() const;
 
 	/**
+	 * @brief Extracts the value from the input string.
+	 * @param input The input string.
+	 * @return The token value.
+	 */
+	inline std::string extractValue(const std::string& input) const;
+
+	/**
 	 * @brief Adds messages if an error occurred.
 	 * @param[inout] output The output to add any messages to.
 	 * @param fileName The name of the file the token belongs to.
 	 * @param input The original input.
+	 * @return True if a message was added.
 	 */
-	inline void addMessage(Output& output, const std::string& fileName, const std::string& input) const;
+	inline bool addMessage(Output& output, const std::string& fileName, const std::string& input) const;
 
 	/**
 	 * @brief the type of the token.
@@ -369,6 +380,13 @@ struct Token
 	 * It is expected that the storage for the original token remains valid.
 	 */
 	const Token* original;
+
+	/**
+	 * @brief The value to use in place of the start and length extracted from the input string.
+	 *
+	 * This is used for preprocessor substitutions.
+	 */
+	std::string overrideValue;
 };
 
 inline Token::Category Token::getCategory(Type type)
@@ -459,6 +477,8 @@ inline Token::Category Token::getCategory(Type type)
 		case Type::Struct:
 		case Type::Void:
 		case Type::While:
+		case Type::True:
+		case Type::False:
 			return Category::Keyword;
 
 		case Type::Bool:
@@ -578,6 +598,7 @@ inline Token::Category Token::getCategory(Type type)
 		case Type::Include:
 		case Type::Pragma:
 		case Type::Define:
+		case Type::Undef:
 		case Type::Ifdef:
 		case Type::Ifndef:
 		case Type::PreprocIf:
@@ -632,7 +653,7 @@ inline bool Token::operator==(const Token& other) const
 {
 	return type == other.type && file == other.file && start == other.start &&
 		length == other.length && line == other.line && column == other.column &&
-		original == other.original;
+		overrideValue == other.overrideValue;
 }
 
 inline bool Token::operator!=(const Token& other) const
@@ -645,15 +666,25 @@ inline bool Token::isValid() const
 	return type != Type::Invalid;
 }
 
-inline void Token::addMessage(Output& output, const std::string& fileName,
+inline std::string Token::extractValue(const std::string& input) const
+{
+	if (overrideValue.empty())
+		return input.substr(start, length);
+	else
+		return overrideValue;
+}
+
+inline bool Token::addMessage(Output& output, const std::string& fileName,
 	const std::string& input) const
 {
 	if (!isValid())
 	{
-		output.addMessage(Output::Level::Error, fileName, static_cast<unsigned int>(line),
-			static_cast<unsigned int>(column), false,
-			"Invalid token '" + input.substr(start, length) + "'");
+		output.addMessage(Output::Level::Error, fileName, line, column, false,
+			"Invalid token '" + extractValue(input) + "'");
+		return true;
 	}
+
+	return false;
 }
 
 } // namespace msl

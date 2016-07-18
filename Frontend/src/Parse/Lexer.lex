@@ -229,6 +229,8 @@ whitespace [ \t\f\v]
 "struct"         addToken(yyextra, msl::Token::Type::Struct, yytext); return true;
 "void"           addToken(yyextra, msl::Token::Type::Void, yytext); return true;
 "while"          addToken(yyextra, msl::Token::Type::While, yytext); return true;
+"true"           addToken(yyextra, msl::Token::Type::True, yytext); return true;
+"false"          addToken(yyextra, msl::Token::Type::False, yytext); return true;
 
 "bool"                   addToken(yyextra, msl::Token::Type::Bool, yytext); return true;
 "float"                  addToken(yyextra, msl::Token::Type::Float, yytext); return true;
@@ -346,6 +348,7 @@ whitespace [ \t\f\v]
 #{whitespace}*include      addToken(yyextra, msl::Token::Type::Include, yytext); BEGIN(INCLUDE); return true;
 #{whitespace}*pragma       addToken(yyextra, msl::Token::Type::Pragma, yytext); return true;
 #{whitespace}*define       addToken(yyextra, msl::Token::Type::Define, yytext); return true;
+#{whitespace}*undef        addToken(yyextra, msl::Token::Type::Undef, yytext); return true;
 #{whitespace}*ifdef        addToken(yyextra, msl::Token::Type::Ifdef, yytext); return true;
 #{whitespace}*ifndef       addToken(yyextra, msl::Token::Type::Ifndef, yytext); return true;
 #{whitespace}*if           addToken(yyextra, msl::Token::Type::PreprocIf, yytext); return true;

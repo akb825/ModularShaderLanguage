@@ -159,7 +159,7 @@ TEST(LexerTest, Keyword)
 {
 	std::string input = "const centroid break continue do else for if discard return switch case "
 		"default uniform patch sample buffer shared coherent volatile restrict readonly writeonly "
-		"nonperspective flat smooth struct void while";
+		"nonperspective flat smooth struct void while true false";
 	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
@@ -220,6 +220,10 @@ TEST(LexerTest, Keyword)
 	addToken(expectedTokens, input, Token::Type::Void, "void");
 	addToken(expectedTokens, input, Token::Type::Whitespace, " ");
 	addToken(expectedTokens, input, Token::Type::While, "while");
+	addToken(expectedTokens, input, Token::Type::Whitespace, " ");
+	addToken(expectedTokens, input, Token::Type::True, "true");
+	addToken(expectedTokens, input, Token::Type::Whitespace, " ");
+	addToken(expectedTokens, input, Token::Type::False, "false");
 
 	EXPECT_EQ(expectedTokens, tokens);
 }
@@ -517,8 +521,8 @@ TEST(LexerTest, ImageTypes)
 
 TEST(LexerTest, PreProcessor)
 {
-	std::string input = "# #pragma #define #ifdef #ifndef #if #elif #else #endif ## "
-		"# pragma # define # ifdef # ifndef # if # elif # else # endif";
+	std::string input = "# #pragma #define #undef #ifdef #ifndef #if #elif #else #endif ## "
+		"# pragma # define # undef # ifdef # ifndef # if # elif # else # endif";
 	std::vector<Token> tokens = Lexer::tokenize(0, input);
 
 	std::vector<Token> expectedTokens;
@@ -527,6 +531,8 @@ TEST(LexerTest, PreProcessor)
 	addToken(expectedTokens, input, Token::Type::Pragma, "#pragma");
 	addToken(expectedTokens, input, Token::Type::Whitespace, " ");
 	addToken(expectedTokens, input, Token::Type::Define, "#define");
+	addToken(expectedTokens, input, Token::Type::Whitespace, " ");
+	addToken(expectedTokens, input, Token::Type::Undef, "#undef");
 	addToken(expectedTokens, input, Token::Type::Whitespace, " ");
 	addToken(expectedTokens, input, Token::Type::Ifdef, "#ifdef");
 	addToken(expectedTokens, input, Token::Type::Whitespace, " ");
@@ -545,6 +551,8 @@ TEST(LexerTest, PreProcessor)
 	addToken(expectedTokens, input, Token::Type::Pragma, "# pragma");
 	addToken(expectedTokens, input, Token::Type::Whitespace, " ");
 	addToken(expectedTokens, input, Token::Type::Define, "# define");
+	addToken(expectedTokens, input, Token::Type::Whitespace, " ");
+	addToken(expectedTokens, input, Token::Type::Undef, "# undef");
 	addToken(expectedTokens, input, Token::Type::Whitespace, " ");
 	addToken(expectedTokens, input, Token::Type::Ifdef, "# ifdef");
 	addToken(expectedTokens, input, Token::Type::Whitespace, " ");
