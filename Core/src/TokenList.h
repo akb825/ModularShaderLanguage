@@ -16,41 +16,33 @@
 
 #pragma once
 
-#include <MSL/Frontend/Config.h>
-#include <MSL/Frontend/Parse/Token.h>
-#include <string>
+#include <MSL/Config.h>
+#include "Token.h"
+#include <memory>
+#include <set>
 #include <vector>
-
-/**
- * @file
- * @brief Structure with information on a file.
- */
 
 namespace msl
 {
 
-/**
-* @brief Structure defining the information within a file.
-*/
-struct File
+class TokenList
 {
-	/**
-	 * @brief The full path of the file.
-	 *
-	 * This is the file name combined with the include path. This isn't necessarily an absoulte
-	 * path.
-	 */
-	std::string path;
+public:
+	const std::vector<Token>& getTokens() const
+	{
+		return m_tokens;
+	}
 
-	/**
-	 * @brief The contents of the file.
-	 */
-	std::string contents;
+private:
+	friend class Preprocessor;
 
-	/**
-	 * @brief The tokens from the file contents.
-	 */
-	std::vector<Token> tokens;
+	const char* stringPtr(std::string str)
+	{
+		return m_strings.emplace(std::move(str)).first->c_str();
+	}
+
+	std::vector<Token> m_tokens;
+	std::set<std::string> m_strings;
 };
 
 } // namespace msl

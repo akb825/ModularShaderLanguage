@@ -1,0 +1,9 @@
+#include "Simple.mslh"
+#include "Simple.mslh"
+
+#if TEST
+float asdf()
+{
+	return 3.14;
+}
+#endif

@@ -10,7 +10,6 @@ set(MSL_BUILD_TESTS ON CACHE BOOL "Build unit tests.")
 set(MSL_BUILD_DOCS ON CACHE BOOL "Build documentation.")
 
 set(MSL_BUILD_BACKEND ON CACHE BOOL "Build backend library.")
-set(MSL_BUILD_TARGETS ALL CACHE STRING "Semicolon-separated list of targets to build support for.")
 set(MSL_BUILD_TOOLS ON CACHE BOOL "Build tools.")
 
 # Misc options.
@@ -50,7 +49,7 @@ include(cmake/config.cmake)
 include(cmake/install.cmake)
 
 # Required libraries.
-add_subdirectory(Frontend)
+add_subdirectory(Core)
 
 if (MSL_BUILD_BACKEND)
 	if (NOT MSL_BUILD_TARGETS STREQUAL "NONE")

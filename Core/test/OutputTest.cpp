@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <MSL/Frontend/Output.h>
+#include <MSL/Output.h>
 #include <gtest/gtest.h>
 
 namespace msl

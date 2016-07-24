@@ -16,34 +16,39 @@
 
 #pragma once
 
-#include <MSL/Frontend/Config.h>
-#include <MSL/Frontend/FileManager.h>
-
-/**
- * @file
- * @brief Default file manager for loading from the filesystem.
- */
+#include <MSL/Config.h>
+#include <string>
 
 namespace msl
 {
 
-/**
- * @brief Default FileManager implementation that loads directly from the filesystem.
- */
-class MSL_FRONTEND_EXPORT DefaultFileManager : public FileManager
+struct Token
 {
-public:
-	/**
-	 * @brief Default constructor.
-	 */
-	DefaultFileManager() {}
-	inline virtual ~DefaultFileManager() {}
+	enum class Type
+	{
+		Whitespace,
+		Identifier,
+		Symbol,
+		IntLiteral,
+		FloatLiteral,
+		BoolLiteral
+	};
 
-	DefaultFileManager(const DefaultFileManager&) = delete;
-	DefaultFileManager& operator=(const DefaultFileManager&) = delete;
+	Token(Type type_, std::string value_, const char* fileName_, std::size_t line_,
+		std::size_t column_)
+		: type(type_)
+		, value(std::move(value_))
+		, fileName(fileName_)
+		, line(line_)
+		, column(column_)
+	{
+	}
 
-protected:
-	bool loadFileContents(std::string& contents, const std::string& fileName) override;
+	Type type;
+	std::string value;
+	const char* fileName;
+	std::size_t line;
+	std::size_t column;
 };
 
 } // namespace msl

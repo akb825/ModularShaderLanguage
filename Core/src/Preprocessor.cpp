@@ -1,0 +1,170 @@
+/*
+ * Copyright 2016 Aaron Barany
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include "Preprocessor.h"
+#include <MSL/Output.h>
+#include <boost/wave.hpp>
+#include <boost/wave/cpplexer/cpp_lex_iterator.hpp>
+#include <cstring>
+#include <fstream>
+
+namespace msl
+{
+
+enum class Action
+{
+	Error,
+	Use,
+	Skip
+};
+
+template <typename FlexStr>
+std::string toString(const FlexStr& str)
+{
+	return str.c_str();
+}
+
+static Action getType(Token::Type& type, Output& output,
+	const boost::wave::cpplexer::lex_token<>& token)
+{
+	const auto& position = token.get_position();
+	switch (CATEGORY_FROM_TOKEN(token))
+	{
+		case CATEGORY_FROM_TOKEN(boost::wave::IntegerLiteralTokenType):
+			type = Token::Type::IntLiteral;
+			return Action::Use;
+		case CATEGORY_FROM_TOKEN(boost::wave::FloatingLiteralTokenType):
+			type = Token::Type::FloatLiteral;
+			return Action::Use;
+		case CATEGORY_FROM_TOKEN(boost::wave::BoolLiteralTokenType):
+			type = Token::Type::BoolLiteral;
+			return Action::Use;
+
+		case CATEGORY_FROM_TOKEN(boost::wave::OperatorTokenType):
+			type = Token::Type::Symbol;
+			return Action::Use;
+
+		case CATEGORY_FROM_TOKEN(boost::wave::StringLiteralTokenType):
+		case CATEGORY_FROM_TOKEN(boost::wave::CharacterLiteralTokenType):
+			output.addMessage(Output::Level::Error, toString(position.get_file()),
+				position.get_line(), position.get_column(), false,
+				"Invalid token '" + toString(token.get_value()) + "'");
+			return Action::Error;
+
+		case CATEGORY_FROM_TOKEN(boost::wave::PPTokenType):
+			return Action::Skip;
+
+		default:
+			type = Token::Type::Identifier;
+			return Action::Use;
+	};
+}
+
+void Preprocessor::addIncludePath(std::string path)
+{
+	m_includePaths.push_back(std::move(path));
+}
+
+void Preprocessor::addDefine(std::string name, std::string value)
+{
+	m_defines.emplace_back(std::move(name), std::move(value));
+}
+
+bool Preprocessor::preprocess(TokenList& tokenList, Output& output,
+	const std::string& fileName) const
+{
+	std::ifstream stream(fileName);
+	if (!stream.is_open())
+	{
+		output.addMessage(Output::Level::Error, "", 0, 0, false,
+			"could not find file: " + fileName);
+		return false;
+	}
+
+	return preprocess(tokenList, output, stream, fileName);
+}
+
+bool Preprocessor::preprocess(TokenList& tokenList, Output& output, std::istream& stream,
+	const std::string& fileName) const
+{
+	std::string input(std::istreambuf_iterator<char>(stream.rdbuf()),
+		std::istreambuf_iterator<char>());
+
+	const auto language = static_cast<boost::wave::language_support>(
+		boost::wave::support_c99 |
+		boost::wave::support_option_convert_trigraphs |
+		boost::wave::support_option_insert_whitespace |
+		boost::wave::support_option_include_guard_detection);
+
+	using LexToken = boost::wave::cpplexer::lex_token<>;
+	using LexIterator = boost::wave::cpplexer::lex_iterator<LexToken>;
+	using Context = boost::wave::context<std::string::iterator, LexIterator>;
+
+	try
+	{
+		Context context(input.begin(), input.end(), fileName.c_str());
+		context.set_language(language);
+		for (const std::string& includePath : m_includePaths)
+			context.add_include_path(includePath.c_str());
+		for (const std::pair<std::string, std::string>& define : m_defines)
+		{
+			Context::token_sequence_type tokens;
+			if (!define.second.empty())
+			{
+				LexIterator lexer(define.second.begin(), define.second.end(),
+					LexToken::position_type(), language);
+				tokens.insert(tokens.end(), lexer, LexIterator());
+			}
+			std::vector<LexToken> parameters;
+			context.add_macro_definition(define.first, Context::position_type(), false,
+				parameters, tokens, true);
+		}
+
+		std::vector<Token> tokens;
+		for (const LexToken& token : context)
+		{
+			const auto& position = token.get_position();
+			Token::Type type;
+			switch (getType(type, output, token))
+			{
+				case Action::Error:
+					return false;
+				case Action::Skip:
+					continue;
+				default:
+					break;
+			}
+
+			tokens.emplace_back(type, token.get_value().c_str(),
+				tokenList.stringPtr(position.get_file().c_str()), position.get_line(),
+				position.get_column());
+		}
+
+		tokenList.m_tokens = std::move(tokens);
+		return true;
+	}
+	catch (const boost::wave::cpp_exception& e)
+	{
+		std::string message = e.description();
+		message = message.substr(
+			std::strlen(boost::wave::util::get_severity(e.get_severity())) + 2);
+		output.addMessage(Output::Level::Error, e.file_name(), e.line_no(), e.column_no(), false,
+			message);
+		return false;
+	}
+}
+
+} // namespace msl

@@ -14,18 +14,15 @@
  * limitations under the License.
  */
 
-#pragma once
+#include <gtest/gtest.h>
+#include <boost/filesystem.hpp>
 
-#include <MSL/Frontend/Config.h>
+boost::filesystem::path exeDir;
 
-/**
- * @file
- * @brief File that contains the entry point for the frontend for Modular Shader Language files.
- */
-
-/**
- * @brief Namespace for classes and functions used with the Modular Shader Language library.
- */
-namespace msl
+int main(int argc, char** argv)
 {
-} // namespace msl
+	exeDir = boost::filesystem::path(argv[0]).parent_path().string();
+
+	testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
+}

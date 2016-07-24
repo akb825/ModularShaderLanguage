@@ -1,36 +1,45 @@
 # Introduction
 
-The Modular Shader Language (MSL) is a pre-compiled shader language with multiple targets. Current and planned targets are:
+The Modular Shader Language (MSL) is a pre-compiled shader language with multiple targets. It is effectively a wrapper around GLSL and relies on external tools to handle the main work of the compilation. The primary goals are:
 
-* GLSL (120, 330, 400, 430, 100ES, 300ES, 310ES) (TODO)
-* SPIR-V (TODO)
-* HLSL (shader models 3, 4, 4.1, and 5) (TODO)
-* Metal (TODO)
+* Provide an environment more similar to other compiled languages, such as access to a preprocessor and compile-time errors that point to the file.
+* Allow targetting multiple platforms with different capabilities with the same source.
+* Relies on official and external tools as much as possible. This makes the language easier to extend and maintain and allows other third party tools, such as optimizers, to be used.
+* Allows all stages of the pipeline to be specified in the same source. This gives more flexibility in how you organize your source.
+* Pipeline is linked when compiling the shader modules, allowing for earlier checks and easier loading of shaders in the final application.
 
-Not all language features will be available on all targets. Conditional compiling can be used to switch between implementations when differences arise.
+# Language and compilation overview
 
-External tools can be used to do part of the compilation. For example, Microsoft's HLSL compiler and Apple's Metal compiler. This ensures that the resulting binary is optimal for those targets. The generated high-level code for the high level targets is kept as close as possible to the original code to make it easier to debug.
+The core of the language is GLSL with the following changes:
 
-In the case of SPIR-V, some optimizations such as dead code elimination, constant propagation, and elimination of trivial if statements may be performed. However, as recommended by Kronos, more aggressive optimizations are left to the driver. Debugging information may be embedded within SPIR-V.
+* Uses a C preprocessor to allow for macros and \#includes.
+* Uses declaration blocks for the inputs and outputs for the various stages and buffers. These are used to extract metadata and control the elements to use the compilation untis.
+* Declaration of the full pipeline used with the entry points used at each stage. Entry points that are referenced multiple times are shared.
 
-Shaders can be compiled into modules. This will contain many entry points and a group of shared resources, such as buffers. Common examples include:
+Not all language features will be available on all targets. The targets will pre-define macros to dtermine their capabilities, allowing for conditional compiling can be used to switch between implementations when differences arise.
 
-* All the pipeline stages for a single set of shaders from vertex through fragment.
-* All the shaders for different ways of rendering a type of object.
-* All the shaders used in a particular library.
-* Separate modules containing all the shaders for each quality setting.
-* All of the shaders within your application.
+After the initial processing is done on the shader to transform it into standard GLSL, it gets passed into [glslang](https://github.com/KhronosGroup/glslang) to convert it to SPIR-V. From there, [SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross) is used to convert from SPIR-V to other targets, including various flavors of GLSL (including ES) and Metal. (HLSL support will hopefully come later)
+
+After translating the individual entry points to the target language, it may additionally go through an additional tool to process the file. For example, another shader compiler (such as the HLSL or Metal compilers) or an optimizer. (such as GLSL Optimizer)
+
+Multiple shader files may be compiled into a module. Examples for combining modules include:
+
+* All of the render passes, quality levels, etc. for a single object.
+* Separate modules for each quality level.
+* All of the shaders for a specific library.
 
 # Dependencies
 
 The following software is required to build DeepSea:
 
 * cmake 3.0.2 or later
+* boost
+* [glslang](https://github.com/KhronosGroup/glslang) (provided as submodule)
+* [SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross) (provided as submodule)
 * doxygen (optional)
 * gtest (optional)
-* flex and flex (required if making modifications to the parser)
 
-Additionally, additional tools such as Microsoft's HLSL compiler and Apple's Metal compiler will be required when compiling shaders for certain platforms. glslang may also be used as a sanity check for GLSL output.
+Additionally, additional tools such as Microsoft's HLSL compiler and Apple's Metal compiler will be required when compiling shaders for certain platforms.
 
 # Platforms
 
@@ -61,7 +70,6 @@ The following options may be used when running cmake:
 * `-DMSL_BUILD_TESTS=ON|OFF`: Set to `ON` to build the unit tests. `gtest` must also be found in order to build the unit tests. Defaults to `ON`.
 * `-DMSL_BUILD_DOCS=ON|OFF`: Set to `ON` to build the documentation. `doxygen` must also be found in order to build the documentation. Defaults to `ON`.
 * `-DMSL_BUILD_BACKEND=ON|OFF`: Set to `ON` to build the backend. When set to `OFF`, only the frontend will be built. Defaults to `ON`.
-* `-DMSL_BUILD_TARGETS=...`: A semicolon-separated list of the targets to build for. Possible options are: `GLSL`, `SPIR-V`, `HLSL`, `METAL`, `ALL`, and `NONE`. `ALL` will use all targets available on the current platform. Defaults to `ALL`.
 * `-DMSL_BUILD_TOOLS=ON|OFF`: Set to `ON` to build the tools. Defaults to `ON`.
 
 ## Miscellaneous Options:
@@ -71,7 +79,7 @@ The following options may be used when running cmake:
 
 Once you have built and installed MSL, and have added the `lib/cmake/MSL` directory to `CMAKE_PREFIX_PATH`, you can find the various modules with the `find_package()` CMake function. For example:
 
-    find_package(MSL MODULES Frontend Backend)
+    find_package(MSL MODULES Core)
 
 Libraries and include directories can be found through the `MSL_LIBRARIES` and `MSLModule_NCLUDE_DIRS` CMake variables. For example: `MSLFrontend_LIBRARIES` and `MSLFrontend_INCLUDE_DIRS`.
 
@@ -79,15 +87,14 @@ Libraries and include directories can be found through the `MSL_LIBRARIES` and `
 
 MSL contains the following modules:
 
-* [Frontend](Frontend/README.md): (Required) The frontend for parsing and analyzing MSL source files. This may be embedded in other applications for features such as syntax and symantic highlighting, code completion, etc.
-* [Backend](Backend/README.md): (Optional) Converts the parsed shader to various targets.
-* [tools](tools/README.md): (Optional) Tools for compiling shaders and verifying that certain shaders can be linked together at runtime.
+* [Core](Core/README.md): (Required) The library for processing shader files, feeding them to the various tools, and outputting the final files.
+* [tools](tools/README.md): The `mslc` tool for compiling shader files.
 
 The directory structure of the include files is:
 
-	MSL/<ModuleName>/[Subdirectory/]Header.h
+	MSL/[Subdirectory/]Header.h
 
 For example:
 
-	#include <MSL/Frontend/Config.h>
-	#include <MSL/Frontend/Parse/Lexer.h>
+	#include <MSL/Config.h>
+

@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <MSL/Frontend/Config.h>
+#include <MSL/Config.h>
 #include <algorithm>
 #include <string>
 #include <vector>
@@ -40,6 +40,7 @@ public:
 	 */
 	enum class Level
 	{
+		Info,    ///< Info message that doesn't indicate an error.
 		Warning, ///< Warning that could be an issue, but doesn't stop compilation.
 		Error    ///< Error that halts execution of the compiler.
 	};

@@ -14,20 +14,32 @@
  * limitations under the License.
  */
 
-#include <MSL/Frontend/DefaultFileManager.h>
-#include <fstream>
+#pragma once
+
+#include <MSL/Config.h>
+#include "TokenList.h"
+#include <istream>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace msl
 {
 
-bool DefaultFileManager::loadFileContents(std::string& contents, const std::string& fileName)
-{
-	std::ifstream stream(fileName);
-	if (!stream.is_open())
-		return false;
+class Output;
 
-	contents = readFromStream(stream);
-	return true;
-}
+class Preprocessor
+{
+public:
+	void addIncludePath(std::string path);
+	void addDefine(std::string name, std::string value);
+	bool preprocess(TokenList& tokenList, Output& output, const std::string& fileName) const;
+	bool preprocess(TokenList& tokenList, Output& output, std::istream& stream,
+		const std::string& fileName) const;
+
+private:
+	std::vector<std::string> m_includePaths;
+	std::vector<std::pair<std::string, std::string>> m_defines;
+};
 
 } // namespace msl
