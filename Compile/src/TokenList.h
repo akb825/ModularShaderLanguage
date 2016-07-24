@@ -16,39 +16,33 @@
 
 #pragma once
 
-#include <MSL/Config.h>
-#include <string>
+#include <MSL/Compile/Config.h>
+#include "Token.h"
+#include <memory>
+#include <set>
+#include <vector>
 
 namespace msl
 {
 
-struct Token
+class TokenList
 {
-	enum class Type
+public:
+	const std::vector<Token>& getTokens() const
 	{
-		Whitespace,
-		Identifier,
-		Symbol,
-		IntLiteral,
-		FloatLiteral,
-		BoolLiteral
-	};
-
-	Token(Type type_, std::string value_, const char* fileName_, std::size_t line_,
-		std::size_t column_)
-		: type(type_)
-		, value(std::move(value_))
-		, fileName(fileName_)
-		, line(line_)
-		, column(column_)
-	{
+		return m_tokens;
 	}
 
-	Type type;
-	std::string value;
-	const char* fileName;
-	std::size_t line;
-	std::size_t column;
+private:
+	friend class Preprocessor;
+
+	const char* stringPtr(std::string str)
+	{
+		return m_strings.emplace(std::move(str)).first->c_str();
+	}
+
+	std::vector<Token> m_tokens;
+	std::set<std::string> m_strings;
 };
 
 } // namespace msl

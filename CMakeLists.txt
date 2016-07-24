@@ -9,7 +9,7 @@ set(MSL_PROFILING ON CACHE BOOL "Enable profiling of code.")
 set(MSL_BUILD_TESTS ON CACHE BOOL "Build unit tests.")
 set(MSL_BUILD_DOCS ON CACHE BOOL "Build documentation.")
 
-set(MSL_BUILD_BACKEND ON CACHE BOOL "Build backend library.")
+set(MSL_BUILD_COMPILE ON CACHE BOOL "Build the compiler.")
 set(MSL_BUILD_TOOLS ON CACHE BOOL "Build tools.")
 
 # Misc options.
@@ -48,14 +48,8 @@ set(MSL_VERSION ${MSL_MAJOR_VERSION}.${MSL_MINOR_VERSION}.${MSL_PATCH_VERSION})
 include(cmake/config.cmake)
 include(cmake/install.cmake)
 
-# Required libraries.
-add_subdirectory(Core)
-
-if (MSL_BUILD_BACKEND)
-	if (NOT MSL_BUILD_TARGETS STREQUAL "NONE")
-		if (MSL_BUILD_TOOLS)
-		endif()
-	endif()
+if (MSL_BUILD_COMPILE)
+	add_subdirectory(Compile)
 endif()
 
 # Documentation. (populated by built libraries)

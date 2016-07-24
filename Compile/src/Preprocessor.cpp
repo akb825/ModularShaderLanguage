@@ -15,7 +15,7 @@
  */
 
 #include "Preprocessor.h"
-#include <MSL/Output.h>
+#include <MSL/Compile/Output.h>
 #include <boost/wave.hpp>
 #include <boost/wave/cpplexer/cpp_lex_iterator.hpp>
 #include <cstring>

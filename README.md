@@ -32,12 +32,12 @@ Multiple shader files may be compiled into a module. Examples for combining modu
 
 The following software is required to build DeepSea:
 
-* cmake 3.0.2 or later
-* boost
-* [glslang](https://github.com/KhronosGroup/glslang) (provided as submodule)
-* [SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross) (provided as submodule)
-* doxygen (optional)
-* gtest (optional)
+* [cmake](https://cmake.org/) 3.0.2 or later
+* [boost](http://www.boost.org/) (required for compiler)
+* [glslang](https://github.com/KhronosGroup/glslang) (required for compiler, provided as submodule)
+* [SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross) (required for compiler, provided as submodule)
+* [doxygen](http://www.stack.nl/~dimitri/doxygen/) (optional)
+* [gtest](https://github.com/google/googletest) (optional)
 
 Additionally, additional tools such as Microsoft's HLSL compiler and Apple's Metal compiler will be required when compiling shaders for certain platforms.
 
@@ -69,7 +69,7 @@ The following options may be used when running cmake:
 
 * `-DMSL_BUILD_TESTS=ON|OFF`: Set to `ON` to build the unit tests. `gtest` must also be found in order to build the unit tests. Defaults to `ON`.
 * `-DMSL_BUILD_DOCS=ON|OFF`: Set to `ON` to build the documentation. `doxygen` must also be found in order to build the documentation. Defaults to `ON`.
-* `-DMSL_BUILD_BACKEND=ON|OFF`: Set to `ON` to build the backend. When set to `OFF`, only the frontend will be built. Defaults to `ON`.
+* `-DMSL_BUILD_COMPILE=ON|OFF`: Set to `ON` to build the compiler. Defaults to `ON`.
 * `-DMSL_BUILD_TOOLS=ON|OFF`: Set to `ON` to build the tools. Defaults to `ON`.
 
 ## Miscellaneous Options:
@@ -79,22 +79,22 @@ The following options may be used when running cmake:
 
 Once you have built and installed MSL, and have added the `lib/cmake/MSL` directory to `CMAKE_PREFIX_PATH`, you can find the various modules with the `find_package()` CMake function. For example:
 
-    find_package(MSL MODULES Core)
+    find_package(MSL MODULES Compile)
 
-Libraries and include directories can be found through the `MSL_LIBRARIES` and `MSLModule_NCLUDE_DIRS` CMake variables. For example: `MSLFrontend_LIBRARIES` and `MSLFrontend_INCLUDE_DIRS`.
+Libraries and include directories can be found through the `MSLModule_LIBRARIES` and `MSLModule_INCLUDE_DIRS` CMake variables. For example: `MSLCompile_LIBRARIES` and `MSLCompile_INCLUDE_DIRS`.
 
 # Modules
 
 MSL contains the following modules:
 
-* [Core](Core/README.md): (Required) The library for processing shader files, feeding them to the various tools, and outputting the final files.
-* [tools](tools/README.md): The `mslc` tool for compiling shader files.
+* [Compile](Compile/README.md): (Optional) The library for processing shader files, feeding them to the various tools, and outputting the final files.
+* [tools](tools/README.md): (Optional) The `mslc` tool for compiling shader files.
 
 The directory structure of the include files is:
 
-	MSL/[Subdirectory/]Header.h
+	MSL/[Module]/[Subdirectory/]Header.h
 
 For example:
 
-	#include <MSL/Config.h>
+	#include <MSL/Compile/Config.h>
 

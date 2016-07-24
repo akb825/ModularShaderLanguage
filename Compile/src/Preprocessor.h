@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <MSL/Config.h>
+#include <MSL/Compile/Config.h>
 #include "TokenList.h"
 #include <istream>
 #include <string>
