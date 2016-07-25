@@ -1,0 +1,446 @@
+int globalVarAll;
+in vec2 inVarAll;
+out vec3 outVarAll;uniform vec4 unfiformVarAll;
+in inBufferAll
+{
+	vec2 inBufferVarAll;
+};
+in inBufferAll
+{
+	vec2 instance;
+} inInstanceAll;
+out outBufferAll
+{
+	vec2 outBufferVarAll;
+};
+out outBufferAll
+{
+	vec2 instance;
+} outInstanceAll;
+out vec3 outVarAll;
+layout (std140)
+uniform UniformBlockAll
+{
+	vec4 uniformBlockVarAll;
+};
+uniform UniformBlockInstanceAll
+{
+	vec4 instance;
+} uniformInstanceAll;
+layout (std140)
+buffer BufferAll
+{
+	vec4 bufferVarAll;
+};
+buffer BufferInstanceAll
+{
+	vec4 instance;
+} bufferInstanceAll;
+struct StructAll
+{
+	vec4 value;
+};
+struct InstanceStructAll
+{
+	vec4 value;
+} structInstanceAll;
+void funcDeclAll();
+void funcAll()
+{
+	if (true)
+	{
+		gl_Position = bufferVarAll;
+	}
+}
+
+[[vertex]]
+int globalVarVertex;
+[[vertex]]in vec2 inVarVertex;
+[[vertex]] out vec3 outVarVertex;[[vertex]]uniform vec4 unfiformVarVertex;
+[[vertex]] in inBufferVertex
+{
+	vec2 inBufferVarVertex;
+};
+[[vertex]] in inBufferVertex
+{
+	vec2 instance;
+} inInstanceVertex;
+[[vertex]] out outBufferVertex
+{
+	vec2 outBufferVarVertex;
+};
+[[vertex]] out outBufferVertex
+{
+	vec2 instance;
+} outInstanceVertex;
+[[vertex]] out vec3 outVarVertex;
+[[vertex]] layout (std140)
+uniform UniformBlockVertex
+{
+	vec4 uniformBlockVarVertex;
+};
+[[vertex]] uniform UniformBlockInstanceVertex
+{
+	vec4 instance;
+} uniformInstanceVertex;
+[[vertex]] layout (std140)
+buffer BufferVertex
+{
+	vec4 bufferVarVertex;
+};
+[[vertex]] buffer BufferInstanceVertex
+{
+	vec4 instance;
+} bufferInstanceVertex;
+[[vertex]] struct StructVertex
+{
+	vec4 value;
+};
+[[vertex]] struct InstanceStructVertex
+{
+	vec4 value;
+} structInstanceVertex;
+[[vertex]] void funcDeclVertex();
+[[vertex]] void funcVertex()
+{
+	if (true)
+	{
+		gl_Position = bufferVarVertex;
+	}
+}
+
+[[tessellation_control]]
+int globalVarTessControl;
+[[tessellation_control]]in vec2 inVarTessControl;
+[[tessellation_control]] out vec3 outVarTessControl;[[tessellation_control]]uniform vec4 unfiformVarTessControl;
+[[tessellation_control]] in inBufferTessControl
+{
+	vec2 inBufferVarTessControl;
+};
+[[tessellation_control]] in inBufferTessControl
+{
+	vec2 instance;
+} inInstanceTessControl;
+[[tessellation_control]] out outBufferTessControl
+{
+	vec2 outBufferVarTessControl;
+};
+[[tessellation_control]] out outBufferTessControl
+{
+	vec2 instance;
+} outInstanceTessControl;
+[[tessellation_control]] out vec3 outVarTessControl;
+[[tessellation_control]] layout (std140)
+uniform UniformBlockTessControl
+{
+	vec4 uniformBlockVarTessControl;
+};
+[[tessellation_control]] uniform UniformBlockInstanceTessControl
+{
+	vec4 instance;
+} uniformInstanceTessControl;
+[[tessellation_control]] layout (std140)
+buffer BufferTessControl
+{
+	vec4 bufferVarTessControl;
+};
+[[tessellation_control]] buffer BufferInstanceTessControl
+{
+	vec4 instance;
+} bufferInstanceTessControl;
+[[tessellation_control]] struct StructTessControl
+{
+	vec4 value;
+};
+[[tessellation_control]] struct InstanceStructTessControl
+{
+	vec4 value;
+} structInstanceTessControl;
+[[tessellation_control]] void funcDeclTessControl();
+[[tessellation_control]] void funcTessControl()
+{
+	if (true)
+	{
+		gl_Position = bufferVarTessControl;
+	}
+}
+
+[[tessellation_evaluation]]
+int globalVarTessEvaluation;
+[[tessellation_evaluation]]in vec2 inVarTessEvaluation;
+[[tessellation_evaluation]] out vec3 outVarTessEvaluation;[[tessellation_evaluation]]uniform vec4 unfiformVarTessEvaluation;
+[[tessellation_evaluation]] in inBufferTessEvaluation
+{
+	vec2 inBufferVarTessEvaluation;
+};
+[[tessellation_evaluation]] in inBufferTessEvaluation
+{
+	vec2 instance;
+} inInstanceTessEvaluation;
+[[tessellation_evaluation]] out outBufferTessEvaluation
+{
+	vec2 outBufferVarTessEvaluation;
+};
+[[tessellation_evaluation]] out outBufferTessEvaluation
+{
+	vec2 instance;
+} outInstanceTessEvaluation;
+[[tessellation_evaluation]] out vec3 outVarTessEvaluation;
+[[tessellation_evaluation]] layout (std140)
+uniform UniformBlockTessEvaluation
+{
+	vec4 uniformBlockVarTessEvaluation;
+};
+[[tessellation_evaluation]] uniform UniformBlockInstanceTessEvaluation
+{
+	vec4 instance;
+} uniformInstanceTessEvaluation;
+[[tessellation_evaluation]] layout (std140)
+buffer BufferTessEvaluation
+{
+	vec4 bufferVarTessEvaluation;
+};
+[[tessellation_evaluation]] buffer BufferInstanceTessEvaluation
+{
+	vec4 instance;
+} bufferInstanceTessEvaluation;
+[[tessellation_evaluation]] struct StructTessEvaluation
+{
+	vec4 value;
+};
+[[tessellation_evaluation]] struct InstanceStructTessEvaluation
+{
+	vec4 value;
+} structInstanceTessEvaluation;
+[[tessellation_evaluation]] void funcDeclTessEvaluation();
+[[tessellation_evaluation]] void funcTessEvaluation()
+{
+	if (true)
+	{
+		gl_Position = bufferVarTessEvaluation;
+	}
+}
+
+[[geometry]]
+int globalVarGeometry;
+[[geometry]]in vec2 inVarGeometry;
+[[geometry]] out vec3 outVarGeometry;[[geometry]]uniform vec4 unfiformVarGeometry;
+[[geometry]] in inBufferGeometry
+{
+	vec2 inBufferVarGeometry;
+};
+[[geometry]] in inBufferGeometry
+{
+	vec2 instance;
+} inInstanceGeometry;
+[[geometry]] out outBufferGeometry
+{
+	vec2 outBufferVarGeometry;
+};
+[[geometry]] out outBufferGeometry
+{
+	vec2 instance;
+} outInstanceGeometry;
+[[geometry]] out vec3 outVarGeometry;
+[[geometry]] layout (std140)
+uniform UniformBlockGeometry
+{
+	vec4 uniformBlockVarGeometry;
+};
+[[geometry]] uniform UniformBlockInstanceGeometry
+{
+	vec4 instance;
+} uniformInstanceGeometry;
+[[geometry]] layout (std140)
+buffer BufferGeometry
+{
+	vec4 bufferVarGeometry;
+};
+[[geometry]] buffer BufferInstanceGeometry
+{
+	vec4 instance;
+} bufferInstanceGeometry;
+[[geometry]] struct StructGeometry
+{
+	vec4 value;
+};
+[[geometry]] struct InstanceStructGeometry
+{
+	vec4 value;
+} structInstanceGeometry;
+[[geometry]] void funcDeclGeometry();
+[[geometry]] void funcGeometry()
+{
+	if (true)
+	{
+		gl_Position = bufferVarGeometry;
+	}
+}
+
+[[fragment]]
+int globalVarFragment;
+[[fragment]]in vec2 inVarFragment;
+[[fragment]] out vec3 outVarFragment;[[fragment]]uniform vec4 unfiformVarFragment;
+[[fragment]] in inBufferFragment
+{
+	vec2 inBufferVarFragment;
+};
+[[fragment]] in inBufferFragment
+{
+	vec2 instance;
+} inInstanceFragment;
+[[fragment]] out outBufferFragment
+{
+	vec2 outBufferVarFragment;
+};
+[[fragment]] out outBufferFragment
+{
+	vec2 instance;
+} outInstanceFragment;
+[[fragment]] out vec3 outVarFragment;
+[[fragment]] layout (std140)
+uniform UniformBlockFragment
+{
+	vec4 uniformBlockVarFragment;
+};
+[[fragment]] uniform UniformBlockInstanceFragment
+{
+	vec4 instance;
+} uniformInstanceFragment;
+[[fragment]] layout (std140)
+buffer BufferFragment
+{
+	vec4 bufferVarFragment;
+};
+[[fragment]] buffer BufferInstanceFragment
+{
+	vec4 instance;
+} bufferInstanceFragment;
+[[fragment]] struct StructFragment
+{
+	vec4 value;
+};
+[[fragment]] struct InstanceStructFragment
+{
+	vec4 value;
+} structInstanceFragment;
+[[fragment]] void funcDeclFragment();
+[[fragment]] void funcFragment()
+{
+	if (true)
+	{
+		gl_Position = bufferVarFragment;
+	}
+}
+
+[[compute]]
+int globalVarCompute;
+[[compute]]in vec2 inVarCompute;
+[[compute]] out vec3 outVarCompute;[[compute]]uniform vec4 unfiformVarCompute;
+[[compute]] in inBufferCompute
+{
+	vec2 inBufferVarCompute;
+};
+[[compute]] in inBufferCompute
+{
+	vec2 instance;
+} inInstanceCompute;
+[[compute]] out outBufferCompute
+{
+	vec2 outBufferVarCompute;
+};
+[[compute]] out outBufferCompute
+{
+	vec2 instance;
+} outInstanceCompute;
+[[compute]] out vec3 outVarCompute;
+[[compute]] layout (std140)
+uniform UniformBlockCompute
+{
+	vec4 uniformBlockVarCompute;
+};
+[[compute]] uniform UniformBlockInstanceCompute
+{
+	vec4 instance;
+} uniformInstanceCompute;
+[[compute]] layout (std140)
+buffer BufferCompute
+{
+	vec4 bufferVarCompute;
+};
+[[compute]] buffer BufferInstanceCompute
+{
+	vec4 instance;
+} bufferInstanceCompute;
+[[compute]] struct StructCompute
+{
+	vec4 value;
+};
+[[compute]] struct InstanceStructCompute
+{
+	vec4 value;
+} structInstanceCompute;
+[[compute]] void funcDeclCompute();
+[[compute]] void funcCompute()
+{
+	if (true)
+	{
+		gl_Position = bufferVarCompute;
+	}
+}
+
+[[vertex, fragment]]
+int globalVarVertexFragment;
+[[vertex, fragment]]in vec2 inVarVertexFragment;
+[[vertex, fragment]] out vec3 outVarVertexFragment;[[vertex, fragment]]uniform vec4 unfiformVarVertexFragment;
+[[vertex, fragment]] in inBufferVertexFragment
+{
+	vec2 inBufferVarVertexFragment;
+};
+[[vertex, fragment]] in inBufferVertexFragment
+{
+	vec2 instance;
+} inInstanceVertexFragment;
+[[vertex, fragment]] out outBufferVertexFragment
+{
+	vec2 outBufferVarVertexFragment;
+};
+[[vertex, fragment]] out outBufferVertexFragment
+{
+	vec2 instance;
+} outInstanceVertexFragment;
+[[vertex, fragment]] out vec3 outVarVertexFragment;
+[[vertex, fragment]] layout (std140)
+uniform UniformBlockVertexFragment
+{
+	vec4 uniformBlockVarVertexFragment;
+};
+[[vertex, fragment]] uniform UniformBlockInstanceVertexFragment
+{
+	vec4 instance;
+} uniformInstanceVertexFragment;
+[[vertex, fragment]] layout (std140)
+buffer BufferVertexFragment
+{
+	vec4 bufferVarVertexFragment;
+};
+[[vertex, fragment]] buffer BufferInstanceVertexFragment
+{
+	vec4 instance;
+} bufferInstanceVertexFragment;
+[[vertex, fragment]] struct StructVertexFragment
+{
+	vec4 value;
+};
+[[vertex, fragment]] struct InstanceStructVertexFragment
+{
+	vec4 value;
+} structInstanceVertexFragment;
+[[vertex, fragment]] void funcDeclVertexFragment();
+[[vertex, fragment]] void funcVertexFragment()
+{
+	if (true)
+	{
+		gl_Position = bufferVarVertexFragment;
+	}
+}

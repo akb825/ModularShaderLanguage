@@ -1,0 +1,110 @@
+int globalVarAll;
+in vec2 inVarAll;
+out vec3 outVarAll;
+uniform vec4 unfiformVarAll;
+in inBufferAll
+{
+vec2 inBufferVarAll;
+};
+in inBufferAll
+{
+vec2 instance;
+} inInstanceAll;
+out outBufferAll
+{
+vec2 outBufferVarAll;
+};
+out outBufferAll
+{
+vec2 instance;
+} outInstanceAll;
+out vec3 outVarAll;
+layout (std140)
+uniform UniformBlockAll
+{
+vec4 uniformBlockVarAll;
+};
+uniform UniformBlockInstanceAll
+{
+vec4 instance;
+} uniformInstanceAll;
+layout (std140)
+buffer BufferAll
+{
+vec4 bufferVarAll;
+};
+buffer BufferInstanceAll
+{
+vec4 instance;
+} bufferInstanceAll;
+struct StructAll
+{
+vec4 value;
+};
+struct InstanceStructAll
+{
+vec4 value;
+} structInstanceAll;
+void funcDeclAll();
+void funcAll()
+{
+if (true)
+{
+gl_Position = bufferVarAll;
+}
+}
+int globalVarTessControl;
+in vec2 inVarTessControl;
+ out vec3 outVarTessControl;
+uniform vec4 unfiformVarTessControl;
+ in inBufferTessControl
+{
+vec2 inBufferVarTessControl;
+};
+ in inBufferTessControl
+{
+vec2 instance;
+} inInstanceTessControl;
+ out outBufferTessControl
+{
+vec2 outBufferVarTessControl;
+};
+ out outBufferTessControl
+{
+vec2 instance;
+} outInstanceTessControl;
+ out vec3 outVarTessControl;
+ layout (std140)
+uniform UniformBlockTessControl
+{
+vec4 uniformBlockVarTessControl;
+};
+ uniform UniformBlockInstanceTessControl
+{
+vec4 instance;
+} uniformInstanceTessControl;
+ layout (std140)
+buffer BufferTessControl
+{
+vec4 bufferVarTessControl;
+};
+ buffer BufferInstanceTessControl
+{
+vec4 instance;
+} bufferInstanceTessControl;
+ struct StructTessControl
+{
+vec4 value;
+};
+ struct InstanceStructTessControl
+{
+vec4 value;
+} structInstanceTessControl;
+ void funcDeclTessControl();
+ void funcTessControl()
+{
+if (true)
+{
+gl_Position = bufferVarTessControl;
+}
+}

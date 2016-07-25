@@ -162,7 +162,7 @@ bool Parser::parse(Output& output, const std::string& baseFileName, int options)
 				break;
 			lastToken = &tokens[i];
 		}
-		if (token.value == "[")
+		else if (token.value == "[")
 		{
 			if (squareCount == 0)
 				startSquareToken = &token;
@@ -235,8 +235,8 @@ bool Parser::parse(Output& output, const std::string& baseFileName, int options)
 					return false;
 				}
 
-				--braceCount;
-				if (inStageDecl && braceCount == 0)
+				--squareCount;
+				if (inStageDecl && squareCount == 0)
 				{
 					inStageDecl = false;
 					tokenRange.start = i + 1;
@@ -250,6 +250,16 @@ bool Parser::parse(Output& output, const std::string& baseFileName, int options)
 				elementStart = true;
 				hadScope = false;
 			}
+			else if (!hadScope && token.value == "uniform")
+				element = Element::Uniform;
+			else if (!hadScope && token.value == "buffer")
+				element = Element::Buffer;
+			else if (!hadScope && token.value == "struct")
+				element = Element::Struct;
+			else if (!hadScope && token.value == "in")
+				element = Element::In;
+			else if (!hadScope && token.value == "out")
+				element = Element::Out;
 			else
 			{
 				// Check for named uniform blocks when removing blocks. Check for extra tokens
@@ -331,12 +341,10 @@ void Parser::endElement(std::vector<Stage>& stages, TokenRange& tokenRange, std:
 {
 	std::array<bool, stageCount> addStages;
 	if (stages.empty())
-	{
-		for (bool& addStage : addStages)
-			addStage = true;
-	}
+		addStages.fill(true);
 	else
 	{
+		addStages.fill(false);
 		for (Stage stage : stages)
 			addStages[static_cast<int>(stage)] = true;
 	}
@@ -462,14 +470,21 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 void Parser::addElementString(std::string& str, std::vector<LineMapping>& lineMappings,
 	const TokenRange& tokenRange) const
 {
+	if (tokenRange.count == 0)
+		return;
+
 	if (removeUniformBlock(str, lineMappings, tokenRange))
 		return;
 
 	bool newline = true;
-	if (!str.empty() && str.back() != '\n')
-		str += '\n';
-
 	const auto& tokens = m_tokens.getTokens();
+	const Token& firstToken = tokens[tokenRange.start];
+	if (!str.empty() && str.back() != '\n' &&
+		(firstToken.value.empty() || firstToken.value[0] != '\n'))
+	{
+		str += '\n';
+	}
+
 	for (std::size_t i = tokenRange.start;
 		i < tokenRange.start + tokenRange.count && i < tokens.size(); ++i)
 	{
@@ -536,8 +551,12 @@ bool Parser::removeUniformBlock(std::string& str, std::vector<LineMapping>& line
 
 				processed = true;
 				++braceCount;
-				if (!str.empty() && str.back() != '\n')
+				const Token& firstToken = tokens[tokenRange.start];
+				if (!str.empty() && str.back() != '\n' &&
+					(firstToken.value.empty() || firstToken.value[0] != '\n'))
+				{
 					str += '\n';
+				}
 			}
 		}
 	}

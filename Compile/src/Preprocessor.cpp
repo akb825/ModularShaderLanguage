@@ -65,7 +65,13 @@ static Action getType(Token::Type& type, Output& output,
 			return Action::Error;
 
 		case CATEGORY_FROM_TOKEN(boost::wave::PPTokenType):
+		case CATEGORY_FROM_TOKEN(boost::wave::EOFTokenType):
 			return Action::Skip;
+
+		case CATEGORY_FROM_TOKEN(boost::wave::EOLTokenType):
+		case CATEGORY_FROM_TOKEN(boost::wave::WhiteSpaceTokenType):
+			type = Token::Type::Whitespace;
+			return Action::Use;
 
 		default:
 			type = Token::Type::Identifier;

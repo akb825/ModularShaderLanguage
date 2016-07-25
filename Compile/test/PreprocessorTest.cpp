@@ -14,31 +14,13 @@
  * limitations under the License.
  */
 
+#include "Helpers.h"
 #include <MSL/Compile/Output.h>
 #include "Preprocessor.h"
 #include <gtest/gtest.h>
-#include <boost/filesystem.hpp>
-#include <fstream>
-
-extern boost::filesystem::path exeDir;
 
 namespace msl
 {
-
-static std::string readFile(const boost::filesystem::path& fileName)
-{
-	std::ifstream stream(fileName.string());
-	return std::string(std::istreambuf_iterator<char>(stream.rdbuf()),
-		std::istreambuf_iterator<char>());
-}
-
-static std::string tokensToString(const TokenList& tokens)
-{
-	std::string output;
-	for (const Token& token : tokens.getTokens())
-		output += token.value;
-	return output;
-}
 
 TEST(PreprocessorTest, NotFound)
 {

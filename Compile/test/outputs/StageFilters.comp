@@ -1,0 +1,110 @@
+int globalVarAll;
+in vec2 inVarAll;
+out vec3 outVarAll;
+uniform vec4 unfiformVarAll;
+in inBufferAll
+{
+vec2 inBufferVarAll;
+};
+in inBufferAll
+{
+vec2 instance;
+} inInstanceAll;
+out outBufferAll
+{
+vec2 outBufferVarAll;
+};
+out outBufferAll
+{
+vec2 instance;
+} outInstanceAll;
+out vec3 outVarAll;
+layout (std140)
+uniform UniformBlockAll
+{
+vec4 uniformBlockVarAll;
+};
+uniform UniformBlockInstanceAll
+{
+vec4 instance;
+} uniformInstanceAll;
+layout (std140)
+buffer BufferAll
+{
+vec4 bufferVarAll;
+};
+buffer BufferInstanceAll
+{
+vec4 instance;
+} bufferInstanceAll;
+struct StructAll
+{
+vec4 value;
+};
+struct InstanceStructAll
+{
+vec4 value;
+} structInstanceAll;
+void funcDeclAll();
+void funcAll()
+{
+if (true)
+{
+gl_Position = bufferVarAll;
+}
+}
+int globalVarCompute;
+in vec2 inVarCompute;
+ out vec3 outVarCompute;
+uniform vec4 unfiformVarCompute;
+ in inBufferCompute
+{
+vec2 inBufferVarCompute;
+};
+ in inBufferCompute
+{
+vec2 instance;
+} inInstanceCompute;
+ out outBufferCompute
+{
+vec2 outBufferVarCompute;
+};
+ out outBufferCompute
+{
+vec2 instance;
+} outInstanceCompute;
+ out vec3 outVarCompute;
+ layout (std140)
+uniform UniformBlockCompute
+{
+vec4 uniformBlockVarCompute;
+};
+ uniform UniformBlockInstanceCompute
+{
+vec4 instance;
+} uniformInstanceCompute;
+ layout (std140)
+buffer BufferCompute
+{
+vec4 bufferVarCompute;
+};
+ buffer BufferInstanceCompute
+{
+vec4 instance;
+} bufferInstanceCompute;
+ struct StructCompute
+{
+vec4 value;
+};
+ struct InstanceStructCompute
+{
+vec4 value;
+} structInstanceCompute;
+ void funcDeclCompute();
+ void funcCompute()
+{
+if (true)
+{
+gl_Position = bufferVarCompute;
+}
+}
