@@ -60,6 +60,7 @@ TEST(PreprocessorTest, PreprocError)
 	std::string fileName = (inputDir/"PreprocError.msl").string();
 	EXPECT_FALSE(preprocessor.preprocess(tokens, output, fileName));
 	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(Output::Level::Error, output.getMessages()[0].level);
 	EXPECT_EQ(fileName, output.getMessages()[0].file);
 	EXPECT_EQ(2U, output.getMessages()[0].line);
 	EXPECT_EQ(1U, output.getMessages()[0].column);
@@ -79,6 +80,7 @@ TEST(PreprocessorTest, IncludeError)
 	std::string fileName = (inputDir/"IncludeError.msl").string();
 	EXPECT_FALSE(preprocessor.preprocess(tokens, output, fileName));
 	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(Output::Level::Error, output.getMessages()[0].level);
 	EXPECT_EQ(fileName, output.getMessages()[0].file);
 	EXPECT_EQ(1U, output.getMessages()[0].line);
 	EXPECT_EQ(1U, output.getMessages()[0].column);

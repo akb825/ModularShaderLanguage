@@ -4,6 +4,7 @@
 #if TEST
 float asdf()
 {
+#include "Empty.mslh"
 	return 3.14;
 }
 #endif

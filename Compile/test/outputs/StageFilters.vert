@@ -4,54 +4,54 @@ out vec3 outVarAll;
 uniform vec4 unfiformVarAll;
 in inBufferAll
 {
-vec2 inBufferVarAll;
+	vec2 inBufferVarAll;
 };
 in inBufferAll
 {
-vec2 instance;
+	vec2 instance;
 } inInstanceAll;
 out outBufferAll
 {
-vec2 outBufferVarAll;
+	vec2 outBufferVarAll;
 };
 out outBufferAll
 {
-vec2 instance;
+	vec2 instance;
 } outInstanceAll;
 out vec3 outVarAll;
 layout (std140)
 uniform UniformBlockAll
 {
-vec4 uniformBlockVarAll;
+	vec4 uniformBlockVarAll;
 };
 uniform UniformBlockInstanceAll
 {
-vec4 instance;
+	vec4 instance;
 } uniformInstanceAll;
 layout (std140)
 buffer BufferAll
 {
-vec4 bufferVarAll;
+	vec4 bufferVarAll;
 };
 buffer BufferInstanceAll
 {
-vec4 instance;
+	vec4 instance;
 } bufferInstanceAll;
 struct StructAll
 {
-vec4 value;
+	vec4 value;
 };
 struct InstanceStructAll
 {
-vec4 value;
+	vec4 value;
 } structInstanceAll;
 void funcDeclAll();
 void funcAll()
 {
-if (true)
-{
-gl_Position = bufferVarAll;
-}
+	if (true)
+	{
+		gl_Position = bufferVarAll;
+	}
 }
 int globalVarVertex;
 in vec2 inVarVertex;
@@ -59,54 +59,54 @@ in vec2 inVarVertex;
 uniform vec4 unfiformVarVertex;
  in inBufferVertex
 {
-vec2 inBufferVarVertex;
+	vec2 inBufferVarVertex;
 };
  in inBufferVertex
 {
-vec2 instance;
+	vec2 instance;
 } inInstanceVertex;
  out outBufferVertex
 {
-vec2 outBufferVarVertex;
+	vec2 outBufferVarVertex;
 };
  out outBufferVertex
 {
-vec2 instance;
+	vec2 instance;
 } outInstanceVertex;
  out vec3 outVarVertex;
  layout (std140)
 uniform UniformBlockVertex
 {
-vec4 uniformBlockVarVertex;
+	vec4 uniformBlockVarVertex;
 };
  uniform UniformBlockInstanceVertex
 {
-vec4 instance;
+	vec4 instance;
 } uniformInstanceVertex;
  layout (std140)
 buffer BufferVertex
 {
-vec4 bufferVarVertex;
+	vec4 bufferVarVertex;
 };
  buffer BufferInstanceVertex
 {
-vec4 instance;
+	vec4 instance;
 } bufferInstanceVertex;
  struct StructVertex
 {
-vec4 value;
+	vec4 value;
 };
  struct InstanceStructVertex
 {
-vec4 value;
+	vec4 value;
 } structInstanceVertex;
  void funcDeclVertex();
  void funcVertex()
 {
-if (true)
-{
-gl_Position = bufferVarVertex;
-}
+	if (true)
+	{
+		gl_Position = bufferVarVertex;
+	}
 }
 int globalVarVertexFragment;
 in vec2 inVarVertexFragment;
@@ -114,52 +114,52 @@ in vec2 inVarVertexFragment;
 uniform vec4 unfiformVarVertexFragment;
  in inBufferVertexFragment
 {
-vec2 inBufferVarVertexFragment;
+	vec2 inBufferVarVertexFragment;
 };
  in inBufferVertexFragment
 {
-vec2 instance;
+	vec2 instance;
 } inInstanceVertexFragment;
  out outBufferVertexFragment
 {
-vec2 outBufferVarVertexFragment;
+	vec2 outBufferVarVertexFragment;
 };
  out outBufferVertexFragment
 {
-vec2 instance;
+	vec2 instance;
 } outInstanceVertexFragment;
  out vec3 outVarVertexFragment;
  layout (std140)
 uniform UniformBlockVertexFragment
 {
-vec4 uniformBlockVarVertexFragment;
+	vec4 uniformBlockVarVertexFragment;
 };
  uniform UniformBlockInstanceVertexFragment
 {
-vec4 instance;
+	vec4 instance;
 } uniformInstanceVertexFragment;
  layout (std140)
 buffer BufferVertexFragment
 {
-vec4 bufferVarVertexFragment;
+	vec4 bufferVarVertexFragment;
 };
  buffer BufferInstanceVertexFragment
 {
-vec4 instance;
+	vec4 instance;
 } bufferInstanceVertexFragment;
  struct StructVertexFragment
 {
-vec4 value;
+	vec4 value;
 };
  struct InstanceStructVertexFragment
 {
-vec4 value;
+	vec4 value;
 } structInstanceVertexFragment;
  void funcDeclVertexFragment();
  void funcVertexFragment()
 {
-if (true)
-{
-gl_Position = bufferVarVertexFragment;
-}
+	if (true)
+	{
+		gl_Position = bufferVarVertexFragment;
+	}
 }

@@ -4,54 +4,54 @@ out vec3 outVarAll;
 uniform vec4 unfiformVarAll;
 in inBufferAll
 {
-vec2 inBufferVarAll;
+	vec2 inBufferVarAll;
 };
 in inBufferAll
 {
-vec2 instance;
+	vec2 instance;
 } inInstanceAll;
 out outBufferAll
 {
-vec2 outBufferVarAll;
+	vec2 outBufferVarAll;
 };
 out outBufferAll
 {
-vec2 instance;
+	vec2 instance;
 } outInstanceAll;
 out vec3 outVarAll;
 layout (std140)
 uniform UniformBlockAll
 {
-vec4 uniformBlockVarAll;
+	vec4 uniformBlockVarAll;
 };
 uniform UniformBlockInstanceAll
 {
-vec4 instance;
+	vec4 instance;
 } uniformInstanceAll;
 layout (std140)
 buffer BufferAll
 {
-vec4 bufferVarAll;
+	vec4 bufferVarAll;
 };
 buffer BufferInstanceAll
 {
-vec4 instance;
+	vec4 instance;
 } bufferInstanceAll;
 struct StructAll
 {
-vec4 value;
+	vec4 value;
 };
 struct InstanceStructAll
 {
-vec4 value;
+	vec4 value;
 } structInstanceAll;
 void funcDeclAll();
 void funcAll()
 {
-if (true)
-{
-gl_Position = bufferVarAll;
-}
+	if (true)
+	{
+		gl_Position = bufferVarAll;
+	}
 }
 int globalVarTessEvaluation;
 in vec2 inVarTessEvaluation;
@@ -59,52 +59,52 @@ in vec2 inVarTessEvaluation;
 uniform vec4 unfiformVarTessEvaluation;
  in inBufferTessEvaluation
 {
-vec2 inBufferVarTessEvaluation;
+	vec2 inBufferVarTessEvaluation;
 };
  in inBufferTessEvaluation
 {
-vec2 instance;
+	vec2 instance;
 } inInstanceTessEvaluation;
  out outBufferTessEvaluation
 {
-vec2 outBufferVarTessEvaluation;
+	vec2 outBufferVarTessEvaluation;
 };
  out outBufferTessEvaluation
 {
-vec2 instance;
+	vec2 instance;
 } outInstanceTessEvaluation;
  out vec3 outVarTessEvaluation;
  layout (std140)
 uniform UniformBlockTessEvaluation
 {
-vec4 uniformBlockVarTessEvaluation;
+	vec4 uniformBlockVarTessEvaluation;
 };
  uniform UniformBlockInstanceTessEvaluation
 {
-vec4 instance;
+	vec4 instance;
 } uniformInstanceTessEvaluation;
  layout (std140)
 buffer BufferTessEvaluation
 {
-vec4 bufferVarTessEvaluation;
+	vec4 bufferVarTessEvaluation;
 };
  buffer BufferInstanceTessEvaluation
 {
-vec4 instance;
+	vec4 instance;
 } bufferInstanceTessEvaluation;
  struct StructTessEvaluation
 {
-vec4 value;
+	vec4 value;
 };
  struct InstanceStructTessEvaluation
 {
-vec4 value;
+	vec4 value;
 } structInstanceTessEvaluation;
  void funcDeclTessEvaluation();
  void funcTessEvaluation()
 {
-if (true)
-{
-gl_Position = bufferVarTessEvaluation;
-}
+	if (true)
+	{
+		gl_Position = bufferVarTessEvaluation;
+	}
 }

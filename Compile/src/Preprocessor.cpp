@@ -24,11 +24,85 @@
 namespace msl
 {
 
+namespace
+{
+
 enum class Action
 {
 	Error,
 	Use,
 	Skip
+};
+
+void handleException(Output& output, Output::Level level, const boost::wave::cpp_exception& e)
+{
+	std::string message = e.description();
+	message = message.substr(
+		std::strlen(boost::wave::util::get_severity(e.get_severity())) + 2);
+	output.addMessage(level, e.file_name(), e.line_no(), e.column_no(), false, message);
+}
+
+void handleException(Output& output, Output::Level level,
+	const boost::wave::cpplexer::cpplexer_exception& e)
+{
+	std::string message = e.description();
+	message = message.substr(
+		std::strlen(boost::wave::util::get_severity(e.get_severity())) + 2);
+	output.addMessage(level, e.file_name(), e.line_no(), e.column_no(), false, message);
+}
+
+class Hooks : public boost::wave::context_policies::default_preprocessing_hooks
+{
+public:
+	Hooks()
+		: m_output(nullptr), m_error(false)
+	{
+	}
+
+	void setOutput(Output& output)
+	{
+		m_output = &output;
+	}
+
+	bool hadError() const
+	{
+		return m_error;
+	}
+
+	template <typename ContextT, typename ExceptionT>
+	void throw_exception(ContextT const&, ExceptionT const& e)
+	{
+		if (e.get_errorcode() == boost::wave::preprocess_exception::last_line_not_terminated)
+			return;
+
+		Output::Level level;
+		switch (e.get_severity())
+		{
+			case boost::wave::util::severity_remark:
+				level = Output::Level::Info;
+				break;
+			case boost::wave::util::severity_warning:
+				level = Output::Level::Warning;
+				break;
+			default:
+				level = Output::Level::Error;
+				m_error = true;
+				break;
+		}
+
+		// Only print out if not throwing an exception. The exception handler must also print out
+		// due to exceptions being thrown from outside of this.
+		if (e.is_recoverable())
+		{
+			if (m_output)
+				handleException(*m_output, level, e);
+		}
+		else
+			boost::throw_exception(e);
+	}
+private:
+	Output* m_output;
+	bool m_error;
 };
 
 template <typename FlexStr>
@@ -37,8 +111,7 @@ std::string toString(const FlexStr& str)
 	return str.c_str();
 }
 
-static Action getType(Token::Type& type, Output& output,
-	const boost::wave::cpplexer::lex_token<>& token)
+Action getType(Token::Type& type, Output& output, const boost::wave::cpplexer::lex_token<>& token)
 {
 	const auto& position = token.get_position();
 	switch (CATEGORY_FROM_TOKEN(token))
@@ -79,6 +152,8 @@ static Action getType(Token::Type& type, Output& output,
 	};
 }
 
+} // namespace
+
 void Preprocessor::addIncludePath(std::string path)
 {
 	m_includePaths.push_back(std::move(path));
@@ -117,11 +192,13 @@ bool Preprocessor::preprocess(TokenList& tokenList, Output& output, std::istream
 
 	using LexToken = boost::wave::cpplexer::lex_token<>;
 	using LexIterator = boost::wave::cpplexer::lex_iterator<LexToken>;
-	using Context = boost::wave::context<std::string::iterator, LexIterator>;
+	using Context = boost::wave::context<std::string::iterator, LexIterator,
+		boost::wave::iteration_context_policies::load_file_to_string, Hooks>;
 
 	try
 	{
 		Context context(input.begin(), input.end(), fileName.c_str());
+		context.get_hooks().setOutput(output);
 		context.set_language(language);
 		for (const std::string& includePath : m_includePaths)
 			context.add_include_path(includePath.c_str());
@@ -160,15 +237,16 @@ bool Preprocessor::preprocess(TokenList& tokenList, Output& output, std::istream
 		}
 
 		tokenList.m_tokens = std::move(tokens);
-		return true;
+		return !context.get_hooks().hadError();
 	}
 	catch (const boost::wave::cpp_exception& e)
 	{
-		std::string message = e.description();
-		message = message.substr(
-			std::strlen(boost::wave::util::get_severity(e.get_severity())) + 2);
-		output.addMessage(Output::Level::Error, e.file_name(), e.line_no(), e.column_no(), false,
-			message);
+		handleException(output, Output::Level::Error, e);
+		return false;
+	}
+	catch (const boost::wave::cpplexer::lexing_exception& e)
+	{
+		handleException(output, Output::Level::Error, e);
 		return false;
 	}
 }

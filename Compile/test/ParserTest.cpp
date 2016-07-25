@@ -19,6 +19,7 @@
 #include "Parser.h"
 #include "Preprocessor.h"
 #include <gtest/gtest.h>
+#include <sstream>
 
 namespace msl
 {
@@ -48,6 +49,23 @@ TEST(ParserTest, StageFilters)
 		parser.createShaderString(lineMappings, Parser::Stage::Fragment) + '\n');
 	EXPECT_EQ(readFile(outputDir/"StageFilters.comp"),
 		parser.createShaderString(lineMappings, Parser::Stage::Compute) + '\n');
+}
+
+TEST(ParserTest, InvalidStageName)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("[[asdf]] int bla;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "StageFilters.msl"));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(3U, output.getMessages()[0].column);
+	EXPECT_EQ("unknown stage type: asdf", output.getMessages()[0].message);
 }
 
 } // namespace msl
