@@ -16,17 +16,26 @@
 
 #include "Parser.h"
 #include <MSL/Compile/Output.h>
+#include <boost/algorithm/string/trim.hpp>
 
 namespace msl
 {
 
-static bool skipWhitespace(Output& output, const std::vector<Token>& tokens, std::size_t& i)
+static bool skipWhitespace(const std::vector<Token>& tokens, std::size_t& i, std::size_t maxValue)
 {
-	for (; i < tokens.size(); ++i)
+	for (; i < maxValue; ++i)
 	{
 		if (tokens[i].type != Token::Type::Whitespace)
 			return true;
 	}
+
+	return false;
+}
+
+static bool skipWhitespace(Output& output, const std::vector<Token>& tokens, std::size_t& i)
+{
+	if (skipWhitespace(tokens, i, tokens.size()))
+		return true;
 
 	const Token& lastToken = tokens.back();
 	output.addMessage(Output::Level::Error, lastToken .fileName, lastToken .line,
@@ -445,7 +454,7 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 
 			++i;
 		}
-	} while (true);
+	} while (i < tokens.size());
 
 	return true;
 }
@@ -453,14 +462,18 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 void Parser::addElementString(std::string& str, std::vector<LineMapping>& lineMappings,
 	const TokenRange& tokenRange) const
 {
+	if (removeUniformBlock(str, lineMappings, tokenRange))
+		return;
+
 	bool newline = true;
 	if (!str.empty() && str.back() != '\n')
 		str += '\n';
 
 	const auto& tokens = m_tokens.getTokens();
-	for (std::size_t i = 0; i < tokenRange.count && i + tokenRange.start < tokens.size(); ++i)
+	for (std::size_t i = tokenRange.start;
+		i < tokenRange.start + tokenRange.count && i < tokens.size(); ++i)
 	{
-		const Token& token = tokens[tokenRange.start + i];
+		const Token& token = tokens[i];
 		if (newline)
 		{
 			lineMappings.emplace_back();
@@ -473,6 +486,63 @@ void Parser::addElementString(std::string& str, std::vector<LineMapping>& lineMa
 			newline = true;
 		str += token.value;
 	}
+}
+
+bool Parser::removeUniformBlock(std::string& str, std::vector<LineMapping>& lineMappings,
+	const TokenRange& tokenRange) const
+{
+	if (!(m_options & RemoveUniformBlocks))
+		return false;
+
+	bool newline = true;
+	bool processed = false;
+	unsigned int braceCount = 0;
+	bool isUniform = false;
+	const auto& tokens = m_tokens.getTokens();
+	std::size_t maxValue = std::min(tokenRange.start + tokenRange.count, tokens.size());
+	for (std::size_t i = tokenRange.start; i < maxValue; ++i)
+	{
+		const Token& token = tokens[i];
+		if (processed)
+		{
+			if (token.value == "{")
+				++braceCount;
+			if (token.value == "}")
+				--braceCount;
+
+			if (braceCount > 0)
+			{
+				if (newline)
+				{
+					lineMappings.emplace_back();
+					lineMappings.back().fileName = token.fileName;
+					lineMappings.back().line = token.line;
+					newline = false;
+				}
+
+				if (token.value == "\n")
+					newline = true;
+				str += token.value;
+			}
+		}
+		else
+		{
+			if (token.value == "uniform")
+				isUniform = true;
+			else if (token.value == "{")
+			{
+				if (!isUniform)
+					return false;
+
+				processed = true;
+				++braceCount;
+				if (!str.empty() && str.back() != '\n')
+					str += '\n';
+			}
+		}
+	}
+
+	return processed;
 }
 
 } // namespace msl

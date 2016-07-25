@@ -87,6 +87,8 @@ private:
 	bool readPipeline(Output& output, const std::vector<Token>& tokens, std::size_t& i);
 	void addElementString(std::string& str, std::vector<LineMapping>& lineMappings,
 		const TokenRange& tokenRange) const;
+	bool removeUniformBlock(std::string& str, std::vector<LineMapping>& lineMappings,
+		const TokenRange& tokenRange) const;
 
 	TokenList m_tokens;
 
