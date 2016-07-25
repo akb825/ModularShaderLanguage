@@ -13,8 +13,9 @@ The Modular Shader Language (MSL) is a pre-compiled shader language with multipl
 The core of the language is GLSL with the following changes:
 
 * Uses a C preprocessor to allow for macros and \#includes.
-* Uses declaration blocks for the inputs and outputs for the various stages and buffers. These are used to extract metadata and control the elements to use the compilation untis.
-* Declaration of the full pipeline used with the entry points used at each stage. Entry points that are referenced multiple times are shared.
+* Allows tagging of elements to only be included for specific pipeline stages of the shader.
+* Allows the removal of uniform blocks to use the same source on targets that don't support them.
+* Declaration of the full pipeline used with the entry points used at each stage. Multiple pipelines can be declared in the same shader. (e.g. different rendering techniques or passes)
 
 Not all language features will be available on all targets. The targets will pre-define macros to dtermine their capabilities, allowing for conditional compiling can be used to switch between implementations when differences arise.
 
