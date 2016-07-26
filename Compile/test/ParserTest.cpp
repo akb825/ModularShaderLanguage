@@ -19,10 +19,16 @@
 #include "Parser.h"
 #include "Preprocessor.h"
 #include <gtest/gtest.h>
+#include <cstring>
 #include <sstream>
 
 namespace msl
 {
+
+bool operator==(const Parser::LineMapping& map1, const Parser::LineMapping& map2)
+{
+	return std::strcmp(map1.fileName, map2.fileName) == 0 && map1.line == map2.line;
+}
 
 TEST(ParserTest, StageFilters)
 {
@@ -59,13 +65,462 @@ TEST(ParserTest, InvalidStageName)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "StageFilters.msl"));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
 
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
 	EXPECT_EQ(1U, output.getMessages()[0].line);
 	EXPECT_EQ(3U, output.getMessages()[0].column);
 	EXPECT_EQ("unknown stage type: asdf", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, StageDeclNotFirst)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("int [[fragment]] bla;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(6U, output.getMessages()[0].column);
+	EXPECT_EQ("stage declaration must be at the start of an element", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, StageDeclInvalidChar)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("[[[fragment]] int bla;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(3U, output.getMessages()[0].column);
+	EXPECT_EQ("unexpected token: [", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, UnterminatedEnd)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("[[fragment]] int bla; float foo");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(29U, output.getMessages()[0].column);
+	EXPECT_EQ("unexpected end of file", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, ExtraEndParen)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("int foo()) {gl_position = bar[2];}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(10U, output.getMessages()[0].column);
+	EXPECT_EQ("encountered ) without opening (", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, MissingCloseParen)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("int foo( {gl_position = bar[2];}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(2U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(32U, output.getMessages()[0].column);
+	EXPECT_EQ("reached end of file without terminating )", output.getMessages()[0].message);
+
+	EXPECT_EQ(path, output.getMessages()[1].file);
+	EXPECT_EQ(1U, output.getMessages()[1].line);
+	EXPECT_EQ(8U, output.getMessages()[1].column);
+	EXPECT_EQ("see opening (", output.getMessages()[1].message);
+}
+
+TEST(ParserTest, ExtraEndBrace)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("int foo() {gl_position = bar[2];}}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(34U, output.getMessages()[0].column);
+	EXPECT_EQ("encountered } without opening {", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, MissingCloseBrace)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("int foo() {gl_position = bar[2];");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(2U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(32U, output.getMessages()[0].column);
+	EXPECT_EQ("reached end of file without terminating }", output.getMessages()[0].message);
+
+	EXPECT_EQ(path, output.getMessages()[1].file);
+	EXPECT_EQ(1U, output.getMessages()[1].line);
+	EXPECT_EQ(11U, output.getMessages()[1].column);
+	EXPECT_EQ("see opening {", output.getMessages()[1].message);
+}
+
+TEST(ParserTest, SquareEndBrace)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("int foo() {gl_position = bar[2]];}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(32U, output.getMessages()[0].column);
+	EXPECT_EQ("encountered ] without opening [", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, MissingCloseSquare)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("int foo() {gl_position = bar[2;}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(2U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(32U, output.getMessages()[0].column);
+	EXPECT_FALSE(output.getMessages()[0].continued);
+	EXPECT_EQ("reached end of file without terminating ]", output.getMessages()[0].message);
+
+	EXPECT_EQ(path, output.getMessages()[1].file);
+	EXPECT_EQ(1U, output.getMessages()[1].line);
+	EXPECT_EQ(29U, output.getMessages()[1].column);
+	EXPECT_TRUE(output.getMessages()[1].continued);
+	EXPECT_EQ("see opening [", output.getMessages()[1].message);
+}
+
+TEST(ParserTest, Pipeline)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	boost::filesystem::path outputDir = exeDir/"outputs";
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output,
+		(inputDir/"Pipeline.msl").string()));
+	EXPECT_TRUE(parser.parse(output, "Pipeline.msl"));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	EXPECT_EQ("Foo", parser.getPipelines()[0].name);
+	EXPECT_EQ("vertEntry", parser.getPipelines()[0].entryPoints[0]);
+	EXPECT_EQ("tessControlEntry", parser.getPipelines()[0].entryPoints[1]);
+	EXPECT_EQ("tessEvaluationEntry", parser.getPipelines()[0].entryPoints[2]);
+	EXPECT_EQ("geometryEntry", parser.getPipelines()[0].entryPoints[3]);
+	EXPECT_EQ("fragEntry", parser.getPipelines()[0].entryPoints[4]);
+	EXPECT_EQ("computeEntry", parser.getPipelines()[0].entryPoints[5]);
+
+	std::vector<Parser::LineMapping> lineMappings;
+	EXPECT_EQ(readFile(outputDir/"Pipeline.frag"),
+		parser.createShaderString(lineMappings, Parser::Stage::Fragment) + '\n');
+}
+
+TEST(ParserTest, UnnamedPipeline)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("pipeline {compute = computeEntry;}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(10U, output.getMessages()[0].column);
+	EXPECT_EQ("unexpected token: {", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, PipelineMissingOpenBrace)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("pipeline Test compute = computeEntry;}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(15U, output.getMessages()[0].column);
+	EXPECT_EQ("unexpected token: compute", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, PipelineUnknownStage)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("pipeline Test {asdf = computeEntry;}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(16U, output.getMessages()[0].column);
+	EXPECT_EQ("unknown stage type: asdf", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, PipelineMissingEquals)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("pipeline Test {compute computeEntry;}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(24U, output.getMessages()[0].column);
+	EXPECT_EQ("unexpected token: computeEntry", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, PipelineMissingEntryPoint)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("pipeline Test {compute =;}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(25U, output.getMessages()[0].column);
+	EXPECT_EQ("unexpected token: ;", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, PipelineMissingSemicolon)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("pipeline Test {compute = computeEntry}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(38U, output.getMessages()[0].column);
+	EXPECT_EQ("unexpected token: }", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, PipelineMissingEndBrace)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("pipeline Test {compute = computeEntry;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(38U, output.getMessages()[0].column);
+	EXPECT_EQ("unexpected end of file", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, DuplicatePipeline)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("pipeline Test {} pipeline Test{}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl"));
+
+	ASSERT_EQ(2U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(27U, output.getMessages()[0].column);
+	EXPECT_FALSE(output.getMessages()[0].continued);
+	EXPECT_EQ("pipeline of name Test already declared", output.getMessages()[0].message);
+
+	EXPECT_EQ(path, output.getMessages()[1].file);
+	EXPECT_EQ(1U, output.getMessages()[1].line);
+	EXPECT_EQ(10U, output.getMessages()[1].column);
+	EXPECT_TRUE(output.getMessages()[1].continued);
+	EXPECT_EQ("see other declaration of pipeline Test", output.getMessages()[1].message);
+}
+
+TEST(ParserTest, RemoveUniformBlocks)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	boost::filesystem::path outputDir = exeDir/"outputs";
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output,
+		(inputDir/"RemoveUniformBlocks.msl").string()));
+	EXPECT_TRUE(parser.parse(output, "RemoveUniformBlocks.msl", Parser::RemoveUniformBlocks));
+
+	std::vector<Parser::LineMapping> lineMappings;
+	EXPECT_EQ(readFile(outputDir/"RemoveUniformBlocks.vert"),
+		parser.createShaderString(lineMappings, Parser::Stage::Vertex));
+}
+
+TEST(ParserTest, RemoveNamedUniformBlock)
+{
+	std::string path = (exeDir/"test.msl").string();
+	std::stringstream stream("uniform Test {vec4 test;} testBlock;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, "test.msl", Parser::RemoveUniformBlocks));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(27U, output.getMessages()[0].column);
+	EXPECT_EQ("can not have a uniform block instance name when removing uniform blocks",
+		output.getMessages()[0].message);
+}
+
+TEST(ParserTest, LineNumbers)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+
+	std::string fileName = (inputDir/"LineNumbers.msl").string();
+	std::string includeFileName = (inputDir/"LineNumbers.mslh").string();
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	preprocessor.addIncludePath(inputDir.string());
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, fileName));
+	EXPECT_TRUE(parser.parse(output, fileName));
+
+	std::vector<Parser::LineMapping> expectedMappings =
+	{
+		Parser::LineMapping{fileName.c_str(), 1},
+		Parser::LineMapping{includeFileName.c_str(), 1},
+		Parser::LineMapping{includeFileName.c_str(), 3},
+		Parser::LineMapping{includeFileName.c_str(), 4},
+		Parser::LineMapping{includeFileName.c_str(), 5},
+		Parser::LineMapping{includeFileName.c_str(), 6},
+		Parser::LineMapping{fileName.c_str(), 6},
+		Parser::LineMapping{fileName.c_str(), 7},
+		Parser::LineMapping{fileName.c_str(), 8},
+		Parser::LineMapping{fileName.c_str(), 9},
+		Parser::LineMapping{fileName.c_str(), 16},
+		Parser::LineMapping{fileName.c_str(), 16},
+		Parser::LineMapping{fileName.c_str(), 18},
+		Parser::LineMapping{fileName.c_str(), 19},
+		Parser::LineMapping{fileName.c_str(), 20},
+		Parser::LineMapping{fileName.c_str(), 21}
+	};
+
+	std::vector<Parser::LineMapping> lineMappings;
+	parser.createShaderString(lineMappings, Parser::Stage::Vertex);
+	EXPECT_EQ(expectedMappings, lineMappings);
+}
+
+TEST(ParserTest, LineNumbersRemoveUniformBlocks)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+
+	std::string fileName = (inputDir/"LineNumbers.msl").string();
+	std::string includeFileName = (inputDir/"LineNumbers.mslh").string();
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	preprocessor.addIncludePath(inputDir.string());
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, fileName));
+	EXPECT_TRUE(parser.parse(output, fileName, Parser::RemoveUniformBlocks));
+
+	std::vector<Parser::LineMapping> expectedMappings =
+	{
+		Parser::LineMapping{fileName.c_str(), 1},
+		Parser::LineMapping{includeFileName.c_str(), 1},
+		Parser::LineMapping{includeFileName.c_str(), 5},
+		Parser::LineMapping{fileName.c_str(), 6},
+		Parser::LineMapping{fileName.c_str(), 7},
+		Parser::LineMapping{fileName.c_str(), 8},
+		Parser::LineMapping{fileName.c_str(), 9},
+		Parser::LineMapping{fileName.c_str(), 16},
+		Parser::LineMapping{fileName.c_str(), 16},
+		Parser::LineMapping{fileName.c_str(), 18},
+		Parser::LineMapping{fileName.c_str(), 19},
+		Parser::LineMapping{fileName.c_str(), 20},
+		Parser::LineMapping{fileName.c_str(), 21}
+	};
+
+	std::vector<Parser::LineMapping> lineMappings;
+	parser.createShaderString(lineMappings, Parser::Stage::Vertex);
+	EXPECT_EQ(expectedMappings, lineMappings);
 }
 
 } // namespace msl

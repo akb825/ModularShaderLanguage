@@ -1,0 +1,6 @@
+uniform vec4 testUniform;
+
+uniform TestBlock
+{
+	vec4 otherUniform;
+};

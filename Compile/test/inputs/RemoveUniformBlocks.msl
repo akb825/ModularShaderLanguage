@@ -1,0 +1,8 @@
+uniform vec4 test;
+
+layout(std140) uniform TestBlock
+{
+	layout(position=10) vec4 uniform1;
+	vec3 uniform2 = {0, 1, 2};
+	uniform vec2 uniform3;
+};

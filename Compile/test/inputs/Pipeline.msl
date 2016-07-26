@@ -1,0 +1,20 @@
+[[vertex]]
+void vertEntry()
+{
+}
+
+pipeline Foo
+{
+	vertex = vertEntry;
+	fragment = fragEntry;
+	tessellation_control = tessControlEntry;
+	tessellation_evaluation = tessEvaluationEntry;
+	geometry = geometryEntry;
+	fragment = fragEntry;
+	compute = computeEntry;
+}
+
+[[fragment]]
+void fragEntry()
+{
+}

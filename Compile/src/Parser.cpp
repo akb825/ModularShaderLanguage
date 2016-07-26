@@ -155,7 +155,7 @@ bool Parser::parse(Output& output, const std::string& baseFileName, int options)
 		// Declarations that must be in the start: pipeline and [ for stage declaration.
 		if (elementStart && token.value == "pipeline")
 		{
-			if (!readPipeline(output, tokens, i))
+			if (!readPipeline(output, tokens, ++i))
 				return false;
 
 			if (i >= tokens.size())
@@ -264,7 +264,8 @@ bool Parser::parse(Output& output, const std::string& baseFileName, int options)
 			{
 				// Check for named uniform blocks when removing blocks. Check for extra tokens
 				// between end of scope and ending ;.
-				if ((m_options & RemoveUniformBlocks) && element == Element::Uniform && hadScope)
+				if ((m_options & RemoveUniformBlocks) && element == Element::Uniform &&
+					braceCount == 0 && hadScope)
 				{
 					output.addMessage(Output::Level::Error, token.fileName, token.line,
 						token.column, false,
@@ -283,7 +284,7 @@ bool Parser::parse(Output& output, const std::string& baseFileName, int options)
 	{
 		output.addMessage(Output::Level::Error, lastToken->fileName, lastToken->line,
 			lastToken->column, false,
-			"reached end of file without terminating (");
+			"reached end of file without terminating )");
 		if (startParenToken)
 			output.addMessage(Output::Level::Error, startParenToken->fileName,
 				startParenToken->line, startParenToken->column, true,
@@ -295,7 +296,7 @@ bool Parser::parse(Output& output, const std::string& baseFileName, int options)
 	{
 		output.addMessage(Output::Level::Error, lastToken->fileName, lastToken->line,
 			lastToken->column, false,
-			"reached end of file without terminating {");
+			"reached end of file without terminating }");
 		if (startBraceToken)
 			output.addMessage(Output::Level::Error, startBraceToken->fileName,
 				startBraceToken->line, startBraceToken->column, true,
@@ -307,7 +308,7 @@ bool Parser::parse(Output& output, const std::string& baseFileName, int options)
 	{
 		output.addMessage(Output::Level::Error, lastToken->fileName, lastToken->line,
 			lastToken->column, false,
-			"reached end of file without terminating [");
+			"reached end of file without terminating ]");
 		if (startSquareToken)
 			output.addMessage(Output::Level::Error, startSquareToken->fileName,
 				startSquareToken->line, startSquareToken->column, true,
@@ -386,7 +387,7 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 		{
 			output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
 				tokens[i].column, false, "pipeline of name " + pipeline.name +
-				"already declared");
+				" already declared");
 			output.addMessage(Output::Level::Error, other.token->fileName, other.token->line,
 				other.token->column, true,
 				"see other declaration of pipeline " + pipeline.name);
@@ -394,7 +395,7 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 		}
 	}
 
-	if (!skipWhitespace(output, tokens, i))
+	if (!skipWhitespace(output, tokens, ++i))
 		return false;
 
 	if (tokens[i].value != "{")
@@ -404,6 +405,8 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 		return false;
 	}
 
+	bool endBlock = false;
+	++i;
 	do
 	{
 		// Read the contents of the block
@@ -419,6 +422,7 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 		else if (tokens[i].value == "}")
 		{
 			// End of pipeline block
+			endBlock = true;
 			++i;
 			break;
 		}
@@ -464,6 +468,16 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 		}
 	} while (i < tokens.size());
 
+	if (!endBlock)
+	{
+		const Token& lastToken = tokens.back();
+		output.addMessage(Output::Level::Error, lastToken.fileName, lastToken.line,
+			lastToken.column, false,
+			"unexpected end of file");
+		return false;
+	}
+
+	m_pipelines.push_back(std::move(pipeline));
 	return true;
 }
 
@@ -478,19 +492,18 @@ void Parser::addElementString(std::string& str, std::vector<LineMapping>& lineMa
 
 	bool newline = true;
 	const auto& tokens = m_tokens.getTokens();
-	const Token& firstToken = tokens[tokenRange.start];
-	if (!str.empty() && str.back() != '\n' &&
-		(firstToken.value.empty() || firstToken.value[0] != '\n'))
-	{
-		str += '\n';
-	}
 
 	for (std::size_t i = tokenRange.start;
 		i < tokenRange.start + tokenRange.count && i < tokens.size(); ++i)
 	{
 		const Token& token = tokens[i];
+		if (newline && token.value == "\n")
+			continue;
+
 		if (newline)
 		{
+			if (!str.empty() && str.back() != '\n')
+				str += '\n';
 			lineMappings.emplace_back();
 			lineMappings.back().fileName = token.fileName;
 			lineMappings.back().line = token.line;
@@ -509,6 +522,7 @@ bool Parser::removeUniformBlock(std::string& str, std::vector<LineMapping>& line
 	if (!(m_options & RemoveUniformBlocks))
 		return false;
 
+	bool start = true;
 	bool newline = true;
 	bool processed = false;
 	unsigned int braceCount = 0;
@@ -527,8 +541,13 @@ bool Parser::removeUniformBlock(std::string& str, std::vector<LineMapping>& line
 
 			if (braceCount > 0)
 			{
+				if (newline && token.value == "\n")
+					continue;
+
 				if (newline)
 				{
+					if (!str.empty() && str.back() != '\n')
+						str += '\n';
 					lineMappings.emplace_back();
 					lineMappings.back().fileName = token.fileName;
 					lineMappings.back().line = token.line;
@@ -537,6 +556,29 @@ bool Parser::removeUniformBlock(std::string& str, std::vector<LineMapping>& line
 
 				if (token.value == "\n")
 					newline = true;
+
+				if (start && token.type == Token::Type::Identifier)
+				{
+					// Check if "uniform" exists in this declaration.
+					start = false;
+					bool hasUniform = false;
+					for (std::size_t j = i; j < maxValue; ++j)
+					{
+						if (tokens[j].value == "uniform")
+						{
+							hasUniform = true;
+							break;
+						}
+						else if (tokens[j].value == ";")
+							break;
+					}
+
+					if (!hasUniform)
+						str += "uniform ";
+				}
+				else if (token.value == ";")
+					start = true;
+
 				str += token.value;
 			}
 		}
@@ -551,12 +593,6 @@ bool Parser::removeUniformBlock(std::string& str, std::vector<LineMapping>& line
 
 				processed = true;
 				++braceCount;
-				const Token& firstToken = tokens[tokenRange.start];
-				if (!str.empty() && str.back() != '\n' &&
-					(firstToken.value.empty() || firstToken.value[0] != '\n'))
-				{
-					str += '\n';
-				}
 			}
 		}
 	}

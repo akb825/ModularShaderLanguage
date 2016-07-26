@@ -1,0 +1,21 @@
+int var;
+
+#include "LineNumbers.mslh"
+
+[[vertex]]
+int foo()
+{
+	return 0;
+}
+
+pipeline Test
+{
+	compute = asdf;
+}
+
+[[vertex]] int test1; [[fragment]] int test2; int test3;
+
+int bar()
+{
+	return 1;
+}
