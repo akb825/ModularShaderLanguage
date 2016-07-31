@@ -15,9 +15,9 @@
  */
 
 #include "Compiler.h"
+#include "SPIRV/GlslangToSpv.h"
+#include "SPIRV/SPVRemapper.h"
 #include <MSL/Compile/Output.h>
-#include <SPIRV/GlslangToSpv.h>
-#include <SPIRV/SPVRemapper.h>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/lexical_cast.hpp>
 #include <cstring>
@@ -133,7 +133,7 @@ static void addToOutput(Output& output, const std::string& baseFileName,
 }
 
 static bool addToOutput(Output &output, const spv::SpvBuildLogger& logger,
-	const std::string& fileName, std::size_t lineNumber)
+	const std::string& fileName, std::size_t line, std::size_t column)
 {
 	std::string messages = logger.getAllMessages();
 	if (messages.empty())
@@ -179,7 +179,7 @@ static bool addToOutput(Output &output, const spv::SpvBuildLogger& logger,
 			level = Output::Level::Error;
 		}
 
-		output.addMessage(level, fileName, lineNumber, 0, false, prefix + curMessage);
+		output.addMessage(level, fileName, line, column, false, prefix + curMessage);
 
 		start = end;
 		if (start != std::string::npos)
@@ -191,12 +191,13 @@ static bool addToOutput(Output &output, const spv::SpvBuildLogger& logger,
 
 bool Compiler::compile(Stages& stages, Output &output, const std::string& baseFileName,
 	const std::string& glsl, const std::vector<Parser::LineMapping>& lineMappings,
-	Parser::Stage stage, const TBuiltInResource& resources)
+	Parser::Stage stage, const std::string& entryPoint, const TBuiltInResource& resources)
 {
 	const char* glslStr = glsl.c_str();
 	std::unique_ptr<glslang::TShader> shader(
 		new glslang::TShader(stageMap[static_cast<unsigned int>(stage)]));
 	shader->setStrings(&glslStr, 1);
+	shader->setEntryPoint(entryPoint.c_str());
 
 	bool success = shader->parse(&resources, 450, ECoreProfile, true, false, EShMsgDefault);
 	addToOutput(output, baseFileName, lineMappings, shader->getInfoLog());
@@ -234,20 +235,26 @@ Compiler::SpirV Compiler::assemble(Output& output, const glslang::TProgram& prog
 	SpirV spirv;
 	spv::SpvBuildLogger logger;
 	glslang::GlslangToSpv(*intermediate, spirv, &logger);
-	if (addToOutput(output, logger, pipeline.token->fileName, pipeline.token->line))
+	if (addToOutput(output, logger, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column))
+	{
 		return SpirV();
+	}
 
 	return spirv;
 }
 
-void Compiler::process(SpirV& spirv, bool optimize, bool strip)
+void Compiler::process(SpirV& spirv, int processOptions)
 {
-	if (!optimize && !strip)
+	if (processOptions == 0)
 		return;
+
 	std::uint32_t options = 0;
-	if (optimize)
-		options += spv::spirvbin_t::DCE_ALL | spv::spirvbin_t::OPT_ALL;
-	if (strip)
+	if (processOptions & RemapVariables)
+		options |= spv::spirvbin_t::MAP_ALL;
+	if (processOptions & Optimize)
+		options |= spv::spirvbin_t::DCE_ALL | spv::spirvbin_t::OPT_ALL;
+	if (processOptions & StripDebug)
 		options |= spv::spirvbin_t::STRIP;
 
 	spv::spirvbin_t remapper;

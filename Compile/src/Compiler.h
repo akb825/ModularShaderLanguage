@@ -17,7 +17,7 @@
 #pragma once
 
 #include "Parser.h"
-#include <glslang/Public/ShaderLang.h>
+#include "glslang/Public/ShaderLang.h"
 #include <memory>
 
 namespace msl
@@ -31,11 +31,18 @@ public:
 		std::array<std::unique_ptr<glslang::TShader>, Parser::stageCount> shaders;
 	};
 
+	enum ProcessOptions
+	{
+		RemapVariables,
+		Optimize,
+		StripDebug
+	};
+
 	using SpirV = std::vector<std::uint32_t>;
 
 	static bool compile(Stages& stages, Output& output, const std::string& baseFileName,
 		const std::string& glsl, const std::vector<Parser::LineMapping>& lineMappings,
-		Parser::Stage stage, const TBuiltInResource& resources);
+		Parser::Stage stage, const std::string& entryPoint, const TBuiltInResource& resources);
 
 	static bool link(glslang::TProgram& program, Output& output, const Parser::Pipeline& pipeline,
 		const Stages& stages);
@@ -43,7 +50,7 @@ public:
 	static SpirV assemble(Output& output, const glslang::TProgram& program, Parser::Stage stage,
 		const Parser::Pipeline& pipeline);
 
-	static void process(SpirV& spirv, bool optimize, bool strip);
+	static void process(SpirV& spirv, int processOptions);
 };
 
 } // namespace msl

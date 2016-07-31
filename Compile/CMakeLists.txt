@@ -24,16 +24,17 @@ file(GLOB_RECURSE glslangSources
 file(GLOB_RECURSE spirvSources ${GLSLANG_DIR}/SPIRV/*.cpp ${GLSLANG_DIR}/SPIRV/*.h)
 set(glslResourceSources
 	${GLSLANG_DIR}/StandAlone/ResourceLimits.cpp ${GLSLANG_DIR}/StandAlone/ResourceLimits.h)
+file(GLOB spirvCrossSources ${SPIRV_CROSS_DIR}/spirv_*.cpp ${SPIRV_CROSS_DIR}/spirv_*.hpp)
+set(externalSources ${glslangSources} ${spirvSources} ${glslResourcesSources} ${spirvCrossSources})
 
 # Don't care about warnings for external files.
 if (MSVC)
-	set_source_files_properties(${glslangSources} ${spirvSources} PROPERTIES COMPILE_FLAGS /w)
+	set_source_files_properties(${externalSources} PROPERTIES COMPILE_FLAGS /w)
 else()
-	set_source_files_properties(${glslangSources} ${spirvSources} PROPERTIES COMPILE_FLAGS -w)
+	set_source_files_properties(${externalSources} PROPERTIES COMPILE_FLAGS -w)
 endif()
 
-add_library(msl_compile ${MSL_LIB}
-	${sources} ${glslangSources} ${spirvSources} ${glslResourceSources})
+add_library(msl_compile ${MSL_LIB} ${sources} ${externalSources})
 
 target_include_directories(msl_compile
 	PRIVATE ${Boost_INCLUDE_DIRS} ${GLSLANG_DIR} ${SPIRV_CROSS_DIR} src)
@@ -47,6 +48,7 @@ setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
 setup_filters(SRC_DIR ${GLSLANG_DIR}/glslang FILES ${glslangSources})
 setup_filters(SRC_DIR ${GLSLANG_DIR}/SPIRV FILES ${spirvSources})
 setup_filters(SRC_DIR ${GLSLANG_DIR}/StandAlone FILES ${glslResourceSources})
+setup_filters(SRC_DIR ../ FILES ${spirvCrossSources})
 
 install_library(TARGET msl_compile MODULE Compile)
 set(MSL_DOC_PROJECTS ${MSL_DOC_PROJECTS} Compile PARENT_SCOPE)

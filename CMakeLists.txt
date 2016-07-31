@@ -51,7 +51,7 @@ include(cmake/install.cmake)
 if (MSL_BUILD_COMPILE)
 	set(GLSLANG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/glslang)
 	set(SPIRV_CROSS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/SPIRV-Cross)
-	if (NOT EXISTS ${GLSLANG_DIR})
+	if (NOT EXISTS ${GLSLANG_DIR} OR NOT EXISTS ${SPIRV_CROSS_DIR})
 		message(FATAL_ERROR
 			"glslang or SPIRV-Cross not found. Run 'git submodule init' and "
 			"'git submodule update' to pull the submodules.")
