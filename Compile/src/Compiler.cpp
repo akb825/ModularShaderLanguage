@@ -240,10 +240,18 @@ Compiler::SpirV Compiler::assemble(Output& output, const glslang::TProgram& prog
 	return spirv;
 }
 
-void Compiler::optimize(SpirV& spirv)
+void Compiler::process(SpirV& spirv, bool optimize, bool strip)
 {
+	if (!optimize && !strip)
+		return;
+	std::uint32_t options = 0;
+	if (optimize)
+		options += spv::spirvbin_t::DCE_ALL | spv::spirvbin_t::OPT_ALL;
+	if (strip)
+		options |= spv::spirvbin_t::STRIP;
+
 	spv::spirvbin_t remapper;
-	remapper.remap(spirv, spv::spirvbin_t::DCE_ALL | spv::spirvbin_t::OPT_ALL);
+	remapper.remap(spirv, options);
 }
 
 } // namespace msl

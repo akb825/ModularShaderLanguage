@@ -43,7 +43,7 @@ public:
 	static SpirV assemble(Output& output, const glslang::TProgram& program, Parser::Stage stage,
 		const Parser::Pipeline& pipeline);
 
-	static void optimize(SpirV& spirv);
+	static void process(SpirV& spirv, bool optimize, bool strip);
 };
 
 } // namespace msl
