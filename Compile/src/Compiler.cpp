@@ -50,6 +50,7 @@ static void addToOutput(Output& output, const std::string& baseFileName,
 	const char* unimplementedPrefix = "UNIMPLEMENTED: ";
 	const char* notePrefix = "NOTE: ";
 	const char* unknownPrefix = "UNKNOWN ERROR: ";
+	const char* entryPointSuffix = ": Each stage requires one \"void main()\" entry point";
 
 	for (std::size_t start = 0; start < infoStr.size();)
 	{
@@ -73,6 +74,9 @@ static void addToOutput(Output& output, const std::string& baseFileName,
 				++start;
 			continue;
 		}
+
+		if (boost::algorithm::ends_with(curMessage, entryPointSuffix))
+			curMessage = curMessage.substr(0, curMessage.size() - std::strlen(entryPointSuffix));
 
 		std::string prefix;
 		Output::Level level = Output::Level::Error;

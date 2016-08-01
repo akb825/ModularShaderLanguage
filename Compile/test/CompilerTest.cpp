@@ -189,8 +189,7 @@ TEST_F(CompilerTest, LinkerError)
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
 	EXPECT_EQ(inputDir/"LinkError.mslh", messages[0].file);
 	EXPECT_EQ(5U, messages[0].line);
-	EXPECT_EQ("Linking fragment stage: Missing entry point: "
-		"Each stage requires one \"void main()\" entry point", messages[0].message);
+	EXPECT_EQ("Linking fragment stage: Missing entry point", messages[0].message);
 }
 
 } // namespace msl
