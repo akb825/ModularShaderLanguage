@@ -1,3 +1,3 @@
-void fragEntry()
+void main()
 {
 }

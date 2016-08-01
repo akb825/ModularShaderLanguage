@@ -17,8 +17,10 @@
 #include "Compiler.h"
 #include "SPIRV/GlslangToSpv.h"
 #include "SPIRV/SPVRemapper.h"
+#include "OGLCompilersDLL/InitializeDll.h"
 #include <MSL/Compile/Output.h>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include <cstring>
 
@@ -58,39 +60,52 @@ static void addToOutput(Output& output, const std::string& baseFileName,
 		else
 			curLen = end - start;
 		std::string curMessage = infoStr.substr(start, curLen);
+		boost::algorithm::trim(curMessage);
+
+		if (curMessage.empty() ||
+			boost::algorithm::ends_with(curMessage, "No code generated.") ||
+			boost::algorithm::ends_with(curMessage,
+				"most version-specific features are present, but some are missing.") ||
+			boost::algorithm::ends_with(curMessage, "stage:"))
+		{
+			start = end;
+			if (start != std::string::npos)
+				++start;
+			continue;
+		}
 
 		std::string prefix;
 		Output::Level level = Output::Level::Error;
 		if (boost::algorithm::starts_with(curMessage, warningPrefix))
 		{
-			curMessage.substr(std::strlen(warningPrefix));
+			curMessage = curMessage.substr(std::strlen(warningPrefix));
 			level = Output::Level::Warning;
 		}
 		else if (boost::algorithm::starts_with(curMessage, errorPrefix))
 		{
-			curMessage.substr(std::strlen(errorPrefix));
+			curMessage = curMessage.substr(std::strlen(errorPrefix));
 			level = Output::Level::Error;
 		}
 		else if (boost::algorithm::starts_with(curMessage, internalErrorPrefix))
 		{
-			curMessage.substr(std::strlen(internalErrorPrefix));
+			curMessage = curMessage.substr(std::strlen(internalErrorPrefix));
 			level = Output::Level::Error;
 			prefix = "internal error: ";
 		}
 		else if (boost::algorithm::starts_with(curMessage, unimplementedPrefix))
 		{
-			curMessage.substr(std::strlen(unimplementedPrefix));
+			curMessage = curMessage.substr(std::strlen(unimplementedPrefix));
 			level = Output::Level::Error;
 			prefix = "unimplemented: ";
 		}
 		else if (boost::algorithm::starts_with(curMessage, notePrefix))
 		{
-			curMessage.substr(std::strlen(notePrefix));
+			curMessage = curMessage.substr(std::strlen(notePrefix));
 			level = Output::Level::Info;
 		}
 		else if (boost::algorithm::starts_with(curMessage, unknownPrefix))
 		{
-			curMessage.substr(std::strlen(unknownPrefix));
+			curMessage = curMessage.substr(std::strlen(unknownPrefix));
 			level = Output::Level::Error;
 		}
 
@@ -105,14 +120,15 @@ static void addToOutput(Output& output, const std::string& baseFileName,
 				try
 				{
 					lineNumber = boost::lexical_cast<std::size_t>(curMessage.substr(separator + 1,
-						endLineNumber - separator - 1));
+						endLineNumber - separator - 1)) - 1;
 					if (lineNumber < lineMappings.size())
 					{
 						fileName = lineMappings[lineNumber].fileName;
 						lineNumber = lineMappings[lineNumber].line;
 						curMessage = curMessage.substr(endLineNumber + 2);
 					}
-				} catch (...)
+				}
+				catch (...)
 				{
 				}
 			}
@@ -153,29 +169,30 @@ static bool addToOutput(Output &output, const spv::SpvBuildLogger& logger,
 		else
 			curLen = end - start;
 		std::string curMessage = messages.substr(start, curLen);
+		boost::algorithm::trim(curMessage);
 
 		std::string prefix;
 		Output::Level level = Output::Level::Error;
 		if (boost::algorithm::starts_with(curMessage, tbdFeaturePrefix))
 		{
-			curMessage.substr(std::strlen(tbdFeaturePrefix));
+			curMessage = curMessage.substr(std::strlen(tbdFeaturePrefix));
 			level = Output::Level::Error;
 			prefix = "tbd feature: ";
 		}
 		else if (boost::algorithm::starts_with(curMessage, missingFeaturePrefix))
 		{
-			curMessage.substr(std::strlen(errorPrefix));
+			curMessage = curMessage.substr(std::strlen(errorPrefix));
 			level = Output::Level::Error;
 			prefix = "missing feature: ";
 		}
 		else if (boost::algorithm::starts_with(curMessage, warningPrefix))
 		{
-			curMessage.substr(std::strlen(warningPrefix));
+			curMessage = curMessage.substr(std::strlen(warningPrefix));
 			level = Output::Level::Warning;
 		}
 		else if (boost::algorithm::starts_with(curMessage, errorPrefix))
 		{
-			curMessage.substr(std::strlen(errorPrefix));
+			curMessage = curMessage.substr(std::strlen(errorPrefix));
 			level = Output::Level::Error;
 		}
 
@@ -189,6 +206,16 @@ static bool addToOutput(Output &output, const spv::SpvBuildLogger& logger,
 	return true;
 }
 
+void Compiler::initialize()
+{
+	glslang::InitializeProcess();
+}
+
+void Compiler::shutdown()
+{
+	glslang::FinalizeProcess();
+}
+
 bool Compiler::compile(Stages& stages, Output &output, const std::string& baseFileName,
 	const std::string& glsl, const std::vector<Parser::LineMapping>& lineMappings,
 	Parser::Stage stage, const std::string& entryPoint, const TBuiltInResource& resources)
@@ -197,7 +224,6 @@ bool Compiler::compile(Stages& stages, Output &output, const std::string& baseFi
 	std::unique_ptr<glslang::TShader> shader(
 		new glslang::TShader(stageMap[static_cast<unsigned int>(stage)]));
 	shader->setStrings(&glslStr, 1);
-	shader->setEntryPoint(entryPoint.c_str());
 
 	bool success = shader->parse(&resources, 450, ECoreProfile, true, false, EShMsgDefault);
 	addToOutput(output, baseFileName, lineMappings, shader->getInfoLog());

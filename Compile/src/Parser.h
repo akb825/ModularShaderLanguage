@@ -68,13 +68,14 @@ public:
 		return m_tokens;
 	}
 
-	const std::vector<Pipeline> getPipelines() const
+	const std::vector<Pipeline>& getPipelines() const
 	{
 		return m_pipelines;
 	}
 
 	bool parse(Output& output, const std::string& baseFileName, int options = 0);
-	std::string createShaderString(std::vector<LineMapping>& lineMappings, Stage stage) const;
+	std::string createShaderString(std::vector<LineMapping>& lineMappings, const Pipeline& pipeline,
+		Stage stage) const;
 
 private:
 	struct TokenRange
@@ -86,7 +87,7 @@ private:
 	void endElement(std::vector<Stage>& stages, TokenRange& tokenRange, std::size_t index);
 	bool readPipeline(Output& output, const std::vector<Token>& tokens, std::size_t& i);
 	void addElementString(std::string& str, std::vector<LineMapping>& lineMappings,
-		const TokenRange& tokenRange) const;
+		const TokenRange& tokenRange, const std::string& entryPoint) const;
 	bool removeUniformBlock(std::string& str, std::vector<LineMapping>& lineMappings,
 		const TokenRange& tokenRange) const;
 

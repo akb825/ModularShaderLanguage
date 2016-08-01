@@ -327,13 +327,15 @@ bool Parser::parse(Output& output, const std::string& baseFileName, int options)
 	return true;
 }
 
-std::string Parser::createShaderString(std::vector<LineMapping>& lineMappings, Stage stage) const
+std::string Parser::createShaderString(std::vector<LineMapping>& lineMappings,
+	const Pipeline& pipeline, Stage stage) const
 {
 	lineMappings.clear();
 	std::string shaderString;
 
-	for (const TokenRange& tokenRange : m_elements[static_cast<int>(stage)])
-		addElementString(shaderString, lineMappings, tokenRange);
+	auto stageIndex = static_cast<unsigned int>(stage);
+	for (const TokenRange& tokenRange : m_elements[stageIndex])
+		addElementString(shaderString, lineMappings, tokenRange, pipeline.entryPoints[stageIndex]);
 
 	return shaderString;
 }
@@ -482,7 +484,7 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 }
 
 void Parser::addElementString(std::string& str, std::vector<LineMapping>& lineMappings,
-	const TokenRange& tokenRange) const
+	const TokenRange& tokenRange, const std::string& entryPoint) const
 {
 	if (tokenRange.count == 0)
 		return;
@@ -492,6 +494,10 @@ void Parser::addElementString(std::string& str, std::vector<LineMapping>& lineMa
 
 	bool newline = true;
 	const auto& tokens = m_tokens.getTokens();
+
+	unsigned int parenCount = 0;
+	unsigned int braceCount = 0;
+	unsigned int squareCount = 0;
 
 	for (std::size_t i = tokenRange.start;
 		i < tokenRange.start + tokenRange.count && i < tokens.size(); ++i)
@@ -512,7 +518,24 @@ void Parser::addElementString(std::string& str, std::vector<LineMapping>& lineMa
 
 		if (token.value == "\n")
 			newline = true;
-		str += token.value;
+		else if (token.value == "(")
+			++parenCount;
+		else if (token.value == ")")
+			--parenCount;
+		else if (token.value == "{")
+			++braceCount;
+		else if (token.value == "}")
+			--braceCount;
+		else if (token.value == "[")
+			++squareCount;
+		else if (token.value == "]")
+			--braceCount;
+
+		// Replace entry point name at global scope with "main".
+		if (parenCount == 0 && braceCount == 0 && squareCount == 0 && token.value == entryPoint)
+			str += "main";
+		else
+			str += token.value;
 	}
 }
 

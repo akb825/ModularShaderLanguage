@@ -42,19 +42,20 @@ TEST(ParserTest, StageFilters)
 		(inputDir/"StageFilters.msl").string()));
 	EXPECT_TRUE(parser.parse(output, "StageFilters.msl"));
 
+	Parser::Pipeline pipeline = {};
 	std::vector<Parser::LineMapping> lineMappings;
 	EXPECT_EQ(readFile(outputDir/"StageFilters.vert"),
-		parser.createShaderString(lineMappings, Parser::Stage::Vertex) + '\n');
+		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Vertex) + '\n');
 	EXPECT_EQ(readFile(outputDir/"StageFilters.tessc"),
-		parser.createShaderString(lineMappings, Parser::Stage::TessellationControl) + '\n');
+		parser.createShaderString(lineMappings, pipeline, Parser::Stage::TessellationControl) + '\n');
 	EXPECT_EQ(readFile(outputDir/"StageFilters.tesse"),
-		parser.createShaderString(lineMappings, Parser::Stage::TessellationEvaluation) + '\n');
+		parser.createShaderString(lineMappings, pipeline, Parser::Stage::TessellationEvaluation) + '\n');
 	EXPECT_EQ(readFile(outputDir/"StageFilters.geom"),
-		parser.createShaderString(lineMappings, Parser::Stage::Geometry) + '\n');
+		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Geometry) + '\n');
 	EXPECT_EQ(readFile(outputDir/"StageFilters.frag"),
-		parser.createShaderString(lineMappings, Parser::Stage::Fragment) + '\n');
+		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Fragment) + '\n');
 	EXPECT_EQ(readFile(outputDir/"StageFilters.comp"),
-		parser.createShaderString(lineMappings, Parser::Stage::Compute) + '\n');
+		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Compute) + '\n');
 }
 
 TEST(ParserTest, InvalidStageName)
@@ -257,17 +258,18 @@ TEST(ParserTest, Pipeline)
 	EXPECT_TRUE(parser.parse(output, "Pipeline.msl"));
 
 	ASSERT_EQ(1U, parser.getPipelines().size());
-	EXPECT_EQ("Foo", parser.getPipelines()[0].name);
-	EXPECT_EQ("vertEntry", parser.getPipelines()[0].entryPoints[0]);
-	EXPECT_EQ("tessControlEntry", parser.getPipelines()[0].entryPoints[1]);
-	EXPECT_EQ("tessEvaluationEntry", parser.getPipelines()[0].entryPoints[2]);
-	EXPECT_EQ("geometryEntry", parser.getPipelines()[0].entryPoints[3]);
-	EXPECT_EQ("fragEntry", parser.getPipelines()[0].entryPoints[4]);
-	EXPECT_EQ("computeEntry", parser.getPipelines()[0].entryPoints[5]);
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	EXPECT_EQ("Foo", pipeline.name);
+	EXPECT_EQ("vertEntry", pipeline.entryPoints[0]);
+	EXPECT_EQ("tessControlEntry", pipeline.entryPoints[1]);
+	EXPECT_EQ("tessEvaluationEntry", pipeline.entryPoints[2]);
+	EXPECT_EQ("geometryEntry", pipeline.entryPoints[3]);
+	EXPECT_EQ("fragEntry", pipeline.entryPoints[4]);
+	EXPECT_EQ("computeEntry", pipeline.entryPoints[5]);
 
 	std::vector<Parser::LineMapping> lineMappings;
 	EXPECT_EQ(readFile(outputDir/"Pipeline.frag"),
-		parser.createShaderString(lineMappings, Parser::Stage::Fragment) + '\n');
+		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Fragment) + '\n');
 }
 
 TEST(ParserTest, UnnamedPipeline)
@@ -426,8 +428,9 @@ TEST(ParserTest, RemoveUniformBlocks)
 	EXPECT_TRUE(parser.parse(output, "RemoveUniformBlocks.msl", Parser::RemoveUniformBlocks));
 
 	std::vector<Parser::LineMapping> lineMappings;
+	Parser::Pipeline pipeline;
 	EXPECT_EQ(readFile(outputDir/"RemoveUniformBlocks.vert"),
-		parser.createShaderString(lineMappings, Parser::Stage::Vertex));
+		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Vertex));
 }
 
 TEST(ParserTest, RemoveNamedUniformBlock)
@@ -483,7 +486,8 @@ TEST(ParserTest, LineNumbers)
 	};
 
 	std::vector<Parser::LineMapping> lineMappings;
-	parser.createShaderString(lineMappings, Parser::Stage::Vertex);
+	Parser::Pipeline pipeline;
+	parser.createShaderString(lineMappings, pipeline, Parser::Stage::Vertex);
 	EXPECT_EQ(expectedMappings, lineMappings);
 }
 
@@ -519,7 +523,8 @@ TEST(ParserTest, LineNumbersRemoveUniformBlocks)
 	};
 
 	std::vector<Parser::LineMapping> lineMappings;
-	parser.createShaderString(lineMappings, Parser::Stage::Vertex);
+	Parser::Pipeline pipeline;
+	parser.createShaderString(lineMappings, pipeline, Parser::Stage::Vertex);
 	EXPECT_EQ(expectedMappings, lineMappings);
 }
 

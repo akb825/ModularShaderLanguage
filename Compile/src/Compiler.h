@@ -40,6 +40,9 @@ public:
 
 	using SpirV = std::vector<std::uint32_t>;
 
+	static void initialize();
+	static void shutdown();
+
 	static bool compile(Stages& stages, Output& output, const std::string& baseFileName,
 		const std::string& glsl, const std::vector<Parser::LineMapping>& lineMappings,
 		Parser::Stage stage, const std::string& entryPoint, const TBuiltInResource& resources);

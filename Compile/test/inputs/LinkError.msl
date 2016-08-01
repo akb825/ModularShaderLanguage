@@ -1,0 +1,32 @@
+uniform mat4 transform;
+
+[[vertex]] in vec4 position;
+[[vertex]] in vec4 color;
+
+[[vertex]] out VertexOut
+{
+	vec4 color;
+} outputs;
+
+[[fragment]] in FragmentIn
+{
+	vec4 color;
+} inputs;
+
+[[fragment]] out vec4 color;
+
+[[vertex]]
+void vertShader()
+{
+	gl_Position = transform*position;
+	outputs.color = color;
+}
+
+[[fragment]]
+void pixelShader()
+{
+	color = inputs.color;
+}
+
+#include "LinkError.mslh"
+

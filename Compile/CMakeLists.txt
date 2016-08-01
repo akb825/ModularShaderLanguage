@@ -10,22 +10,25 @@ file(GLOB_RECURSE sources src/*.cpp src/*.h include/*.h)
 # We cannot use the cmake files that come with these projects because they don't use cmake exports.
 if (WIN32)
 	add_definitions(-DGLSLANG_OSINCLUDE_WIN32)
-	set(glslangOsDir ${GLSLANG_DIR}/glslang/OSDependent/Windows)
+	set(glslangOsSources ${GLSLANG_DIR}/glslang/OSDependent/Windows/ossource.cpp)
 elseif (UNIX)
 	add_definitions(-DGLSLANG_OSINCLUDE_UNIX)
-	set(glslangOsDir ${GLSLANG_DIR}/glslang/OSDependent/Unix)
+	set(glslangOsSources ${GLSLANG_DIR}/glslang/OSDependent/Unix/ossource.cpp)
 else()
 	message("unknown platform")
 endif()
 
 file(GLOB_RECURSE glslangSources
 	${GLSLANG_DIR}/glslang/MachineIndependent/*.cpp ${GLSLANG_DIR}/glslang/GenericCodeGen/*.cpp
-	${glslangOsDir}/*.cpp ${GLSLANG_DIR}/glslang/Public/*.h ${GLSLANG_DIR}/glslang/Include/*.h)
-file(GLOB_RECURSE spirvSources ${GLSLANG_DIR}/SPIRV/*.cpp ${GLSLANG_DIR}/SPIRV/*.h)
+	${GLSLANG_DIR}/glslang/Public/*.h ${GLSLANG_DIR}/glslang/Include/*.h
+	${GLSLANG_DIR}/OGLCompilersDLL/*.cpp ${GLSLANG_DIR}/OGLCompilersDLL/*.h
+	${GLSLANG_DIR}/SPIRV/*.cpp ${GLSLANG_DIR}/SPIRV/*.h
+	${GLSLANG_DIR}/hlsl/*.cpp ${GLSLANG_DIR}/hlsl/*.h)
 set(glslResourceSources
 	${GLSLANG_DIR}/StandAlone/ResourceLimits.cpp ${GLSLANG_DIR}/StandAlone/ResourceLimits.h)
 file(GLOB spirvCrossSources ${SPIRV_CROSS_DIR}/spirv_*.cpp ${SPIRV_CROSS_DIR}/spirv_*.hpp)
-set(externalSources ${glslangSources} ${spirvSources} ${glslResourcesSources} ${spirvCrossSources})
+set(externalSources
+	${glslangSources} ${glslangOsSources} ${glslResourceSources} ${spirvCrossSources})
 
 # Don't care about warnings for external files.
 if (MSVC)
@@ -45,10 +48,7 @@ set_folder(msl_compile libs)
 setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
 	INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/MSL/Compile
 	FILES ${sources})
-setup_filters(SRC_DIR ${GLSLANG_DIR}/glslang FILES ${glslangSources})
-setup_filters(SRC_DIR ${GLSLANG_DIR}/SPIRV FILES ${spirvSources})
-setup_filters(SRC_DIR ${GLSLANG_DIR}/StandAlone FILES ${glslResourceSources})
-setup_filters(SRC_DIR ../ FILES ${spirvCrossSources})
+setup_filters(SRC_DIR ../ FILES ${externalSources})
 
 install_library(TARGET msl_compile MODULE Compile)
 set(MSL_DOC_PROJECTS ${MSL_DOC_PROJECTS} Compile PARENT_SCOPE)
