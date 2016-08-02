@@ -1,6 +1,8 @@
-uniform vec4 testUniform;
+uniform sampler2D testTexture;
 
-uniform TestBlock
+layout(
+std140
+) uniform TestBlock
 {
 	vec4 otherUniform;
 };

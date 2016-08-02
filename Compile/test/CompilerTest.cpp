@@ -113,7 +113,7 @@ TEST_F(CompilerTest, CompileError)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(inputDir/"CompileError.mslh", messages[0].file);
+	EXPECT_EQ((inputDir/"CompileError.mslh").string(), messages[0].file);
 	EXPECT_EQ(15U, messages[0].line);
 	EXPECT_EQ("'inputss' : undeclared identifier", messages[0].message);
 }
@@ -145,7 +145,7 @@ TEST_F(CompilerTest, CompileWarning)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Warning, messages[0].level);
-	EXPECT_EQ(inputDir/"CompileWarning.mslh", messages[0].file);
+	EXPECT_EQ((inputDir/"CompileWarning.mslh").string(), messages[0].file);
 	EXPECT_EQ(15U, messages[0].line);
 	EXPECT_EQ("'switch' : last case/default label not followed by statements", messages[0].message);
 }
@@ -187,7 +187,7 @@ TEST_F(CompilerTest, LinkerError)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(inputDir/"LinkError.mslh", messages[0].file);
+	EXPECT_EQ((inputDir/"LinkError.mslh").string(), messages[0].file);
 	EXPECT_EQ(5U, messages[0].line);
 	EXPECT_EQ("Linking fragment stage: Missing entry point", messages[0].message);
 }

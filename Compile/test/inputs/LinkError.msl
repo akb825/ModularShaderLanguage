@@ -1,4 +1,7 @@
-uniform mat4 transform;
+uniform Transform
+{
+	mat4 transform;
+};
 
 [[vertex]] in vec4 position;
 [[vertex]] in vec4 color;

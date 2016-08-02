@@ -260,19 +260,6 @@ bool Parser::parse(Output& output, const std::string& baseFileName, int options)
 				element = Element::In;
 			else if (!hadScope && token.value == "out")
 				element = Element::Out;
-			else
-			{
-				// Check for named uniform blocks when removing blocks. Check for extra tokens
-				// between end of scope and ending ;.
-				if ((m_options & RemoveUniformBlocks) && element == Element::Uniform &&
-					braceCount == 0 && hadScope)
-				{
-					output.addMessage(Output::Level::Error, token.fileName, token.line,
-						token.column, false,
-						"can not have a uniform block instance name when removing uniform blocks");
-					return false;
-				}
-			}
 		}
 
 		lastToken = &token;
@@ -499,8 +486,8 @@ void Parser::addElementString(std::string& str, std::vector<LineMapping>& lineMa
 	unsigned int braceCount = 0;
 	unsigned int squareCount = 0;
 
-	for (std::size_t i = tokenRange.start;
-		i < tokenRange.start + tokenRange.count && i < tokens.size(); ++i)
+	std::size_t maxValue = std::min(tokenRange.start + tokenRange.count, tokens.size());
+	for (std::size_t i = tokenRange.start; i < maxValue; ++i)
 	{
 		const Token& token = tokens[i];
 		if (newline && token.value == "\n")
@@ -529,7 +516,7 @@ void Parser::addElementString(std::string& str, std::vector<LineMapping>& lineMa
 		else if (token.value == "[")
 			++squareCount;
 		else if (token.value == "]")
-			--braceCount;
+			--squareCount;
 
 		// Replace entry point name at global scope with "main".
 		if (parenCount == 0 && braceCount == 0 && squareCount == 0 && token.value == entryPoint)
@@ -545,82 +532,94 @@ bool Parser::removeUniformBlock(std::string& str, std::vector<LineMapping>& line
 	if (!(m_options & RemoveUniformBlocks))
 		return false;
 
-	bool start = true;
-	bool newline = true;
-	bool processed = false;
-	unsigned int braceCount = 0;
+	// Check to see if this is a uniform block.
 	bool isUniform = false;
+	unsigned int parenCount = 0;
+	unsigned int braceCount = 0;
+	unsigned int squareCount = 0;
 	const auto& tokens = m_tokens.getTokens();
 	std::size_t maxValue = std::min(tokenRange.start + tokenRange.count, tokens.size());
 	for (std::size_t i = tokenRange.start; i < maxValue; ++i)
 	{
 		const Token& token = tokens[i];
-		if (processed)
+		if (token.value == "uniform")
+			isUniform = true;
+		else if (token.value == "{")
 		{
-			if (token.value == "{")
-				++braceCount;
-			if (token.value == "}")
-				--braceCount;
+			if (!isUniform)
+				return false;
 
-			if (braceCount > 0)
-			{
-				if (newline && token.value == "\n")
-					continue;
-
-				if (newline)
-				{
-					if (!str.empty() && str.back() != '\n')
-						str += '\n';
-					lineMappings.emplace_back();
-					lineMappings.back().fileName = token.fileName;
-					lineMappings.back().line = token.line;
-					newline = false;
-				}
-
-				if (token.value == "\n")
-					newline = true;
-
-				if (start && token.type == Token::Type::Identifier)
-				{
-					// Check if "uniform" exists in this declaration.
-					start = false;
-					bool hasUniform = false;
-					for (std::size_t j = i; j < maxValue; ++j)
-					{
-						if (tokens[j].value == "uniform")
-						{
-							hasUniform = true;
-							break;
-						}
-						else if (tokens[j].value == ";")
-							break;
-					}
-
-					if (!hasUniform)
-						str += "uniform ";
-				}
-				else if (token.value == ";")
-					start = true;
-
-				str += token.value;
-			}
-		}
-		else
-		{
-			if (token.value == "uniform")
-				isUniform = true;
-			else if (token.value == "{")
-			{
-				if (!isUniform)
-					return false;
-
-				processed = true;
-				++braceCount;
-			}
+			++braceCount;
+			break;
 		}
 	}
 
-	return processed;
+	if (braceCount == 0)
+		return false;
+
+	braceCount = 0;
+	bool start = true;
+	bool newline = true;
+	bool startLayout = false;
+	bool startLayoutOpenParen = false;
+	for (std::size_t i = tokenRange.start; i < maxValue; ++i)
+	{
+		const Token& token = tokens[i];
+		if (newline && token.value == "\n")
+			continue;
+
+		if (newline)
+		{
+			if (!str.empty() && str.back() != '\n')
+				str += '\n';
+			lineMappings.emplace_back();
+			lineMappings.back().fileName = token.fileName;
+			lineMappings.back().line = token.line;
+			newline = false;
+		}
+
+		// Make uniform blocks use push_constant blocks. Uniform blocks are required are required
+		// for GLSL Vulkan, but push_constants are equivalent to individual uniforms.
+		if (start)
+		{
+			str += "layout(push_constant) ";
+			start = false;
+		}
+
+		if (token.value == "\n")
+			newline = true;
+		else if (token.value == "(")
+			++parenCount;
+		else if (token.value == ")")
+			--parenCount;
+		else if (token.value == "{")
+			++braceCount;
+		else if (token.value == "}")
+			--braceCount;
+		else if (token.value == "[")
+			++squareCount;
+		else if (token.value == "]")
+			--squareCount;
+
+		if (startLayout && !newline)
+		{
+			if (parenCount == 0)
+			{
+				if (startLayoutOpenParen)
+					startLayout = false;
+			}
+			else
+				startLayoutOpenParen = true;
+			continue;
+		}
+		else if (parenCount == 0 && braceCount == 0 && squareCount == 0 && token.value == "layout")
+		{
+			startLayout = true;
+			continue;
+		}
+		str += token.value;
+	}
+	return true;
 }
 
 } // namespace msl

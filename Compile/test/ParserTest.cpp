@@ -430,25 +430,7 @@ TEST(ParserTest, RemoveUniformBlocks)
 	std::vector<Parser::LineMapping> lineMappings;
 	Parser::Pipeline pipeline;
 	EXPECT_EQ(readFile(outputDir/"RemoveUniformBlocks.vert"),
-		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Vertex));
-}
-
-TEST(ParserTest, RemoveNamedUniformBlock)
-{
-	std::string path = (exeDir/"test.msl").string();
-	std::stringstream stream("uniform Test {vec4 test;} testBlock;");
-	Parser parser;
-	Preprocessor preprocessor;
-	Output output;
-	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl", Parser::RemoveUniformBlocks));
-
-	ASSERT_EQ(1U, output.getMessages().size());
-	EXPECT_EQ(path, output.getMessages()[0].file);
-	EXPECT_EQ(1U, output.getMessages()[0].line);
-	EXPECT_EQ(27U, output.getMessages()[0].column);
-	EXPECT_EQ("can not have a uniform block instance name when removing uniform blocks",
-		output.getMessages()[0].message);
+		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Vertex) + '\n');
 }
 
 TEST(ParserTest, LineNumbers)
@@ -473,6 +455,8 @@ TEST(ParserTest, LineNumbers)
 		Parser::LineMapping{includeFileName.c_str(), 4},
 		Parser::LineMapping{includeFileName.c_str(), 5},
 		Parser::LineMapping{includeFileName.c_str(), 6},
+		Parser::LineMapping{includeFileName.c_str(), 7},
+		Parser::LineMapping{includeFileName.c_str(), 8},
 		Parser::LineMapping{fileName.c_str(), 6},
 		Parser::LineMapping{fileName.c_str(), 7},
 		Parser::LineMapping{fileName.c_str(), 8},
@@ -482,7 +466,8 @@ TEST(ParserTest, LineNumbers)
 		Parser::LineMapping{fileName.c_str(), 18},
 		Parser::LineMapping{fileName.c_str(), 19},
 		Parser::LineMapping{fileName.c_str(), 20},
-		Parser::LineMapping{fileName.c_str(), 21}
+		Parser::LineMapping{fileName.c_str(), 23},
+		Parser::LineMapping{fileName.c_str(), 26}
 	};
 
 	std::vector<Parser::LineMapping> lineMappings;
@@ -509,7 +494,12 @@ TEST(ParserTest, LineNumbersRemoveUniformBlocks)
 	{
 		Parser::LineMapping{fileName.c_str(), 1},
 		Parser::LineMapping{includeFileName.c_str(), 1},
+		Parser::LineMapping{includeFileName.c_str(), 3},
+		Parser::LineMapping{includeFileName.c_str(), 4},
 		Parser::LineMapping{includeFileName.c_str(), 5},
+		Parser::LineMapping{includeFileName.c_str(), 6},
+		Parser::LineMapping{includeFileName.c_str(), 7},
+		Parser::LineMapping{includeFileName.c_str(), 8},
 		Parser::LineMapping{fileName.c_str(), 6},
 		Parser::LineMapping{fileName.c_str(), 7},
 		Parser::LineMapping{fileName.c_str(), 8},
@@ -519,7 +509,8 @@ TEST(ParserTest, LineNumbersRemoveUniformBlocks)
 		Parser::LineMapping{fileName.c_str(), 18},
 		Parser::LineMapping{fileName.c_str(), 19},
 		Parser::LineMapping{fileName.c_str(), 20},
-		Parser::LineMapping{fileName.c_str(), 21}
+		Parser::LineMapping{fileName.c_str(), 23},
+		Parser::LineMapping{fileName.c_str(), 26}
 	};
 
 	std::vector<Parser::LineMapping> lineMappings;

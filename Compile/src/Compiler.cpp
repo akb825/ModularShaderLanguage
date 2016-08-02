@@ -15,14 +15,24 @@
  */
 
 #include "Compiler.h"
-#include "SPIRV/GlslangToSpv.h"
-#include "SPIRV/SPVRemapper.h"
-#include "OGLCompilersDLL/InitializeDll.h"
 #include <MSL/Compile/Output.h>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include <cstring>
+
+#if MSL_GCC || MSL_CLANG
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+
+#include "SPIRV/GlslangToSpv.h"
+#include "SPIRV/SPVRemapper.h"
+#include "OGLCompilersDLL/InitializeDll.h"
+
+#if MSL_GCC || MSL_CLANG
+#pragma GCC diagnostic pop
+#endif
 
 namespace msl
 {
@@ -39,6 +49,9 @@ static const EShLanguage stageMap[] =
 
 static_assert(sizeof(stageMap)/sizeof(*stageMap) == Parser::stageCount,
 	"Stage map has an incorrect number of elements");
+
+static EShMessages glslMessages =
+	static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules);
 
 static void addToOutput(Output& output, const std::string& baseFileName,
 	const std::vector<Parser::LineMapping>& lineMappings, const std::string& infoStr,
@@ -229,7 +242,7 @@ bool Compiler::compile(Stages& stages, Output &output, const std::string& baseFi
 		new glslang::TShader(stageMap[static_cast<unsigned int>(stage)]));
 	shader->setStrings(&glslStr, 1);
 
-	bool success = shader->parse(&resources, 450, ECoreProfile, true, false, EShMsgDefault);
+	bool success = shader->parse(&resources, 450, ECoreProfile, true, false, glslMessages);
 	addToOutput(output, baseFileName, lineMappings, shader->getInfoLog());
 
 	if (success)
@@ -246,7 +259,7 @@ bool Compiler::link(glslang::TProgram& program, Output& output, const Parser::Pi
 			program.addShader(stages.shaders[i].get());
 	}
 
-	bool success = program.link(EShMsgDefault);
+	bool success = program.link(glslMessages);
 	std::vector<Parser::LineMapping> dummyLineMappings;
 	addToOutput(output, pipeline.token->fileName, dummyLineMappings, program.getInfoLog(),
 		pipeline.token->line);

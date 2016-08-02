@@ -17,5 +17,13 @@ pipeline Test
 
 int bar()
 {
-	return 1;
+	int test = 1;
+
+
+	return test;
+
+
 }
+
+
+
