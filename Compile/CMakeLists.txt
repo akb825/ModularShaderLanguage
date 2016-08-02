@@ -4,6 +4,14 @@ endif()
 find_package(Boost COMPONENTS wave)
 find_package(Threads)
 
+set(GLSLANG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/glslang)
+set(SPIRV_CROSS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/SPIRV-Cross)
+if (NOT EXISTS ${GLSLANG_DIR} OR NOT EXISTS ${SPIRV_CROSS_DIR})
+	message(FATAL_ERROR
+		"glslang or SPIRV-Cross not found. Run 'git submodule init' and "
+		"'git submodule update' to pull the submodules.")
+endif()
+
 file(GLOB_RECURSE sources src/*.cpp src/*.h include/*.h)
 
 # Add glslang sources.
@@ -48,7 +56,7 @@ set_folder(msl_compile libs)
 setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
 	INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/MSL/Compile
 	FILES ${sources})
-setup_filters(SRC_DIR ../ FILES ${externalSources})
+setup_filters(SRC_DIR . FILES ${externalSources})
 
 install_library(TARGET msl_compile MODULE Compile)
 set(MSL_DOC_PROJECTS ${MSL_DOC_PROJECTS} Compile PARENT_SCOPE)
