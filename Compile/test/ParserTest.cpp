@@ -40,7 +40,7 @@ TEST(ParserTest, StageFilters)
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output,
 		(inputDir/"StageFilters.msl").string()));
-	EXPECT_TRUE(parser.parse(output, "StageFilters.msl"));
+	EXPECT_TRUE(parser.parse(output));
 
 	Parser::Pipeline pipeline = {};
 	std::vector<Parser::LineMapping> lineMappings;
@@ -66,7 +66,7 @@ TEST(ParserTest, InvalidStageName)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -83,7 +83,7 @@ TEST(ParserTest, StageDeclNotFirst)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -100,7 +100,7 @@ TEST(ParserTest, StageDeclInvalidChar)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -117,7 +117,7 @@ TEST(ParserTest, UnterminatedEnd)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -134,7 +134,7 @@ TEST(ParserTest, ExtraEndParen)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -151,7 +151,7 @@ TEST(ParserTest, MissingCloseParen)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(2U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -173,7 +173,7 @@ TEST(ParserTest, ExtraEndBrace)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -190,7 +190,7 @@ TEST(ParserTest, MissingCloseBrace)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(2U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -212,7 +212,7 @@ TEST(ParserTest, SquareEndBrace)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -229,7 +229,7 @@ TEST(ParserTest, MissingCloseSquare)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(2U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -255,7 +255,7 @@ TEST(ParserTest, Pipeline)
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output,
 		(inputDir/"Pipeline.msl").string()));
-	EXPECT_TRUE(parser.parse(output, "Pipeline.msl"));
+	EXPECT_TRUE(parser.parse(output));
 
 	ASSERT_EQ(1U, parser.getPipelines().size());
 	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
@@ -280,7 +280,7 @@ TEST(ParserTest, UnnamedPipeline)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -297,7 +297,7 @@ TEST(ParserTest, PipelineMissingOpenBrace)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -314,7 +314,7 @@ TEST(ParserTest, PipelineUnknownStage)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -331,7 +331,7 @@ TEST(ParserTest, PipelineMissingEquals)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -348,7 +348,7 @@ TEST(ParserTest, PipelineMissingEntryPoint)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -365,7 +365,7 @@ TEST(ParserTest, PipelineMissingSemicolon)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -382,7 +382,7 @@ TEST(ParserTest, PipelineMissingEndBrace)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -399,7 +399,7 @@ TEST(ParserTest, DuplicatePipeline)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
-	EXPECT_FALSE(parser.parse(output, "test.msl"));
+	EXPECT_FALSE(parser.parse(output));
 
 	ASSERT_EQ(2U, output.getMessages().size());
 	EXPECT_EQ(path, output.getMessages()[0].file);
@@ -425,7 +425,7 @@ TEST(ParserTest, RemoveUniformBlocks)
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output,
 		(inputDir/"RemoveUniformBlocks.msl").string()));
-	EXPECT_TRUE(parser.parse(output, "RemoveUniformBlocks.msl", Parser::RemoveUniformBlocks));
+	EXPECT_TRUE(parser.parse(output, Parser::RemoveUniformBlocks));
 
 	std::vector<Parser::LineMapping> lineMappings;
 	Parser::Pipeline pipeline;
@@ -445,7 +445,7 @@ TEST(ParserTest, LineNumbers)
 	Output output;
 	preprocessor.addIncludePath(inputDir.string());
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, fileName));
-	EXPECT_TRUE(parser.parse(output, fileName));
+	EXPECT_TRUE(parser.parse(output));
 
 	std::vector<Parser::LineMapping> expectedMappings =
 	{
@@ -488,7 +488,7 @@ TEST(ParserTest, LineNumbersRemoveUniformBlocks)
 	Output output;
 	preprocessor.addIncludePath(inputDir.string());
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, fileName));
-	EXPECT_TRUE(parser.parse(output, fileName, Parser::RemoveUniformBlocks));
+	EXPECT_TRUE(parser.parse(output, Parser::RemoveUniformBlocks));
 
 	std::vector<Parser::LineMapping> expectedMappings =
 	{

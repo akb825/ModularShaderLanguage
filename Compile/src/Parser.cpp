@@ -81,7 +81,7 @@ static bool getStage(Output& output, Parser::Stage& stage, const Token& token)
 	return false;
 }
 
-bool Parser::parse(Output& output, const std::string& baseFileName, int options)
+bool Parser::parse(Output& output, int options)
 {
 	enum class Element
 	{

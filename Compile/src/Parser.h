@@ -73,7 +73,7 @@ public:
 		return m_pipelines;
 	}
 
-	bool parse(Output& output, const std::string& baseFileName, int options = 0);
+	bool parse(Output& output, int options = 0);
 	std::string createShaderString(std::vector<LineMapping>& lineMappings, const Pipeline& pipeline,
 		Stage stage) const;
 

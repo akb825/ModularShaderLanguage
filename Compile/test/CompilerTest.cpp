@@ -49,7 +49,7 @@ TEST_F(CompilerTest, CompleteShader)
 	Compiler compiler;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
-	EXPECT_TRUE(parser.parse(output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
 
 	ASSERT_EQ(1U, parser.getPipelines().size());
 	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
@@ -64,7 +64,7 @@ TEST_F(CompilerTest, CompleteShader)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(compiler.compile(stages, output, shaderName, glsl, lineMappings, stage,
-			pipeline.entryPoints[i], glslang::DefaultTBuiltInResource));
+			glslang::DefaultTBuiltInResource));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -97,18 +97,17 @@ TEST_F(CompilerTest, CompileError)
 	Output output;
 	preprocessor.addIncludePath(inputDir.string());
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
-	EXPECT_TRUE(parser.parse(output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
 
 	ASSERT_EQ(1U, parser.getPipelines().size());
 	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
 	Compiler::Stages stages;
 
 	auto stage = Parser::Stage::Fragment;
-	auto stageIndex = static_cast<unsigned int>(stage);
 	std::vector<Parser::LineMapping> lineMappings;
 	std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 	EXPECT_FALSE(compiler.compile(stages, output, shaderName, glsl, lineMappings, stage,
-		pipeline.entryPoints[stageIndex], glslang::DefaultTBuiltInResource));
+		glslang::DefaultTBuiltInResource));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
@@ -129,18 +128,17 @@ TEST_F(CompilerTest, CompileWarning)
 	Output output;
 	preprocessor.addIncludePath(inputDir.string());
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
-	EXPECT_TRUE(parser.parse(output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
 
 	ASSERT_EQ(1U, parser.getPipelines().size());
 	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
 	Compiler::Stages stages;
 
 	auto stage = Parser::Stage::Fragment;
-	auto stageIndex = static_cast<unsigned int>(stage);
 	std::vector<Parser::LineMapping> lineMappings;
 	std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 	EXPECT_TRUE(compiler.compile(stages, output, shaderName, glsl, lineMappings, stage,
-		pipeline.entryPoints[stageIndex], glslang::DefaultTBuiltInResource));
+		glslang::DefaultTBuiltInResource));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
@@ -161,7 +159,7 @@ TEST_F(CompilerTest, LinkerError)
 	Output output;
 	preprocessor.addIncludePath(inputDir.string());
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
-	EXPECT_TRUE(parser.parse(output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
 
 	ASSERT_EQ(1U, parser.getPipelines().size());
 	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
@@ -176,7 +174,7 @@ TEST_F(CompilerTest, LinkerError)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(compiler.compile(stages, output, shaderName, glsl, lineMappings, stage,
-			pipeline.entryPoints[i], glslang::DefaultTBuiltInResource));
+			glslang::DefaultTBuiltInResource));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
