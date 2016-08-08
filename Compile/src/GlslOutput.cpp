@@ -22,7 +22,7 @@ namespace msl
 {
 
 std::string GlslOutput::disassemble(Output& output, const Compiler::SpirV& spirv,
-	const Parser::Pipeline& pipeline, const Options& options)
+	const Options& options, const std::string& fileName, std::size_t line, std::size_t column)
 {
 	spirv_cross::CompilerGLSL::Options compilerOptions;
 	compilerOptions.version = options.version;
@@ -47,8 +47,7 @@ std::string GlslOutput::disassemble(Output& output, const Compiler::SpirV& spirv
 	}
 	catch (const spirv_cross::CompilerError& e)
 	{
-		output.addMessage(Output::Level::Error, pipeline.token->fileName, pipeline.token->line,
-			pipeline.token->column, false, e.what());
+		output.addMessage(Output::Level::Error, fileName, line, column, false, e.what());
 		return std::string();
 	}
 }

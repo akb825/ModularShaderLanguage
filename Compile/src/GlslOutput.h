@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include <MSL/Compile/Config.h>
+#include <MSL/Compile/TargetGlsl.h>
 #include "Compiler.h"
 
 namespace msl
@@ -24,28 +26,20 @@ namespace msl
 class GlslOutput
 {
 public:
-	enum class Precision
-	{
-		None,
-		Low,
-		Medium,
-		High
-	};
-
 	struct Options
 	{
 		unsigned int version;
 		bool es;
 		bool remapDepthRange;
 		bool vulkanSemantics;
-		Precision defaultFloatPrecision;
-		Precision defaultIntPrecision;
+		TargetGlsl::Precision defaultFloatPrecision;
+		TargetGlsl::Precision defaultIntPrecision;
 		std::vector<std::string> headerLines;
 		std::vector<std::string> requiredExtensions;
 	};
 
 	static std::string disassemble(Output& output, const Compiler::SpirV& spirv,
-		const Parser::Pipeline& pipeline, const Options& options);
+		const Options& options, const std::string& fileName, std::size_t line, std::size_t column);
 };
 
 } // namespace msl

@@ -21,8 +21,8 @@
 #include "ExecuteCommand.h"
 #include "Parser.h"
 #include "Preprocessor.h"
-#include <glslang/MachineIndependent/gl_types.h>
-#include <StandAlone/ResourceLimits.h>
+#include "glslang/MachineIndependent/gl_types.h"
+#include "StandAlone/ResourceLimits.h"
 #include <cstring>
 #include <fstream>
 #include <sstream>
@@ -238,6 +238,11 @@ const std::vector<std::pair<std::string, std::string>>& Target::getDefines() con
 	return m_defines;
 }
 
+std::vector<std::pair<std::string, std::string>> Target::getExtraDefines() const
+{
+	return std::vector<std::pair<std::string, std::string>>();
+}
+
 void Target::clearDefines()
 {
 	m_defines.clear();
@@ -316,11 +321,6 @@ bool Target::compile(CompiledResult& result, Output& output, std::istream& strea
 		return false;
 
 	return compileImpl(result, output, parser, fileName);
-}
-
-std::vector<std::pair<std::string, std::string>> Target::getExtraDefines() const
-{
-	return std::vector<std::pair<std::string, std::string>>();
 }
 
 void Target::setupPreprocessor(Preprocessor& preprocessor) const

@@ -37,6 +37,14 @@ class Preprocessor;
  *
  * This contains the capabilities of the target and extra info for how to compile the shader
  * to the final form.
+ *
+ * When subclassing, the following virtual functions should be overloaded:
+ * - getId(): gets the ID specific to the target language. The MSL_CREATE_ID() function should be
+ *   used to generate the ID.
+ * - getVersion(): gets the version of the target language.
+ * - featureSupported(): determine whether or not a feature is supported by the target.
+ * - getExtraDefines(): gets target-specific defines to automatically add during preprocessing.
+ * - crossCompile(): convert SPIR-V to the target language.
  */
 class MSL_COMPILE_EXPORT Target
 {
@@ -211,10 +219,18 @@ public:
 	void addDefine(std::string name, std::string value);
 
 	/**
-	 * @brief Gets the defines.
-	 * @return The defines. The first element is the name, while the second is the value.
+	 * @brief Gets the defines set by the user with addDefine().
+	 * @return The defines. For each pair, the first element is the name, while the second is the
+	 * value.
 	 */
 	const std::vector<std::pair<std::string, std::string>>& getDefines() const;
+
+	/**
+	 * @brief Gets extra defines for the target.
+	 * @return The extra defines. For each pair, the first element is the name and the second
+	 * element is the value.
+	 */
+	virtual std::vector<std::pair<std::string, std::string>> getExtraDefines() const;
 
 	/**
 	 * @brief Clears the defines.
@@ -329,12 +345,6 @@ public:
 		const std::string& fileName) const;
 
 protected:
-	/**
-	 * @brief Gets extra defines for the target.
-	 * @return The extra defines. For each pair, the first element is the name and the second
-	 * element is the value.
-	 */
-	virtual std::vector<std::pair<std::string, std::string>> getExtraDefines() const;
 
 	/**
 	 * @brief Cross-compiles SPIR-V to the final target.
