@@ -19,6 +19,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
+#include <atomic>
 #include <cstring>
 
 #if MSL_GCC || MSL_CLANG
@@ -52,6 +53,8 @@ static_assert(sizeof(stageMap)/sizeof(*stageMap) == Parser::stageCount,
 
 static EShMessages glslMessages =
 	static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules);
+
+static std::atomic<unsigned int> initCounter;
 
 static void addToOutput(Output& output, const std::string& baseFileName,
 	const std::vector<Parser::LineMapping>& lineMappings, const std::string& infoStr,
@@ -225,12 +228,14 @@ static bool addToOutput(Output &output, const spv::SpvBuildLogger& logger,
 
 void Compiler::initialize()
 {
-	glslang::InitializeProcess();
+	if (initCounter++ == 0)
+		glslang::InitializeProcess();
 }
 
 void Compiler::shutdown()
 {
-	glslang::FinalizeProcess();
+	if (--initCounter == 0)
+		glslang::FinalizeProcess();
 }
 
 bool Compiler::compile(Stages& stages, Output &output, const std::string& baseFileName,

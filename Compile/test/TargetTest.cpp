@@ -27,12 +27,23 @@ namespace
 class MockTarget : public Target
 {
 public:
+	std::uint32_t getId() const override
+	{
+		return MSL_CREATE_ID('M', 'O', 'C', 'K');
+	}
+
+	std::uint32_t getVersion() const override
+	{
+		return 0;
+	}
+
 	bool featureSupported(Feature feature) const override
 	{
 		return feature == Feature::Integers;
 	}
 
-	std::vector<std::uint8_t> crossCompile(const std::vector<std::uint32_t>&) override
+	std::vector<std::uint8_t> crossCompile(Output&, const std::vector<std::uint32_t>&,
+		const std::string&, std::size_t, std::size_t) const override
 	{
 		return std::vector<std::uint8_t>();
 	}

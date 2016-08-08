@@ -29,6 +29,8 @@ namespace msl
 
 class CompiledResult;
 class Output;
+class Parser;
+class Preprocessor;
 
 /**
  * @brief Base class for a target.
@@ -128,6 +130,22 @@ public:
 	virtual ~Target();
 
 	/**
+	 * @brief Gets the ID for the target.
+	 *
+	 * This is generally created with the MSL_CREATE_ID() macro to combine 4 characters into
+	 * an ID.
+	 *
+	 * @return The target ID.
+	 */
+	virtual std::uint32_t getId() const = 0;
+
+	/**
+	 * @brief Gets the version for the target.
+	 * @return The target version.
+	 */
+	virtual std::uint32_t getVersion() const = 0;
+
+	/**
 	 * @brief Returns whether or not a feature is overridden.
 	 * @param feature The feature.
 	 * @return True if the feature is overridden.
@@ -204,24 +222,6 @@ public:
 	void clearDefines();
 
 	/**
-	 * @brief Compiles a shader.
-	 * @param result The compiled result.
-	 * @param output The output for warnings and errors.
-	 * @param fileName The name of the file to load.
-	 */
-	bool compile(CompiledResult& result, Output& output, const std::string& fileName);
-
-	/**
-	 * @brief Compiles a shader.
-	 * @param result The compiled result.
-	 * @param output The output for warnings and errors.
-	 * @param stream The stream to read from.
-	 * @param fileName The name of the file corresponding to the stream.
-	 */
-	bool compile(CompiledResult& result, Output& output, std::istream& stream,
-		const std::string& fileName);
-
-	/**
 	 * @brief Gets the tool command to run on the output SPIR-V before cross-compiling.
 	 * @return The SPIR-V tool command.
 	 */
@@ -239,19 +239,118 @@ public:
 	 */
 	void setSpirVToolCommand(std::string command);
 
+	/**
+	 * @brief Returns whether or not to remap the SPIR-V variables.
+	 *
+	 * This can be useful to improve compression ratios for SPIR-V targets.
+	 *
+	 * @return True to remap variables.
+	 */
+	bool getRemapVariables() const;
+
+	/**
+	 * @brief Sets whether or not to remap the SPIR-V variables.
+	 *
+	 * This can be useful to improve compression ratios for SPIR-V targets.
+	 *
+	 * @param remap True to remap variables.
+	 */
+	void setRemapVariables(bool remap);
+
+	/**
+	 * @brief Retruns whether or not to optimize the output.
+	 *
+	 * This will do some simple optimizations on the SPIR-V code. This can also be used for targets
+	 * when passing through other tools.
+	 *
+	 * @return True to optimize.
+	 */
+	bool getOptimize() const;
+
+	/**
+	 * @brief Sets whether or not to optimize the output.
+	 *
+	 * This will do some simple optimizations on the SPIR-V code. This can also be used for targets
+	 * when passing through other tools.
+	 *
+	 * @param optimize True to optimize.
+	 */
+	void setOptimize(bool optimize);
+
+	/**
+	 * @brief Returns whether or not to strip the debug symbols from SPIR-V.
+	 * @return True to strip debug.
+	 */
+	bool getStripDebug() const;
+
+	/**
+	 * @brief Sets whether or not to strip the debug symbols from SPIR-V.
+	 * @param strip True to strip debug.
+	 */
+	void setStripDebug(bool strip);
+
+	/**
+	 * @brief Gets the file name to a text file describing the resource limits.
+	 *
+	 * This is the same format as used by the glslang validator tool. When empty, the default
+	 * resource limits are used.
+	 *
+	 * @return The reosurce file name.
+	 */
+	const std::string& getResourcesFileName() const;
+
+	/**
+	 * @brief Sets the file name to a text file describing the resource limits.
+	 *
+	 * This is the same format as used by the glslang validator tool. When empty, the default
+	 * resource limits are used.
+	 *
+	 * @param fileName The reosurce file name.
+	 */
+	void setResourcesFileName(std::string fileName);
+
+	/**
+	 * @brief Compiles a shader.
+	 * @param result The compiled result.
+	 * @param output The output for warnings and errors.
+	 * @param fileName The name of the file to load.
+	 */
+	bool compile(CompiledResult& result, Output& output, const std::string& fileName) const;
+
+	/**
+	 * @brief Compiles a shader.
+	 * @param result The compiled result.
+	 * @param output The output for warnings and errors.
+	 * @param stream The stream to read from.
+	 * @param fileName The name of the file corresponding to the stream. This is used for error
+	 * outputs.
+	 */
+	bool compile(CompiledResult& result, Output& output, std::istream& stream,
+		const std::string& fileName) const;
+
 protected:
 	/**
-	 * @brief Add language-specific defines.
-	 * @param defines The list of defines to add to.
+	 * @brief Gets extra defines for the target.
+	 * @return The extra defines. For each pair, the first element is the name and the second
+	 * element is the value.
 	 */
-	virtual void addDefines(std::vector<std::pair<std::string, std::string>>& defines);
+	virtual std::vector<std::pair<std::string, std::string>> getExtraDefines() const;
 
 	/**
 	 * @brief Cross-compiles SPIR-V to the final target.
+	 *
+	 * If an error occurred, a message should be added to output explaining why.
+	 *
+	 * @param output The output to add errors and warnings.
 	 * @param spirv The SPIR-V input.
-	 * @return The cross-compiled result.
+	 * @param fileName The file name for the message of any error.
+	 * @param line The line number for the message of any error.
+	 * @param column The column number for the message of any error.
+	 * @return The cross-compiled result. This should be empty if an error occurred.
 	 */
-	virtual std::vector<std::uint8_t> crossCompile(const std::vector<std::uint32_t>& spirv) = 0;
+	virtual std::vector<std::uint8_t> crossCompile(Output& output,
+		const std::vector<std::uint32_t>& spirv, const std::string& fileName, std::size_t line,
+		std::size_t column) const = 0;
 
 private:
 	enum class State
@@ -261,10 +360,19 @@ private:
 		Disabled
 	};
 
+	void setupPreprocessor(Preprocessor& preprocessor) const;
+	bool compileImpl(CompiledResult& result, Output& output, Parser& parser,
+		const std::string& fileName) const;
+
 	std::array<State, featureCount> m_featureStates;
 	std::vector<std::string> m_includePaths;
 	std::vector<std::pair<std::string, std::string>> m_defines;
 	std::string m_spirVToolCommand;
+
+	bool m_remapVariables;
+	bool m_optimize;
+	bool m_stripDebug;
+	std::string m_resourcesFile;
 };
 
 } // namespace msl

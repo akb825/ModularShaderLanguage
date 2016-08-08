@@ -107,3 +107,12 @@
  * @param x The unused variable.
  */
 #define MSL_UNUSED(x) (void)(&x)
+
+/**
+ * @brief Combines 4 characters into a 32-bit integer ID.
+ * @param a The first character. This will be the most significant byte.
+ * @param b The second character.
+ * @param c The third character.
+ * @param d The last character. This will be the least significant byte.
+ */
+#define MSL_CREATE_ID(a, b, c, d) (((a) << 24) | ((b) << 16) | ((c) << 8) | (d))
