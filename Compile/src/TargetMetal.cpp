@@ -92,9 +92,10 @@ bool TargetMetal::featureSupported(Feature feature) const
 	// TODO: determine supported feature based on version.
 	switch (feature)
 	{
-		case Feature::TessellationStages:
 		case Feature::Std140:
 		case Feature::Std430:
+		case Feature::TessellationStages:
+		case Feature::GeometryStage:
 			return false;
 		default:
 			return true;
