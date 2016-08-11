@@ -28,7 +28,11 @@ std::string MetalOutput::disassemble(Output& output, const Compiler::SpirV& spir
 	compilerOptions.flip_vert_y = options.flipVertexY;
 	compilerOptions.flip_frag_y = options.flipFragmentY;
 
+	spirv_cross::CompilerGLSL::Options glslOptions;
+	glslOptions.vertex.fixup_clipspace = options.remapDepthRange;
+
 	spirv_cross::CompilerMSL compiler(spirv);
+	compiler.set_options(glslOptions);
 	try
 	{
 		return compiler.compile(compilerOptions);

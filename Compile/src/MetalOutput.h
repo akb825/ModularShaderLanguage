@@ -26,6 +26,7 @@ class MetalOutput
 public:
 	struct Options
 	{
+		bool remapDepthRange;
 		bool flipVertexY;
 		bool flipFragmentY;
 	};

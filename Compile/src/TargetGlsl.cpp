@@ -16,6 +16,7 @@
 
 #include <MSL/Compile/TargetGlsl.h>
 #include <MSL/Compile/Output.h>
+#include "ExecuteCommand.h"
 #include "GlslOutput.h"
 
 namespace msl
@@ -290,7 +291,21 @@ std::vector<std::uint8_t> TargetGlsl::crossCompile(Output& output,
 	options.headerLines = m_headerLines;
 	options.requiredExtensions = m_requiredExtensions;
 	std::string glsl = GlslOutput::disassemble(output, spirv, options, fileName, line, column);
-	return std::vector<std::uint8_t>(glsl.begin(), glsl.end());
+	std::vector<std::uint8_t> glslData(glsl.begin(), glsl.end());
+
+	// Use external command if set.
+	if (!m_glslToolCommand.empty())
+	{
+		ExecuteCommand command;
+		command.getInput().write(reinterpret_cast<const char*>(glslData.data()), glslData.size());
+		if (!command.execute(output, m_glslToolCommand))
+			return std::vector<std::uint8_t>();
+
+		glslData.assign(std::istreambuf_iterator<char>(command.getOutput().rdbuf()),
+			std::istreambuf_iterator<char>());
+	}
+
+	return glslData;
 }
 
 } // namespace msl

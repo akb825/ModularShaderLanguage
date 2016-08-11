@@ -134,6 +134,28 @@ public:
 	 */
 	void clearRequiredExtensions();
 
+	/**
+	 * @brief Gets the tool command to run on the output GLSL.
+	 * @return The GLSL tool command.
+	 */
+	const std::string& getGlslToolCommand() const;
+
+	/**
+	 * @brief Sets the GLSL tool command to run on the output GLSL.
+	 *
+	 * This can be used to hook external tools, such as optimizers, into the shader compilation
+	 * pipeline. Compilation will fail if the tool returns a non-zero error code. Output from the
+	 * tool will be captured and added to the Output instance.
+	 *
+	 * The string $input will be replaced with the file name for the input file, while the string
+	 * $output will be replaced with the file name for the output file.
+	 *
+	 * When empty, no command will be run.
+	 *
+	 * @param command The command to run.
+	 */
+	void setGlslToolCommand(std::string command);
+
 	std::uint32_t getId() const override;
 	std::uint32_t getVersion() const override;
 	bool featureSupported(Feature feature) const override;
@@ -152,6 +174,7 @@ private:
 	Precision m_defaultIntPrecision;
 	std::vector<std::string> m_headerLines;
 	std::vector<std::string> m_requiredExtensions;
+	std::string m_glslToolCommand;
 };
 
 } // namespace msl

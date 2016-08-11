@@ -246,6 +246,10 @@ public:
 	/**
 	 * @brief Sets the SPIR-V tool command to run on the output SPIR-V before cross-compiling.
 	 *
+	 * This can be used to hook external tools, such as optimizers, into the shader compilation
+	 * pipeline. Compilation will fail if the tool returns a non-zero error code. Output from the
+	 * tool will be captured and added to the Output instance.
+	 *
 	 * The string $input will be replaced with the file name for the input file, while the string
 	 * $output will be replaced with the file name for the output file.
 	 *
