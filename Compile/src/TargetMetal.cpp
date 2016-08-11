@@ -127,6 +127,9 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 	if (metal.empty())
 		return false;
 
+	// Set the entry point back to its original value. The function mmain was set by SPIRV-Cross.
+	boost::algorithm::replace_all(metal, "mmain", entryPoint);
+
 	// Check if the entry point was already added. Make sure the generated code was the same if so.
 	auto foundIter = m_entryPointData.find(entryPoint);
 	if (foundIter != m_entryPointData.end())
@@ -145,9 +148,7 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 		return true;
 	}
 
-	// Set the entry point back to its original value. The function mmain was set by SPIRV-Cross.
-	boost::algorithm::replace_all(metal, "mmain", entryPoint);
-
+	// Compile this entry point.
 	std::string versionStr;
 	if (m_ios)
 	{
