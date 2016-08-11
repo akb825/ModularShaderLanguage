@@ -136,7 +136,7 @@ static std::unordered_map<int, CompiledResult::Type> typeMap =
 	{GL_DOUBLE_MAT4x2, CompiledResult::Type::DMat4x2},
 	{GL_DOUBLE_MAT4x3, CompiledResult::Type::DMat4x3},
 
-// Samplers
+	// Samplers
 	{GL_SAMPLER_1D, CompiledResult::Type::Sampler1D},
 	{GL_SAMPLER_2D, CompiledResult::Type::Sampler2D},
 	{GL_SAMPLER_3D, CompiledResult::Type::Sampler3D},
@@ -544,7 +544,7 @@ void Target::setResourcesFileName(std::string fileName)
 	m_resourcesFile = std::move(fileName);
 }
 
-bool Target::compile(CompiledResult& result, Output& output, const std::string& fileName) const
+bool Target::compile(CompiledResult& result, Output& output, const std::string& fileName)
 {
 	Preprocessor preprocessor;
 	setupPreprocessor(preprocessor);
@@ -557,7 +557,7 @@ bool Target::compile(CompiledResult& result, Output& output, const std::string& 
 }
 
 bool Target::compile(CompiledResult& result, Output& output, std::istream& stream,
-	const std::string& fileName) const
+	const std::string& fileName)
 {
 	Preprocessor preprocessor;
 	setupPreprocessor(preprocessor);
@@ -567,6 +567,27 @@ bool Target::compile(CompiledResult& result, Output& output, std::istream& strea
 		return false;
 
 	return compileImpl(result, output, parser, fileName);
+}
+
+bool Target::finish(CompiledResult& result, Output& output)
+{
+	if (result.m_target != this)
+	{
+		output.addMessage(Output::Level::Error, "<finish>", 0, 0, false,
+			"internal error: targets don't match in compiled result");
+		return false;
+	}
+
+	result.m_sharedData.clear();
+	if (!getSharedData(result.m_sharedData, output))
+		return false;
+
+	return true;
+}
+
+bool Target::getSharedData(std::vector<std::uint8_t>&, Output&)
+{
+	return true;
 }
 
 void Target::setupPreprocessor(Preprocessor& preprocessor) const
@@ -582,7 +603,7 @@ void Target::setupPreprocessor(Preprocessor& preprocessor) const
 }
 
 bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
-	const std::string& fileName) const
+	const std::string& fileName)
 {
 	int options = 0;
 	if (!featureEnabled(Feature::UniformBuffers))
@@ -592,13 +613,13 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 		return false;
 
 	// Set the target info on the result.
-	if (!result.m_targetSet)
+	if (!result.m_target)
 	{
+		result.m_target = this;
 		result.m_targetId = getId();
 		result.m_targetVersion = getVersion();
-		result.m_targetSet = true;
 	}
-	else if (result.m_targetId != getId() || result.m_targetVersion != getVersion())
+	else if (result.m_target != this)
 	{
 		output.addMessage(Output::Level::Error, fileName, 0, 0, false,
 			"internal error: targets don't match in compiled result");
@@ -633,6 +654,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 		processOptions |= Compiler::StripDebug;
 
 	std::vector<char> tempData;
+	std::vector<uint8_t> shaderData;
 	std::vector<Parser::LineMapping> lineMappings;
 	for (const Parser::Pipeline& pipeline : parser.getPipelines())
 	{
@@ -711,8 +733,13 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 				std::memcpy(spirV.data(), tempData.data(), tempData.size());
 			}
 
-			std::vector<uint8_t> shaderData = crossCompile(output, spirV, fileName,
-				pipeline.token->line, pipeline.token->column);
+			shaderData.clear();
+			if (!crossCompile(shaderData, output, spirV, pipeline.entryPoints[i],
+				fileName, pipeline.token->line, pipeline.token->column))
+			{
+				return false;
+			}
+
 			std::size_t shaderIndex = result.addShader(std::move(shaderData));
 			switch (stage)
 			{

@@ -20,9 +20,9 @@ namespace msl
 {
 
 CompiledResult::CompiledResult()
-	: m_targetId(0)
+	: m_target(nullptr)
+	, m_targetId(0)
 	, m_targetVersion(0)
-	, m_targetSet(false)
 {
 }
 

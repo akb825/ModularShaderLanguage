@@ -16,6 +16,7 @@
 
 #pragma once
 
+#include <MSL/Compile/Config.h>
 #include "Compiler.h"
 
 namespace msl
@@ -32,7 +33,7 @@ public:
 	};
 
 	static std::string disassemble(Output& output, const Compiler::SpirV& spirv,
-		const Parser::Pipeline& pipeline, const Options& options);
+		const Options& options, const std::string& fileName, std::size_t line, std::size_t column);
 };
 
 } // namespace msl

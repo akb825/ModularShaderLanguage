@@ -43,13 +43,13 @@ std::vector<std::pair<std::string, std::string>> TargetSpirV::getExtraDefines() 
 	return {{"SPIRV_VERSION", stream.str()}};
 }
 
-std::vector<std::uint8_t> TargetSpirV::crossCompile(Output&,
-	const std::vector<std::uint32_t>& spirv, const std::string&, std::size_t, std::size_t) const
+bool TargetSpirV::crossCompile(std::vector<std::uint8_t>& data, Output&,
+	const std::vector<std::uint32_t>& spirv, const std::string&, const std::string&, std::size_t,
+	std::size_t)
 {
-	std::vector<std::uint8_t> data;
 	data.resize(spirv.size()*sizeof(std::uint32_t));
 	std::memcpy(data.data(), spirv.data(), data.size());
-	return data;
+	return true;
 }
 
 } // namespace msl

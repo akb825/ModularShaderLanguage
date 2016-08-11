@@ -42,10 +42,10 @@ public:
 		return feature == Feature::Integers;
 	}
 
-	std::vector<std::uint8_t> crossCompile(Output&, const std::vector<std::uint32_t>&,
-		const std::string&, std::size_t, std::size_t) const override
+	bool crossCompile(std::vector<std::uint8_t>&, Output&, const std::vector<std::uint32_t>&,
+		const std::string&, const std::string&, std::size_t, std::size_t) override
 	{
-		return std::vector<std::uint8_t>();
+		return true;
 	}
 };
 

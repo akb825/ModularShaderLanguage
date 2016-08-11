@@ -162,8 +162,9 @@ public:
 	std::vector<std::pair<std::string, std::string>> getExtraDefines() const override;
 
 protected:
-	std::vector<std::uint8_t> crossCompile(Output& output, const std::vector<std::uint32_t>& spirv,
-		const std::string& fileName, std::size_t line, std::size_t column) const override;
+	bool crossCompile(std::vector<std::uint8_t>& data, Output& output,
+		const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
+		const std::string& fileName, std::size_t line, std::size_t column) override;
 
 private:
 	std::uint32_t m_version;

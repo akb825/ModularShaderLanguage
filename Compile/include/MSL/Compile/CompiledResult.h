@@ -25,6 +25,8 @@
 namespace msl
 {
 
+class Target;
+
 /**
  * @brief Class that stores the compiled result for a shader.
  *
@@ -297,18 +299,25 @@ public:
 	 */
 	inline const std::map<std::string, Pipeline>& getPipelines() const;
 
+	/**
+	 * @brief Gets the shared data for all the shaders.
+	 * @return The shared data.
+	 */
+	inline const std::vector<std::uint8_t>& getSharedData() const;
+
 private:
 	friend class Target;
 
 	std::size_t addShader(std::vector<std::uint8_t> shader);
 
+	const Target* m_target;
 	std::uint32_t m_targetId;
 	std::uint32_t m_targetVersion;
-	bool m_targetSet;
 
 	// Use a map to ensure consistent ordering.
 	std::map<std::string, Pipeline> m_pipelines;
 	std::vector<std::vector<std::uint8_t>> m_shaders;
+	std::vector<std::uint8_t> m_sharedData;
 };
 
 inline std::uint32_t CompiledResult::getTargetId() const
@@ -329,6 +338,11 @@ inline const std::vector<std::vector<uint8_t>>& CompiledResult::getShaders() con
 inline const std::map<std::string, CompiledResult::Pipeline>& CompiledResult::getPipelines() const
 {
 	return m_pipelines;
+}
+
+inline const std::vector<std::uint8_t>& CompiledResult::getSharedData() const
+{
+	return m_sharedData;
 }
 
 } // namespace msl

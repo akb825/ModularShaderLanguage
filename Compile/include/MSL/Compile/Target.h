@@ -334,8 +334,9 @@ public:
 	 * @param result The compiled result.
 	 * @param output The output for warnings and errors.
 	 * @param fileName The name of the file to load.
+	 * @return False if compilation failed.
 	 */
-	bool compile(CompiledResult& result, Output& output, const std::string& fileName) const;
+	bool compile(CompiledResult& result, Output& output, const std::string& fileName);
 
 	/**
 	 * @brief Compiles a shader.
@@ -344,9 +345,18 @@ public:
 	 * @param stream The stream to read from.
 	 * @param fileName The name of the file corresponding to the stream. This is used for error
 	 * outputs.
+	 * @return False if compilation failed.
 	 */
 	bool compile(CompiledResult& result, Output& output, std::istream& stream,
-		const std::string& fileName) const;
+		const std::string& fileName);
+
+	/**
+	 * @brief Finishes compiling the shader.
+	 * @param result The compiled result.
+	 * @param output The output for warnings and errors.
+	 * @return False if compilation failed.
+	 */
+	bool finish(CompiledResult& result, Output& output);
 
 protected:
 
@@ -355,16 +365,27 @@ protected:
 	 *
 	 * If an error occurred, a message should be added to output explaining why.
 	 *
+	 * @param data The data from cross-compiling.
 	 * @param output The output to add errors and warnings.
 	 * @param spirv The SPIR-V input.
+	 * @param entryPoint The name of the entry point. This can be used to rename main back to the
+	 * original entry point name.
 	 * @param fileName The file name for the message of any error.
 	 * @param line The line number for the message of any error.
 	 * @param column The column number for the message of any error.
-	 * @return The cross-compiled result. This should be empty if an error occurred.
+	 * @return False if the compilation failed.
 	 */
-	virtual std::vector<std::uint8_t> crossCompile(Output& output,
-		const std::vector<std::uint32_t>& spirv, const std::string& fileName, std::size_t line,
-		std::size_t column) const = 0;
+	virtual bool crossCompile(std::vector<std::uint8_t>& data, Output& output,
+		const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
+		const std::string& fileName, std::size_t line, std::size_t column) = 0;
+
+	/**
+	 * @brief Gets the shared data for the compiled shader.
+	 * @param data The shared data.
+	 * @param output The output to add errors and warnings.
+	 * @return False if the compilation failed.
+	 */
+	virtual bool getSharedData(std::vector<std::uint8_t>& data, Output& output);
 
 private:
 	enum class State
@@ -376,7 +397,7 @@ private:
 
 	void setupPreprocessor(Preprocessor& preprocessor) const;
 	bool compileImpl(CompiledResult& result, Output& output, Parser& parser,
-		const std::string& fileName) const;
+		const std::string& fileName);
 
 	std::array<State, featureCount> m_featureStates;
 	std::vector<std::string> m_includePaths;

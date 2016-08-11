@@ -18,6 +18,7 @@
 #include <MSL/Compile/Output.h>
 #include "ExecuteCommand.h"
 #include "GlslOutput.h"
+#include <sstream>
 
 namespace msl
 {
@@ -278,9 +279,19 @@ bool TargetGlsl::featureSupported(Feature feature) const
 	return false;
 }
 
-std::vector<std::uint8_t> TargetGlsl::crossCompile(Output& output,
-	const std::vector<std::uint32_t>& spirv, const std::string& fileName, std::size_t line,
-	std::size_t column) const
+std::vector<std::pair<std::string, std::string>> TargetGlsl::getExtraDefines() const
+{
+	std::stringstream stream;
+	stream << getVersion();
+	if (m_es)
+		return {{"GLSLES_VERSION", stream.str()}};
+	else
+		return {{"GLSL_VERSION", stream.str()}};
+}
+
+bool TargetGlsl::crossCompile(std::vector<std::uint8_t>& data, Output& output,
+	const std::vector<std::uint32_t>& spirv, const std::string&, const std::string& fileName,
+	std::size_t line, std::size_t column)
 {
 	GlslOutput::Options options;
 	options.version = m_version;
@@ -291,21 +302,21 @@ std::vector<std::uint8_t> TargetGlsl::crossCompile(Output& output,
 	options.headerLines = m_headerLines;
 	options.requiredExtensions = m_requiredExtensions;
 	std::string glsl = GlslOutput::disassemble(output, spirv, options, fileName, line, column);
-	std::vector<std::uint8_t> glslData(glsl.begin(), glsl.end());
+	data.assign(glsl.begin(), glsl.end());
 
 	// Use external command if set.
-	if (!m_glslToolCommand.empty())
+	if (!m_glslToolCommand.empty() && !data.empty())
 	{
 		ExecuteCommand command;
-		command.getInput().write(reinterpret_cast<const char*>(glslData.data()), glslData.size());
+		command.getInput().write(reinterpret_cast<const char*>(data.data()), data.size());
 		if (!command.execute(output, m_glslToolCommand))
-			return std::vector<std::uint8_t>();
+			return false;
 
-		glslData.assign(std::istreambuf_iterator<char>(command.getOutput().rdbuf()),
+		data.assign(std::istreambuf_iterator<char>(command.getOutput().rdbuf()),
 			std::istreambuf_iterator<char>());
 	}
 
-	return glslData;
+	return !data.empty();
 }
 
 } // namespace msl

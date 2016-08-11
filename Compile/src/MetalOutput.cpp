@@ -22,7 +22,7 @@ namespace msl
 {
 
 std::string MetalOutput::disassemble(Output& output, const Compiler::SpirV& spirv,
-	const Parser::Pipeline& pipeline, const Options& options)
+	const Options& options, const std::string& fileName, std::size_t line, std::size_t column)
 {
 	spirv_cross::MSLConfiguration compilerOptions;
 	compilerOptions.flip_vert_y = options.flipVertexY;
@@ -39,8 +39,7 @@ std::string MetalOutput::disassemble(Output& output, const Compiler::SpirV& spir
 	}
 	catch (const spirv_cross::CompilerError& e)
 	{
-		output.addMessage(Output::Level::Error, pipeline.token->fileName, pipeline.token->line,
-			pipeline.token->column, false, e.what());
+		output.addMessage(Output::Level::Error, fileName, line, column, false, e.what());
 		return std::string();
 	}
 }

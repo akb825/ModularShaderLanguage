@@ -44,6 +44,11 @@ public:
 		return m_output;
 	}
 
+	const std::string& getOutputFileName() const
+	{
+		return m_inputFileName;
+	}
+
 	bool execute(Output& output, const std::string& command);
 
 private:
