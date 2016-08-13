@@ -678,7 +678,11 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 				"see previous declaration");
 			return false;
 		}
+
 		CompiledResult::Pipeline& addedPipeline = addPair.first->second;
+		addedPipeline.file = pipeline.token->fileName;
+		addedPipeline.line = pipeline.token->line;
+		addedPipeline.column = pipeline.token->column;
 
 		// Compile the stages.
 		Compiler::Stages stages;

@@ -213,4 +213,31 @@ TEST(TargetSpirVTest, InvalidResources)
 		messages[0].message);
 }
 
+TEST(TargetSpirVTest, DuplicatePipeline)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = (inputDir/"CompleteShader.msl").string();
+
+	TargetSpirV target;
+	target.addIncludePath(inputDir.string());
+
+	Output output;
+	CompiledResult result;
+	EXPECT_TRUE(target.compile(result, output, shaderName));
+	EXPECT_FALSE(target.compile(result, output, shaderName));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_LE(2U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_EQ(37U, messages[0].line);
+	EXPECT_EQ("pipeline already declared: Test", messages[0].message);
+
+	EXPECT_EQ(Output::Level::Error, messages[1].level);
+	EXPECT_TRUE(messages[1].continued);
+	EXPECT_EQ(shaderName, messages[1].file);
+	EXPECT_EQ(37U, messages[1].line);
+	EXPECT_EQ("see previous declaration", messages[1].message);
+}
+
 } // namespace msl
