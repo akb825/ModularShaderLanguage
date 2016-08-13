@@ -19,6 +19,8 @@
 #include <MSL/Compile/Config.h>
 #include <MSL/Compile/Export.h>
 #include <MSL/Compile/Target.h>
+#include <array>
+#include <vector>
 
 namespace msl
 {
@@ -101,16 +103,25 @@ public:
 	void setDefaultIntPrecision(Precision precision);
 
 	/**
-	 * @brief Adds a header line to to be added to the final GLSL source.
+	 * @brief Adds a header line to to be added to the final GLSL source for all pipeline stages.
 	 * @param header The header line.
 	 */
-	void addHeaderLine(std::string header);
+	void addHeaderLine(const std::string& header);
+
+	/**
+	 * @brief Adds a header line to to be added to the final GLSL source for a specific pipeline
+	 * stage.
+	 * @param stage The stage to add the header line for.
+	 * @param header The header line.
+	 */
+	void addHeaderLine(Stage stage, std::string header);
 
 	/**
 	 * @brief Gets the header lines to be added to the final GLSL source.
+	 * @param stage The stage to get the header lines for.
 	 * @return The header lines.
 	 */
-	const std::vector<std::string>& getHeaderLines() const;
+	const std::vector<std::string>& getHeaderLines(Stage stage) const;
 
 	/**
 	 * @brief Clears the header lines.
@@ -118,16 +129,24 @@ public:
 	void clearHeaderLines();
 
 	/**
-	 * @brief Adds a required extension.
+	 * @brief Adds a required extension for all stages.
 	 * @param extension The extension.
 	 */
-	void addRequiredExtension(std::string extension);
+	void addRequiredExtension(const std::string& extension);
+
+	/**
+	 * @brief Adds a required extension for a specific stage stages.
+	 * @param stage The stage to add the extension for.
+	 * @param extension The extension.
+	 */
+	void addRequiredExtension(Stage stage, std::string extension);
 
 	/**
 	 * @brief Gets the require extensions.
+	 * @param stage The stage to get the extensions for.
 	 * @return The required extensions.
 	 */
-	const std::vector<std::string>& getRequiredExtensions() const;
+	const std::vector<std::string>& getRequiredExtensions(Stage stage) const;
 
 	/**
 	 * @brief Clears the required extensions.
@@ -136,9 +155,10 @@ public:
 
 	/**
 	 * @brief Gets the tool command to run on the output GLSL.
+	 * @param stage The stage the command is run on.
 	 * @return The GLSL tool command.
 	 */
-	const std::string& getGlslToolCommand() const;
+	const std::string& getGlslToolCommand(Stage stage) const;
 
 	/**
 	 * @brief Sets the GLSL tool command to run on the output GLSL.
@@ -152,9 +172,10 @@ public:
 	 *
 	 * When empty, no command will be run.
 	 *
+	 * @param stage The stage to run the command on.
 	 * @param command The command to run.
 	 */
-	void setGlslToolCommand(std::string command);
+	void setGlslToolCommand(Stage stage, std::string command);
 
 	std::uint32_t getId() const override;
 	std::uint32_t getVersion() const override;
@@ -162,7 +183,7 @@ public:
 	std::vector<std::pair<std::string, std::string>> getExtraDefines() const override;
 
 protected:
-	bool crossCompile(std::vector<std::uint8_t>& data, Output& output,
+	bool crossCompile(std::vector<std::uint8_t>& data, Output& output, Stage stage,
 		const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
 		const std::string& fileName, std::size_t line, std::size_t column) override;
 
@@ -173,9 +194,9 @@ private:
 	bool m_remapDepthRange;
 	Precision m_defaultFloatPrecision;
 	Precision m_defaultIntPrecision;
-	std::vector<std::string> m_headerLines;
-	std::vector<std::string> m_requiredExtensions;
-	std::string m_glslToolCommand;
+	std::array<std::vector<std::string>, stageCount> m_headerLines;
+	std::array<std::vector<std::string>, stageCount> m_requiredExtensions;
+	std::array<std::string, stageCount> m_glslToolCommand;
 };
 
 } // namespace msl

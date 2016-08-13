@@ -67,34 +67,58 @@ void TargetGlsl::setDefaultIntPrecision(Precision precision)
 	m_defaultIntPrecision = precision;
 }
 
-void TargetGlsl::addHeaderLine(std::string header)
+void TargetGlsl::addHeaderLine(const std::string& header)
 {
-	m_headerLines.push_back(std::move(header));
+	for (auto& headerLines : m_headerLines)
+		headerLines.push_back(header);
 }
 
-const std::vector<std::string>& TargetGlsl::getHeaderLines() const
+void TargetGlsl::addHeaderLine(Stage stage, std::string header)
 {
-	return m_headerLines;
+	m_headerLines[static_cast<std::size_t>(stage)].push_back(std::move(header));
+}
+
+const std::vector<std::string>& TargetGlsl::getHeaderLines(Stage stage) const
+{
+	return m_headerLines[static_cast<std::size_t>(stage)];
 }
 
 void TargetGlsl::clearHeaderLines()
 {
-	m_headerLines.clear();
+	for (auto& headerLines : m_headerLines)
+		headerLines.clear();
 }
 
-void TargetGlsl::addRequiredExtension(std::string extension)
+void TargetGlsl::addRequiredExtension(const std::string& extension)
 {
-	m_requiredExtensions.push_back(std::move(extension));
+	for (auto& requiredExtensions : m_requiredExtensions)
+		requiredExtensions.push_back(extension);
 }
 
-const std::vector<std::string>& TargetGlsl::getRequiredExtensions() const
+void TargetGlsl::addRequiredExtension(Stage stage, std::string extension)
 {
-	return m_requiredExtensions;
+	m_requiredExtensions[static_cast<std::size_t>(stage)].push_back(std::move(extension));
+}
+
+const std::vector<std::string>& TargetGlsl::getRequiredExtensions(Stage stage) const
+{
+	return m_requiredExtensions[static_cast<std::size_t>(stage)];
 }
 
 void TargetGlsl::clearRequiredExtensions()
 {
-	m_requiredExtensions.clear();
+	for (auto& requiredExtensions : m_requiredExtensions)
+		requiredExtensions.clear();
+}
+
+const std::string& TargetGlsl::getGlslToolCommand(Stage stage) const
+{
+	return m_glslToolCommand[static_cast<std::size_t>(stage)];
+}
+
+void TargetGlsl::setGlslToolCommand(Stage stage, std::string command)
+{
+	m_glslToolCommand[static_cast<std::size_t>(stage)] = std::move(command);
 }
 
 std::uint32_t TargetGlsl::getId() const
@@ -289,32 +313,38 @@ std::vector<std::pair<std::string, std::string>> TargetGlsl::getExtraDefines() c
 		return {{"GLSL_VERSION", stream.str()}};
 }
 
-bool TargetGlsl::crossCompile(std::vector<std::uint8_t>& data, Output& output,
+bool TargetGlsl::crossCompile(std::vector<std::uint8_t>& data, Output& output, Stage stage,
 	const std::vector<std::uint32_t>& spirv, const std::string&, const std::string& fileName,
 	std::size_t line, std::size_t column)
 {
+	std::size_t stageIndex = static_cast<std::size_t>(stage);
+
 	GlslOutput::Options options;
 	options.version = m_version;
 	options.es = m_es;
 	options.remapDepthRange = m_remapDepthRange;
 	options.defaultFloatPrecision = m_defaultFloatPrecision;
 	options.defaultIntPrecision = m_defaultIntPrecision;
-	options.headerLines = m_headerLines;
-	options.requiredExtensions = m_requiredExtensions;
+	options.headerLines = m_headerLines[stageIndex];
+	options.requiredExtensions = m_requiredExtensions[stageIndex];
 	std::string glsl = GlslOutput::disassemble(output, spirv, options, fileName, line, column);
 	data.assign(glsl.begin(), glsl.end());
 
 	// Use external command if set.
-	if (!m_glslToolCommand.empty() && !data.empty())
+	if (!m_glslToolCommand[stageIndex].empty() && !data.empty())
 	{
 		ExecuteCommand command;
 		command.getInput().write(reinterpret_cast<const char*>(data.data()), data.size());
-		if (!command.execute(output, m_glslToolCommand))
+		if (!command.execute(output, m_glslToolCommand[stageIndex]))
 			return false;
 
 		data.assign(std::istreambuf_iterator<char>(command.getOutput().rdbuf()),
 			std::istreambuf_iterator<char>());
 	}
+
+	// Add null terminator so it can be used as a string.
+	if (!data.empty())
+		data.push_back(0);
 
 	return !data.empty();
 }

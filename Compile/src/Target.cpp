@@ -600,6 +600,14 @@ void Target::setupPreprocessor(Preprocessor& preprocessor) const
 
 	for (auto& define : getExtraDefines())
 		preprocessor.addDefine(std::move(define.first), std::move(define.second));
+
+	for (unsigned int i = 0; i < featureCount; ++i)
+	{
+		if (featureEnabled(static_cast<Feature>(i)))
+			preprocessor.addDefine(featureInfos[i].define, "1");
+		else
+			preprocessor.addDefine(featureInfos[i].define, "0");
+	}
 }
 
 bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
@@ -734,8 +742,8 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			}
 
 			shaderData.clear();
-			if (!crossCompile(shaderData, output, spirV, pipeline.entryPoints[i],
-				fileName, pipeline.token->line, pipeline.token->column))
+			if (!crossCompile(shaderData, output, static_cast<Stage>(stage), spirV,
+				pipeline.entryPoints[i], fileName, pipeline.token->line, pipeline.token->column))
 			{
 				return false;
 			}
@@ -775,8 +783,8 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			if (foundType == typeMap.end())
 			{
 				std::stringstream stream;
-				stream << "internal error: unknown OpenGL type: " << std::hex <<
-					program.getUniformType(i);
+				stream << "internal error: unknown OpenGL type for uniform variable " <<
+					addedPipeline.uniforms[i].name << ": " << std::hex << program.getUniformType(i);
 				output.addMessage(Output::Level::Error, fileName, 0, 0, false, stream.str());
 				return false;
 			}
@@ -801,11 +809,12 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 		{
 			addedPipeline.attributes[i].name = program.getAttributeName(i);
 
-			auto foundType = typeMap.find(program.getUniformType(i));
+			auto foundType = typeMap.find(program.getAttributeType(i));
 			if (foundType == typeMap.end())
 			{
 				std::stringstream stream;
-				stream << "internal error: unknown OpenGL type: " << std::hex <<
+				stream << "internal error: unknown OpenGL type for vertex attribute " <<
+					addedPipeline.attributes[i].name << ": " << std::hex <<
 					program.getUniformType(i);
 				output.addMessage(Output::Level::Error, fileName, 0, 0, false, stream.str());
 				return false;

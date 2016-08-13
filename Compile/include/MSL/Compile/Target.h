@@ -49,6 +49,25 @@ class Preprocessor;
 class MSL_COMPILE_EXPORT Target
 {
 public:
+
+	/**
+	 * @brief Enum for the a stage within the pipeline.
+	 */
+	enum class Stage
+	{
+		Vertex,                 ///< Vertex stage.
+		TessellationControl,    ///< Tessellation control stage.
+		TessellationEvaluation, ///< Tessellation evaluation stage.
+		Geometry,               ///< Geometry stage.
+		Fragment,               ///< Fragment stage.
+		Compute                 ///< Compute stage.
+	};
+
+	/**
+	 * @brief Constant for the number of pipelien stages.
+	 */
+	static const unsigned int stageCount = static_cast<unsigned int>(Stage::Compute) + 1;
+
 	/**
 	 * @brief List of features to query if they are supported.
 	 */
@@ -367,6 +386,7 @@ protected:
 	 *
 	 * @param data The data from cross-compiling.
 	 * @param output The output to add errors and warnings.
+	 * @param stage The stage being compiled.
 	 * @param spirv The SPIR-V input.
 	 * @param entryPoint The name of the entry point. This can be used to rename main back to the
 	 * original entry point name.
@@ -376,7 +396,7 @@ protected:
 	 * @return False if the compilation failed.
 	 */
 	virtual bool crossCompile(std::vector<std::uint8_t>& data, Output& output,
-		const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
+		Stage stage, const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
 		const std::string& fileName, std::size_t line, std::size_t column) = 0;
 
 	/**

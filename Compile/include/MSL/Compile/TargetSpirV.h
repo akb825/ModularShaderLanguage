@@ -40,7 +40,7 @@ public:
 	std::vector<std::pair<std::string, std::string>> getExtraDefines() const override;
 
 protected:
-	bool crossCompile(std::vector<std::uint8_t>& data, Output& output,
+	bool crossCompile(std::vector<std::uint8_t>& data, Output& output, Stage stage,
 		const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
 		const std::string& fileName, std::size_t line, std::size_t column) override;
 };

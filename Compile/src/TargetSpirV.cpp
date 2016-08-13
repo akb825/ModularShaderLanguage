@@ -43,7 +43,7 @@ std::vector<std::pair<std::string, std::string>> TargetSpirV::getExtraDefines() 
 	return {{"SPIRV_VERSION", stream.str()}};
 }
 
-bool TargetSpirV::crossCompile(std::vector<std::uint8_t>& data, Output&,
+bool TargetSpirV::crossCompile(std::vector<std::uint8_t>& data, Output&, Stage,
 	const std::vector<std::uint32_t>& spirv, const std::string&, const std::string&, std::size_t,
 	std::size_t)
 {

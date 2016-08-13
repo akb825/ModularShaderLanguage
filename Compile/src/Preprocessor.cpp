@@ -16,6 +16,7 @@
 
 #include "Preprocessor.h"
 #include <MSL/Compile/Output.h>
+#include <boost/algorithm/string/replace.hpp>
 #include <boost/wave.hpp>
 #include <boost/wave/cpplexer/cpp_lex_iterator.hpp>
 #include <cstring>
@@ -39,6 +40,11 @@ void handleException(Output& output, Output::Level level, const boost::wave::cpp
 	std::string message = e.description();
 	message = message.substr(
 		std::strlen(boost::wave::util::get_severity(e.get_severity())) + 2);
+
+	// Boost wave is an implementation detail, don't to have it be user-facing.
+	boost::algorithm::replace_first(message,
+		"encountered #error directive or #pragma wave stop(): ", "encountered #error directive: ");
+
 	output.addMessage(level, e.file_name(), e.line_no(), e.column_no(), false, message);
 }
 

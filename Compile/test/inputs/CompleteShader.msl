@@ -1,9 +1,11 @@
+uniform sampler2D tex;
+
 uniform Transform
 {
 	mat4 transform;
-};
+} block;
 
-[[vertex]] in vec4 position;
+[[vertex]] in vec3 position;
 [[vertex]] in vec4 color;
 
 [[vertex]] out VertexOut
@@ -21,14 +23,15 @@ uniform Transform
 [[vertex]]
 void vertShader()
 {
-	gl_Position = transform*position;
+	gl_Position = block.transform*vec4(position, 1.0);
 	outputs.color = color;
 }
 
 [[fragment]]
 void fragShader()
 {
-	color = inputs.color;
+	vec4 texResult = texture(tex, vec2(0.5, 0.5));
+	color = inputs.color*texResult;
 }
 
 pipeline Test
