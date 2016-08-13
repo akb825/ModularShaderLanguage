@@ -16,9 +16,14 @@
 
 #pragma once
 
-#include <MSL/Compile/Config.h>
+#include <MSL/Config.h>
 #include <MSL/Compile/Export.h>
 #include <MSL/Compile/Target.h>
+
+/**
+ * @file
+ * @brief Target implementation for compiling to SPIR-V.
+ */
 
 namespace msl
 {

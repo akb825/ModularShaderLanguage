@@ -29,7 +29,7 @@ namespace msl
 TargetMetal::TargetMetal(std::uint32_t version, bool isIos)
 	: m_version(version)
 	, m_ios(isIos)
-	, m_remapDepthRange(true)
+	, m_remapDepthRange(false)
 	, m_flipVertexY(true)
 	, m_flipFragmentY(true)
 {
@@ -215,7 +215,7 @@ bool TargetMetal::getSharedData(std::vector<std::uint8_t>& data, Output& output)
 	if (m_entryPointData.empty())
 		return true;
 
-	std::string archiveCommand = "metal-ar -r $output";
+	std::string archiveCommand = "metal-ar rcs $output";
 	std::vector<std::string> entryPointFiles;
 	for (const auto& entryPointData : m_entryPointData)
 	{

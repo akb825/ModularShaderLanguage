@@ -16,11 +16,16 @@
 
 #pragma once
 
-#include <MSL/Compile/Config.h>
+#include <MSL/Config.h>
 #include <MSL/Compile/Export.h>
 #include <MSL/Compile/Target.h>
 #include <array>
 #include <vector>
+
+/**
+ * @file
+ * @brief Target implementation for compiling to GLSL.
+ */
 
 namespace msl
 {

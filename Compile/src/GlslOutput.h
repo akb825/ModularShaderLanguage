@@ -16,7 +16,7 @@
 
 #pragma once
 
-#include <MSL/Compile/Config.h>
+#include <MSL/Config.h>
 #include <MSL/Compile/TargetGlsl.h>
 #include "Compiler.h"
 

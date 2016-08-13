@@ -40,6 +40,11 @@ The following software is required to build DeepSea:
 * [doxygen](http://www.stack.nl/~dimitri/doxygen/) (optional)
 * [gtest](https://github.com/google/googletest) (optional)
 
+The glslang and SPIRV-Cross submodules can be grabbed by running the commands
+
+	ModularShaderLanguage$ git submodule init
+	ModularShaderLanguage$ git submodule update
+
 Additionally, additional tools such as Microsoft's HLSL compiler and Apple's Metal compiler will be required when compiling shaders for certain platforms.
 
 # Platforms
@@ -93,9 +98,9 @@ MSL contains the following modules:
 
 The directory structure of the include files is:
 
-	MSL/[Module]/[Subdirectory/]Header.h
+	MSL/[Module]/Header.h
 
 For example:
 
-	#include <MSL/Compile/Config.h>
+	#include <MSL/Compile/Target.h>
 

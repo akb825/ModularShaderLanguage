@@ -26,7 +26,7 @@ namespace msl
 TargetGlsl::TargetGlsl(std::uint32_t version, bool isEs)
 	: m_version(version)
 	, m_es(isEs)
-	, m_remapDepthRange(true)
+	, m_remapDepthRange(false)
 	, m_defaultFloatPrecision(Precision::Medium)
 	, m_defaultIntPrecision(Precision::High)
 {

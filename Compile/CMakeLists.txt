@@ -46,9 +46,15 @@ else()
 endif()
 
 add_library(msl_compile ${MSL_LIB} ${sources} ${externalSources})
+add_dependencies(msl_compile mslb)
 
 target_include_directories(msl_compile
-	PRIVATE ${Boost_INCLUDE_DIRS} ${GLSLANG_DIR} ${SPIRV_CROSS_DIR} src)
+	PRIVATE ${Boost_INCLUDE_DIRS}
+			${FLATBUFFERS_INCLUDE_DIRS}
+			${GLSLANG_DIR}
+			${SPIRV_CROSS_DIR}
+			${SHARED_DIR}
+			src)
 target_link_libraries(msl_compile
 	PRIVATE ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 

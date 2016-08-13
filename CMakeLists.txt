@@ -32,6 +32,11 @@ if (MSL_BUILD_DOCS)
 	endif()
 endif()
 
+find_file(FLATBUFFERS_H flatbuffers/flatbuffers.h)
+if (NOT FLATBUFFERS_H)
+	set(FLATBUFFERS_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/Shared/external)
+endif()
+
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 if (MSL_SHARED)
@@ -47,6 +52,9 @@ set(MSL_VERSION ${MSL_MAJOR_VERSION}.${MSL_MINOR_VERSION}.${MSL_PATCH_VERSION})
 
 include(cmake/config.cmake)
 include(cmake/install.cmake)
+
+add_subdirectory(Shared)
+set(SHARED_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Shared)
 
 if (MSL_BUILD_COMPILE)
 	add_subdirectory(Compile)

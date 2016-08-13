@@ -16,11 +16,17 @@
 
 #pragma once
 
-#include <MSL/Compile/Config.h>
+#include <MSL/Config.h>
 #include <MSL/Compile/Export.h>
 #include <cstdint>
 #include <map>
+#include <ostream>
 #include <vector>
+
+/**
+ * @file
+ * @brief Class that stores the compiled result for a shader.
+ */
 
 namespace msl
 {
@@ -36,6 +42,11 @@ class Target;
 class MSL_COMPILE_EXPORT CompiledResult
 {
 public:
+	/**
+	 * @brief Constant for the file version.
+	 */
+	static const std::uint32_t version = 0;
+
 	/**
 	 * @brief Constant for no shader being set.
 	 */
@@ -131,6 +142,11 @@ public:
 	};
 
 	/**
+	 * @brief Constant for the number of types.
+	 */
+	static const unsigned int typeCount = static_cast<unsigned int>(Type::USampler2DRect) + 1;
+
+	/**
 	 * @brief Structure describing a uniform.
 	 *
 	 * This includes free-floating uniforms, elements of a uniform buffer, or elements of a storage
@@ -198,12 +214,12 @@ public:
 	struct Attribute
 	{
 		/**
-		 * @brief THe name of the attribute.
+		 * @brief The name of the attribute.
 		 */
 		std::string name;
 
 		/**
-		 * @brief THe type of the attribute.
+		 * @brief The type of the attribute.
 		 */
 		Type type;
 	};
@@ -304,6 +320,20 @@ public:
 	 * @return The shared data.
 	 */
 	inline const std::vector<std::uint8_t>& getSharedData() const;
+
+	/**
+	 * @brief Saves the compiled shader to a stream.
+	 * @param stream The stream to save to.
+	 * @return False if nothing was compiled.
+	 */
+	bool save(std::ostream& stream) const;
+
+	/**
+	 * @brief Saves the compiled shader to a file.
+	 * @param fileName The name of the file to save to.
+	 * @return False if the file couldn't be opened.
+	 */
+	bool save(const std::string& fileName) const;
 
 private:
 	friend class Target;

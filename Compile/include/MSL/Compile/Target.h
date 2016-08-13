@@ -16,13 +16,18 @@
 
 #pragma once
 
-#include <MSL/Compile/Config.h>
+#include <MSL/Config.h>
 #include <MSL/Compile/Export.h>
 #include <array>
 #include <cstdint>
 #include <istream>
 #include <string>
 #include <vector>
+
+/**
+ * @file
+ * @brief Base class for a target.
+ */
 
 namespace msl
 {

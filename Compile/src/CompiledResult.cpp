@@ -15,9 +15,14 @@
  */
 
 #include <MSL/Compile/CompiledResult.h>
+#include "mslb_generated.h"
+#include <fstream>
 
 namespace msl
 {
+
+static_assert(static_cast<unsigned int>(mslb::Type::MAX) == CompiledResult::typeCount - 1,
+	"Type enum mismatch between flatbuffer and CompiledResult.");
 
 CompiledResult::CompiledResult()
 	: m_target(nullptr)
@@ -36,6 +41,85 @@ std::size_t CompiledResult::addShader(std::vector<uint8_t> shader)
 
 	m_shaders.push_back(std::move(shader));
 	return m_shaders.size() - 1;
+}
+
+bool CompiledResult::save(std::ostream& stream) const
+{
+	if (!m_target)
+		return false;
+
+	flatbuffers::FlatBufferBuilder builder;
+	std::vector<flatbuffers::Offset<mslb::Pipeline>> pipelines(m_pipelines.size());
+	std::vector<flatbuffers::Offset<mslb::Uniform>> uniforms;
+	std::vector<flatbuffers::Offset<mslb::UniformBlock>> uniformBlocks;
+	std::vector<flatbuffers::Offset<mslb::Attribute>> attributes;
+	std::size_t i = 0;
+	for (const auto& pipeline : m_pipelines)
+	{
+		uniforms.resize(pipeline.second.uniforms.size());
+		for (std::size_t j = 0; j < uniforms.size(); ++j)
+		{
+			uniforms[j] = mslb::CreateUniform(builder,
+				builder.CreateString(pipeline.second.uniforms[j].name),
+				static_cast<mslb::Type>(pipeline.second.uniforms[j].type),
+				pipeline.second.uniforms[j].blockIndex,
+				pipeline.second.uniforms[j].bufferOffset,
+				pipeline.second.uniforms[j].elements);
+		}
+
+		uniformBlocks.resize(pipeline.second.uniformBlocks.size());
+		for (std::size_t j = 0; j < uniformBlocks.size(); ++j)
+		{
+			uniformBlocks[j] = mslb::CreateUniformBlock(builder,
+				builder.CreateString(pipeline.second.uniformBlocks[j].name),
+				pipeline.second.uniformBlocks[j].size);
+		}
+
+		attributes.resize(pipeline.second.attributes.size());
+		for (std::size_t j = 0; j < attributes.size(); ++j)
+		{
+			attributes[j] = mslb::CreateAttribute(builder,
+				builder.CreateString(pipeline.second.attributes[j].name),
+				static_cast<mslb::Type>(pipeline.second.attributes[j].type));
+		}
+
+		pipelines[i] = mslb::CreatePipeline(builder,
+			builder.CreateString(pipeline.first),
+			static_cast<std::uint32_t>(pipeline.second.vertex),
+			static_cast<std::uint32_t>(pipeline.second.tessellationControl),
+			static_cast<std::uint32_t>(pipeline.second.tessellationEvaluation),
+			static_cast<std::uint32_t>(pipeline.second.geometry),
+			static_cast<std::uint32_t>(pipeline.second.fragment),
+			static_cast<std::uint32_t>(pipeline.second.compute),
+			builder.CreateVector(uniforms),
+			builder.CreateVector(uniformBlocks),
+			builder.CreateVector(attributes));
+		++i;
+	}
+
+	std::vector<flatbuffers::Offset<mslb::Shader>> shaders;
+	for (i = 0; i < m_shaders.size(); ++i)
+		shaders[i] = mslb::CreateShader(builder, builder.CreateVector(m_shaders[i]));
+
+	builder.Finish(mslb::CreateModule(builder,
+		version,
+		m_targetId,
+		m_targetVersion,
+		builder.CreateVector(pipelines),
+		builder.CreateVector(shaders),
+		builder.CreateVector(m_sharedData)));
+
+	stream.write(reinterpret_cast<const char*>(builder.GetBufferPointer()), builder.GetSize());
+	return true;
+}
+
+bool CompiledResult::save(const std::string& fileName) const
+{
+	std::ofstream stream(fileName, std::fstream::binary);
+	if (!stream.is_open())
+		return false;
+
+	return save(stream);
 }
 
 } // namespace msl

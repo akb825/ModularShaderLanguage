@@ -4,7 +4,9 @@ endif()
 
 set(rootDir ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
-set(docSource "\"${rootDir}/README.md\"")
+set(docSource "\"${rootDir}/Shared/include\" \"${rootDir}/README.md\"")
+set(includeDirs ${rootDir}/Shared/include)
+set(dependencies ${rootDir}/Shared/include/MSL/Config.h)
 foreach (docProject ${MSL_DOC_PROJECTS})
 	set(thisDir ${rootDir}/${docProject})
 	set(docSource "${docSource} \"${thisDir}/include\" \"${thisDir}/README.md\"")
