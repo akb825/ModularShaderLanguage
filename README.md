@@ -75,7 +75,8 @@ The following options may be used when running cmake:
 
 * `-DMSL_BUILD_TESTS=ON|OFF`: Set to `ON` to build the unit tests. `gtest` must also be found in order to build the unit tests. Defaults to `ON`.
 * `-DMSL_BUILD_DOCS=ON|OFF`: Set to `ON` to build the documentation. `doxygen` must also be found in order to build the documentation. Defaults to `ON`.
-* `-DMSL_BUILD_COMPILE=ON|OFF`: Set to `ON` to build the compiler. Defaults to `ON`.
+* `-DMSL_BUILD_COMPILE=ON|OFF`: Set to `ON` to build the compile library. Defaults to `ON`.
+* `-DMSL_BUILD_CLIENT=ON|OFF`: Set to `ON` to build the client library. Defaults to `ON`.
 * `-DMSL_BUILD_TOOLS=ON|OFF`: Set to `ON` to build the tools. Defaults to `ON`.
 
 ## Miscellaneous Options:
@@ -93,7 +94,8 @@ Libraries and include directories can be found through the `MSLModule_LIBRARIES`
 
 MSL contains the following modules:
 
-* [Compile](Compile/README.md): (Optional) The library for processing shader files, feeding them to the various tools, and outputting the final files.
+* [Compile](Compile/README.md): (Optional) The library for processing shader files and compiling them into modules.
+* [Client](Client/README.md): (Optional) A library for reading in shader modules for C and C++ applications.
 * [tools](tools/README.md): (Optional) The `mslc` tool for compiling shader files.
 
 The directory structure of the include files is:

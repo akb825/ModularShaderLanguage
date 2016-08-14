@@ -95,7 +95,7 @@ table Uniform
 	/*
 	 * The name of the uniform.
 	 */
-	name : string;
+	name : string (required);
 
 	/*
 	 * The type of the uniform.
@@ -136,7 +136,7 @@ table UniformBlock
 	/*
 	 * The name of the block.
 	 */
-	name : string;
+	name : string (required);
 
 	/*
 	 * The size of the block.
@@ -154,7 +154,7 @@ table Attribute
 	/*
 	 * The name of the attribute.
 	 */
-	name : string;
+	name : string (required);
 
 	/*
 	 * The type of the attribute.
@@ -170,7 +170,7 @@ table Pipeline
 	/*
 	 * The name of the pipeline.
 	 */
-	name : string;
+	name : string (required);
 
 	/*
 	 * Index for the shader data for the vertex stage.
@@ -217,17 +217,17 @@ table Pipeline
 	/*
 	 * The active uniforms used within the pipeline.
 	 */
-	uniforms : [Uniform];
+	uniforms : [Uniform] (required);
 
 	/*
 	 * The active uniform blocks used within the pipeline.
 	 */
-	uniformBlocks : [UniformBlock];
+	uniformBlocks : [UniformBlock] (required);
 
 	/*
 	 * The active vertex attributes used within the pipeline.
 	 */
-	attributes : [Attribute];
+	attributes : [Attribute] (required);
 }
 
 /*
@@ -268,17 +268,17 @@ table Module
 	/*
 	 * The shader pipelines.
 	 */
-	pipeline : [Pipeline];
+	pipelines : [Pipeline] (required);
 
 	/*
 	 * The compiled shader data.
 	 */
-	shader : [Shader];
+	shaders : [Shader] (required);
 
 	/*
 	 * The shared shader data for all shaders.
 	 */
-	sharedData : [ubyte];
+	sharedData : [ubyte] (required);
 }
 
 root_type Module;

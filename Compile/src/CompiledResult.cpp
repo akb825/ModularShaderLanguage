@@ -97,9 +97,24 @@ bool CompiledResult::save(std::ostream& stream) const
 		++i;
 	}
 
+	// Swap if big endian and SPIR-V since it uses 32-bit values.
+	bool swap = !FLATBUFFERS_LITTLEENDIAN && m_targetId == MSL_CREATE_ID('S', 'P', 'R', 'V');
+	std::vector<uint8_t> swapShader;
 	std::vector<flatbuffers::Offset<mslb::Shader>> shaders;
 	for (i = 0; i < m_shaders.size(); ++i)
-		shaders[i] = mslb::CreateShader(builder, builder.CreateVector(m_shaders[i]));
+	{
+		if (swap)
+		{
+			swapShader = m_shaders[i];
+			std::uint32_t* swapShader32 = reinterpret_cast<std::uint32_t*>(swapShader.data());
+			std::size_t swapShader32Size = swapShader.size()/sizeof(std::uint32_t);
+			for (std::size_t j = 0; j < swapShader32Size; ++j)
+				swapShader32[j] = flatbuffers::EndianScalar(swapShader[j]);
+			shaders[i] = mslb::CreateShader(builder, builder.CreateVector(swapShader));
+		}
+		else
+			shaders[i] = mslb::CreateShader(builder, builder.CreateVector(m_shaders[i]));
+	}
 
 	builder.Finish(mslb::CreateModule(builder,
 		version,

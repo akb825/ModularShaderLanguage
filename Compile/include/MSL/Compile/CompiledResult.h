@@ -298,15 +298,6 @@ public:
 	inline std::uint32_t getTargetVersion() const;
 
 	/**
-	 * @brief Gets the shaders.
-	 *
-	 * The pipeline stage indices can be used to index into this vector.
-	 *
-	 * @return The shaders.
-	 */
-	inline const std::vector<std::vector<uint8_t>>& getShaders() const;
-
-	/**
 	 * @brief Gets the pipelines.
 	 *
 	 * The first element is the pipeline name, the second element contians the pipeline itself.
@@ -314,6 +305,15 @@ public:
 	 * @return The pipelines.
 	 */
 	inline const std::map<std::string, Pipeline>& getPipelines() const;
+
+	/**
+	 * @brief Gets the shaders.
+	 *
+	 * The pipeline stage indices can be used to index into this vector.
+	 *
+	 * @return The shaders.
+	 */
+	inline const std::vector<std::vector<uint8_t>>& getShaders() const;
 
 	/**
 	 * @brief Gets the shared data for all the shaders.
@@ -360,14 +360,14 @@ inline std::uint32_t CompiledResult::getTargetVersion() const
 	return m_targetVersion;
 }
 
-inline const std::vector<std::vector<uint8_t>>& CompiledResult::getShaders() const
-{
-	return m_shaders;
-}
-
 inline const std::map<std::string, CompiledResult::Pipeline>& CompiledResult::getPipelines() const
 {
 	return m_pipelines;
+}
+
+inline const std::vector<std::vector<uint8_t>>& CompiledResult::getShaders() const
+{
+	return m_shaders;
 }
 
 inline const std::vector<std::uint8_t>& CompiledResult::getSharedData() const

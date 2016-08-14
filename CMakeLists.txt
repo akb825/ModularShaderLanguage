@@ -9,8 +9,9 @@ set(MSL_PROFILING ON CACHE BOOL "Enable profiling of code.")
 set(MSL_BUILD_TESTS ON CACHE BOOL "Build unit tests.")
 set(MSL_BUILD_DOCS ON CACHE BOOL "Build documentation.")
 
-set(MSL_BUILD_COMPILE ON CACHE BOOL "Build the compiler.")
-set(MSL_BUILD_TOOLS ON CACHE BOOL "Build tools.")
+set(MSL_BUILD_COMPILE ON CACHE BOOL "Build the compile library.")
+set(MSL_BUILD_CLIENT ON CACHE BOOL "Build the client library.")
+set(MSL_BUILD_TOOLS ON CACHE BOOL "Build the tools.")
 
 # Misc options.
 set(MSL_EXPORTS_DIR ${CMAKE_BINARY_DIR}/cmake CACHE PATH
@@ -58,6 +59,10 @@ set(SHARED_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Shared)
 
 if (MSL_BUILD_COMPILE)
 	add_subdirectory(Compile)
+endif()
+
+if (MSL_BUILD_CLIENT)
+	add_subdirectory(Client)
 endif()
 
 # Documentation. (populated by built libraries)

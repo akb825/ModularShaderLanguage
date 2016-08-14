@@ -114,7 +114,7 @@ struct Uniform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint32_t elements() const { return GetField<uint32_t>(VT_ELEMENTS, 0); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
            verifier.Verify(name()) &&
            VerifyField<uint8_t>(verifier, VT_TYPE) &&
            VerifyField<uint32_t>(verifier, VT_BLOCKINDEX) &&
@@ -136,6 +136,7 @@ struct UniformBuilder {
   UniformBuilder &operator=(const UniformBuilder &);
   flatbuffers::Offset<Uniform> Finish() {
     auto o = flatbuffers::Offset<Uniform>(fbb_.EndTable(start_, 5));
+    fbb_.Required(o, Uniform::VT_NAME);  // name
     return o;
   }
 };
@@ -164,7 +165,7 @@ struct UniformBlock FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint32_t size() const { return GetField<uint32_t>(VT_SIZE, 0); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
            verifier.Verify(name()) &&
            VerifyField<uint32_t>(verifier, VT_SIZE) &&
            verifier.EndTable();
@@ -180,6 +181,7 @@ struct UniformBlockBuilder {
   UniformBlockBuilder &operator=(const UniformBlockBuilder &);
   flatbuffers::Offset<UniformBlock> Finish() {
     auto o = flatbuffers::Offset<UniformBlock>(fbb_.EndTable(start_, 2));
+    fbb_.Required(o, UniformBlock::VT_NAME);  // name
     return o;
   }
 };
@@ -202,7 +204,7 @@ struct Attribute FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   Type type() const { return static_cast<Type>(GetField<uint8_t>(VT_TYPE, 0)); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
            verifier.Verify(name()) &&
            VerifyField<uint8_t>(verifier, VT_TYPE) &&
            verifier.EndTable();
@@ -218,6 +220,7 @@ struct AttributeBuilder {
   AttributeBuilder &operator=(const AttributeBuilder &);
   flatbuffers::Offset<Attribute> Finish() {
     auto o = flatbuffers::Offset<Attribute>(fbb_.EndTable(start_, 2));
+    fbb_.Required(o, Attribute::VT_NAME);  // name
     return o;
   }
 };
@@ -256,7 +259,7 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   const flatbuffers::Vector<flatbuffers::Offset<Attribute>> *attributes() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Attribute>> *>(VT_ATTRIBUTES); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
            verifier.Verify(name()) &&
            VerifyField<uint32_t>(verifier, VT_VERTEX) &&
            VerifyField<uint32_t>(verifier, VT_TESSELLATIONCONTROL) &&
@@ -264,13 +267,13 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<uint32_t>(verifier, VT_GEOMETRY) &&
            VerifyField<uint32_t>(verifier, VT_FRAGMENT) &&
            VerifyField<uint32_t>(verifier, VT_COMPUTE) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_UNIFORMS) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_UNIFORMS) &&
            verifier.Verify(uniforms()) &&
            verifier.VerifyVectorOfTables(uniforms()) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_UNIFORMBLOCKS) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_UNIFORMBLOCKS) &&
            verifier.Verify(uniformBlocks()) &&
            verifier.VerifyVectorOfTables(uniformBlocks()) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_ATTRIBUTES) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_ATTRIBUTES) &&
            verifier.Verify(attributes()) &&
            verifier.VerifyVectorOfTables(attributes()) &&
            verifier.EndTable();
@@ -294,6 +297,10 @@ struct PipelineBuilder {
   PipelineBuilder &operator=(const PipelineBuilder &);
   flatbuffers::Offset<Pipeline> Finish() {
     auto o = flatbuffers::Offset<Pipeline>(fbb_.EndTable(start_, 10));
+    fbb_.Required(o, Pipeline::VT_NAME);  // name
+    fbb_.Required(o, Pipeline::VT_UNIFORMS);  // uniforms
+    fbb_.Required(o, Pipeline::VT_UNIFORMBLOCKS);  // uniformBlocks
+    fbb_.Required(o, Pipeline::VT_ATTRIBUTES);  // attributes
     return o;
   }
 };
@@ -360,28 +367,28 @@ struct Module FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_VERSION = 4,
     VT_TARGETID = 6,
     VT_TARGETVERSION = 8,
-    VT_PIPELINE = 10,
-    VT_SHADER = 12,
+    VT_PIPELINES = 10,
+    VT_SHADERS = 12,
     VT_SHAREDDATA = 14
   };
   uint32_t version() const { return GetField<uint32_t>(VT_VERSION, 0); }
   uint32_t targetId() const { return GetField<uint32_t>(VT_TARGETID, 0); }
   uint32_t targetVersion() const { return GetField<uint32_t>(VT_TARGETVERSION, 0); }
-  const flatbuffers::Vector<flatbuffers::Offset<Pipeline>> *pipeline() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Pipeline>> *>(VT_PIPELINE); }
-  const flatbuffers::Vector<flatbuffers::Offset<Shader>> *shader() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Shader>> *>(VT_SHADER); }
+  const flatbuffers::Vector<flatbuffers::Offset<Pipeline>> *pipelines() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Pipeline>> *>(VT_PIPELINES); }
+  const flatbuffers::Vector<flatbuffers::Offset<Shader>> *shaders() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Shader>> *>(VT_SHADERS); }
   const flatbuffers::Vector<uint8_t> *sharedData() const { return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_SHAREDDATA); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_VERSION) &&
            VerifyField<uint32_t>(verifier, VT_TARGETID) &&
            VerifyField<uint32_t>(verifier, VT_TARGETVERSION) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_PIPELINE) &&
-           verifier.Verify(pipeline()) &&
-           verifier.VerifyVectorOfTables(pipeline()) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_SHADER) &&
-           verifier.Verify(shader()) &&
-           verifier.VerifyVectorOfTables(shader()) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_SHAREDDATA) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_PIPELINES) &&
+           verifier.Verify(pipelines()) &&
+           verifier.VerifyVectorOfTables(pipelines()) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_SHADERS) &&
+           verifier.Verify(shaders()) &&
+           verifier.VerifyVectorOfTables(shaders()) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_SHAREDDATA) &&
            verifier.Verify(sharedData()) &&
            verifier.EndTable();
   }
@@ -393,13 +400,16 @@ struct ModuleBuilder {
   void add_version(uint32_t version) { fbb_.AddElement<uint32_t>(Module::VT_VERSION, version, 0); }
   void add_targetId(uint32_t targetId) { fbb_.AddElement<uint32_t>(Module::VT_TARGETID, targetId, 0); }
   void add_targetVersion(uint32_t targetVersion) { fbb_.AddElement<uint32_t>(Module::VT_TARGETVERSION, targetVersion, 0); }
-  void add_pipeline(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Pipeline>>> pipeline) { fbb_.AddOffset(Module::VT_PIPELINE, pipeline); }
-  void add_shader(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Shader>>> shader) { fbb_.AddOffset(Module::VT_SHADER, shader); }
+  void add_pipelines(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Pipeline>>> pipelines) { fbb_.AddOffset(Module::VT_PIPELINES, pipelines); }
+  void add_shaders(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Shader>>> shaders) { fbb_.AddOffset(Module::VT_SHADERS, shaders); }
   void add_sharedData(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> sharedData) { fbb_.AddOffset(Module::VT_SHAREDDATA, sharedData); }
   ModuleBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   ModuleBuilder &operator=(const ModuleBuilder &);
   flatbuffers::Offset<Module> Finish() {
     auto o = flatbuffers::Offset<Module>(fbb_.EndTable(start_, 6));
+    fbb_.Required(o, Module::VT_PIPELINES);  // pipelines
+    fbb_.Required(o, Module::VT_SHADERS);  // shaders
+    fbb_.Required(o, Module::VT_SHAREDDATA);  // sharedData
     return o;
   }
 };
@@ -408,13 +418,13 @@ inline flatbuffers::Offset<Module> CreateModule(flatbuffers::FlatBufferBuilder &
    uint32_t version = 0,
    uint32_t targetId = 0,
    uint32_t targetVersion = 0,
-   flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Pipeline>>> pipeline = 0,
-   flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Shader>>> shader = 0,
+   flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Pipeline>>> pipelines = 0,
+   flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Shader>>> shaders = 0,
    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> sharedData = 0) {
   ModuleBuilder builder_(_fbb);
   builder_.add_sharedData(sharedData);
-  builder_.add_shader(shader);
-  builder_.add_pipeline(pipeline);
+  builder_.add_shaders(shaders);
+  builder_.add_pipelines(pipelines);
   builder_.add_targetVersion(targetVersion);
   builder_.add_targetId(targetId);
   builder_.add_version(version);
