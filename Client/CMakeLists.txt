@@ -12,3 +12,5 @@ setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
 
 install_library(TARGET msl_client MODULE Client)
 set(MSL_DOC_PROJECTS ${MSL_DOC_PROJECTS} Client PARENT_SCOPE)
+
+add_subdirectory(test)

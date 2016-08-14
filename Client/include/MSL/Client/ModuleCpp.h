@@ -18,7 +18,7 @@
 
 #include <MSL/Config.h>
 #include <MSL/Client/ModuleC.h>
-#include <istream>
+#include <fstream>
 #include <memory>
 
 /**
@@ -423,6 +423,7 @@ private:
 	static size_t readFunc(void* userData, void* buffer, size_t size);
 
 	mslModule* m_module;
+	size_t m_size;
 	AllocatorType m_allocator;
 };
 
@@ -462,7 +463,7 @@ const Allocator& BasicModule<Allocator>::allocator() const
 template <typename Allocator>
 bool BasicModule<Allocator>::read(std::istream& stream)
 {
-	mslModule_destory(m_module);
+	mslModule_destroy(m_module);
 	m_module = nullptr;
 
 	if (!stream.seekg(0, std::istream::end))
@@ -471,42 +472,44 @@ bool BasicModule<Allocator>::read(std::istream& stream)
 	if (!stream.seekg(0))
 		return false;
 
-	mslAllocator alloc = {&allocateFunc, &freeFunc, &m_allocator};
-	m_module = mslModule_readStream(&readFunc, &stream, size, &alloc);
-	return m_module != nullptr;
+	return read(stream, size);
 }
 
 template <typename Allocator>
 bool BasicModule<Allocator>::read(std::istream& stream, size_t size)
 {
-	mslModule_destory(m_module);
+	mslModule_destroy(m_module);
 	m_module = nullptr;
 
-	mslAllocator alloc = {&allocateFunc, &freeFunc, &m_allocator};
+	mslAllocator alloc = {&allocateFunc, &freeFunc, this};
 	m_module = mslModule_readStream(&readFunc, &stream, size, &alloc);
+	m_size = mslModule_sizeof(size);
 	return m_module != nullptr;
 }
 
 template <typename Allocator>
 bool BasicModule<Allocator>::read(const void* data, size_t size)
 {
-	mslModule_destory(m_module);
+	mslModule_destroy(m_module);
 	m_module = nullptr;
 
-	mslAllocator alloc = {&allocateFunc, &freeFunc, &m_allocator};
+	mslAllocator alloc = {&allocateFunc, &freeFunc, this};
 	m_module = mslModule_readData(data, size, &alloc);
+	m_size = mslModule_sizeof(size);
 	return m_module != nullptr;
 }
 
 template <typename Allocator>
 bool BasicModule<Allocator>::read(const char* fileName)
 {
-	mslModule_destory(m_module);
+	mslModule_destroy(m_module);
 	m_module = nullptr;
 
-	mslAllocator alloc = {&allocateFunc, &freeFunc, &m_allocator};
-	m_module = mslModule_readFile(fileName, &alloc);
-	return m_module != nullptr;
+	std::ifstream stream(fileName);
+	if (!stream.is_open())
+		return false;
+
+	return read(stream);
 }
 
 template <typename Allocator>
@@ -530,7 +533,7 @@ uint32_t BasicModule<Allocator>::targetId() const
 template <typename Allocator>
 uint32_t BasicModule<Allocator>::targetVersion() const
 {
-	return m_mslModule_targetVersion(m_module);
+	return mslModule_targetVersion(m_module);
 }
 
 template <typename Allocator>
@@ -644,13 +647,13 @@ const void* BasicModule<Allocator>::shaderData(uint32_t shader) const
 template <typename Allocator>
 uint32_t BasicModule<Allocator>::sharedDataSize() const
 {
-	return mslModule_shaderDataSize(m_module);
+	return mslModule_sharedDataSize(m_module);
 }
 
 template <typename Allocator>
 const void* BasicModule<Allocator>::sharedData() const
 {
-	return mslModule_shaderData(m_module);
+	return mslModule_sharedData(m_module);
 }
 
 template <typename Allocator>
@@ -662,7 +665,8 @@ void* BasicModule<Allocator>::allocateFunc(void* userData, size_t size)
 template <typename Allocator>
 void BasicModule<Allocator>::freeFunc(void* userData, void* ptr)
 {
-	reinterpret_cast<AllocatorType*>(userData)->deallocate(ptr);
+	BasicModule* thisPtr = reinterpret_cast<BasicModule*>(userData);
+	thisPtr->m_allocator.deallocate(reinterpret_cast<uint8_t*>(ptr), thisPtr->m_size);
 }
 
 template <typename Allocator>

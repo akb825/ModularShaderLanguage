@@ -34,9 +34,10 @@ Multiple shader files may be compiled into a module. Examples for combining modu
 The following software is required to build DeepSea:
 
 * [cmake](https://cmake.org/) 3.0.2 or later
-* [boost](http://www.boost.org/) (required for compiler)
+* [boost](http://www.boost.org/) (required unless only building client library without tests)
 * [glslang](https://github.com/KhronosGroup/glslang) (required for compiler, provided as submodule)
 * [SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross) (required for compiler, provided as submodule)
+* [FlatBuffers](https://google.github.io/flatbuffers/) (required if changing the schema)
 * [doxygen](http://www.stack.nl/~dimitri/doxygen/) (optional)
 * [gtest](https://github.com/google/googletest) (optional)
 

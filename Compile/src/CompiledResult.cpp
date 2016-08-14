@@ -100,7 +100,7 @@ bool CompiledResult::save(std::ostream& stream) const
 	// Swap if big endian and SPIR-V since it uses 32-bit values.
 	bool swap = !FLATBUFFERS_LITTLEENDIAN && m_targetId == MSL_CREATE_ID('S', 'P', 'R', 'V');
 	std::vector<uint8_t> swapShader;
-	std::vector<flatbuffers::Offset<mslb::Shader>> shaders;
+	std::vector<flatbuffers::Offset<mslb::Shader>> shaders(m_shaders.size());
 	for (i = 0; i < m_shaders.size(); ++i)
 	{
 		if (swap)
