@@ -20,22 +20,315 @@
 #include <MSL/Compile/TargetMetal.h>
 #include <MSL/Compile/TargetSpirV.h>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
 #include <iostream>
+#include <memory>
 #include <sstream>
+#include <unordered_map>
+
+using namespace boost::program_options;
+
+std::unique_ptr<msl::Target> createGlslTarget(const std::string& targetName,
+	const variables_map& config, const std::string& configFilePath)
+{
+	bool es = targetName == "glsl-es";
+	unsigned int version;
+	if (config.count("version"))
+	{
+		std::string versionStr = config["version"].as<std::string>();
+		try
+		{
+			version = boost::lexical_cast<unsigned int>(versionStr);
+		}
+		catch (...)
+		{
+			std::cerr << configFilePath << " error: invalid version: " << versionStr <<
+				std::endl << std::endl;
+			return nullptr;
+		}
+	}
+	else
+	{
+		std::cerr << configFilePath << " error: version not provided" << std::endl <<
+			std::endl;
+		return nullptr;
+	}
+
+	std::unique_ptr<msl::TargetGlsl> target(new msl::TargetGlsl(version, es));
+
+	if (config.count("remap-depth-range"))
+		target->setRemapDepthRange(config["remap-depth-range"].as<bool>());
+
+	if (config.count("default-float-precision"))
+	{
+		std::string precision = config["default-float-precision"].as<std::string>();
+		if (precision == "none")
+			target->setDefaultFloatPrecision(msl::TargetGlsl::Precision::None);
+		else if (precision == "low")
+			target->setDefaultFloatPrecision(msl::TargetGlsl::Precision::Low);
+		else if (precision == "medium")
+			target->setDefaultFloatPrecision(msl::TargetGlsl::Precision::Medium);
+		else if (precision == "high")
+			target->setDefaultFloatPrecision(msl::TargetGlsl::Precision::High);
+		else
+		{
+			std::cerr << configFilePath << " error: unknown precision: " << precision <<
+				std::endl << std::endl;
+			return nullptr;
+		}
+	}
+
+	if (config.count("default-int-precision"))
+	{
+		std::string precision = config["default-int-precision"].as<std::string>();
+		if (precision == "none")
+			target->setDefaultIntPrecision(msl::TargetGlsl::Precision::None);
+		else if (precision == "low")
+			target->setDefaultIntPrecision(msl::TargetGlsl::Precision::Low);
+		else if (precision == "medium")
+			target->setDefaultIntPrecision(msl::TargetGlsl::Precision::Medium);
+		else if (precision == "high")
+			target->setDefaultIntPrecision(msl::TargetGlsl::Precision::High);
+		else
+		{
+			std::cerr << configFilePath << " error: unknown precision: " << precision <<
+				std::endl << std::endl;
+			return nullptr;
+		}
+	}
+
+	if (config.count("header-line"))
+	{
+		for (const std::string& str : config["header-line"].as<std::vector<std::string>>())
+			target->addHeaderLine(str);
+	}
+
+	if (config.count("header-line-vert"))
+	{
+		for (const std::string& str : config["header-line-vert"].as<std::vector<std::string>>())
+			target->addHeaderLine(msl::Target::Stage::Vertex, str);
+	}
+
+	if (config.count("header-line-tess-ctrl"))
+	{
+		for (const std::string& str : config["header-line-tess-ctrl"].as<std::vector<std::string>>())
+			target->addHeaderLine(msl::Target::Stage::TessellationControl, str);
+	}
+
+	if (config.count("header-line-tess-eval"))
+	{
+		for (const std::string& str : config["header-line-tess-eval"].as<std::vector<std::string>>())
+			target->addHeaderLine(msl::Target::Stage::TessellationEvaluation, str);
+	}
+
+	if (config.count("header-line-geom"))
+	{
+		for (const std::string& str : config["header-line-geom"].as<std::vector<std::string>>())
+			target->addHeaderLine(msl::Target::Stage::Geometry, str);
+	}
+
+	if (config.count("header-line-frag"))
+	{
+		for (const std::string& str : config["header-line-frag"].as<std::vector<std::string>>())
+			target->addHeaderLine(msl::Target::Stage::Fragment, str);
+	}
+
+	if (config.count("header-line-comp"))
+	{
+		for (const std::string& str : config["header-line-comp"].as<std::vector<std::string>>())
+			target->addHeaderLine(msl::Target::Stage::Compute, str);
+	}
+
+	if (config.count("extension"))
+	{
+		for (const std::string& str : config["extension"].as<std::vector<std::string>>())
+			target->addRequiredExtension(str);
+	}
+
+	if (config.count("extension-vert"))
+	{
+		for (const std::string& str : config["extension-vert"].as<std::vector<std::string>>())
+			target->addRequiredExtension(msl::Target::Stage::Vertex, str);
+	}
+
+	if (config.count("extension-tess-ctrl"))
+	{
+		for (const std::string& str : config["extension-tess-ctrl"].as<std::vector<std::string>>())
+			target->addRequiredExtension(msl::Target::Stage::TessellationControl, str);
+	}
+
+	if (config.count("extension-tess-eval"))
+	{
+		for (const std::string& str : config["extension-tess-eval"].as<std::vector<std::string>>())
+			target->addRequiredExtension(msl::Target::Stage::TessellationEvaluation, str);
+	}
+
+	if (config.count("extension-geom"))
+	{
+		for (const std::string& str : config["extension-geom"].as<std::vector<std::string>>())
+			target->addRequiredExtension(msl::Target::Stage::Geometry, str);
+	}
+
+	if (config.count("extension-frag"))
+	{
+		for (const std::string& str : config["extension-frag"].as<std::vector<std::string>>())
+			target->addRequiredExtension(msl::Target::Stage::Fragment, str);
+	}
+
+	if (config.count("extension-comp"))
+	{
+		for (const std::string& str : config["extension-comp"].as<std::vector<std::string>>())
+			target->addRequiredExtension(msl::Target::Stage::Compute, str);
+	}
+
+	if (config.count("glsl-command-vert"))
+	{
+		target->setGlslToolCommand(msl::Target::Stage::Vertex,
+			config["glsl-command-vert"].as<std::string>());
+	}
+
+	if (config.count("glsl-command-tess-ctrl"))
+	{
+		target->setGlslToolCommand(msl::Target::Stage::TessellationControl,
+			config["glsl-command-tess-ctrl"].as<std::string>());
+	}
+
+	if (config.count("glsl-command-tess-eval"))
+	{
+		target->setGlslToolCommand(msl::Target::Stage::TessellationEvaluation,
+			config["glsl-command-tess-eval"].as<std::string>());
+	}
+
+	if (config.count("glsl-command-geom"))
+	{
+		target->setGlslToolCommand(msl::Target::Stage::Geometry,
+			config["glsl-command-geom"].as<std::string>());
+	}
+
+	if (config.count("glsl-command-frag"))
+	{
+		target->setGlslToolCommand(msl::Target::Stage::Fragment,
+			config["glsl-command-frag"].as<std::string>());
+	}
+
+	if (config.count("glsl-command-comp"))
+	{
+		target->setGlslToolCommand(msl::Target::Stage::Compute,
+			config["glsl-command-comp"].as<std::string>());
+	}
+
+	return std::move(target);
+}
+
+std::unique_ptr<msl::Target> createMetalTarget(const std::string& targetName,
+	const variables_map& config, const std::string& configFilePath)
+{
+	bool ios = targetName == "metal-ios";
+	unsigned int version;
+	if (config.count("version"))
+	{
+		std::string versionStr = config["version"].as<std::string>();
+		if (versionStr == "1.0")
+			version = 10;
+		else if (versionStr == "1.1")
+			version = 11;
+		else
+		{
+			std::cerr << configFilePath << " error: invalid version: " << versionStr <<
+				std::endl << std::endl;
+			return nullptr;
+		}
+	}
+	else
+	{
+		std::cerr << configFilePath << " error: version not provided" << std::endl <<
+			std::endl;
+		return nullptr;
+	}
+
+	std::unique_ptr<msl::TargetMetal> target(new msl::TargetMetal(version, ios));
+
+	if (config.count("remap-depth-range"))
+		target->setRemapDepthRange(config["remap-depth-range"].as<bool>());
+
+	if (config.count("flip-vertex-y"))
+		target->setFlipVertexY(config["flip-vertex-y"].as<bool>());
+
+	if (config.count("flip-fragment-y"))
+		target->setFlipFragmentY(config["flip-fragment-y"].as<bool>());
+
+	return std::move(target);
+}
+
+bool setCommonTargetConfig(msl::Target& target, const variables_map& config,
+	const std::string& configFilePath)
+{
+	std::unordered_map<std::string, msl::Target::Feature> featureMap;
+	for (unsigned int i = 0; i < msl::Target::featureCount; ++i)
+	{
+		auto feature = static_cast<msl::Target::Feature>(i);
+		const auto& info = msl::Target::getFeatureInfo(feature);
+		featureMap.emplace(info.name, feature);
+	}
+
+	if (config.count("force-enable"))
+	{
+		for (const std::string& str : config["force-enable"].as<std::vector<std::string>>())
+		{
+			auto foundIter = featureMap.find(str);
+			if (foundIter == featureMap.end())
+			{
+				std::cerr << configFilePath << " error: unknown feature: " << str << std::endl <<
+					std::endl;
+				return false;
+			}
+
+			target.overrideFeature(foundIter->second, true);
+		}
+	}
+
+	if (config.count("force-disable"))
+	{
+		for (const std::string& str : config["force-disable"].as<std::vector<std::string>>())
+		{
+			auto foundIter = featureMap.find(str);
+			if (foundIter == featureMap.end())
+			{
+				std::cerr << configFilePath << " error: unknown feature: " << str << std::endl <<
+					std::endl;
+				return false;
+			}
+
+			target.overrideFeature(foundIter->second, false);
+		}
+	}
+
+	if (config.count("resources"))
+		target.setResourcesFileName(config["resources"].as<std::string>());
+
+	if (config.count("spirv-command"))
+		target.setSpirVToolCommand(config["spirv-command"].as<std::string>());
+
+	return true;
+}
 
 int main(int argc, char** argv)
 {
-	using namespace boost::program_options;
+	// Specify the options.
 	options_description mainOptions("main options");
 	mainOptions.add_options()
 		("help,h", "display this help message")
 		("config,c", value<std::string>()->required(), "configuration file describing the target")
+		("input,i", value<std::vector<std::string>>()->required(), "input file to compile. "
+			"Multiple inputs may be provided to compile into a single module.")
 		("output,o", value<std::string>()->required(), "output file for the compiled result")
 		("include,I", value<std::vector<std::string>>(), "directory to search for includes")
 		("define,D", value<std::vector<std::string>>(),
 			"add a define for the preprocessor. "
-			"A value may optionally be assigned with =. (e.g. -D DEFINE=val)")
+			"A value may optionally be assigned with =. (i.e. -D DEFINE=val)")
+		("warn-none,w", "disable all warnings")
+		("warn-error,W", "treat warnings as errors")
 		("debug,g", "keep debug symbols")
 		("optimize,O", "optimize the compiled result")
 		("remap", "remap variable ranges to improve compression of SPIR-V");
@@ -44,7 +337,8 @@ int main(int argc, char** argv)
 	configOptions.add_options()
 		("target", value<std::string>()->required(), "the target to compile for. "
 			"Possible values are: spirv, glsl, glsl-es, metal-osx, metal-ios")
-		("version", value<unsigned int>(), "the version of the target")
+		("version", value<std::string>(), "the version of the target. Required for GLSL and "
+			"Metal.")
 		("force-enable", value<std::vector<std::string>>(), "force a feature to be enabled")
 		("force-disable", value<std::vector<std::string>>(), "force a feature to be disabled")
 		("resources", value<std::string>(), "a path to a file describing custom resource limits. "
@@ -52,14 +346,18 @@ int main(int argc, char** argv)
 		("spirv-command", value<std::string>(), "external command to run on the intermediate "
 			"SPIR-V. The string $input will be replaced by the input file path, while the string "
 			"$output will be replaced by the output file path.")
-		("remap-depth-range", "remap the depth range from [0, 1] to [-1, 1] in the vertex shader "
-			"output for GLSL or Metal targets")
-		("flip-vertex-y", "flip the vertex y coordinate for Metal targets")
-		("flip-fragment-y", "flip the fragment y coordinate for Metal targets")
+		("remap-depth-range", value<bool>(), "boolean for whether or not to remap the depth range "
+			"from [0, 1] to [-1, 1] in the  vertex shader output for GLSL or Metal targets. "
+			"Defaults to false.")
+		("flip-vertex-y", value<bool>(), "boolean for whether or not to flip the vertex y "
+			"coordinate for Metal targets. Defaults to true.")
+		("flip-fragment-y", value<bool>(), "boolean for whether or not to flip the fragment y "
+			"coordinate for Metal targets. Defaults to true.")
 		("default-float-precision", value<std::string>(), "the default precision to use for "
-			"floats in GLSL targets. Possible values are: none, low, medium, high")
+			"floats in GLSL targets. Possible values are: none, low, medium, high. Defaults to "
+			"medium.")
 		("default-int-precision", value<std::string>(), "the default precision to use for ints in "
-			"in GLSL targets. Possible values are: none, low, medium, high")
+			"in GLSL targets. Possible values are: none, low, medium, high. Defaults to high.")
 		("header-line", value<std::vector<std::string>>(), "header line to be added verbatim for "
 			"GLSL targets. This will be used for all stages.")
 		("header-line-vert", value<std::vector<std::string>>(), "header line to be added "
@@ -110,28 +408,63 @@ int main(int argc, char** argv)
 	positional_options_description positionalOptions;
 	positionalOptions.add("input", -1);
 
+	// Parse the options.
 	int exitCode = 0;
-	variables_map vm;
+	variables_map options;
 	try
 	{
 		store(command_line_parser(argc, argv).
-			options(mainOptions).positional(positionalOptions).run(), vm);
-		notify(vm);
+			options(mainOptions).positional(positionalOptions).run(), options);
+		notify(options);
 	}
 	catch (std::exception& e)
 	{
-		if (!vm.count("help"))
+		if (!options.count("help"))
 		{
 			std::cerr << "error: " << e.what() << std::endl << std::endl;
 			exitCode = 1;
 		}
 	}
 
-	bool printHelp = vm.count("help");
-	if (!printHelp && exitCode == 0 && !vm.count("input"))
+	bool printHelp = options.count("help");
+
+	// Parse the config file.
+	variables_map config;
+	std::string configFilePath;
+	if (exitCode == 0 && !printHelp)
 	{
-		std::cerr << "error: no input files" << std::endl << std::endl;
-		exitCode = 2;
+		configFilePath = options["config"].as<std::string>();
+		try
+		{
+			store(parse_config_file<char>(configFilePath.c_str(), configOptions), config);
+			notify(config);
+		}
+		catch (std::exception& e)
+		{
+			std::cerr << configFilePath << " error: " << e.what() << std::endl << std::endl;
+			exitCode = 1;
+		}
+	}
+
+	// Create the target and set the options.
+	std::unique_ptr<msl::Target> target;
+	if (!printHelp && exitCode == 0)
+	{
+		std::string targetName = config["target"].as<std::string>();
+		if (targetName == "spirv")
+			target.reset(new msl::TargetSpirV);
+		else if (targetName == "glsl" || targetName== "glsl-es")
+			target = createGlslTarget(targetName, config, configFilePath);
+		else if (targetName == "metal-osx" || targetName == "metal-ios")
+			target = createMetalTarget(targetName, config, configFilePath);
+		else
+		{
+			std::cerr << "error: unkown target: " << targetName << std::endl << std::endl;
+			exitCode = 1;
+		}
+
+		if (!target || !setCommonTargetConfig(*target, config, configFilePath))
+			exitCode = 1;
 	}
 
 	if (printHelp || exitCode != 0)
@@ -140,6 +473,15 @@ int main(int argc, char** argv)
 			std::endl;
 		std::cout << "Compile one or more shader source files into a shader module." << std::endl <<
 			std::endl;
+		std::cout <<
+			"In order to determine how to compile the shader, a target configuration file\n"
+			"must be provided. This configuration file takes the form of name/value pairs.\n"
+			"For example:\n"
+			"    target = glsl-es\n"
+			"    version = 300\n"
+			"    force-disable = UniformBuffers\n"
+			"    force-disable = Buffers\n"
+			"    remap-depth-range = yes" << std::endl << std::endl;
 		std::cout << mainOptions << std::endl;
 
 		std::stringstream strstream;

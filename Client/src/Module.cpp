@@ -76,7 +76,7 @@ static void fixupModule(mslModule* module)
 		auto& shaderData = *(*module->module->shaders())[i]->data();
 		uint32_t* shaderData32 = const_cast<uint32_t*>(
 			reinterpret_cast<const uint32_t*>(shaderData.data()));
-		uint32_t shaderData32Size = shaderData.size()/sizeof(uint32_t);
+		size_t shaderData32Size = shaderData.size()/sizeof(uint32_t);
 		for (uint32_t j = 0; j < shaderData32Size; ++j)
 			shaderData32[j] = flatbuffers::EndianScalar(shaderData32[j]);
 	}
