@@ -2,6 +2,9 @@ if (NOT GTEST_FOUND OR NOT MSL_BUILD_TESTS)
 	return()
 endif()
 
+if (NOT MSL_SHARED)
+	set(Boost_USE_STATIC_LIBS ON)
+endif()
 find_package(Boost COMPONENTS filesystem)
 
 file(GLOB_RECURSE sources *.cpp *.h)

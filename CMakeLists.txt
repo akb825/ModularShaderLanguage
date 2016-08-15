@@ -65,6 +65,10 @@ if (MSL_BUILD_CLIENT)
 	add_subdirectory(Client)
 endif()
 
+if (MSL_BUILD_TOOLS)
+	add_subdirectory(tools)
+endif()
+
 # Documentation. (populated by built libraries)
 add_subdirectory(doc)
 
