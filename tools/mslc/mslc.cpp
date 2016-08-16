@@ -362,7 +362,7 @@ static bool setCommonTargetConfig(msl::Target& target, const variables_map& opti
 
 static void printOutput(msl::Output& output, bool printWarnings)
 {
-	const char* continueStr = ": note: ";
+	const char* continueStr = "note: ";
 	for (const msl::Output::Message& message : output.getMessages())
 	{
 		std::ostream* stream;
