@@ -20,6 +20,7 @@
 #include <MSL/Compile/TargetMetal.h>
 #include <MSL/Compile/TargetSpirV.h>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
 #include <iostream>
@@ -29,7 +30,7 @@
 
 using namespace boost::program_options;
 
-std::unique_ptr<msl::Target> createGlslTarget(const std::string& targetName,
+static std::unique_ptr<msl::Target> createGlslTarget(const std::string& targetName,
 	const variables_map& config, const std::string& configFilePath)
 {
 	bool es = targetName == "glsl-es";
@@ -221,7 +222,7 @@ std::unique_ptr<msl::Target> createGlslTarget(const std::string& targetName,
 	return std::move(target);
 }
 
-std::unique_ptr<msl::Target> createMetalTarget(const std::string& targetName,
+static std::unique_ptr<msl::Target> createMetalTarget(const std::string& targetName,
 	const variables_map& config, const std::string& configFilePath)
 {
 	bool ios = targetName == "metal-ios";
@@ -261,8 +262,25 @@ std::unique_ptr<msl::Target> createMetalTarget(const std::string& targetName,
 	return std::move(target);
 }
 
-bool setCommonTargetConfig(msl::Target& target, const variables_map& config,
-	const std::string& configFilePath)
+static std::pair<std::string, std::string> splitDefineString(const std::string& str)
+{
+	std::size_t equalIndex = str.find_first_of('=');
+	std::pair<std::string, std::string> definePair;
+	if (equalIndex == std::string::npos)
+		definePair.first = str;
+	else
+	{
+		definePair.first = str.substr(0, equalIndex);
+		definePair.second = str.substr(equalIndex + 1);
+	}
+
+	boost::algorithm::trim(definePair.first);
+	boost::algorithm::trim(definePair.second);
+	return definePair;
+}
+
+static bool setCommonTargetConfig(msl::Target& target, const variables_map& options,
+	const variables_map& config, const std::string& configFilePath)
 {
 	std::unordered_map<std::string, msl::Target::Feature> featureMap;
 	for (unsigned int i = 0; i < msl::Target::featureCount; ++i)
@@ -310,7 +328,91 @@ bool setCommonTargetConfig(msl::Target& target, const variables_map& config,
 	if (config.count("spirv-command"))
 		target.setSpirVToolCommand(config["spirv-command"].as<std::string>());
 
+	// Add inlcudes and defines.
+	if (options.count("include"))
+	{
+		for (const std::string& str : options["include"].as<std::vector<std::string>>())
+			target.addIncludePath(str);
+	}
+
+	if (options.count("define"))
+	{
+		for (const std::string& str : options["define"].as<std::vector<std::string>>())
+		{
+			auto definePair = splitDefineString(str);
+			target.addDefine(std::move(definePair.first), std::move(definePair.second));
+		}
+	}
+
+	if (config.count("define"))
+	{
+		for (const std::string& str : config["define"].as<std::vector<std::string>>())
+		{
+			auto definePair = splitDefineString(str);
+			target.addDefine(std::move(definePair.first), std::move(definePair.second));
+		}
+	}
+
+	target.setStripDebug(options.count("debug") == 0);
+	target.setOptimize(options.count("optimize") > 0);
+	target.setRemapVariables(options.count("remap") > 0);
+
 	return true;
+}
+
+static void printOutput(msl::Output& output, bool printWarnings)
+{
+	const char* continueStr = ": note: ";
+	for (const msl::Output::Message& message : output.getMessages())
+	{
+		std::ostream* stream;
+		const char* levelStr;
+		switch (message.level)
+		{
+			case msl::Output::Level::Error:
+				levelStr = "error: ";
+				stream = &std::cerr;
+				break;
+			case msl::Output::Level::Warning:
+				if (!printWarnings)
+					continue;
+				levelStr = "warning: ";
+				stream = &std::cerr;
+				break;
+			case msl::Output::Level::Info:
+				levelStr = "note: ";
+				stream = &std::cout;
+				break;
+			default:
+				continue;
+		}
+
+		if (message.continued)
+			levelStr = continueStr;
+
+		// Try to emulate the formatting of the host compiler.
+		if (!message.file.empty())
+		{
+			*stream << message.file;
+			if (message.line > 0)
+			{
+#if MSL_MSVC
+				*stream << "(" << message.line;
+				if (message.column > 0)
+					*stream << "," << message.column;
+				*stream << ")"
+#else
+				*stream << ":" << message.line;
+				if (message.column > 0)
+					*stream << ":" << message.column;
+#endif
+			}
+
+			*stream << ": ";
+		}
+
+		*stream << levelStr << message.message << std::endl;
+	}
 }
 
 int main(int argc, char** argv)
@@ -324,9 +426,8 @@ int main(int argc, char** argv)
 			"Multiple inputs may be provided to compile into a single module.")
 		("output,o", value<std::string>()->required(), "output file for the compiled result")
 		("include,I", value<std::vector<std::string>>(), "directory to search for includes")
-		("define,D", value<std::vector<std::string>>(),
-			"add a define for the preprocessor. "
-			"A value may optionally be assigned with =. (i.e. -D DEFINE=val)")
+		("define,D", value<std::vector<std::string>>(), "add a define for the preprocessor. A "
+			"value may optionally be assigned with =. (i.e. -D DEFINE=val)")
 		("warn-none,w", "disable all warnings")
 		("warn-error,W", "treat warnings as errors")
 		("debug,g", "keep debug symbols")
@@ -339,6 +440,8 @@ int main(int argc, char** argv)
 			"Possible values are: spirv, glsl, glsl-es, metal-osx, metal-ios")
 		("version", value<std::string>(), "the version of the target. Required for GLSL and "
 			"Metal.")
+		("define", value<std::vector<std::string>>(), "add a define for the preprocessor. A value "
+			"may optionally be assigned with =. (i.e. DEFINE=val)")
 		("force-enable", value<std::vector<std::string>>(), "force a feature to be enabled")
 		("force-disable", value<std::vector<std::string>>(), "force a feature to be disabled")
 		("resources", value<std::string>(), "a path to a file describing custom resource limits. "
@@ -463,7 +566,7 @@ int main(int argc, char** argv)
 			exitCode = 1;
 		}
 
-		if (!target || !setCommonTargetConfig(*target, config, configFilePath))
+		if (!target || !setCommonTargetConfig(*target, options, config, configFilePath))
 			exitCode = 1;
 	}
 
@@ -480,7 +583,7 @@ int main(int argc, char** argv)
 			"    target = glsl-es\n"
 			"    version = 300\n"
 			"    force-disable = UniformBuffers\n"
-			"    force-disable = Buffers\n"
+			"    force-disable = Derivatives\n"
 			"    remap-depth-range = yes" << std::endl << std::endl;
 		std::cout << mainOptions << std::endl;
 
@@ -504,6 +607,48 @@ int main(int argc, char** argv)
 		std::cout << featuresStr;
 		return exitCode;
 	}
+
+	msl::Output output;
+	msl::CompiledResult result;
+	for (const std::string& input : options["input"].as<std::vector<std::string>>())
+	{
+		if (!target->compile(result, output, input))
+		{
+			exitCode = 2;
+			break;
+		}
+	}
+
+	if (exitCode == 0)
+	{
+		if (!target->finish(result, output))
+			exitCode = 2;
+	}
+
+	if (output.getErrorCount() > 0)
+		exitCode = 2;
+
+	printOutput(output, options.count("warn-none") == 0);
+	if (options.count("warn-error") && output.getWarningCount() > 0)
+	{
+		std::cerr << "error: warnings treated as errors" << std::endl;
+		exitCode = 3;
+	}
+
+	if (exitCode != 0)
+	{
+		std::cerr << "error: compilation failed" << std::endl;
+		return exitCode;
+	}
+
+	std::string outputFile = options["output"].as<std::string>();
+	if (!result.save(outputFile))
+	{
+		std::cerr << "error: could not write output file: " << outputFile << std::endl;
+		return 4;
+	}
+
+	std::cout << "output shader module to " << outputFile << std::endl;
 
 	return exitCode;
 }

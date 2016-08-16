@@ -1,0 +1,16 @@
+#pragma once
+
+// Put these in header to test line numbers.
+
+[[fragment]] in FragmentIn
+{
+	vec4 color;
+} inputs;
+
+[[fragment]] out vec4 color;
+
+[[fragment]]
+void fragShader()
+{
+	color = inputss.color;
+}

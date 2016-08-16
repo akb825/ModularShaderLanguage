@@ -1,3 +1,4 @@
 /build
+/tools/mslc/test/*.mslb
 *.swp
 *.user

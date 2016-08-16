@@ -1,0 +1,83 @@
+#ifdef GLSL
+#	if GLSL_VERSION != 430
+#	error
+#	endif
+#elif defined(GLSL_ES)
+#	if GLSLES_VERSION != 310
+#	error
+#	endif
+#elif defined(METAL_OSX)
+#	if METAL_OSX_VERSION != 11
+#	error
+#	endif
+#elif defined(METAL_IOS)
+#	if METAL_IOS_VERSION != 10
+#	error
+#	endif
+#else
+#	error
+#endif
+
+#if COMMAND_LINE_DEFINE != 1
+#error
+#endif
+
+#if CUSTOM_DEFINE1 != 1
+#error
+#endif
+
+#if CUSTOM_DEFINE2 != 2
+#error
+#endif
+
+#ifdef DISABLE_UNIFORM_BUFFERS
+#define SHOULD_HAVE_UNIFORM_BUFFERS 0
+#else
+#define SHOULD_HAVE_UNIFORM_BUFFERS 1
+#endif
+
+#if HAS_UNIFORM_BUFFERS != SHOULD_HAVE_UNIFORM_BUFFERS
+#error
+#endif
+
+uniform sampler2D tex;
+
+uniform Transform
+{
+	mat4 transform;
+} block;
+
+[[vertex]] in vec3 position;
+[[vertex]] in vec4 color;
+
+[[vertex]] out VertexOut
+{
+	vec4 color;
+} outputs;
+
+[[fragment]] in FragmentIn
+{
+	vec4 color;
+} inputs;
+
+[[fragment]] out vec4 color;
+
+[[vertex]]
+void vertShader()
+{
+	gl_Position = block.transform*vec4(position, 1.0);
+	outputs.color = color;
+}
+
+[[fragment]]
+void fragShader()
+{
+	vec4 texResult = texture(tex, vec2(0.5, 0.5));
+	color = inputs.color*texResult;
+}
+
+pipeline Test
+{
+	vertex = vertShader;
+	fragment = fragShader;
+}

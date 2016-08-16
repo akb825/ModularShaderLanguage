@@ -1,0 +1,41 @@
+uniform sampler2D tex;
+
+uniform Transform
+{
+	mat4 transform;
+} block;
+
+[[vertex]] in vec3 position;
+[[vertex]] in vec4 color;
+
+[[vertex]] out VertexOut
+{
+	vec4 color;
+} outputs;
+
+[[fragment]] in FragmentIn
+{
+	vec4 color;
+} inputs;
+
+[[fragment]] out vec4 color;
+
+[[vertex]]
+void vertShader()
+{
+	gl_Position = block.transform*vec4(position, 1.0);
+	outputs.color = color;
+}
+
+[[fragment]]
+void fragShader()
+{
+	vec4 texResult = texture(tex, vec2(0.5, 0.5));
+	color = inputs.color*texResult;
+}
+
+pipeline Test
+{
+	vertex = vertShader;
+	fragment = fragShader;
+}

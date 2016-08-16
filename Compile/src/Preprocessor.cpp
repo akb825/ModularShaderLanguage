@@ -43,7 +43,7 @@ void handleException(Output& output, Output::Level level, const boost::wave::cpp
 
 	// Boost wave is an implementation detail, don't to have it be user-facing.
 	boost::algorithm::replace_first(message,
-		"encountered #error directive or #pragma wave stop(): ", "encountered #error directive: ");
+		"encountered #error directive or #pragma wave stop()", "encountered #error directive");
 
 	output.addMessage(level, e.file_name(), e.line_no(), e.column_no(), false, message);
 }
@@ -209,18 +209,7 @@ bool Preprocessor::preprocess(TokenList& tokenList, Output& output, std::istream
 		for (const std::string& includePath : m_includePaths)
 			context.add_include_path(includePath.c_str());
 		for (const std::pair<std::string, std::string>& define : m_defines)
-		{
-			Context::token_sequence_type tokens;
-			if (!define.second.empty())
-			{
-				LexIterator lexer(define.second.begin(), define.second.end(),
-					LexToken::position_type(), language);
-				tokens.insert(tokens.end(), lexer, LexIterator());
-			}
-			std::vector<LexToken> parameters;
-			context.add_macro_definition(define.first, Context::position_type(), false,
-				parameters, tokens, true);
-		}
+			context.add_macro_definition(define.first + "=" + define.second, true);
 
 		std::vector<Token> tokens;
 		for (const LexToken& token : context)

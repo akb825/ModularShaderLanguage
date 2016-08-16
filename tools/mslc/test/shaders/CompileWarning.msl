@@ -1,0 +1,27 @@
+uniform Transform
+{
+	mat4 transform;
+};
+
+[[vertex]] in vec4 position;
+[[vertex]] in vec4 color;
+
+[[vertex]] out VertexOut
+{
+	vec4 color;
+} outputs;
+
+[[vertex]]
+void vertShader()
+{
+	gl_Position = transform*position;
+	outputs.color = color;
+}
+
+#include "CompileWarning.mslh"
+
+pipeline Test
+{
+	vertex = vertShader;
+	fragment = fragShader;
+}
