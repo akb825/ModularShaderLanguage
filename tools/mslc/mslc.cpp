@@ -531,7 +531,7 @@ int main(int argc, char** argv)
 		}
 	}
 
-	bool printHelp = options.count("help");
+	bool printHelp = options.count("help") > 0;
 
 	// Parse the config file.
 	variables_map config;
@@ -651,6 +651,5 @@ int main(int argc, char** argv)
 	}
 
 	std::cout << "output shader module to " << outputFile << std::endl;
-
 	return exitCode;
 }

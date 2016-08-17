@@ -130,7 +130,7 @@ bool CompiledResult::save(std::ostream& stream) const
 
 bool CompiledResult::save(const std::string& fileName) const
 {
-	std::ofstream stream(fileName, std::fstream::binary);
+	std::ofstream stream(fileName, std::ios_base::trunc | std::ios_base::binary);
 	if (!stream.is_open())
 		return false;
 

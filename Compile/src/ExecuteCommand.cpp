@@ -37,7 +37,7 @@ ExecuteCommand::ExecuteCommand()
 	m_outputFileName =
 		(boost::filesystem::temp_directory_path()/boost::filesystem::unique_path()).string();
 
-	m_input.open(m_inputFileName, std::ofstream::binary);
+	m_input.open(m_inputFileName, std::ios_base::trunc | std::ofstream::binary);
 }
 
 ExecuteCommand::~ExecuteCommand()
@@ -91,7 +91,7 @@ bool ExecuteCommand::execute(Output& output, const std::string& command)
 		output.addMessage(Output::Level::Error, "", 0, 0, false, stream.str());
 	}
 
-	m_output.open(m_outputFileName, std::ifstream::binary);
+	m_output.open(m_outputFileName, std::ios_base::binary);
 	return exitCode == 0;
 }
 

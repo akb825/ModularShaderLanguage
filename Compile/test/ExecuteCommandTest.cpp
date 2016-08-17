@@ -28,9 +28,11 @@ TEST(ExecuteCommandTest, CommandNotFound)
 	EXPECT_FALSE(command.execute(output, "asdf"));
 	ASSERT_EQ(2U, output.getMessages().size());
 #if MSL_WINDOWS
-	EXPECT_EQ("could not execute command: asdf", output.getMessages()[0].message);
+	EXPECT_EQ("output from running command: asdf\ncould not execute command: asdf",
+		output.getMessages()[0].message);
 #else
-	EXPECT_EQ("sh: asdf: command not found", output.getMessages()[0].message);
+	EXPECT_EQ("output from running command: asdf\nsh: asdf: command not found",
+		output.getMessages()[0].message);
 #endif
 }
 
@@ -46,7 +48,8 @@ TEST(ExecuteCommandTest, InputToOutput)
 		std::istreambuf_iterator<char>());
 	EXPECT_EQ("testing 123", outputStr);
 	ASSERT_EQ(1U, output.getMessages().size());
-	EXPECT_EQ("testing 123", output.getMessages()[0].message);
+	EXPECT_EQ("output from running command: cat $input | tee $output\ntesting 123",
+		output.getMessages()[0].message);
 }
 
 #endif

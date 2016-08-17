@@ -64,6 +64,10 @@ Building is done with CMake. To build a release build, execute the following com
 	ModularShaderLanguage/build$ cmake .. -DCMAKE_BUILD_TYPE=Release
 	ModularShaderLanguage/build$ make
 
+The tests can be run by running the command:
+
+	ModularShaderLanguage/build$ ctest
+
 The following options may be used when running cmake:
 
 ## Compile Options:
@@ -97,7 +101,7 @@ MSL contains the following modules:
 
 * [Compile](Compile/README.md): (Optional) The library for processing shader files and compiling them into modules.
 * [Client](Client/README.md): (Optional) A library for reading in shader modules for C and C++ applications.
-* [tools](tools/README.md): (Optional) The `mslc` tool for compiling shader files.
+* [tools](tools/README.md): (Optional) The `mslc` tool for compiling shader files and `mslb-extract` tool for extracting info from compiled shaders.
 
 The directory structure of the include files is:
 
