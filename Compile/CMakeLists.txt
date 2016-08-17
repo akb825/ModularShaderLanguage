@@ -62,7 +62,7 @@ set_folder(msl_compile libs)
 setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
 	INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/MSL/Compile
 	FILES ${sources})
-setup_filters(SRC_DIR . FILES ${externalSources})
+setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR} FILES ${externalSources})
 
 install_library(TARGET msl_compile MODULE Compile)
 set(MSL_DOC_PROJECTS ${MSL_DOC_PROJECTS} Compile PARENT_SCOPE)

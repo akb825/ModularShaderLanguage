@@ -5,7 +5,7 @@ add_dependencies(msl_client mslb)
 
 target_include_directories(msl_client PRIVATE ${FLATBUFFERS_INCLUDE_DIRS} ${SHARED_DIR})
 
-set_folder(msl_compile libs)
+set_folder(msl_client libs)
 setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
 	INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/MSL/Client
 	FILES ${sources})

@@ -11,4 +11,5 @@ else()
 	add_custom_target(mslb)
 endif()
 
+set_folder(mslb libs)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include COMPONENT dev)

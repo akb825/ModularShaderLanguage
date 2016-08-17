@@ -398,11 +398,11 @@ static void printOutput(msl::Output& output, bool printWarnings)
 			*stream << message.file;
 			if (message.line > 0)
 			{
-#if MSL_MSVC
+#if MSL_MSC
 				*stream << "(" << message.line;
 				if (message.column > 0)
 					*stream << "," << message.column;
-				*stream << ")"
+				*stream << ")";
 #else
 				*stream << ":" << message.line;
 				if (message.column > 0)

@@ -16,9 +16,20 @@
 
 #include "Preprocessor.h"
 #include <MSL/Compile/Output.h>
+
+#if MSL_MSC
+#pragma warning(disable: 4503)
+#pragma warning(push, 0)
+#endif
+
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/wave.hpp>
 #include <boost/wave/cpplexer/cpp_lex_iterator.hpp>
+
+#if MSL_MSC
+#pragma warning(pop)
+#endif
+
 #include <cstring>
 #include <fstream>
 
