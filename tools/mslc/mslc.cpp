@@ -353,9 +353,11 @@ static bool setCommonTargetConfig(msl::Target& target, const variables_map& opti
 		}
 	}
 
-	target.setStripDebug(options.count("debug") == 0);
+	if (config.count("remap-variables"))
+		target.setRemapVariables(config["remap-variables"].as<bool>());
+
+	target.setStripDebug(options.count("strip") > 0);
 	target.setOptimize(options.count("optimize") > 0);
-	target.setRemapVariables(options.count("remap") > 0);
 
 	return true;
 }
@@ -430,9 +432,8 @@ int main(int argc, char** argv)
 			"value may optionally be assigned with =. (i.e. -D DEFINE=val)")
 		("warn-none,w", "disable all warnings")
 		("warn-error,W", "treat warnings as errors")
-		("debug,g", "keep debug symbols")
-		("optimize,O", "optimize the compiled result")
-		("remap", "remap variable ranges to improve compression of SPIR-V");
+		("strip,s", "strip debug symbols")
+		("optimize,O", "optimize the compiled result");
 
 	options_description configOptions("options in target configuration file");
 	configOptions.add_options()
@@ -449,6 +450,7 @@ int main(int argc, char** argv)
 		("spirv-command", value<std::string>(), "external command to run on the intermediate "
 			"SPIR-V. The string $input will be replaced by the input file path, while the string "
 			"$output will be replaced by the output file path.")
+		("remap-variables", value<bool>(), "remap variable ranges to improve compression of SPIR-V")
 		("remap-depth-range", value<bool>(), "boolean for whether or not to remap the depth range "
 			"from [0, 1] to [-1, 1] in the  vertex shader output for GLSL or Metal targets. "
 			"Defaults to false.")

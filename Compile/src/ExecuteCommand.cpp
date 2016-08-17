@@ -79,7 +79,10 @@ bool ExecuteCommand::execute(Output& output, const std::string& command)
 	boost::algorithm::trim(outputStr);
 
 	if (!outputStr.empty())
-		output.addMessage(Output::Level::Info, "", 0, 0, false, outputStr);
+	{
+		output.addMessage(Output::Level::Info, "", 0, 0, false, "output from running command: " +
+			command + "\n" + outputStr);
+	}
 
 	if (exitCode != 0)
 	{
