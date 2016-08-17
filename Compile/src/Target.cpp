@@ -40,7 +40,7 @@ static Target::FeatureInfo featureInfos[] =
 	// Types
 	{"Integers", "HAS_INTEGERS", "Integer types."},
 	{"Doubles", "HAS_DOUBLES", "Double types."},
-	{"NonSquareMatrices", "HAS_NON_SQUARE_MATRICES", "Non-square matrices, such as Mat3x4."},
+	{"NonSquareMatrices", "HAS_NON_SQUARE_MATRICES", "Non-square matrices, such as mat3x4."},
 	{"Texture3D", "HAS_TEXTURE3D", "3D textures."},
 	{"TextureArray", "HAS_TEXTURE_ARRAY", "Texture arrays."},
 	{"ShadowSamplers", "HAS_SHADOW_SAMPLERS", "Shadow texture samplers."},
@@ -52,7 +52,7 @@ static Target::FeatureInfo featureInfos[] =
 	{"UniformBuffers", "HAS_UNIFORM_BUFFERS",
 		"Uniform buffers. If disabled, uniform buffers will be converted to push constants. "
 		"(equivalent to individual uniforms)"},
-	{"Buffers", "HAS_BUFFERS", "Generic buffer types."},
+	{"Buffers", "HAS_BUFFERS", "Shader storage buffers."},
 	{"Std140", "HAS_STD140", "std140 block layout."},
 	{"Std430", "HAS_STD430", "std430 block layout."},
 
@@ -62,12 +62,12 @@ static Target::FeatureInfo featureInfos[] =
 	{"GeometryStage", "HAS_GEOMETRY_STAGE", "Geometry stage."},
 	{"ComputeStage", "HAS_COMPUTE_STAGE", "Compute stage."},
 
-	// Fragment shader controls
+	// Fragment shader outputs
 	{"MultipleRenderTargets", "HAS_MULTIPLE_RENDER_TARGETS",
 		"Supports writing to more than one render target."},
 	{"DualSourceBlending", "HAS_DUAL_SOURCE_BLENDING",
 		"Supports outputting two colors to the same output."},
-	{"DepthHints", "HAS_DEPTH_HINTS", "Allow hints to be givin about the depth output."},
+	{"DepthHints", "HAS_DEPTH_HINTS", "Allow hints to be given about the depth output."},
 
 	// Other functionality
 	{"Derivatives", "HAS_DERIVATIVES", "dFdx() an dFdy() functions."},

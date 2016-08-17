@@ -10,6 +10,8 @@ The Modular Shader Language (MSL) is a pre-compiled shader language with multipl
 
 # Language and compilation overview
 
+See the [Language description](doc/Language.md) for a more detailed description.
+
 The core of the language is GLSL 450 for Vulkan with the following changes:
 
 * Uses a C preprocessor to allow for advanced macros and \#includes.

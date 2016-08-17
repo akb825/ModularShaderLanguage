@@ -101,7 +101,7 @@ public:
 		GeometryStage,      ///< Geometry stage.
 		ComputeStage,       ///< Compute stage.
 
-		// Fragment shader controls
+		// Fragment shader outputs
 		MultipleRenderTargets, ///< Supports writing to more than one render target.
 		DualSourceBlending,    ///< Supports outputting two colors to the same output.
 		DepthHints,            ///< Allow hints to be givin about the depth output.

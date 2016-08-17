@@ -10,3 +10,5 @@ target_include_directories(mslb-extract PRIVATE ${Boost_INCLUDE_DIRS})
 target_link_libraries(mslb-extract PRIVATE msl_client ${Boost_LIBRARIES})
 
 set_folder(mslb-extract tools)
+
+install(TARGETS mslb-extract RUNTIME DESTINATION bin COMPONENT tools)

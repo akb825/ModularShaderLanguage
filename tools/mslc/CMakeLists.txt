@@ -11,6 +11,8 @@ target_link_libraries(mslc PRIVATE msl_compile ${Boost_LIBRARIES})
 
 set_folder(mslc tools)
 
+install(TARGETS mslc RUNTIME DESTINATION bin COMPONENT tools)
+
 set(testPath ${CMAKE_CURRENT_SOURCE_DIR}/test)
 set(mslcPath $<TARGET_FILE:mslc>)
 if (WIN32)

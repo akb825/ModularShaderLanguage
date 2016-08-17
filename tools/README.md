@@ -68,25 +68,38 @@ For example:
 
 ## Features available for force-enable and force-disable
 
+### Types
+
 * **Integers**: Integer types.
 * **Doubles**: Double types.
-* **NonSquareMatrices**: Non-square matrices, such as Mat3x4.
+* **NonSquareMatrices**: Non-square matrices, such as mat3x4.
 * **Texture3D**: 3D textures.
 * **TextureArray**: Texture arrays.
 * **ShadowSamplers**: Shadow texture samplers.
 * **MultisampledTextures**: Multisampled texture samplers.
 * **IntegerTextures**: Integer texture samplers.
 * **Images**: Image types.
+
+### Storage
+
 * **UniformBuffers**: Uniform buffers. If disabled, uniform buffers will be converted to push constants. (equivalent to individual uniforms)
-* **Buffers**: Generic buffer types.
+* **Buffers**: Shader storage buffers.
 * **Std140**: std140 block layout.
 * **Std430**: std430 block layout.
+
+### Pipeline stages
+
 * **TessellationStages**: Tessellation control and evaluation stages.
 * **GeometryStage**: Geometry stage.
 * **ComputeStage**: Compute stage.
+
+### Fragment shader output
 * **MultipleRenderTargets**: Supports writing to more than one render target.
 * **DualSourceBlending**: Supports outputting two colors to the same output.
-* **DepthHints**: Allow hints to be givin about the depth output.
+* **DepthHints**: Allow hints to be given about the depth output.
+
+### Other functionality
+
 * **Derivatives**: dFdx() an dFdy() functions.
 * **AdvancedDerivatives**: Coarse and fine versions of dFdx() and dFdy().
 * **MemoryBarriers**: Memory barrier functions.
