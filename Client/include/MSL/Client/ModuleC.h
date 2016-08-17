@@ -349,6 +349,9 @@ MSL_CLIENT_EXPORT uint32_t mslModule_uniformBlockIndex(const mslModule* module, 
 
 /**
  * @brief Gets the buffer offset of a uniform within a pipeline.
+ * @remark This is based on the original GLSL code, and may not be the same when cross-compiled
+ * to other targets that use different alignment. The offsets should be queried at runtime for
+ * targets that have different alignment rules.
  * @param module The shader module.
  * @param pipeline The index of the pipeline.
  * @param uniform The index of the uniform.
@@ -387,6 +390,9 @@ MSL_CLIENT_EXPORT const char* mslModule_uniformBlockName(const mslModule* module
 
 /**
  * @brief Gets the size of a uniform block within a pipeline.
+ * @remark This is based on the original GLSL code, and may not be the same when cross-compiled
+ * to other targets that use different alignment. The size should be queried at runtime for
+ * targets that have different alignment rules.
  * @param module The shader module.
  * @param pipeline The index of the pipeline.
  * @param block The index of the uniform block.

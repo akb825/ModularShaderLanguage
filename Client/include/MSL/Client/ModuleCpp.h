@@ -254,167 +254,173 @@ public:
 	bool read(const std::string& fileName);
 
 	/**
-	* @brief Gets the file version of the module.
-	* @return The file version.
-	*/
+	 * @brief Gets the file version of the module.
+	 * @return The file version.
+	 */
 	uint32_t version() const;
 
 	/**
-	* @brief Gets the target ID for a shader module.
-	* @return The target ID.
-	*/
+	 * @brief Gets the target ID for a shader module.
+	 * @return The target ID.
+	 */
 	uint32_t targetId() const;
 
 	/**
-	* @brief Gets the target version for a shader module.
-	* @return The target version.
-	*/
+	 * @brief Gets the target version for a shader module.
+	 * @return The target version.
+	 */
 	uint32_t targetVersion() const;
 
 	/**
-	* @brief Gets the number of pipelines within the shader module.
-	* @return The number of pipelines.
-	*/
+	 * @brief Gets the number of pipelines within the shader module.
+	 * @return The number of pipelines.
+	 */
 	uint32_t pipelineCount() const;
 
 	/**
-	* @brief Gets the name of a pipeline within the shader module.
-	* @param pipeline The index of the pipeline.
-	* @return The name of the pipeline.
-	*/
+	 * @brief Gets the name of a pipeline within the shader module.
+	 * @param pipeline The index of the pipeline.
+	 * @return The name of the pipeline.
+	 */
 	const char* pipelineName(uint32_t pipeline) const;
 
 	/**
-	* @brief Gets the shader index of a pipeline stage.
-	* @param pipeline The index of the pipeline.
-	* @param stage The stage to get the shader from.
-	* @return The index of the shader for the stage.
-	*/
+	 * @brief Gets the shader index of a pipeline stage.
+	 * @param pipeline The index of the pipeline.
+	 * @param stage The stage to get the shader from.
+	 * @return The index of the shader for the stage.
+	 */
 	uint32_t pipelineShader(uint32_t pipeline, Stage stage) const;
 
 	/**
-	* @brief Gets the number of uniforms within a pipeline.
-	* @param pipeline The index of the pipeline.
-	* @return The number of uniforms for the pipeline.
-	*/
+	 * @brief Gets the number of uniforms within a pipeline.
+	 * @param pipeline The index of the pipeline.
+	 * @return The number of uniforms for the pipeline.
+	 */
 	uint32_t uniformCount(uint32_t pipeline) const;
 
 	/**
-	* @brief Gets the name of a uniform within a pipeline.
-	* @param pipeline The index of the pipeline.
-	* @param uniform The index of the uniform.
-	* @return The name of the uniform.
-	*/
+	 * @brief Gets the name of a uniform within a pipeline.
+	 * @param pipeline The index of the pipeline.
+	 * @param uniform The index of the uniform.
+	 * @return The name of the uniform.
+	 */
 	const char* uniformName(uint32_t pipeline, uint32_t uniform) const;
 
 	/**
-	* @brief Gets the type of a uniform within a pipeline.
-	* @param pipeline The index of the pipeline.
-	* @param uniform The index of the uniform.
-	* @return The type of the uniform.
-	*/
+	 * @brief Gets the type of a uniform within a pipeline.
+	 * @param pipeline The index of the pipeline.
+	 * @param uniform The index of the uniform.
+	 * @return The type of the uniform.
+	 */
 	Type uniformType(uint32_t pipeline, uint32_t uniform) const;
 
 	/**
-	* @brief Gets the block index of a uniform within a pipeline.
-	* @param pipeline The index of the pipeline.
-	* @param uniform The index of the uniform.
-	* @return The block index of the uniform, or MSL_UNKNOWN if not part of a block.
-	*/
+	 * @brief Gets the block index of a uniform within a pipeline.
+	 * @param pipeline The index of the pipeline.
+	 * @param uniform The index of the uniform.
+	 * @return The block index of the uniform, or MSL_UNKNOWN if not part of a block.
+	 */
 	uint32_t uniformBlockIndex(uint32_t pipeline, uint32_t uniform) const;
 
 	/**
-	* @brief Gets the buffer offset of a uniform within a pipeline.
-	* @param pipeline The index of the pipeline.
-	* @param uniform The index of the uniform.
-	* @return The byte offset within the buffer, or MSL_UNKNOWN if unknown.
-	*/
+	 * @brief Gets the buffer offset of a uniform within a pipeline.
+	 * @remark This is based on the original GLSL code, and may not be the same when cross-compiled
+	 * to other targets that use different alignment. The offsets should be queried at runtime for
+	 * targets that have different alignment rules.
+	 * @param pipeline The index of the pipeline.
+	 * @param uniform The index of the uniform.
+	 * @return The byte offset within the buffer, or MSL_UNKNOWN if unknown.
+	 */
 	uint32_t uniformBufferOffset(uint32_t pipeline, uint32_t uniform) const;
 
 	/**
-	* @brief Gets the number of array elements for a uniform within a pipeline.
-	* @param pipeline The index of the pipeline.
-	* @param uniform The index of the uniform.
-	* @return The number of array elements. This will be a minimum of 1 if the uniform is valid.
-	*/
+	 * @brief Gets the number of array elements for a uniform within a pipeline.
+	 * @param pipeline The index of the pipeline.
+	 * @param uniform The index of the uniform.
+	 * @return The number of array elements. This will be a minimum of 1 if the uniform is valid.
+	 */
 	uint32_t uniformElements(uint32_t pipeline, uint32_t uniform) const;
 
 	/**
-	* @brief Gets the number of uniform blocks within a pipeline.
-	* @param pipeline The index of the pipeline.
-	* @return The number of uniform blocks for the pipeline.
-	*/
+	 * @brief Gets the number of uniform blocks within a pipeline.
+	 * @param pipeline The index of the pipeline.
+	 * @return The number of uniform blocks for the pipeline.
+	 */
 	uint32_t uniformBlockCount(uint32_t pipeline) const;
 
 	/**
-	* @brief Gets the name of a uniform block within a pipeline.
-	* @param pipeline The index of the pipeline.
-	* @param block The index of the uniform block.
-	* @return The name of the uniform block.
-	*/
+	 * @brief Gets the name of a uniform block within a pipeline.
+	 * @param pipeline The index of the pipeline.
+	 * @param block The index of the uniform block.
+	 * @return The name of the uniform block.
+	 */
 	const char* uniformBlockName(uint32_t pipeline, uint32_t block) const;
 
 	/**
-	* @brief Gets the size of a uniform block within a pipeline.
-	* @param pipeline The index of the pipeline.
-	* @param block The index of the uniform block.
-	* @return The size in bytes of the uniform block, or MSL_UNKNOWN if unknown.
-	*/
+	 * @brief Gets the size of a uniform block within a pipeline.
+	 * @remark This is based on the original GLSL code, and may not be the same when cross-compiled
+	 * to other targets that use different alignment. The size should be queried at runtime for
+	 * targets that have different alignment rules.
+	 * @param pipeline The index of the pipeline.
+	 * @param block The index of the uniform block.
+	 * @return The size in bytes of the uniform block, or MSL_UNKNOWN if unknown.
+	 */
 	uint32_t uniformBlockSize(uint32_t pipeline, uint32_t block) const;
 
 	/**
-	* @brief Gets the number of vertex attributes within a pipeline.
-	* @param pipeline The index of the pipeline.
-	* @return The number of vertex attributes for the pipeline.
-	*/
+	 * @brief Gets the number of vertex attributes within a pipeline.
+	 * @param pipeline The index of the pipeline.
+	 * @return The number of vertex attributes for the pipeline.
+	 */
 	uint32_t attributeCount(uint32_t pipeline) const;
 
 	/**
-	* @brief Gets the name of a vertex attribute within a pipeline.
-	* @param pipeline The index of the pipeline.
-	* @param attribute The index of the vertex attribute.
-	* @return The name of the vertex attribute.
-	*/
+	 * @brief Gets the name of a vertex attribute within a pipeline.
+	 * @param pipeline The index of the pipeline.
+	 * @param attribute The index of the vertex attribute.
+	 * @return The name of the vertex attribute.
+	 */
 	const char* attributeName(uint32_t pipeline, uint32_t attribute) const;
 
 	/**
-	* @brief Gets the type of a vertex attribute within a pipeline.
-	* @param pipeline The index of the pipeline.
-	* @param attribute The index of the vertex attribute.
-	* @return The type of the vertex attribute.
-	*/
+	 * @brief Gets the type of a vertex attribute within a pipeline.
+	 * @param pipeline The index of the pipeline.
+	 * @param attribute The index of the vertex attribute.
+	 * @return The type of the vertex attribute.
+	 */
 	Type attributeType(uint32_t pipeline, uint32_t attribute) const;
 
 	/**
-	* @brief Gets number of shaders within the module.
-	* @return The number of shaders.
-	*/
+	 * @brief Gets number of shaders within the module.
+	 * @return The number of shaders.
+	 */
 	uint32_t shaderCount() const;
 
 	/**
-	* @brief Gets the size of a shader within the module.
-	* @param shader The index of the shader.
-	* @return The size of the shader in bytes.
-	*/
+	 * @brief Gets the size of a shader within the module.
+	 * @param shader The index of the shader.
+	 * @return The size of the shader in bytes.
+	 */
 	uint32_t shaderSize(uint32_t shader) const;
 
 	/**
-	* @brief Gets the data of a shader within the module.
-	* @param shader The index of the shader.
-	* @return The data for the shader.
-	*/
+	 * @brief Gets the data of a shader within the module.
+	 * @param shader The index of the shader.
+	 * @return The data for the shader.
+	 */
 	const void* shaderData(uint32_t shader) const;
 
 	/**
-	* @brief Gets the size of the shared data within the module.
-	* @return The size of the shared data in bytes.
-	*/
+	 * @brief Gets the size of the shared data within the module.
+	 * @return The size of the shared data in bytes.
+	 */
 	uint32_t sharedDataSize() const;
 
 	/**
-	* @brief Gets the shared data within the module.
-	* @return The shared data.
-	*/
+	 * @brief Gets the shared data within the module.
+	 * @return The shared data.
+	 */
 	const void* sharedData() const;
 
 private:
