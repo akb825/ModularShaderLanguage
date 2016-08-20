@@ -41,6 +41,15 @@
  *     ...
  * }
  * @endcode
+ *
+ * When reading a module, errno will be set based on the error that occurred. Typical values are:
+ * - EINVAL: invalid arguments.
+ * - ENOMEM: failed to allocate memory.
+ * - ENOENT: no file found.
+ * - EACCESS: permission denied reading the file.
+ * - EIO: IO error reading the file. This will also be set if the file isn't large enough to read
+ *   the buffer size passed in.
+ * - EILSEQ: invalid file format.
  */
 
 #ifdef __cplusplus
@@ -65,6 +74,9 @@ extern "C"
 
 /**
  * @brief Typedef for a custom allocator function.
+ *
+ * If this function fails to allocate memory, it should set errno, either directly or indirectly.
+ *
  * @param userData The user data for the allocator.
  * @param size The size to allocate.
  * @return The allocated memory, or NULL if the allocation failed.
@@ -236,7 +248,7 @@ MSL_CLIENT_EXPORT size_t mslModule_sizeof(size_t dataSize);
  * @param userData The user data to pass to the read function.
  * @param size The size of the data to read.
  * @param allocator The allocator. If NULL, malloc will be used instead.
- * @return The read shader module, or NULL if it couldn't be read.
+ * @return The read shader module, or NULL if it couldn't be read. errno will be set on failure.
  */
 MSL_CLIENT_EXPORT mslModule* mslModule_readStream(mslReadFunction readFunc, void* userData,
 	size_t size, const mslAllocator* allocator);
@@ -249,7 +261,7 @@ MSL_CLIENT_EXPORT mslModule* mslModule_readStream(mslReadFunction readFunc, void
  * @param data The data buffer to read from.
  * @param size The size of the data to read.
  * @param allocator The allocator. If NULL, malloc will be used instead.
- * @return The read shader module, or NULL if it couldn't be read.
+ * @return The read shader module, or NULL if it couldn't be read. errno will be set on failure.
  */
 MSL_CLIENT_EXPORT mslModule* mslModule_readData(const void* data, size_t size,
 	const mslAllocator* allocator);
@@ -258,7 +270,7 @@ MSL_CLIENT_EXPORT mslModule* mslModule_readData(const void* data, size_t size,
  * @brief Reads a shader module from a file.
  * @param fileName The name of the file to read from.
  * @param allocator The allocator. If NULL, malloc will be used instead.
- * @return The read shader module, or NULL if it couldn't be read.
+ * @return The read shader module, or NULL if it couldn't be read. errno will be set on failure.
  */
 MSL_CLIENT_EXPORT mslModule* mslModule_readFile(const char* fileName,
 	const mslAllocator* allocator);

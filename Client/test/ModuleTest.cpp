@@ -16,8 +16,9 @@
 
 #include <MSL/Client/ModuleCpp.h>
 #include "Helpers.h"
-#include <fstream>
 #include <gtest/gtest.h>
+#include <fstream>
+#include <errno.h>
 
 namespace msl
 {
@@ -154,6 +155,11 @@ TEST(ModuleTest, ReadInvalidData)
 
 	Module module;
 	EXPECT_FALSE(module.read(data.data(), data.size() - 18));
+	EXPECT_EQ(EILSEQ, errno);
+
+	stream.seekg(0);
+	EXPECT_FALSE(module.read(stream, data.size() + 18));
+	EXPECT_EQ(EIO, errno);
 }
 
 TEST(ModuleTest, ReadFileC)
@@ -169,6 +175,7 @@ TEST(ModuleTest, InvalidAllocator)
 	mslAllocator allocator = {};
 	std::string fileName = (exeDir/"CompleteShader.mslb").string();
 	EXPECT_EQ(nullptr, mslModule_readFile(fileName.c_str(), &allocator));
+	EXPECT_EQ(EINVAL, errno);
 }
 
 } // namespace msl

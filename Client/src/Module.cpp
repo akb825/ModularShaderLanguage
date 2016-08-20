@@ -16,6 +16,7 @@
 
 #include <MSL/Client/ModuleC.h>
 #include "mslb_generated.h"
+#include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -97,7 +98,10 @@ mslModule* mslModule_readStream(mslReadFunction readFunc, void* userData,
 	size_t size, const mslAllocator* allocator)
 {
 	if (!readFunc || size == 0 || (allocator && !allocator->allocateFunc))
+	{
+		errno = EINVAL;
 		return nullptr;
+	}
 
 	mslModule* module = createModule(size, allocator);
 	if (!module)
@@ -110,6 +114,7 @@ mslModule* mslModule_readStream(mslReadFunction readFunc, void* userData,
 		if (thisRead == 0)
 		{
 			mslModule_destroy(module);
+			errno = EIO;
 			return nullptr;
 		}
 
@@ -120,6 +125,7 @@ mslModule* mslModule_readStream(mslReadFunction readFunc, void* userData,
 	if (!mslb::VerifyModuleBuffer(verifier))
 	{
 		mslModule_destroy(module);
+		errno = EILSEQ;
 		return nullptr;
 	}
 
@@ -127,6 +133,7 @@ mslModule* mslModule_readStream(mslReadFunction readFunc, void* userData,
 	if (module->module->version() > MSL_MODULE_VERSION)
 	{
 		mslModule_destroy(module);
+		errno = EILSEQ;
 		return nullptr;
 	}
 
@@ -137,11 +144,17 @@ mslModule* mslModule_readStream(mslReadFunction readFunc, void* userData,
 mslModule* mslModule_readData(const void* data, size_t size, const mslAllocator* allocator)
 {
 	if (!data || size == 0 || !canUseAllocator(allocator))
+	{
+		errno = EINVAL;
 		return nullptr;
+	}
 
 	flatbuffers::Verifier verifier(reinterpret_cast<const uint8_t*>(data), size);
 	if (!mslb::VerifyModuleBuffer(verifier))
+	{
+		errno = EILSEQ;
 		return nullptr;
+	}
 
 	mslModule* module = createModule(size, allocator);
 	if (!module)
@@ -152,6 +165,7 @@ mslModule* mslModule_readData(const void* data, size_t size, const mslAllocator*
 	if (module->module->version() > MSL_MODULE_VERSION)
 	{
 		mslModule_destroy(module);
+		errno = EILSEQ;
 		return nullptr;
 	}
 
@@ -162,7 +176,10 @@ mslModule* mslModule_readData(const void* data, size_t size, const mslAllocator*
 mslModule* mslModule_readFile(const char* fileName, const mslAllocator* allocator)
 {
 	if (!fileName || !canUseAllocator(allocator))
+	{
+		errno = EINVAL;
 		return nullptr;
+	}
 
 	// Use FILE rather than fstream to make sure we don't have to link to the C++ library.
 	FILE* file = fopen(fileName, "rb");
