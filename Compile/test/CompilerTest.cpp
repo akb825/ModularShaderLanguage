@@ -42,11 +42,10 @@ public:
 TEST_F(CompilerTest, CompleteShader)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"CompleteShader.msl").string();
+	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
 	Parser parser;
 	Preprocessor preprocessor;
-	Compiler compiler;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
 	EXPECT_TRUE(parser.parse(output));
@@ -63,14 +62,14 @@ TEST_F(CompilerTest, CompleteShader)
 		auto stage = static_cast<Parser::Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
-		EXPECT_TRUE(compiler.compile(stages, output, shaderName, glsl, lineMappings, stage,
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			glslang::DefaultTBuiltInResource));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
 	glslang::TProgram program;
-	EXPECT_TRUE(compiler.link(program, output, pipeline, stages));
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
 
 	bool assembledStage = false;
 	for (unsigned int i = 0; i < Parser::stageCount; ++i)
@@ -78,7 +77,7 @@ TEST_F(CompilerTest, CompleteShader)
 		if (!stages.shaders[i])
 			continue;
 
-		EXPECT_FALSE(compiler.assemble(output, program, static_cast<Parser::Stage>(i),
+		EXPECT_FALSE(Compiler::assemble(output, program, static_cast<Parser::Stage>(i),
 			pipeline).empty());
 		assembledStage = true;
 	}
@@ -89,13 +88,12 @@ TEST_F(CompilerTest, CompleteShader)
 TEST_F(CompilerTest, CompileError)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"CompileError.msl").string();
+	std::string shaderName = pathStr(inputDir/"CompileError.msl");
 
 	Parser parser;
 	Preprocessor preprocessor;
-	Compiler compiler;
 	Output output;
-	preprocessor.addIncludePath(inputDir.string());
+	preprocessor.addIncludePath(pathStr(inputDir));
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
 	EXPECT_TRUE(parser.parse(output));
 
@@ -106,13 +104,13 @@ TEST_F(CompilerTest, CompileError)
 	auto stage = Parser::Stage::Fragment;
 	std::vector<Parser::LineMapping> lineMappings;
 	std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
-	EXPECT_FALSE(compiler.compile(stages, output, shaderName, glsl, lineMappings, stage,
+	EXPECT_FALSE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 		glslang::DefaultTBuiltInResource));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ((inputDir/"CompileError.mslh").string(), messages[0].file);
+	EXPECT_EQ(pathStr(inputDir/"CompileError.mslh"), pathStr(messages[0].file));
 	EXPECT_EQ(15U, messages[0].line);
 	EXPECT_EQ("'inputss' : undeclared identifier", messages[0].message);
 }
@@ -120,13 +118,12 @@ TEST_F(CompilerTest, CompileError)
 TEST_F(CompilerTest, CompileWarning)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"CompileWarning.msl").string();
+	std::string shaderName = pathStr(inputDir/"CompileWarning.msl");
 
 	Parser parser;
 	Preprocessor preprocessor;
-	Compiler compiler;
 	Output output;
-	preprocessor.addIncludePath(inputDir.string());
+	preprocessor.addIncludePath(pathStr(inputDir));
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
 	EXPECT_TRUE(parser.parse(output));
 
@@ -137,13 +134,13 @@ TEST_F(CompilerTest, CompileWarning)
 	auto stage = Parser::Stage::Fragment;
 	std::vector<Parser::LineMapping> lineMappings;
 	std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
-	EXPECT_TRUE(compiler.compile(stages, output, shaderName, glsl, lineMappings, stage,
+	EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 		glslang::DefaultTBuiltInResource));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Warning, messages[0].level);
-	EXPECT_EQ((inputDir/"CompileWarning.mslh").string(), messages[0].file);
+	EXPECT_EQ(pathStr(inputDir/"CompileWarning.mslh"), pathStr(messages[0].file));
 	EXPECT_EQ(15U, messages[0].line);
 	EXPECT_EQ("'switch' : last case/default label not followed by statements", messages[0].message);
 }
@@ -151,13 +148,12 @@ TEST_F(CompilerTest, CompileWarning)
 TEST_F(CompilerTest, LinkerError)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"LinkError.msl").string();
+	std::string shaderName = pathStr(inputDir/"LinkError.msl");
 
 	Parser parser;
 	Preprocessor preprocessor;
-	Compiler compiler;
 	Output output;
-	preprocessor.addIncludePath(inputDir.string());
+	preprocessor.addIncludePath(pathStr(inputDir));
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
 	EXPECT_TRUE(parser.parse(output));
 
@@ -173,19 +169,19 @@ TEST_F(CompilerTest, LinkerError)
 		auto stage = static_cast<Parser::Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
-		EXPECT_TRUE(compiler.compile(stages, output, shaderName, glsl, lineMappings, stage,
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			glslang::DefaultTBuiltInResource));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
 	glslang::TProgram program;
-	EXPECT_FALSE(compiler.link(program, output, pipeline, stages));
+	EXPECT_FALSE(Compiler::link(program, output, pipeline, stages));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ((inputDir/"LinkError.mslh").string(), messages[0].file);
+	EXPECT_EQ(pathStr(inputDir/"LinkError.mslh"), pathStr(messages[0].file));
 	EXPECT_EQ(5U, messages[0].line);
 	EXPECT_EQ("Linking fragment stage: Missing entry point", messages[0].message);
 }

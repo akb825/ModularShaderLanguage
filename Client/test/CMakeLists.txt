@@ -15,7 +15,7 @@ add_custom_command(TARGET msl_client_test POST_BUILD
 	${CMAKE_CURRENT_SOURCE_DIR}/CompleteShader.mslb $<TARGET_FILE_DIR:msl_client_test>
 	COMMENT "Copying test shader module." VERBATIM)
 
-target_include_directories(msl_client_test PRIVATE ${Boost_INCLUDE_DIRS})
+target_include_directories(msl_client_test PRIVATE ${GTEST_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
 target_link_libraries(msl_client_test
 	PRIVATE msl_client ${GTEST_BOTH_LIBRARIES} ${Boost_LIBRARIES})
 

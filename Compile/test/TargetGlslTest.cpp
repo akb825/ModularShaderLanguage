@@ -26,7 +26,7 @@ namespace msl
 TEST(TargetGlslTest, Glsl450)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"CompleteShader.msl").string();
+	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
 	TargetGlsl target(450, false);
 	target.addIncludePath(inputDir.string());
@@ -95,12 +95,12 @@ TEST(TargetGlslTest, Glsl450VersionNumber)
 
 	Output output;
 	CompiledResult result;
-	EXPECT_FALSE(target.compile(result, output, stream, "test.msl"));
+	EXPECT_FALSE(target.compile(result, output, stream, pathStr(exeDir/"test.msl")));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ((exeDir/"test.msl").string(), messages[0].file);
+	EXPECT_EQ(pathStr(exeDir/"test.msl"), messages[0].file);
 	EXPECT_EQ(2U, messages[0].line);
 	EXPECT_EQ("encountered #error directive: Version correctly set.", messages[0].message);
 }
@@ -108,7 +108,7 @@ TEST(TargetGlslTest, Glsl450VersionNumber)
 TEST(TargetGlslTest, Glsl120)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"CompleteShader.msl").string();
+	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
 	TargetGlsl target(120, false);
 	target.addIncludePath(inputDir.string());
@@ -169,12 +169,12 @@ TEST(TargetGlslTest, Glsl120VersionNumber)
 
 	Output output;
 	CompiledResult result;
-	EXPECT_FALSE(target.compile(result, output, stream, "test.msl"));
+	EXPECT_FALSE(target.compile(result, output, stream, pathStr(exeDir/"test.msl")));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ((exeDir/"test.msl").string(), messages[0].file);
+	EXPECT_EQ(pathStr(exeDir/"test.msl"), messages[0].file);
 	EXPECT_EQ(2U, messages[0].line);
 	EXPECT_EQ("encountered #error directive: Version correctly set.", messages[0].message);
 }
@@ -182,7 +182,7 @@ TEST(TargetGlslTest, Glsl120VersionNumber)
 TEST(TargetGlslTest, GlslEs300)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"CompleteShader.msl").string();
+	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
 	TargetGlsl target(300, true);
 	target.addIncludePath(inputDir.string());
@@ -243,12 +243,12 @@ TEST(TargetGlslTest, GlslEs300VersionNumber)
 
 	Output output;
 	CompiledResult result;
-	EXPECT_FALSE(target.compile(result, output, stream, "test.msl"));
+	EXPECT_FALSE(target.compile(result, output, stream, pathStr(exeDir/"test.msl")));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ((exeDir/"test.msl").string(), messages[0].file);
+	EXPECT_EQ(pathStr(exeDir/"test.msl"), messages[0].file);
 	EXPECT_EQ(2U, messages[0].line);
 	EXPECT_EQ("encountered #error directive: Version correctly set.", messages[0].message);
 }
@@ -256,7 +256,7 @@ TEST(TargetGlslTest, GlslEs300VersionNumber)
 TEST(TargetGlslTest, GlslEs100)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"CompleteShader.msl").string();
+	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
 	TargetGlsl target(100, true);
 	target.addIncludePath(inputDir.string());
@@ -317,12 +317,12 @@ TEST(TargetGlslTest, GlslEs100VersionNumber)
 
 	Output output;
 	CompiledResult result;
-	EXPECT_FALSE(target.compile(result, output, stream, "test.msl"));
+	EXPECT_FALSE(target.compile(result, output, stream, pathStr(exeDir/"test.msl")));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ((exeDir/"test.msl").string(), messages[0].file);
+	EXPECT_EQ(pathStr(exeDir/"test.msl"), messages[0].file);
 	EXPECT_EQ(2U, messages[0].line);
 	EXPECT_EQ("encountered #error directive: Version correctly set.", messages[0].message);
 }
@@ -339,12 +339,12 @@ TEST(TargetGlslTest, Glsl450HasUniformBuffers)
 
 	Output output;
 	CompiledResult result;
-	EXPECT_FALSE(target.compile(result, output, stream, "test.msl"));
+	EXPECT_FALSE(target.compile(result, output, stream, pathStr(exeDir/"test.msl")));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ((exeDir/"test.msl").string(), messages[0].file);
+	EXPECT_EQ(pathStr(exeDir/"test.msl"), messages[0].file);
 	EXPECT_EQ(2U, messages[0].line);
 	EXPECT_EQ("encountered #error directive: Has buffers set.", messages[0].message);
 }
@@ -361,12 +361,12 @@ TEST(TargetGlslTest, Glsl120HasUniformBuffers)
 
 	Output output;
 	CompiledResult result;
-	EXPECT_FALSE(target.compile(result, output, stream, "test.msl"));
+	EXPECT_FALSE(target.compile(result, output, stream, pathStr(exeDir/"test.msl")));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ((exeDir/"test.msl").string(), messages[0].file);
+	EXPECT_EQ(pathStr(exeDir/"test.msl"), messages[0].file);
 	EXPECT_EQ(4U, messages[0].line);
 	EXPECT_EQ("encountered #error directive: Has buffers not set.", messages[0].message);
 }
@@ -374,10 +374,10 @@ TEST(TargetGlslTest, Glsl120HasUniformBuffers)
 TEST(TargetGlslTest, CompileError)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"CompileError.msl").string();
+	std::string shaderName = pathStr(inputDir/"CompileError.msl");
 
 	TargetGlsl target(450, false);
-	target.addIncludePath(inputDir.string());
+	target.addIncludePath(pathStr(inputDir));
 
 	Output output;
 	CompiledResult result;
@@ -386,7 +386,7 @@ TEST(TargetGlslTest, CompileError)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ((inputDir/"CompileError.mslh").string(), messages[0].file);
+	EXPECT_EQ(pathStr(inputDir/"CompileError.mslh"), pathStr(messages[0].file));
 	EXPECT_EQ(15U, messages[0].line);
 	EXPECT_EQ("'inputss' : undeclared identifier", messages[0].message);
 }
@@ -394,10 +394,10 @@ TEST(TargetGlslTest, CompileError)
 TEST(TargetGlslTest, CompileWarning)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"CompileWarning.msl").string();
+	std::string shaderName = pathStr(inputDir/"CompileWarning.msl");
 
 	TargetGlsl target(450, false);
-	target.addIncludePath(inputDir.string());
+	target.addIncludePath(pathStr(inputDir));
 
 	Output output;
 	CompiledResult result;
@@ -406,7 +406,7 @@ TEST(TargetGlslTest, CompileWarning)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Warning, messages[0].level);
-	EXPECT_EQ((inputDir/"CompileWarning.mslh").string(), messages[0].file);
+	EXPECT_EQ(pathStr(inputDir/"CompileWarning.mslh"), pathStr(messages[0].file));
 	EXPECT_EQ(15U, messages[0].line);
 	EXPECT_EQ("'switch' : last case/default label not followed by statements", messages[0].message);
 }
@@ -414,10 +414,10 @@ TEST(TargetGlslTest, CompileWarning)
 TEST(TargetGlslTest, LinkError)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"LinkError.msl").string();
+	std::string shaderName = pathStr(inputDir/"LinkError.msl");
 
 	TargetGlsl target(450, false);
-	target.addIncludePath(inputDir.string());
+	target.addIncludePath(pathStr(inputDir));
 
 	Output output;
 	CompiledResult result;
@@ -426,7 +426,7 @@ TEST(TargetGlslTest, LinkError)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ((inputDir/"LinkError.mslh").string(), messages[0].file);
+	EXPECT_EQ(pathStr(inputDir/"LinkError.mslh"), pathStr(messages[0].file));
 	EXPECT_EQ(5U, messages[0].line);
 	EXPECT_EQ("Linking fragment stage: Missing entry point", messages[0].message);
 }

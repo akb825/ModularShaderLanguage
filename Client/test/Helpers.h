@@ -19,3 +19,15 @@
 #include <boost/filesystem.hpp>
 
 extern boost::filesystem::path exeDir;
+
+inline std::string pathStr(const boost::filesystem::path& path)
+{
+#if MSL_WINDOWS
+	std::string str = path.string();
+	if (path.is_absolute() && str.size() > 2 && str[2] == '/')
+		str[2] = '\\';
+	return str;
+#else
+	return path.string();
+#endif
+}

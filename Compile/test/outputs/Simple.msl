@@ -6,5 +6,6 @@ int test()
 
 float asdf()
 {
+
 	return 3.14;
 }

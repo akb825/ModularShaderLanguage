@@ -128,7 +128,7 @@ static void testContents(const mslModule* module)
 
 TEST(ModuleTest, ReadFile)
 {
-	std::string fileName = (exeDir/"CompleteShader.mslb").string();
+	std::string fileName = pathStr(exeDir/"CompleteShader.mslb");
 	Module module;
 	EXPECT_TRUE(module.read(fileName));
 	testContents(module);
@@ -136,8 +136,8 @@ TEST(ModuleTest, ReadFile)
 
 TEST(ModuleTest, ReadData)
 {
-	std::string fileName = (exeDir/"CompleteShader.mslb").string();
-	std::ifstream stream(fileName);
+	std::string fileName = pathStr(exeDir/"CompleteShader.mslb");
+	std::ifstream stream(fileName, std::ios_base::binary);
 	std::vector<std::uint8_t> data(std::istreambuf_iterator<char>(stream.rdbuf()),
 		std::istreambuf_iterator<char>());
 
@@ -148,7 +148,7 @@ TEST(ModuleTest, ReadData)
 
 TEST(ModuleTest, ReadInvalidData)
 {
-	std::string fileName = (exeDir/"CompleteShader.mslb").string();
+	std::string fileName = pathStr(exeDir/"CompleteShader.mslb");
 	std::ifstream stream(fileName);
 	std::vector<std::uint8_t> data(std::istreambuf_iterator<char>(stream.rdbuf()),
 		std::istreambuf_iterator<char>());
@@ -164,7 +164,7 @@ TEST(ModuleTest, ReadInvalidData)
 
 TEST(ModuleTest, ReadFileC)
 {
-	std::string fileName = (exeDir/"CompleteShader.mslb").string();
+	std::string fileName = pathStr(exeDir/"CompleteShader.mslb");
 	mslModule* module = mslModule_readFile(fileName.c_str(), nullptr);
 	testContents(module);
 	mslModule_destroy(module);
@@ -173,7 +173,7 @@ TEST(ModuleTest, ReadFileC)
 TEST(ModuleTest, InvalidAllocator)
 {
 	mslAllocator allocator = {};
-	std::string fileName = (exeDir/"CompleteShader.mslb").string();
+	std::string fileName = pathStr(exeDir/"CompleteShader.mslb");
 	EXPECT_EQ(nullptr, mslModule_readFile(fileName.c_str(), &allocator));
 	EXPECT_EQ(EINVAL, errno);
 }

@@ -36,3 +36,17 @@ inline std::string tokensToString(const msl::TokenList& tokens)
 		output += token.value;
 	return output;
 }
+
+inline std::string pathStr(const boost::filesystem::path& path)
+{
+#if MSL_WINDOWS
+	boost::filesystem::path preferredPath = path;
+	preferredPath.make_preferred();
+	std::string str = preferredPath.string();
+	if (preferredPath.is_absolute() && str.size() > 2 && str[2] == '/')
+		str[2] = '\\';
+	return str;
+#else
+	return path.string();
+#endif
+}

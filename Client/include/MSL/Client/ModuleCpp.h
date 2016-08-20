@@ -488,8 +488,8 @@ bool BasicModule<Allocator>::read(std::istream& stream, size_t size)
 	m_module = nullptr;
 
 	mslAllocator alloc = {&allocateFunc, &freeFunc, this};
-	m_module = mslModule_readStream(&readFunc, &stream, size, &alloc);
 	m_size = mslModule_sizeof(size);
+	m_module = mslModule_readStream(&readFunc, &stream, size, &alloc);
 	return m_module != nullptr;
 }
 
@@ -500,8 +500,8 @@ bool BasicModule<Allocator>::read(const void* data, size_t size)
 	m_module = nullptr;
 
 	mslAllocator alloc = {&allocateFunc, &freeFunc, this};
-	m_module = mslModule_readData(data, size, &alloc);
 	m_size = mslModule_sizeof(size);
+	m_module = mslModule_readData(data, size, &alloc);
 	return m_module != nullptr;
 }
 
@@ -511,7 +511,7 @@ bool BasicModule<Allocator>::read(const char* fileName)
 	mslModule_destroy(m_module);
 	m_module = nullptr;
 
-	std::ifstream stream(fileName);
+	std::ifstream stream(fileName, std::ios_base::binary);
 	if (!stream.is_open())
 		return false;
 

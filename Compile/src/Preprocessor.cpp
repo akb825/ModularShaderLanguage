@@ -250,7 +250,7 @@ bool Preprocessor::preprocess(TokenList& tokenList, Output& output, std::istream
 		handleException(output, Output::Level::Error, e);
 		return false;
 	}
-	catch (const boost::wave::cpplexer::lexing_exception& e)
+	catch (const boost::wave::cpplexer::cpplexer_exception& e)
 	{
 		handleException(output, Output::Level::Error, e);
 		return false;

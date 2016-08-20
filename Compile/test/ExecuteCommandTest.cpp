@@ -28,7 +28,8 @@ TEST(ExecuteCommandTest, CommandNotFound)
 	EXPECT_FALSE(command.execute(output, "asdf"));
 	ASSERT_EQ(2U, output.getMessages().size());
 #if MSL_WINDOWS
-	EXPECT_EQ("output from running command: asdf\ncould not execute command: asdf",
+	EXPECT_EQ("output from running command: asdf\n'asdf' is not recognized as an internal or "
+		"external command,\noperable program or batch file.",
 		output.getMessages()[0].message);
 #else
 	EXPECT_EQ("output from running command: asdf\nsh: asdf: command not found",

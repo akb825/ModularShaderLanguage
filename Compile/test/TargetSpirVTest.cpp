@@ -27,7 +27,7 @@ namespace msl
 TEST(TargetSpirVTest, CompleteShader)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"CompleteShader.msl").string();
+	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
 	TargetSpirV target;
 	target.addIncludePath(inputDir.string());
@@ -88,12 +88,12 @@ TEST(TargetSpirVTest, VersionNumber)
 
 	Output output;
 	CompiledResult result;
-	EXPECT_FALSE(target.compile(result, output, stream, "test.msl"));
+	EXPECT_FALSE(target.compile(result, output, stream, pathStr(exeDir/"test.msl")));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ((exeDir/"test.msl").string(), messages[0].file);
+	EXPECT_EQ(pathStr(exeDir/"test.msl"), messages[0].file);
 	EXPECT_EQ(2U, messages[0].line);
 	EXPECT_EQ("encountered #error directive: Version correctly set.", messages[0].message);
 }
@@ -101,7 +101,7 @@ TEST(TargetSpirVTest, VersionNumber)
 TEST(TargetSpirVTest, CompileError)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"CompileError.msl").string();
+	std::string shaderName = pathStr(inputDir/"CompileError.msl");
 
 	TargetSpirV target;
 	target.addIncludePath(inputDir.string());
@@ -113,7 +113,7 @@ TEST(TargetSpirVTest, CompileError)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ((inputDir/"CompileError.mslh").string(), messages[0].file);
+	EXPECT_EQ((inputDir/"CompileError.mslh"), messages[0].file);
 	EXPECT_EQ(15U, messages[0].line);
 	EXPECT_EQ("'inputss' : undeclared identifier", messages[0].message);
 }
@@ -121,7 +121,7 @@ TEST(TargetSpirVTest, CompileError)
 TEST(TargetSpirVTest, CompileWarning)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"CompileWarning.msl").string();
+	std::string shaderName = pathStr(inputDir/"CompileWarning.msl");
 
 	TargetSpirV target;
 	target.addIncludePath(inputDir.string());
@@ -133,7 +133,7 @@ TEST(TargetSpirVTest, CompileWarning)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Warning, messages[0].level);
-	EXPECT_EQ((inputDir/"CompileWarning.mslh").string(), messages[0].file);
+	EXPECT_EQ((inputDir/"CompileWarning.mslh"), messages[0].file);
 	EXPECT_EQ(15U, messages[0].line);
 	EXPECT_EQ("'switch' : last case/default label not followed by statements", messages[0].message);
 }
@@ -141,7 +141,7 @@ TEST(TargetSpirVTest, CompileWarning)
 TEST(TargetSpirVTest, LinkError)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"LinkError.msl").string();
+	std::string shaderName = pathStr(inputDir/"LinkError.msl");
 
 	TargetSpirV target;
 	target.addIncludePath(inputDir.string());
@@ -153,7 +153,7 @@ TEST(TargetSpirVTest, LinkError)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ((inputDir/"LinkError.mslh").string(), messages[0].file);
+	EXPECT_EQ((inputDir/"LinkError.mslh"), messages[0].file);
 	EXPECT_EQ(5U, messages[0].line);
 	EXPECT_EQ("Linking fragment stage: Missing entry point", messages[0].message);
 }
@@ -161,7 +161,7 @@ TEST(TargetSpirVTest, LinkError)
 TEST(TargetSpirVTest, ResourcesNotFound)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"CompleteShader.msl").string();
+	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
 	TargetSpirV target;
 	target.addIncludePath(inputDir.string());
@@ -180,11 +180,11 @@ TEST(TargetSpirVTest, ResourcesNotFound)
 TEST(TargetSpirVTest, Resources)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"CompleteShader.msl").string();
+	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
 	TargetSpirV target;
 	target.addIncludePath(inputDir.string());
-	target.setResourcesFileName((inputDir/"Resources.conf").string());
+	target.setResourcesFileName(pathStr(inputDir/"Resources.conf"));
 
 	Output output;
 	CompiledResult result;
@@ -194,11 +194,11 @@ TEST(TargetSpirVTest, Resources)
 TEST(TargetSpirVTest, InvalidResources)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"CompleteShader.msl").string();
+	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
 	TargetSpirV target;
 	target.addIncludePath(inputDir.string());
-	target.setResourcesFileName((inputDir/"InvalidResources.conf").string());
+	target.setResourcesFileName(pathStr(inputDir/"InvalidResources.conf"));
 
 	Output output;
 	CompiledResult result;
@@ -207,7 +207,7 @@ TEST(TargetSpirVTest, InvalidResources)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ((inputDir/"InvalidResources.conf").string(), messages[0].file);
+	EXPECT_EQ((inputDir/"InvalidResources.conf"), messages[0].file);
 	EXPECT_EQ(4U, messages[0].line);
 	EXPECT_EQ("resource configuration syntax error: each name must be followed by one number",
 		messages[0].message);
@@ -216,7 +216,7 @@ TEST(TargetSpirVTest, InvalidResources)
 TEST(TargetSpirVTest, DuplicatePipeline)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = (inputDir/"CompleteShader.msl").string();
+	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
 	TargetSpirV target;
 	target.addIncludePath(inputDir.string());

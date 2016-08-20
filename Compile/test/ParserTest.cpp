@@ -27,7 +27,7 @@ namespace msl
 
 bool operator==(const Parser::LineMapping& map1, const Parser::LineMapping& map2)
 {
-	return std::strcmp(map1.fileName, map2.fileName) == 0 && map1.line == map2.line;
+	return pathStr(map1.fileName) == pathStr(map2.fileName) && map1.line == map2.line;
 }
 
 TEST(ParserTest, StageFilters)
@@ -39,7 +39,7 @@ TEST(ParserTest, StageFilters)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output,
-		(inputDir/"StageFilters.msl").string()));
+		pathStr(inputDir/"StageFilters.msl")));
 	EXPECT_TRUE(parser.parse(output));
 
 	Parser::Pipeline pipeline = {};
@@ -60,7 +60,7 @@ TEST(ParserTest, StageFilters)
 
 TEST(ParserTest, InvalidStageName)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("[[asdf]] int bla;");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -77,7 +77,7 @@ TEST(ParserTest, InvalidStageName)
 
 TEST(ParserTest, StageDeclNotFirst)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("int [[fragment]] bla;");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -94,7 +94,7 @@ TEST(ParserTest, StageDeclNotFirst)
 
 TEST(ParserTest, StageDeclInvalidChar)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("[[[fragment]] int bla;");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -111,7 +111,7 @@ TEST(ParserTest, StageDeclInvalidChar)
 
 TEST(ParserTest, UnterminatedEnd)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("[[fragment]] int bla; float foo");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -128,7 +128,7 @@ TEST(ParserTest, UnterminatedEnd)
 
 TEST(ParserTest, ExtraEndParen)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("int foo()) {gl_position = bar[2];}");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -145,7 +145,7 @@ TEST(ParserTest, ExtraEndParen)
 
 TEST(ParserTest, MissingCloseParen)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("int foo( {gl_position = bar[2];}");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -167,7 +167,7 @@ TEST(ParserTest, MissingCloseParen)
 
 TEST(ParserTest, ExtraEndBrace)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("int foo() {gl_position = bar[2];}}");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -184,7 +184,7 @@ TEST(ParserTest, ExtraEndBrace)
 
 TEST(ParserTest, MissingCloseBrace)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("int foo() {gl_position = bar[2];");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -206,7 +206,7 @@ TEST(ParserTest, MissingCloseBrace)
 
 TEST(ParserTest, SquareEndBrace)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("int foo() {gl_position = bar[2]];}");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -223,7 +223,7 @@ TEST(ParserTest, SquareEndBrace)
 
 TEST(ParserTest, MissingCloseSquare)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("int foo() {gl_position = bar[2;}");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -254,7 +254,7 @@ TEST(ParserTest, Pipeline)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output,
-		(inputDir/"Pipeline.msl").string()));
+		pathStr(inputDir/"Pipeline.msl")));
 	EXPECT_TRUE(parser.parse(output));
 
 	ASSERT_EQ(1U, parser.getPipelines().size());
@@ -274,7 +274,7 @@ TEST(ParserTest, Pipeline)
 
 TEST(ParserTest, UnnamedPipeline)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("pipeline {compute = computeEntry;}");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -291,7 +291,7 @@ TEST(ParserTest, UnnamedPipeline)
 
 TEST(ParserTest, PipelineMissingOpenBrace)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("pipeline Test compute = computeEntry;}");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -308,7 +308,7 @@ TEST(ParserTest, PipelineMissingOpenBrace)
 
 TEST(ParserTest, PipelineUnknownStage)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("pipeline Test {asdf = computeEntry;}");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -325,7 +325,7 @@ TEST(ParserTest, PipelineUnknownStage)
 
 TEST(ParserTest, PipelineMissingEquals)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("pipeline Test {compute computeEntry;}");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -342,7 +342,7 @@ TEST(ParserTest, PipelineMissingEquals)
 
 TEST(ParserTest, PipelineMissingEntryPoint)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("pipeline Test {compute =;}");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -359,7 +359,7 @@ TEST(ParserTest, PipelineMissingEntryPoint)
 
 TEST(ParserTest, PipelineMissingSemicolon)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("pipeline Test {compute = computeEntry}");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -376,7 +376,7 @@ TEST(ParserTest, PipelineMissingSemicolon)
 
 TEST(ParserTest, PipelineMissingEndBrace)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("pipeline Test {compute = computeEntry;");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -393,7 +393,7 @@ TEST(ParserTest, PipelineMissingEndBrace)
 
 TEST(ParserTest, DuplicatePipeline)
 {
-	std::string path = (exeDir/"test.msl").string();
+	std::string path = pathStr(exeDir/"test.msl");
 	std::stringstream stream("pipeline Test {} pipeline Test{}");
 	Parser parser;
 	Preprocessor preprocessor;
@@ -424,7 +424,7 @@ TEST(ParserTest, RemoveUniformBlocks)
 	Preprocessor preprocessor;
 	Output output;
 	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output,
-		(inputDir/"RemoveUniformBlocks.msl").string()));
+		pathStr(inputDir/"RemoveUniformBlocks.msl")));
 	EXPECT_TRUE(parser.parse(output, Parser::RemoveUniformBlocks));
 
 	std::vector<Parser::LineMapping> lineMappings;
@@ -437,8 +437,8 @@ TEST(ParserTest, LineNumbers)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
 
-	std::string fileName = (inputDir/"LineNumbers.msl").string();
-	std::string includeFileName = (inputDir/"LineNumbers.mslh").string();
+	std::string fileName = pathStr(inputDir/"LineNumbers.msl");
+	std::string includeFileName = pathStr(inputDir/"LineNumbers.mslh");
 
 	Parser parser;
 	Preprocessor preprocessor;
@@ -480,8 +480,8 @@ TEST(ParserTest, LineNumbersRemoveUniformBlocks)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
 
-	std::string fileName = (inputDir/"LineNumbers.msl").string();
-	std::string includeFileName = (inputDir/"LineNumbers.mslh").string();
+	std::string fileName = pathStr(inputDir/"LineNumbers.msl");
+	std::string includeFileName = pathStr(inputDir/"LineNumbers.mslh");
 
 	Parser parser;
 	Preprocessor preprocessor;

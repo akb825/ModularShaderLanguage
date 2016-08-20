@@ -54,9 +54,9 @@ std::string generateMacroName(const std::string& str)
 	std::string macro = "HAS_";
 	for (std::size_t i = 0; i < str.size(); ++i)
 	{
-		if (i > 0 && std::isupper(str[i]) && !std::isdigit(str[i - 1]))
+		if (i > 0 && isupper(str[i]) && !isdigit(str[i - 1]))
 			macro.push_back('_');
-		macro.push_back(static_cast<char>(std::toupper(str[i])));
+		macro.push_back(static_cast<char>(toupper(str[i])));
 	}
 	return macro;
 }
