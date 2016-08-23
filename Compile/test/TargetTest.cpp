@@ -104,6 +104,7 @@ TEST(TargetTest, FeatureList)
 	TEST_FEATURE(TextureSamples, counter);
 	TEST_FEATURE(BitFunctions, counter);
 	TEST_FEATURE(PackingFunctions, counter);
+	TEST_FEATURE(SubpassInputs, counter);
 
 	unsigned int featureCount = Target::featureCount;
 	EXPECT_EQ(featureCount, counter);

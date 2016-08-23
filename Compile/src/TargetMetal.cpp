@@ -96,6 +96,7 @@ bool TargetMetal::featureSupported(Feature feature) const
 		case Feature::Std430:
 		case Feature::TessellationStages:
 		case Feature::GeometryStage:
+		case Feature::SubpassInputs:
 			return false;
 		default:
 			return true;

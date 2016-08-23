@@ -86,7 +86,9 @@ static Target::FeatureInfo featureInfos[] =
 	{"BitFunctions", "HAS_BIT_FUNCTIONS",
 		"Integer functions such as bitfieldInsert() and findMSB()."},
 	{"PackingFunctions", "HAS_PACKING_FUNCTIONS",
-		"Packing and unpacking functions such as packUnorm2x16()."}
+		"Packing and unpacking functions such as packUnorm2x16()."},
+	{"SubpassInputs", "HAS_SUBPASS_INPUTS",
+		"Subpass inputs for reading directly from framebuffers."}
 };
 
 static_assert(sizeof(featureInfos)/sizeof(*featureInfos) == Target::featureCount,
@@ -171,6 +173,7 @@ static std::unordered_map<int, CompiledResult::Type> typeMap =
 	{GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE, CompiledResult::Type::USampler2DMS},
 	{GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY, CompiledResult::Type::USampler2DMSArray},
 	{GL_UNSIGNED_INT_SAMPLER_2D_RECT, CompiledResult::Type::USampler2DRect},
+	{0, CompiledResult::Type::SubpassInput},
 };
 
 static std::string readLine(std::istream& stream)

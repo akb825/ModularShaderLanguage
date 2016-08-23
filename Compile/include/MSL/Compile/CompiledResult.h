@@ -139,12 +139,13 @@ public:
 		USampler2DMS,         ///< usampler2DMS
 		USampler2DMSArray,    ///< usampler2DMSArray
 		USampler2DRect,       ///< usampler2DRect
+		SubpassInput,         ///< [u/i]subpassInput[MS]
 	};
 
 	/**
 	 * @brief Constant for the number of types.
 	 */
-	static const unsigned int typeCount = static_cast<unsigned int>(Type::USampler2DRect) + 1;
+	static const unsigned int typeCount = static_cast<unsigned int>(Type::SubpassInput) + 1;
 
 	/**
 	 * @brief Structure describing a uniform.

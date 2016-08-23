@@ -214,6 +214,7 @@ typedef enum mslType
 	mslType_USampler2DMS,         ///< usampler2DMS
 	mslType_USampler2DMSArray,    ///< usampler2DMSArray
 	mslType_USampler2DRect,       ///< usampler2DRect
+	mslType_SubpassInput,         ///< [u/i]subpassInput[MS]
 	mslType_Count                 ///< Number of types.
 } mslType;
 

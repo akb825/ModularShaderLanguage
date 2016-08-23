@@ -82,6 +82,7 @@ enum Type : ubyte
 	USampler2DMS,         // usampler2DMS
 	USampler2DMSArray,    // usampler2DMSArray
 	USampler2DRect,       // usampler2DRect
+	SubpassInput,         // [u/i]subpassInput[MS]
 }
 
 /*

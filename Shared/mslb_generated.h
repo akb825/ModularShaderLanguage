@@ -88,12 +88,13 @@ enum class Type : uint8_t {
   USampler2DMS = 69,
   USampler2DMSArray = 70,
   USampler2DRect = 71,
+  SubpassInput = 72,
   MIN = Float,
-  MAX = USampler2DRect
+  MAX = SubpassInput
 };
 
 inline const char **EnumNamesType() {
-  static const char *names[] = { "Float", "Vec2", "Vec3", "Vec4", "Double", "DVec2", "DVec3", "DVec4", "Int", "IVec2", "IVec3", "IVec4", "UInt", "UVec2", "UVec3", "UVec4", "Bool", "BVec2", "BVec3", "BVec4", "Mat2", "Mat3", "Mat4", "Mat2x3", "Mat2x4", "Mat3x2", "Mat3x4", "Mat4x2", "Mat4x3", "DMat2", "DMat3", "DMat4", "DMat2x3", "DMat2x4", "DMat3x2", "DMat3x4", "DMat4x2", "DMat4x3", "Sampler1D", "Sampler2D", "Sampler3D", "SamplerCube", "Sampler1DShadow", "Sampler2DShadow", "Sampler1DArray", "Sampler2DArray", "Sampler1DArrayShadow", "Sampler2DArrayShadow", "Sampler2DMS", "Sampler2DMSArray", "SamplerCubeShadow", "SamplerBuffer", "Sampler2DRect", "Sampler2DRectShadow", "ISampler1D", "ISampler2D", "ISampler3D", "ISamplerCube", "ISampler1DArray", "ISampler2DArray", "ISampler2DMS", "ISampler2DMSArray", "ISampler2DRect", "USampler1D", "USampler2D", "USampler3D", "USamplerCube", "USampler1DArray", "USampler2DArray", "USampler2DMS", "USampler2DMSArray", "USampler2DRect", nullptr };
+  static const char *names[] = { "Float", "Vec2", "Vec3", "Vec4", "Double", "DVec2", "DVec3", "DVec4", "Int", "IVec2", "IVec3", "IVec4", "UInt", "UVec2", "UVec3", "UVec4", "Bool", "BVec2", "BVec3", "BVec4", "Mat2", "Mat3", "Mat4", "Mat2x3", "Mat2x4", "Mat3x2", "Mat3x4", "Mat4x2", "Mat4x3", "DMat2", "DMat3", "DMat4", "DMat2x3", "DMat2x4", "DMat3x2", "DMat3x4", "DMat4x2", "DMat4x3", "Sampler1D", "Sampler2D", "Sampler3D", "SamplerCube", "Sampler1DShadow", "Sampler2DShadow", "Sampler1DArray", "Sampler2DArray", "Sampler1DArrayShadow", "Sampler2DArrayShadow", "Sampler2DMS", "Sampler2DMSArray", "SamplerCubeShadow", "SamplerBuffer", "Sampler2DRect", "Sampler2DRectShadow", "ISampler1D", "ISampler2D", "ISampler3D", "ISamplerCube", "ISampler1DArray", "ISampler2DArray", "ISampler2DMS", "ISampler2DMSArray", "ISampler2DRect", "USampler1D", "USampler2D", "USampler3D", "USamplerCube", "USampler1DArray", "USampler2DArray", "USampler2DMS", "USampler2DMSArray", "USampler2DRect", "SubpassInput", nullptr };
   return names;
 }
 

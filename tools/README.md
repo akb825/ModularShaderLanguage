@@ -113,6 +113,7 @@ For example:
 * **TextureSamples**: textureSamples() functions.
 * **BitFunctions**: Integer functions such as bitfieldInsert() and findMSB().
 * **PackingFunctions**: Packing and unpacking functions such as packUnorm2x16().
+* **SubpassInputs**: Subpass inputs for reading directly from framebuffers.
 
 # mslb\-extract
 

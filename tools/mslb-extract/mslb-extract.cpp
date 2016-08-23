@@ -102,6 +102,7 @@ static const char* typeNames[] =
 	"usampler2DMS",
 	"usampler2DMSArray",
 	"usampler2DRect",
+	"subpassInput",
 };
 static_assert(sizeof(typeNames)/sizeof(*typeNames) == msl::Module::typeCount,
 	"typeNames out of sync with enum");

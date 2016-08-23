@@ -298,6 +298,8 @@ bool TargetGlsl::featureSupported(Feature feature) const
 				return m_version >= 300;
 			else
 				return m_version >= 410;
+		case Feature::SubpassInputs:
+			return false;
 	}
 
 	return false;

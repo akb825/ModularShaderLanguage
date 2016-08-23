@@ -62,6 +62,7 @@ The shader file is first run through a C99 preprocessor. The following \#defines
 * `HAS_TEXTURE_SAMPLES`: Set to 1 if textureSamples() functions are available, 0 if not.
 * `HAS_BIT_FUNCTIONS`: Set to 1 if integer functions such as bitfieldInsert() and findMSB() are available, 0 if not.
 * `HAS_PACKING_FUNCTIONS`: Set to 1 if packing and unpacking functions such as packUnorm2x16() are available, 0 if not.
+* `HAS_SUBPASS_INPUTS`: Set to 1 if subpass inputs for reading directly from framebuffers are available, 0 if not.
 
 # Filtering
 

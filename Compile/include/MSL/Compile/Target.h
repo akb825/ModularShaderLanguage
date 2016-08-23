@@ -120,13 +120,14 @@ public:
 		TextureSamples,         ///< textureSamples() functions.
 		BitFunctions,           ///< Integer functions such as bitfieldInsert() and findMSB().
 		PackingFunctions,       ///< Packing and unpacking functions such as packUnorm2x16().
+		SubpassInputs,          ///< Subpass inputs for reading directly from framebuffers.
 	};
 
 	/**
 	 * @brief The number of feature enum elements.
 	 */
 	static const unsigned int featureCount =
-		static_cast<unsigned int>(Feature::PackingFunctions) + 1;
+		static_cast<unsigned int>(Feature::SubpassInputs) + 1;
 
 	/**
 	 * @brief Information about a feature.
