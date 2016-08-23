@@ -94,6 +94,8 @@ bool TargetMetal::featureSupported(Feature feature) const
 	{
 		case Feature::Std140:
 		case Feature::Std430:
+		case Feature::BindingPoints:
+		case Feature::DescriptorSets:
 		case Feature::TessellationStages:
 		case Feature::GeometryStage:
 		case Feature::SubpassInputs:

@@ -203,6 +203,13 @@ bool TargetGlsl::featureSupported(Feature feature) const
 				return m_version >= 310;
 			else
 				return m_version >= 430;
+		case Feature::BindingPoints:
+			if (m_es)
+				return m_version >= 310;
+			else
+				return m_version >= 420;
+		case Feature::DescriptorSets:
+			return false;
 		case Feature::TessellationStages:
 			if (m_es)
 				return m_version >= 320;

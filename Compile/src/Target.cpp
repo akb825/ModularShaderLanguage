@@ -55,6 +55,9 @@ static Target::FeatureInfo featureInfos[] =
 	{"Buffers", "HAS_BUFFERS", "Shader storage buffers."},
 	{"Std140", "HAS_STD140", "std140 block layout."},
 	{"Std430", "HAS_STD430", "std430 block layout."},
+	{"BindingPoints", "HAS_BINDING_POINTS", "Allows setting the binding index in the layout."},
+	{"DescriptorSets", "HAS_DESCRIPTOR_SETS",
+		"Allows setting the descriptor set index in the layout."},
 
 	// Pipeline stages
 	{"TessellationStages", "HAS_TESSELLATION_STAGES",

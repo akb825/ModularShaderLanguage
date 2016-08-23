@@ -85,6 +85,8 @@ TEST(TargetTest, FeatureList)
 	TEST_FEATURE(Buffers, counter);
 	TEST_FEATURE(Std140, counter);
 	TEST_FEATURE(Std430, counter);
+	TEST_FEATURE(BindingPoints, counter);
+	TEST_FEATURE(DescriptorSets, counter);
 	TEST_FEATURE(TessellationStages, counter);
 	TEST_FEATURE(GeometryStage, counter);
 	TEST_FEATURE(ComputeStage, counter);

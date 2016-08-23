@@ -86,6 +86,8 @@ For example:
 * **Buffers**: Shader storage buffers.
 * **Std140**: std140 block layout.
 * **Std430**: std430 block layout.
+* **BindingPoints**: Allows setting the binding index in the layout.
+* **DescriptorSets**: Allows setting the descriptor set index in the layout.
 
 ### Pipeline stages
 
