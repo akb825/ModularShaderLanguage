@@ -584,7 +584,7 @@ int main(int argc, char** argv)
 			"For example:\n"
 			"    target = glsl-es\n"
 			"    version = 300\n"
-			"    force-disable = UniformBuffers\n"
+			"    force-disable = UniformBlocks\n"
 			"    force-disable = Derivatives\n"
 			"    remap-depth-range = yes" << std::endl << std::endl;
 		std::cout << mainOptions << std::endl;

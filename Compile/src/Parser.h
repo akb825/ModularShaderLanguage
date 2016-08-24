@@ -78,12 +78,24 @@ public:
 		Stage stage) const;
 
 private:
+	enum class Element
+	{
+		Precision,
+		Struct,
+		FreeUniform,
+		UniformBlock,
+		Default
+	};
+
+	static const unsigned int elementCount = static_cast<unsigned int>(Element::Default) + 1;
+
 	struct TokenRange
 	{
 		std::size_t start;
 		std::size_t count;
 	};
 
+	Element getElementType(const TokenRange& tokenRange) const;
 	void endElement(std::vector<Stage>& stages, TokenRange& tokenRange, std::size_t index);
 	bool readPipeline(Output& output, const std::vector<Token>& tokens, std::size_t& i);
 	void addElementString(std::string& str, std::vector<LineMapping>& lineMappings,
@@ -94,7 +106,7 @@ private:
 	TokenList m_tokens;
 
 	int m_options;
-	std::array<std::vector<TokenRange>, stageCount> m_elements;
+	std::array<std::array<std::vector<TokenRange>, stageCount>, elementCount> m_elements;
 	std::vector<Pipeline> m_pipelines;
 };
 

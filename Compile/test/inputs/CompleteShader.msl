@@ -23,7 +23,7 @@ uniform Transform
 [[vertex]]
 void vertShader()
 {
-	gl_Position = block.transform*vec4(position, 1.0);
+	gl_Position = INSTANCE(block).transform*vec4(position, 1.0);
 	outputs.color = color;
 }
 

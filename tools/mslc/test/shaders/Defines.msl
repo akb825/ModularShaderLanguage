@@ -30,13 +30,13 @@
 #error
 #endif
 
-#ifdef DISABLE_UNIFORM_BUFFERS
-#define SHOULD_HAVE_UNIFORM_BUFFERS 0
+#ifdef DISABLE_UNIFORM_BLOCKS
+#define SHOULD_HAVE_UNIFORM_BLOCKS 0
 #else
-#define SHOULD_HAVE_UNIFORM_BUFFERS 1
+#define SHOULD_HAVE_UNIFORM_BLOCKS 1
 #endif
 
-#if HAS_UNIFORM_BUFFERS != SHOULD_HAVE_UNIFORM_BUFFERS
+#if HAS_UNIFORM_BLOCKS != SHOULD_HAVE_UNIFORM_BLOCKS
 #error
 #endif
 
@@ -65,7 +65,7 @@ uniform Transform
 [[vertex]]
 void vertShader()
 {
-	gl_Position = block.transform*vec4(position, 1.0);
+	gl_Position = INSTANCE(block).transform*vec4(position, 1.0);
 	outputs.color = color;
 }
 

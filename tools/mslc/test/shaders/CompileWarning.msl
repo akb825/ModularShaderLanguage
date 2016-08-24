@@ -1,7 +1,7 @@
 uniform Transform
 {
 	mat4 transform;
-};
+} test;
 
 [[vertex]] in vec4 position;
 [[vertex]] in vec4 color;
@@ -14,7 +14,7 @@ uniform Transform
 [[vertex]]
 void vertShader()
 {
-	gl_Position = transform*position;
+	gl_Position = INSTANCE(test).transform*position;
 	outputs.color = color;
 }
 

@@ -88,13 +88,41 @@ enum class Type : uint8_t {
   USampler2DMS = 69,
   USampler2DMSArray = 70,
   USampler2DRect = 71,
-  SubpassInput = 72,
+  Image1D = 72,
+  Image2D = 73,
+  Image3D = 74,
+  ImageCube = 75,
+  Image1DArray = 76,
+  Image2DArray = 77,
+  Image2DMS = 78,
+  Image2DMSArray = 79,
+  ImageBuffer = 80,
+  Image2DRect = 81,
+  IImage1D = 82,
+  IImage2D = 83,
+  IImage3D = 84,
+  IImageCube = 85,
+  IImage1DArray = 86,
+  IImage2DArray = 87,
+  IImage2DMS = 88,
+  IImage2DMSArray = 89,
+  IImage2DRect = 90,
+  UImage1D = 91,
+  UImage2D = 92,
+  UImage3D = 93,
+  UImageCube = 94,
+  UImage1DArray = 95,
+  UImage2DArray = 96,
+  UImage2DMS = 97,
+  UImage2DMSArray = 98,
+  UImage2DRect = 99,
+  SubpassInput = 100,
   MIN = Float,
   MAX = SubpassInput
 };
 
 inline const char **EnumNamesType() {
-  static const char *names[] = { "Float", "Vec2", "Vec3", "Vec4", "Double", "DVec2", "DVec3", "DVec4", "Int", "IVec2", "IVec3", "IVec4", "UInt", "UVec2", "UVec3", "UVec4", "Bool", "BVec2", "BVec3", "BVec4", "Mat2", "Mat3", "Mat4", "Mat2x3", "Mat2x4", "Mat3x2", "Mat3x4", "Mat4x2", "Mat4x3", "DMat2", "DMat3", "DMat4", "DMat2x3", "DMat2x4", "DMat3x2", "DMat3x4", "DMat4x2", "DMat4x3", "Sampler1D", "Sampler2D", "Sampler3D", "SamplerCube", "Sampler1DShadow", "Sampler2DShadow", "Sampler1DArray", "Sampler2DArray", "Sampler1DArrayShadow", "Sampler2DArrayShadow", "Sampler2DMS", "Sampler2DMSArray", "SamplerCubeShadow", "SamplerBuffer", "Sampler2DRect", "Sampler2DRectShadow", "ISampler1D", "ISampler2D", "ISampler3D", "ISamplerCube", "ISampler1DArray", "ISampler2DArray", "ISampler2DMS", "ISampler2DMSArray", "ISampler2DRect", "USampler1D", "USampler2D", "USampler3D", "USamplerCube", "USampler1DArray", "USampler2DArray", "USampler2DMS", "USampler2DMSArray", "USampler2DRect", "SubpassInput", nullptr };
+  static const char *names[] = { "Float", "Vec2", "Vec3", "Vec4", "Double", "DVec2", "DVec3", "DVec4", "Int", "IVec2", "IVec3", "IVec4", "UInt", "UVec2", "UVec3", "UVec4", "Bool", "BVec2", "BVec3", "BVec4", "Mat2", "Mat3", "Mat4", "Mat2x3", "Mat2x4", "Mat3x2", "Mat3x4", "Mat4x2", "Mat4x3", "DMat2", "DMat3", "DMat4", "DMat2x3", "DMat2x4", "DMat3x2", "DMat3x4", "DMat4x2", "DMat4x3", "Sampler1D", "Sampler2D", "Sampler3D", "SamplerCube", "Sampler1DShadow", "Sampler2DShadow", "Sampler1DArray", "Sampler2DArray", "Sampler1DArrayShadow", "Sampler2DArrayShadow", "Sampler2DMS", "Sampler2DMSArray", "SamplerCubeShadow", "SamplerBuffer", "Sampler2DRect", "Sampler2DRectShadow", "ISampler1D", "ISampler2D", "ISampler3D", "ISamplerCube", "ISampler1DArray", "ISampler2DArray", "ISampler2DMS", "ISampler2DMSArray", "ISampler2DRect", "USampler1D", "USampler2D", "USampler3D", "USamplerCube", "USampler1DArray", "USampler2DArray", "USampler2DMS", "USampler2DMSArray", "USampler2DRect", "Image1D", "Image2D", "Image3D", "ImageCube", "Image1DArray", "Image2DArray", "Image2DMS", "Image2DMSArray", "ImageBuffer", "Image2DRect", "IImage1D", "IImage2D", "IImage3D", "IImageCube", "IImage1DArray", "IImage2DArray", "IImage2DMS", "IImage2DMSArray", "IImage2DRect", "UImage1D", "UImage2D", "UImage3D", "UImageCube", "UImage1DArray", "UImage2DArray", "UImage2DMS", "UImage2DMSArray", "UImage2DRect", "SubpassInput", nullptr };
   return names;
 }
 

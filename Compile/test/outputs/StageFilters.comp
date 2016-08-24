@@ -1,7 +1,41 @@
+struct StructAll
+{
+	vec4 value;
+};
+struct InstanceStructAll
+{
+	vec4 value;
+} structInstanceAll;
+ struct StructCompute
+{
+	vec4 value;
+};
+ struct InstanceStructCompute
+{
+	vec4 value;
+} structInstanceCompute;
+layout (std140)
+uniform UniformBlockAll
+{
+	vec4 uniformBlockVarAll;
+};
+uniform UniformBlockInstanceAll
+{
+	vec4 instance;
+} uniformInstanceAll;
+ layout (std140)
+uniform UniformBlockCompute
+{
+	vec4 uniformBlockVarCompute;
+};
+ uniform UniformBlockInstanceCompute
+{
+	vec4 instance;
+} uniformInstanceCompute;
 int globalVarAll;
 in vec2 inVarAll;
 out vec3 outVarAll;
-uniform vec4 unfiformVarAll;
+uniform sampler2D unfiformVarAll;
 in inBufferAll
 {
 	vec2 inBufferVarAll;
@@ -20,15 +54,6 @@ out outBufferAll
 } outInstanceAll;
 out vec3 outVarAll;
 layout (std140)
-uniform UniformBlockAll
-{
-	vec4 uniformBlockVarAll;
-};
-uniform UniformBlockInstanceAll
-{
-	vec4 instance;
-} uniformInstanceAll;
-layout (std140)
 buffer BufferAll
 {
 	vec4 bufferVarAll;
@@ -37,14 +62,6 @@ buffer BufferInstanceAll
 {
 	vec4 instance;
 } bufferInstanceAll;
-struct StructAll
-{
-	vec4 value;
-};
-struct InstanceStructAll
-{
-	vec4 value;
-} structInstanceAll;
 void funcDeclAll();
 void funcAll()
 {
@@ -56,7 +73,7 @@ void funcAll()
 int globalVarCompute;
 in vec2 inVarCompute;
  out vec3 outVarCompute;
-uniform vec4 unfiformVarCompute;
+uniform sampler2D unfiformVarCompute;
  in inBufferCompute
 {
 	vec2 inBufferVarCompute;
@@ -75,15 +92,6 @@ uniform vec4 unfiformVarCompute;
 } outInstanceCompute;
  out vec3 outVarCompute;
  layout (std140)
-uniform UniformBlockCompute
-{
-	vec4 uniformBlockVarCompute;
-};
- uniform UniformBlockInstanceCompute
-{
-	vec4 instance;
-} uniformInstanceCompute;
- layout (std140)
 buffer BufferCompute
 {
 	vec4 bufferVarCompute;
@@ -92,14 +100,6 @@ buffer BufferCompute
 {
 	vec4 instance;
 } bufferInstanceCompute;
- struct StructCompute
-{
-	vec4 value;
-};
- struct InstanceStructCompute
-{
-	vec4 value;
-} structInstanceCompute;
  void funcDeclCompute();
  void funcCompute()
 {

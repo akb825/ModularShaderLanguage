@@ -5,6 +5,8 @@ uniform Transform
 	mat4 transform;
 } block;
 
+uniform vec2 texCoord;
+
 [[vertex]] in vec3 position;
 [[vertex]] in vec4 color;
 
@@ -23,14 +25,14 @@ uniform Transform
 [[vertex]]
 void vertShader()
 {
-	gl_Position = block.transform*vec4(position, 1.0);
+	gl_Position = INSTANCE(block).transform*vec4(position, 1.0);
 	outputs.color = color;
 }
 
 [[fragment]]
 void fragShader()
 {
-	vec4 texResult = texture(tex, vec2(0.5, 0.5));
+	vec4 texResult = texture(tex, uniforms.texCoord);
 	color = inputs.color*texResult;
 }
 

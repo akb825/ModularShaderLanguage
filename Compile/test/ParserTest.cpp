@@ -56,6 +56,8 @@ TEST(ParserTest, StageFilters)
 		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Fragment) + '\n');
 	EXPECT_EQ(readFile(outputDir/"StageFilters.comp"),
 		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Compute) + '\n');
+
+	//std::cout << parser.createShaderString(lineMappings, pipeline, Parser::Stage::Vertex) << std::endl;
 }
 
 TEST(ParserTest, InvalidStageName)
@@ -449,14 +451,22 @@ TEST(ParserTest, LineNumbers)
 
 	std::vector<Parser::LineMapping> expectedMappings =
 	{
-		Parser::LineMapping{fileName.c_str(), 1},
-		Parser::LineMapping{includeFileName.c_str(), 1},
+		Parser::LineMapping{"<internal>", 0},
+		Parser::LineMapping{"<internal>", 0},
+		Parser::LineMapping{includeFileName.c_str(), 13},
+		Parser::LineMapping{includeFileName.c_str(), 14},
+		Parser::LineMapping{"<internal>", 0},
 		Parser::LineMapping{includeFileName.c_str(), 3},
 		Parser::LineMapping{includeFileName.c_str(), 4},
 		Parser::LineMapping{includeFileName.c_str(), 5},
 		Parser::LineMapping{includeFileName.c_str(), 6},
 		Parser::LineMapping{includeFileName.c_str(), 7},
 		Parser::LineMapping{includeFileName.c_str(), 8},
+		Parser::LineMapping{includeFileName.c_str(), 9},
+		Parser::LineMapping{includeFileName.c_str(), 10},
+		Parser::LineMapping{includeFileName.c_str(), 11},
+		Parser::LineMapping{fileName.c_str(), 1},
+		Parser::LineMapping{includeFileName.c_str(), 1},
 		Parser::LineMapping{fileName.c_str(), 6},
 		Parser::LineMapping{fileName.c_str(), 7},
 		Parser::LineMapping{fileName.c_str(), 8},
@@ -492,14 +502,15 @@ TEST(ParserTest, LineNumbersRemoveUniformBlocks)
 
 	std::vector<Parser::LineMapping> expectedMappings =
 	{
-		Parser::LineMapping{fileName.c_str(), 1},
-		Parser::LineMapping{includeFileName.c_str(), 1},
-		Parser::LineMapping{includeFileName.c_str(), 3},
-		Parser::LineMapping{includeFileName.c_str(), 4},
-		Parser::LineMapping{includeFileName.c_str(), 5},
-		Parser::LineMapping{includeFileName.c_str(), 6},
+		Parser::LineMapping{"<internal>", 0},
+		Parser::LineMapping{"<internal>", 0},
+		Parser::LineMapping{includeFileName.c_str(), 13},
+		Parser::LineMapping{includeFileName.c_str(), 14},
 		Parser::LineMapping{includeFileName.c_str(), 7},
 		Parser::LineMapping{includeFileName.c_str(), 8},
+		Parser::LineMapping{"<internal>", 0},
+		Parser::LineMapping{fileName.c_str(), 1},
+		Parser::LineMapping{includeFileName.c_str(), 1},
 		Parser::LineMapping{fileName.c_str(), 6},
 		Parser::LineMapping{fileName.c_str(), 7},
 		Parser::LineMapping{fileName.c_str(), 8},

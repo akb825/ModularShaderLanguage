@@ -171,6 +171,16 @@ Action getType(Token::Type& type, Output& output, const boost::wave::cpplexer::l
 
 } // namespace
 
+Preprocessor::Preprocessor()
+	: m_supportsUniformBlocks(true)
+{
+}
+
+void Preprocessor::setSupportsUniformBlocks(bool supports)
+{
+	m_supportsUniformBlocks = supports;
+}
+
 void Preprocessor::addIncludePath(std::string path)
 {
 	m_includePaths.push_back(std::move(path));
@@ -217,6 +227,10 @@ bool Preprocessor::preprocess(TokenList& tokenList, Output& output, std::istream
 		Context context(input.begin(), input.end(), fileName.c_str());
 		context.get_hooks().setOutput(output);
 		context.set_language(language);
+		if (m_supportsUniformBlocks)
+			context.add_macro_definition("INSTANCE(x)=x", true);
+		else
+			context.add_macro_definition("INSTANCE(x)=uniforms", true);
 		for (const std::string& includePath : m_includePaths)
 			context.add_include_path(includePath.c_str());
 		for (const std::pair<std::string, std::string>& define : m_defines)

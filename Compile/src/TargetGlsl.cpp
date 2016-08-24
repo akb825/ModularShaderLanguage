@@ -183,7 +183,7 @@ bool TargetGlsl::featureSupported(Feature feature) const
 				return m_version >= 310;
 			else
 				return m_version >= 130;
-		case Feature::UniformBuffers:
+		case Feature::UniformBlocks:
 			if (m_es)
 				return m_version >= 300;
 			else

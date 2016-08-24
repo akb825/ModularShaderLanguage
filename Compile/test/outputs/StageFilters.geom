@@ -1,7 +1,41 @@
+struct StructAll
+{
+	vec4 value;
+};
+struct InstanceStructAll
+{
+	vec4 value;
+} structInstanceAll;
+ struct StructGeometry
+{
+	vec4 value;
+};
+ struct InstanceStructGeometry
+{
+	vec4 value;
+} structInstanceGeometry;
+layout (std140)
+uniform UniformBlockAll
+{
+	vec4 uniformBlockVarAll;
+};
+uniform UniformBlockInstanceAll
+{
+	vec4 instance;
+} uniformInstanceAll;
+ layout (std140)
+uniform UniformBlockGeometry
+{
+	vec4 uniformBlockVarGeometry;
+};
+ uniform UniformBlockInstanceGeometry
+{
+	vec4 instance;
+} uniformInstanceGeometry;
 int globalVarAll;
 in vec2 inVarAll;
 out vec3 outVarAll;
-uniform vec4 unfiformVarAll;
+uniform sampler2D unfiformVarAll;
 in inBufferAll
 {
 	vec2 inBufferVarAll;
@@ -20,15 +54,6 @@ out outBufferAll
 } outInstanceAll;
 out vec3 outVarAll;
 layout (std140)
-uniform UniformBlockAll
-{
-	vec4 uniformBlockVarAll;
-};
-uniform UniformBlockInstanceAll
-{
-	vec4 instance;
-} uniformInstanceAll;
-layout (std140)
 buffer BufferAll
 {
 	vec4 bufferVarAll;
@@ -37,14 +62,6 @@ buffer BufferInstanceAll
 {
 	vec4 instance;
 } bufferInstanceAll;
-struct StructAll
-{
-	vec4 value;
-};
-struct InstanceStructAll
-{
-	vec4 value;
-} structInstanceAll;
 void funcDeclAll();
 void funcAll()
 {
@@ -56,7 +73,7 @@ void funcAll()
 int globalVarGeometry;
 in vec2 inVarGeometry;
  out vec3 outVarGeometry;
-uniform vec4 unfiformVarGeometry;
+uniform sampler2D unfiformVarGeometry;
  in inBufferGeometry
 {
 	vec2 inBufferVarGeometry;
@@ -75,15 +92,6 @@ uniform vec4 unfiformVarGeometry;
 } outInstanceGeometry;
  out vec3 outVarGeometry;
  layout (std140)
-uniform UniformBlockGeometry
-{
-	vec4 uniformBlockVarGeometry;
-};
- uniform UniformBlockInstanceGeometry
-{
-	vec4 instance;
-} uniformInstanceGeometry;
- layout (std140)
 buffer BufferGeometry
 {
 	vec4 bufferVarGeometry;
@@ -92,14 +100,6 @@ buffer BufferGeometry
 {
 	vec4 instance;
 } bufferInstanceGeometry;
- struct StructGeometry
-{
-	vec4 value;
-};
- struct InstanceStructGeometry
-{
-	vec4 value;
-} structInstanceGeometry;
  void funcDeclGeometry();
  void funcGeometry()
 {

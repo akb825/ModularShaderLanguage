@@ -4,5 +4,11 @@ layout(
 std140
 ) uniform TestBlock
 {
-	vec4 otherUniform;
-};
+	vec4
+		otherUniform;
+}
+	block
+;
+
+uniform vec2
+	freeUniform;

@@ -140,7 +140,39 @@ public:
 		USampler2DMS,         ///< usampler2DMS
 		USampler2DMSArray,    ///< usampler2DMSArray
 		USampler2DRect,       ///< usampler2DRect
-		SubpassInput,         ///< [u/i]subpassInput[MS]
+
+		// Images
+		Image1D,         ///< image1D
+		Image2D,         ///< image2D
+		Image3D,         ///< image3D
+		ImageCube,       ///< imageCube
+		Image1DArray,    ///< image1DArray
+		Image2DArray,    ///< image2DArray
+		Image2DMS,       ///< image2DMS
+		Image2DMSArray,  ///< image2DMSArray
+		ImageBuffer,     ///< imageBuffer
+		Image2DRect,     ///< image2DRect
+		IImage1D,        ///< iimage1D
+		IImage2D,        ///< iimage2D
+		IImage3D,        ///< iimage3D
+		IImageCube,      ///< iimageCube
+		IImage1DArray,   ///< iimage1DArray
+		IImage2DArray,   ///< iimage2DArray
+		IImage2DMS,      ///< iimage2DMS
+		IImage2DMSArray, ///< iimage2DMSArray
+		IImage2DRect,    ///< iimage2DRect
+		UImage1D,        ///< uimage1D
+		UImage2D,        ///< uimage2D
+		UImage3D,        ///< uimage3D
+		UImageCube,      ///< uimageCube
+		UImage1DArray,   ///< uimage1DArray
+		UImage2DArray,   ///< uimage2DArray
+		UImage2DMS,      ///< uimage2DMS
+		UImage2DMSArray, ///< uimage2DMSArray
+		UImage2DRect,    ///< uimage2DRect
+
+		// Other
+		SubpassInput, ///< [u/i]subpassInput[MS]
 	};
 
 	/**

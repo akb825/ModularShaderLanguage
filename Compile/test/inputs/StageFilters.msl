@@ -1,6 +1,6 @@
 int globalVarAll;
 in vec2 inVarAll;
-out vec3 outVarAll;uniform vec4 unfiformVarAll;
+out vec3 outVarAll;uniform sampler2D unfiformVarAll;
 in inBufferAll
 {
 	vec2 inBufferVarAll;
@@ -56,7 +56,7 @@ void funcAll()
 [[vertex]]
 int globalVarVertex;
 [[vertex]]in vec2 inVarVertex;
-[[vertex]] out vec3 outVarVertex;[[vertex]]uniform vec4 unfiformVarVertex;
+[[vertex]] out vec3 outVarVertex;[[vertex]]uniform sampler2D unfiformVarVertex;
 [[vertex]] in inBufferVertex
 {
 	vec2 inBufferVarVertex;
@@ -112,7 +112,7 @@ buffer BufferVertex
 [[tessellation_control]]
 int globalVarTessControl;
 [[tessellation_control]]in vec2 inVarTessControl;
-[[tessellation_control]] out vec3 outVarTessControl;[[tessellation_control]]uniform vec4 unfiformVarTessControl;
+[[tessellation_control]] out vec3 outVarTessControl;[[tessellation_control]]uniform sampler2D unfiformVarTessControl;
 [[tessellation_control]] in inBufferTessControl
 {
 	vec2 inBufferVarTessControl;
@@ -168,7 +168,7 @@ buffer BufferTessControl
 [[tessellation_evaluation]]
 int globalVarTessEvaluation;
 [[tessellation_evaluation]]in vec2 inVarTessEvaluation;
-[[tessellation_evaluation]] out vec3 outVarTessEvaluation;[[tessellation_evaluation]]uniform vec4 unfiformVarTessEvaluation;
+[[tessellation_evaluation]] out vec3 outVarTessEvaluation;[[tessellation_evaluation]]uniform sampler2D unfiformVarTessEvaluation;
 [[tessellation_evaluation]] in inBufferTessEvaluation
 {
 	vec2 inBufferVarTessEvaluation;
@@ -224,7 +224,7 @@ buffer BufferTessEvaluation
 [[geometry]]
 int globalVarGeometry;
 [[geometry]]in vec2 inVarGeometry;
-[[geometry]] out vec3 outVarGeometry;[[geometry]]uniform vec4 unfiformVarGeometry;
+[[geometry]] out vec3 outVarGeometry;[[geometry]]uniform sampler2D unfiformVarGeometry;
 [[geometry]] in inBufferGeometry
 {
 	vec2 inBufferVarGeometry;
@@ -280,7 +280,7 @@ buffer BufferGeometry
 [[fragment]]
 int globalVarFragment;
 [[fragment]]in vec2 inVarFragment;
-[[fragment]] out vec3 outVarFragment;[[fragment]]uniform vec4 unfiformVarFragment;
+[[fragment]] out vec3 outVarFragment;[[fragment]]uniform sampler2D unfiformVarFragment;
 [[fragment]] in inBufferFragment
 {
 	vec2 inBufferVarFragment;
@@ -336,7 +336,7 @@ buffer BufferFragment
 [[compute]]
 int globalVarCompute;
 [[compute]]in vec2 inVarCompute;
-[[compute]] out vec3 outVarCompute;[[compute]]uniform vec4 unfiformVarCompute;
+[[compute]] out vec3 outVarCompute;[[compute]]uniform sampler2D unfiformVarCompute;
 [[compute]] in inBufferCompute
 {
 	vec2 inBufferVarCompute;
@@ -392,7 +392,7 @@ buffer BufferCompute
 [[vertex, fragment]]
 int globalVarVertexFragment;
 [[vertex, fragment]]in vec2 inVarVertexFragment;
-[[vertex, fragment]] out vec3 outVarVertexFragment;[[vertex, fragment]]uniform vec4 unfiformVarVertexFragment;
+[[vertex, fragment]] out vec3 outVarVertexFragment;[[vertex, fragment]]uniform sampler2D unfiformVarVertexFragment;
 [[vertex, fragment]] in inBufferVertexFragment
 {
 	vec2 inBufferVarVertexFragment;

@@ -214,7 +214,41 @@ typedef enum mslType
 	mslType_USampler2DMS,         ///< usampler2DMS
 	mslType_USampler2DMSArray,    ///< usampler2DMSArray
 	mslType_USampler2DRect,       ///< usampler2DRect
-	mslType_SubpassInput,         ///< [u/i]subpassInput[MS]
+
+	// Images
+	mslType_Image1D,         ///< image1D
+	mslType_Image2D,         ///< image2D
+	mslType_Image3D,         ///< image3D
+	mslType_ImageCube,       ///< imageCube
+	mslType_Image1DArray,    ///< image1DArray
+	mslType_Image2DArray,    ///< image2DArray
+	mslType_Image2DMS,       ///< image2DMS
+	mslType_Image2DMSArray,  ///< image2DMSArray
+	mslType_ImageBuffer,     ///< imageBuffer
+	mslType_Image2DRect,     ///< image2DRect
+	mslType_IImage1D,        ///< iimage1D
+	mslType_IImage2D,        ///< iimage2D
+	mslType_IImage3D,        ///< iimage3D
+	mslType_IImageCube,      ///< iimageCube
+	mslType_IImage1DArray,   ///< iimage1DArray
+	mslType_IImage2DArray,   ///< iimage2DArray
+	mslType_IImage2DMS,      ///< iimage2DMS
+	mslType_IImage2DMSArray, ///< iimage2DMSArray
+	mslType_IImage2DRect,    ///< iimage2DRect
+	mslType_UImage1D,        ///< uimage1D
+	mslType_UImage2D,        ///< uimage2D
+	mslType_UImage3D,        ///< uimage3D
+	mslType_UImageCube,      ///< uimageCube
+	mslType_UImage1DArray,   ///< uimage1DArray
+	mslType_UImage2DArray,   ///< uimage2DArray
+	mslType_UImage2DMS,      ///< uimage2DMS
+	mslType_UImage2DMSArray, ///< uimage2DMSArray
+	mslType_UImage2DRect,    ///< uimage2DRect
+
+	// Other
+	mslType_SubpassInput, ///< [u/i]subpassInput[MS]
+
+	// Count
 	mslType_Count                 ///< Number of types.
 } mslType;
 

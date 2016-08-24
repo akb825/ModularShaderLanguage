@@ -49,8 +49,8 @@ static Target::FeatureInfo featureInfos[] =
 	{"Images", "HAS_IMAGES", "Image types."},
 
 	// Storage
-	{"UniformBuffers", "HAS_UNIFORM_BUFFERS",
-		"Uniform buffers. If disabled, uniform buffers will be converted to push constants. "
+	{"UniformBlocks", "HAS_UNIFORM_BLOCKS",
+		"Uniform blocks. If disabled, uniform buffers will be in the push constant section. "
 		"(equivalent to individual uniforms)"},
 	{"Buffers", "HAS_BUFFERS", "Shader storage buffers."},
 	{"Std140", "HAS_STD140", "std140 block layout."},
@@ -176,6 +176,38 @@ static std::unordered_map<int, CompiledResult::Type> typeMap =
 	{GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE, CompiledResult::Type::USampler2DMS},
 	{GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY, CompiledResult::Type::USampler2DMSArray},
 	{GL_UNSIGNED_INT_SAMPLER_2D_RECT, CompiledResult::Type::USampler2DRect},
+
+	// Images
+	{GL_IMAGE_1D, CompiledResult::Type::Image1D},
+	{GL_IMAGE_2D, CompiledResult::Type::Image2D},
+	{GL_IMAGE_3D, CompiledResult::Type::Image3D},
+	{GL_IMAGE_CUBE, CompiledResult::Type::ImageCube},
+	{GL_IMAGE_1D_ARRAY, CompiledResult::Type::Image1DArray},
+	{GL_IMAGE_2D_ARRAY, CompiledResult::Type::Image2DArray},
+	{GL_IMAGE_2D_MULTISAMPLE, CompiledResult::Type::Image2DMS},
+	{GL_IMAGE_2D_MULTISAMPLE_ARRAY, CompiledResult::Type::Image2DMSArray},
+	{GL_IMAGE_BUFFER, CompiledResult::Type::ImageBuffer},
+	{GL_IMAGE_2D_RECT, CompiledResult::Type::Image2DRect},
+	{GL_INT_IMAGE_1D, CompiledResult::Type::IImage1D},
+	{GL_INT_IMAGE_2D, CompiledResult::Type::IImage2D},
+	{GL_INT_IMAGE_3D, CompiledResult::Type::IImage3D},
+	{GL_INT_IMAGE_CUBE, CompiledResult::Type::IImageCube},
+	{GL_INT_IMAGE_1D_ARRAY, CompiledResult::Type::IImage1DArray},
+	{GL_INT_IMAGE_2D_ARRAY, CompiledResult::Type::IImage2DArray},
+	{GL_INT_IMAGE_2D_MULTISAMPLE, CompiledResult::Type::IImage2DMS},
+	{GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY, CompiledResult::Type::IImage2DMSArray},
+	{GL_INT_IMAGE_2D_RECT, CompiledResult::Type::IImage2DRect},
+	{GL_UNSIGNED_INT_IMAGE_1D, CompiledResult::Type::UImage1D},
+	{GL_UNSIGNED_INT_IMAGE_2D, CompiledResult::Type::UImage2D},
+	{GL_UNSIGNED_INT_IMAGE_3D, CompiledResult::Type::UImage3D},
+	{GL_UNSIGNED_INT_IMAGE_CUBE, CompiledResult::Type::UImageCube},
+	{GL_UNSIGNED_INT_IMAGE_1D_ARRAY, CompiledResult::Type::UImage1DArray},
+	{GL_UNSIGNED_INT_IMAGE_2D_ARRAY, CompiledResult::Type::UImage2DArray},
+	{GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE, CompiledResult::Type::UImage2DMS},
+	{GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY, CompiledResult::Type::UImage2DMSArray},
+	{GL_UNSIGNED_INT_IMAGE_2D_RECT, CompiledResult::Type::UImage2DRect},
+
+	// Other
 	{0, CompiledResult::Type::SubpassInput},
 };
 
@@ -598,6 +630,8 @@ bool Target::getSharedData(std::vector<std::uint8_t>&, Output&)
 
 void Target::setupPreprocessor(Preprocessor& preprocessor) const
 {
+	preprocessor.setSupportsUniformBlocks(featureEnabled(Feature::UniformBlocks));
+
 	for (const std::string& include : m_includePaths)
 		preprocessor.addIncludePath(include);
 
@@ -620,7 +654,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 	const std::string& fileName)
 {
 	int options = 0;
-	if (!featureEnabled(Feature::UniformBuffers))
+	if (!featureEnabled(Feature::UniformBlocks))
 		options |= Parser::RemoveUniformBlocks;
 
 	if (!parser.parse(output, options))

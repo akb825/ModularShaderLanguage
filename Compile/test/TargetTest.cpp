@@ -81,7 +81,7 @@ TEST(TargetTest, FeatureList)
 	TEST_FEATURE(MultisampledTextures, counter);
 	TEST_FEATURE(IntegerTextures, counter);
 	TEST_FEATURE(Images, counter);
-	TEST_FEATURE(UniformBuffers, counter);
+	TEST_FEATURE(UniformBlocks, counter);
 	TEST_FEATURE(Buffers, counter);
 	TEST_FEATURE(Std140, counter);
 	TEST_FEATURE(Std430, counter);

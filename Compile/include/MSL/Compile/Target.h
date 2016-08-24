@@ -90,8 +90,8 @@ public:
 		Images,               ///< Image types.
 
 		// Storage
-		UniformBuffers, ///< Uniform buffers. If disabled, uniform buffers will be converted
-		                ///< to push constants. (equivalent to individual uniforms)
+		UniformBlocks,  ///< Uniform blocks. If disabled, uniform blocks will be in the push
+		                ///< constant section. (equivalent to individual uniforms)
 		Buffers,        ///< Generic buffer types.
 		Std140,         ///< std140 block layout.
 		Std430,         ///< std430 block layout.

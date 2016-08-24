@@ -17,9 +17,87 @@
 #include "Parser.h"
 #include <MSL/Compile/Output.h>
 #include <boost/algorithm/string/trim.hpp>
+#include <unordered_set>
 
 namespace msl
 {
+
+static std::unordered_set<std::string> opaqueTypes =
+{
+	// Samplers
+	{"sampler1D"},
+	{"sampler2D"},
+	{"sampler3D"},
+	{"samplerCube"},
+	{"sampler1DShadow"},
+	{"sampler2DShadow"},
+	{"sampler1DArray"},
+	{"sampler2DArray"},
+	{"sampler1DArrayShadow"},
+	{"sampler2DArrayShadow"},
+	{"sampler2DMS"},
+	{"sampler2DMSArray"},
+	{"samplerCubeShadow"},
+	{"samplerBuffer"},
+	{"sampler2DRect"},
+	{"sampler2DRectShadow"},
+	{"isampler1D"},
+	{"isampler2D"},
+	{"isampler3D"},
+	{"isamplerCube"},
+	{"isampler1DArray"},
+	{"isampler2DArray"},
+	{"isampler2DMS"},
+	{"isampler2DMSArray"},
+	{"isampler2DRect"},
+	{"usampler1D"},
+	{"usampler2D"},
+	{"usampler3D"},
+	{"usamplerCube"},
+	{"usampler1DArray"},
+	{"usampler2DArray"},
+	{"usampler2DMS"},
+	{"usampler2DMSArray"},
+	{"usampler2DRect"},
+
+	// Images
+	{"image1D"},
+	{"image2D"},
+	{"image3D"},
+	{"imageCube"},
+	{"image1DArray"},
+	{"image2DArray"},
+	{"image2DMS"},
+	{"image2DMSArray"},
+	{"imageBuffer"},
+	{"image2DRect"},
+	{"iimage1D"},
+	{"iimage2D"},
+	{"iimage3D"},
+	{"iimageCube"},
+	{"iimage1DArray"},
+	{"iimage2DArray"},
+	{"iimage2DMS"},
+	{"iimage2DMSArray"},
+	{"iimage2DRect"},
+	{"uimage1D"},
+	{"uimage2D"},
+	{"uimage3D"},
+	{"uimageCube"},
+	{"uimage1DArray"},
+	{"uimage2DArray"},
+	{"uimage2DMS"},
+	{"uimage2DMSArray"},
+	{"uimage2DRect"},
+
+	// Subpass inputs
+	{"subpassInput"},
+	{"subpassInputMS"},
+	{"isubpassInput"},
+	{"isubpassInputMS"},
+	{"usubpassInput"},
+	{"usubpassInputMS"}
+};
 
 static bool skipWhitespace(const std::vector<Token>& tokens, std::size_t& i, std::size_t maxValue)
 {
@@ -94,8 +172,11 @@ bool Parser::parse(Output& output, int options)
 	};
 
 	m_options = options;
-	for (auto& elements : m_elements)
-		elements.clear();
+	for (auto& elementType : m_elements)
+	{
+		for (auto& elements : elementType)
+			elements.clear();
+	}
 	m_pipelines.clear();
 	
 	unsigned int parenCount = 0;
@@ -321,10 +402,137 @@ std::string Parser::createShaderString(std::vector<LineMapping>& lineMappings,
 	std::string shaderString;
 
 	auto stageIndex = static_cast<unsigned int>(stage);
-	for (const TokenRange& tokenRange : m_elements[stageIndex])
+
+	bool needsPushConstants =
+		!m_elements[static_cast<unsigned int>(Element::FreeUniform)][stageIndex].empty();
+	if (m_options & RemoveUniformBlocks)
+	{
+		needsPushConstants |=
+			!m_elements[static_cast<unsigned int>(Element::UniformBlock)][stageIndex].empty();
+	}
+
+	// Add precision and struct elements first. This ensures that any type declarations are present
+	// before generating the push constant.
+	for (const TokenRange& tokenRange :
+		m_elements[static_cast<unsigned int>(Element::Precision)][stageIndex])
+	{
 		addElementString(shaderString, lineMappings, tokenRange, pipeline.entryPoints[stageIndex]);
+	}
+
+	for (const TokenRange& tokenRange :
+		m_elements[static_cast<unsigned int>(Element::Struct)][stageIndex])
+	{
+		addElementString(shaderString, lineMappings, tokenRange, pipeline.entryPoints[stageIndex]);
+	}
+
+	// Add the push constants.
+	if (needsPushConstants)
+	{
+		if (!shaderString.empty() && shaderString.back() != '\n')
+			shaderString += '\n';
+
+		// Add two lines at the start.
+		shaderString += "layout(push_constant) uniform Uniforms\n{";
+		for (unsigned int i = 0; i < 2; ++i)
+		{
+			lineMappings.emplace_back();
+			lineMappings.back().fileName = "<internal>";
+			lineMappings.back().line = 0;
+		}
+
+		// Add the free uniforms.
+		for (const TokenRange& tokenRange :
+			m_elements[static_cast<unsigned int>(Element::FreeUniform)][stageIndex])
+		{
+			addElementString(shaderString, lineMappings, tokenRange,
+				pipeline.entryPoints[stageIndex]);
+		}
+
+		// Add the uniform blocks if removing them.
+		if (m_options & RemoveUniformBlocks)
+		{
+			for (const TokenRange& tokenRange :
+				m_elements[static_cast<unsigned int>(Element::UniformBlock)][stageIndex])
+			{
+				addElementString(shaderString, lineMappings, tokenRange,
+					pipeline.entryPoints[stageIndex]);
+			}
+		}
+
+		// Add the end. of the block.
+		if (!shaderString.empty() && shaderString.back() != '\n')
+			shaderString += '\n';
+
+		shaderString += "} uniforms;";
+		lineMappings.emplace_back();
+		lineMappings.back().fileName = "<internal>";
+		lineMappings.back().line = 0;
+	}
+
+	// Add the uniform blocks after the push constants if not removed.
+	if (!(m_options & RemoveUniformBlocks))
+	{
+		for (const TokenRange& tokenRange :
+			m_elements[static_cast<unsigned int>(Element::UniformBlock)][stageIndex])
+		{
+			addElementString(shaderString, lineMappings, tokenRange,
+				pipeline.entryPoints[stageIndex]);
+		}
+	}
+
+	// Add everything else.
+	for (const TokenRange& tokenRange :
+		m_elements[static_cast<unsigned int>(Element::Default)][stageIndex])
+	{
+		addElementString(shaderString, lineMappings, tokenRange, pipeline.entryPoints[stageIndex]);
+	}
 
 	return shaderString;
+}
+
+Parser::Element Parser::getElementType(const TokenRange& tokenRange) const
+{
+	/*
+	 * Care about the following:
+	 * - Precision declaration
+	 * - struct declarations
+	 * - free uniforms that use non-opaque types
+	 * - uniform blocks
+	 */
+	bool isUniform = false;
+	const auto& tokens = m_tokens.getTokens();
+	for (std::size_t i = 0; i < tokenRange.count; ++i)
+	{
+		const Token& token = tokens[tokenRange.start + i];
+		if (token.value == "precision")
+			return Element::Precision;
+		else if (token.value == "struct")
+			return Element::Struct;
+		else if (token.value == "uniform")
+		{
+			// Need to find out the type of uniform first.
+			isUniform = true;
+		}
+		else if (token.value == "{")
+		{
+			// If we hit a block, it's either a uniform block or something we don't care about.
+			if (isUniform)
+				return Element::UniformBlock;
+			else
+				return Element::Default;
+		}
+
+		// If a uniform, check to see if it's an opaque type.
+		if (isUniform && opaqueTypes.find(token.value) != opaqueTypes.end())
+			return Element::Default;
+	}
+
+	// If we reach the end, it's either a free uniform declaration of a non-opaque type or something
+	// we don't specifically care about.
+	if (isUniform)
+		return Element::FreeUniform;
+	else
+		return Element::Default;
 }
 
 void Parser::endElement(std::vector<Stage>& stages, TokenRange& tokenRange, std::size_t index)
@@ -340,10 +548,11 @@ void Parser::endElement(std::vector<Stage>& stages, TokenRange& tokenRange, std:
 	}
 
 	tokenRange.count = index + 1 - tokenRange.start;
+	Element elementType = getElementType(tokenRange);
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
 		if (addStages[i])
-			m_elements[i].push_back(tokenRange);
+			m_elements[static_cast<unsigned int>(elementType)][i].push_back(tokenRange);
 	}
 
 	stages.clear();
@@ -532,94 +741,61 @@ bool Parser::removeUniformBlock(std::string& str, std::vector<LineMapping>& line
 	if (!(m_options & RemoveUniformBlocks))
 		return false;
 
-	// Check to see if this is a uniform block.
-	bool isUniform = false;
-	unsigned int parenCount = 0;
+	bool newline = true;
+	bool processed = false;
 	unsigned int braceCount = 0;
-	unsigned int squareCount = 0;
+	bool isUniform = false;
 	const auto& tokens = m_tokens.getTokens();
 	std::size_t maxValue = std::min(tokenRange.start + tokenRange.count, tokens.size());
 	for (std::size_t i = tokenRange.start; i < maxValue; ++i)
 	{
 		const Token& token = tokens[i];
-		if (token.value == "uniform")
-			isUniform = true;
-		else if (token.value == "{")
+		if (processed)
 		{
-			if (!isUniform)
-				return false;
+			if (token.value == "{")
+				++braceCount;
+			if (token.value == "}")
+				--braceCount;
 
-			++braceCount;
-			break;
-		}
-	}
-
-	if (braceCount == 0)
-		return false;
-
-	braceCount = 0;
-	bool start = true;
-	bool newline = true;
-	bool startLayout = false;
-	bool startLayoutOpenParen = false;
-	for (std::size_t i = tokenRange.start; i < maxValue; ++i)
-	{
-		const Token& token = tokens[i];
-		if (newline && token.value == "\n")
-			continue;
-
-		if (newline)
-		{
-			if (!str.empty() && str.back() != '\n')
-				str += '\n';
-			lineMappings.emplace_back();
-			lineMappings.back().fileName = token.fileName;
-			lineMappings.back().line = token.line;
-			newline = false;
-		}
-
-		// Make uniform blocks use push_constant blocks. Uniform blocks are required are required
-		// for GLSL Vulkan, but push_constants are equivalent to individual uniforms.
-		if (start)
-		{
-			str += "layout(push_constant) ";
-			start = false;
-		}
-
-		if (token.value == "\n")
-			newline = true;
-		else if (token.value == "(")
-			++parenCount;
-		else if (token.value == ")")
-			--parenCount;
-		else if (token.value == "{")
-			++braceCount;
-		else if (token.value == "}")
-			--braceCount;
-		else if (token.value == "[")
-			++squareCount;
-		else if (token.value == "]")
-			--squareCount;
-
-		if (startLayout && !newline)
-		{
-			if (parenCount == 0)
+			if (braceCount > 0)
 			{
-				if (startLayoutOpenParen)
-					startLayout = false;
+				// Keep the contents of the block itself.
+				if (newline && token.value == "\n")
+					continue;
+
+				if (newline)
+				{
+					if (!str.empty() && str.back() != '\n')
+						str += '\n';
+					lineMappings.emplace_back();
+					lineMappings.back().fileName = token.fileName;
+					lineMappings.back().line = token.line;
+					newline = false;
+				}
+
+				if (token.value == "\n")
+					newline = true;
+
+				str += token.value;
 			}
-			else
-				startLayoutOpenParen = true;
-			continue;
 		}
-		else if (parenCount == 0 && braceCount == 0 && squareCount == 0 && token.value == "layout")
+		else
 		{
-			startLayout = true;
-			continue;
+			// Search for the start of a uniform block, skipping those tokens.
+			if (token.value == "uniform")
+				isUniform = true;
+			else if (token.value == "{")
+			{
+				if (!isUniform)
+					return false;
+
+				processed = true;
+				++braceCount;
+			}
 		}
-		str += token.value;
 	}
-	return true;
+
+	return processed;
 }
 
 } // namespace msl

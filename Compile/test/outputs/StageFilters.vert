@@ -1,7 +1,58 @@
+struct StructAll
+{
+	vec4 value;
+};
+struct InstanceStructAll
+{
+	vec4 value;
+} structInstanceAll;
+ struct StructVertex
+{
+	vec4 value;
+};
+ struct InstanceStructVertex
+{
+	vec4 value;
+} structInstanceVertex;
+ struct StructVertexFragment
+{
+	vec4 value;
+};
+ struct InstanceStructVertexFragment
+{
+	vec4 value;
+} structInstanceVertexFragment;
+layout (std140)
+uniform UniformBlockAll
+{
+	vec4 uniformBlockVarAll;
+};
+uniform UniformBlockInstanceAll
+{
+	vec4 instance;
+} uniformInstanceAll;
+ layout (std140)
+uniform UniformBlockVertex
+{
+	vec4 uniformBlockVarVertex;
+};
+ uniform UniformBlockInstanceVertex
+{
+	vec4 instance;
+} uniformInstanceVertex;
+ layout (std140)
+uniform UniformBlockVertexFragment
+{
+	vec4 uniformBlockVarVertexFragment;
+};
+ uniform UniformBlockInstanceVertexFragment
+{
+	vec4 instance;
+} uniformInstanceVertexFragment;
 int globalVarAll;
 in vec2 inVarAll;
 out vec3 outVarAll;
-uniform vec4 unfiformVarAll;
+uniform sampler2D unfiformVarAll;
 in inBufferAll
 {
 	vec2 inBufferVarAll;
@@ -20,15 +71,6 @@ out outBufferAll
 } outInstanceAll;
 out vec3 outVarAll;
 layout (std140)
-uniform UniformBlockAll
-{
-	vec4 uniformBlockVarAll;
-};
-uniform UniformBlockInstanceAll
-{
-	vec4 instance;
-} uniformInstanceAll;
-layout (std140)
 buffer BufferAll
 {
 	vec4 bufferVarAll;
@@ -37,14 +79,6 @@ buffer BufferInstanceAll
 {
 	vec4 instance;
 } bufferInstanceAll;
-struct StructAll
-{
-	vec4 value;
-};
-struct InstanceStructAll
-{
-	vec4 value;
-} structInstanceAll;
 void funcDeclAll();
 void funcAll()
 {
@@ -56,7 +90,7 @@ void funcAll()
 int globalVarVertex;
 in vec2 inVarVertex;
  out vec3 outVarVertex;
-uniform vec4 unfiformVarVertex;
+uniform sampler2D unfiformVarVertex;
  in inBufferVertex
 {
 	vec2 inBufferVarVertex;
@@ -75,15 +109,6 @@ uniform vec4 unfiformVarVertex;
 } outInstanceVertex;
  out vec3 outVarVertex;
  layout (std140)
-uniform UniformBlockVertex
-{
-	vec4 uniformBlockVarVertex;
-};
- uniform UniformBlockInstanceVertex
-{
-	vec4 instance;
-} uniformInstanceVertex;
- layout (std140)
 buffer BufferVertex
 {
 	vec4 bufferVarVertex;
@@ -92,14 +117,6 @@ buffer BufferVertex
 {
 	vec4 instance;
 } bufferInstanceVertex;
- struct StructVertex
-{
-	vec4 value;
-};
- struct InstanceStructVertex
-{
-	vec4 value;
-} structInstanceVertex;
  void funcDeclVertex();
  void funcVertex()
 {
@@ -111,7 +128,7 @@ buffer BufferVertex
 int globalVarVertexFragment;
 in vec2 inVarVertexFragment;
  out vec3 outVarVertexFragment;
-uniform vec4 unfiformVarVertexFragment;
+uniform sampler2D unfiformVarVertexFragment;
  in inBufferVertexFragment
 {
 	vec2 inBufferVarVertexFragment;
@@ -130,15 +147,6 @@ uniform vec4 unfiformVarVertexFragment;
 } outInstanceVertexFragment;
  out vec3 outVarVertexFragment;
  layout (std140)
-uniform UniformBlockVertexFragment
-{
-	vec4 uniformBlockVarVertexFragment;
-};
- uniform UniformBlockInstanceVertexFragment
-{
-	vec4 instance;
-} uniformInstanceVertexFragment;
- layout (std140)
 buffer BufferVertexFragment
 {
 	vec4 bufferVarVertexFragment;
@@ -147,14 +155,6 @@ buffer BufferVertexFragment
 {
 	vec4 instance;
 } bufferInstanceVertexFragment;
- struct StructVertexFragment
-{
-	vec4 value;
-};
- struct InstanceStructVertexFragment
-{
-	vec4 value;
-} structInstanceVertexFragment;
  void funcDeclVertexFragment();
  void funcVertexFragment()
 {

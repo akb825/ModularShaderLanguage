@@ -31,6 +31,8 @@ class Output;
 class Preprocessor
 {
 public:
+	Preprocessor();
+	void setSupportsUniformBlocks(bool supports);
 	void addIncludePath(std::string path);
 	void addDefine(std::string name, std::string value);
 	bool preprocess(TokenList& tokenList, Output& output, const std::string& fileName) const;
@@ -38,6 +40,7 @@ public:
 		const std::string& fileName) const;
 
 private:
+	bool m_supportsUniformBlocks;
 	std::vector<std::string> m_includePaths;
 	std::vector<std::pair<std::string, std::string>> m_defines;
 };

@@ -133,7 +133,7 @@ TEST(TargetGlslTest, Glsl120)
 	EXPECT_EQ(noShader, pipeline->second.compute);
 
 	ASSERT_EQ(2U, pipeline->second.uniforms.size());
-	EXPECT_EQ("Transform.transform", pipeline->second.uniforms[0].name);
+	EXPECT_EQ("Uniforms.transform", pipeline->second.uniforms[0].name);
 	EXPECT_EQ(CompiledResult::Type::Mat4, pipeline->second.uniforms[0].type);
 	EXPECT_EQ(0U, pipeline->second.uniforms[0].blockIndex);
 	EXPECT_EQ(0U, pipeline->second.uniforms[0].bufferOffset);
@@ -146,7 +146,7 @@ TEST(TargetGlslTest, Glsl120)
 	EXPECT_EQ(1U, pipeline->second.uniforms[1].elements);
 
 	ASSERT_EQ(1U, pipeline->second.uniformBlocks.size());
-	EXPECT_EQ("Transform", pipeline->second.uniformBlocks[0].name);
+	EXPECT_EQ("Uniforms", pipeline->second.uniformBlocks[0].name);
 	EXPECT_EQ(sizeof(float)*16, pipeline->second.uniformBlocks[0].size);
 
 	ASSERT_EQ(2U, pipeline->second.attributes.size());
@@ -281,7 +281,7 @@ TEST(TargetGlslTest, GlslEs100)
 	EXPECT_EQ(noShader, pipeline->second.compute);
 
 	ASSERT_EQ(2U, pipeline->second.uniforms.size());
-	EXPECT_EQ("Transform.transform", pipeline->second.uniforms[0].name);
+	EXPECT_EQ("Uniforms.transform", pipeline->second.uniforms[0].name);
 	EXPECT_EQ(CompiledResult::Type::Mat4, pipeline->second.uniforms[0].type);
 	EXPECT_EQ(0U, pipeline->second.uniforms[0].blockIndex);
 	EXPECT_EQ(0U, pipeline->second.uniforms[0].bufferOffset);
@@ -294,7 +294,7 @@ TEST(TargetGlslTest, GlslEs100)
 	EXPECT_EQ(1U, pipeline->second.uniforms[1].elements);
 
 	ASSERT_EQ(1U, pipeline->second.uniformBlocks.size());
-	EXPECT_EQ("Transform", pipeline->second.uniformBlocks[0].name);
+	EXPECT_EQ("Uniforms", pipeline->second.uniformBlocks[0].name);
 	EXPECT_EQ(sizeof(float)*16, pipeline->second.uniformBlocks[0].size);
 
 	ASSERT_EQ(2U, pipeline->second.attributes.size());
@@ -327,13 +327,13 @@ TEST(TargetGlslTest, GlslEs100VersionNumber)
 	EXPECT_EQ("encountered #error directive: Version correctly set.", messages[0].message);
 }
 
-TEST(TargetGlslTest, Glsl450HasUniformBuffers)
+TEST(TargetGlslTest, Glsl450HasUniformBlocks)
 {
 	std::stringstream stream(
-		"#if HAS_UNIFORM_BUFFERS\n"
-		"#error Has buffers set.\n"
+		"#if HAS_UNIFORM_BLOCKS\n"
+		"#error Has blocks set.\n"
 		"#else\n"
-		"#error Has buffers not set.\n"
+		"#error Has blocks not set.\n"
 		"#endif");
 	TargetGlsl target(450, false);
 
@@ -346,16 +346,16 @@ TEST(TargetGlslTest, Glsl450HasUniformBuffers)
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
 	EXPECT_EQ(pathStr(exeDir/"test.msl"), messages[0].file);
 	EXPECT_EQ(2U, messages[0].line);
-	EXPECT_EQ("encountered #error directive: Has buffers set.", messages[0].message);
+	EXPECT_EQ("encountered #error directive: Has blocks set.", messages[0].message);
 }
 
-TEST(TargetGlslTest, Glsl120HasUniformBuffers)
+TEST(TargetGlslTest, Glsl120HasUniformBlocks)
 {
 	std::stringstream stream(
-		"#if HAS_UNIFORM_BUFFERS\n"
-		"#error Has buffers set.\n"
+		"#if HAS_UNIFORM_BLOCKS\n"
+		"#error Has blocks set.\n"
 		"#else\n"
-		"#error Has buffers not set.\n"
+		"#error Has blocks not set.\n"
 		"#endif");
 	TargetGlsl target(120, false);
 
@@ -368,7 +368,7 @@ TEST(TargetGlslTest, Glsl120HasUniformBuffers)
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
 	EXPECT_EQ(pathStr(exeDir/"test.msl"), messages[0].file);
 	EXPECT_EQ(4U, messages[0].line);
-	EXPECT_EQ("encountered #error directive: Has buffers not set.", messages[0].message);
+	EXPECT_EQ("encountered #error directive: Has blocks not set.", messages[0].message);
 }
 
 TEST(TargetGlslTest, CompileError)

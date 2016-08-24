@@ -1,6 +1,11 @@
 # Language
 
-The core language of MSL is [GLSL 450](https://www.opengl.org/registry/doc/GLSLangSpec.4.50.pdf) with the [Vulkan language extensions](https://www.khronos.org/registry/vulkan/specs/misc/GL_KHR_vulkan_glsl.txt).
+The core language of MSL is [GLSL 450](https://www.opengl.org/registry/doc/GLSLangSpec.4.50.pdf) with the [Vulkan language extensions](https://www.khronos.org/registry/vulkan/specs/misc/GL_KHR_vulkan_glsl.txt), with the following main differences:
+
+* Improved preprocessor.
+* Filtering based on pipelines.
+* Changes to how uniforms are managed.
+* Declarations of full pipelines within a shader.
 
 # Preprocessing
 
@@ -119,7 +124,7 @@ For example:
 	[[vertex]]
 	void vertShader()
 	{
-		gl_Position = block.transform*vec4(position, 1.0);
+		gl_Position = INSTANCE(block).transform*vec4(position, 1.0);
 		outputs.color = color*getValue();
 	}
 
@@ -129,6 +134,45 @@ For example:
 		vec4 texResult = texture(tex, vec2(0.5, 0.5));
 		color = inputs.color*texResult/getValue();
 	}
+
+# Uniforms
+
+Uniforms blocks will be automatically removed when compiling for targets that don't support them. The members will then be treated the same as uniforms outside of uniform blocks. Buffer blocks are not removed automatically since they provide different sets of features.
+
+Uniforms that are outside of a block (either originally or due to the removal of blocks) and don't use an opaque type (such as `sampler2D`) will be found under an implicit block called `Uniforms` with an instance name of `uniforms`.
+
+In order to use a uniform in a block both when uniform blocks are enabled and disabled, the block should have an instance name and the `INSTANCE()` macro may be used when accessing it. If uniform blocks are disabled, the instance name will be replaced with `uniforms`.
+
+For example:
+
+	uniform MyBlock
+	{
+		vec4 value;
+	} myBlock;
+
+	uniform float otherValue;
+
+	void main()
+	{
+		...
+		vec4 val = INSTANCE(myBlock).value*uniforms.otherValue;
+		...
+	}
+
+During reflection, `otherValue` will be listed as `Uniforms.otherValue`. Similarly, when uniform blocks are disabled, `MyBlock.value` will become `Uniforms.value`.
+
+> **Note:** All of the uniforms within a compilation unit will be included for all of the compiled pipelines. If you have a lot of unused uniforms this can be inefficient, especially in targets such as Vulkan which put all of the free uniforms into a single buffer. This can be mitigated by separating groups of uniforms into separate \#include files and making sure that each compiled file only includes code that is used in the pipelines it declares, and also only contains pipelines that use mostly the same sets of uniforms.
+
+## Reasons for this implementation
+
+Vulkan GLSL does not support non-opaque uniforms outside of a block, and and instead uniforms not part of any other block are placed in a single push\_constant block. The tools provided to cross-compile SPIR-V transform push\_constant members into free uniforms, but there are two undesirable effects:
+
+1. All uniforms would have to be declared in a single uniform block.
+2. Uniform blocks cannot be trivially converted into free uniforms.
+
+To make things more complicated, push\_constant uniform blocks must have instance names.
+
+To work around these issues in a reasonable manner, MSL will take all free uniforms and uniforms removed from blocks and place them implicitly into a push\_constant block of the name Uniforms with the instance name of uniforms before compiling to SPIR-V.
 
 # Pipelines
 
