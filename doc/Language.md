@@ -141,7 +141,7 @@ Uniforms blocks will be automatically removed when compiling for targets that do
 
 Uniforms that are outside of a block (either originally or due to the removal of blocks) and don't use an opaque type (such as `sampler2D`) will be found under an implicit block called `Uniforms` with an instance name of `uniforms`.
 
-In order to use a uniform in a block both when uniform blocks are enabled and disabled, the block should have an instance name and the `INSTANCE()` macro may be used when accessing it. If uniform blocks are disabled, the instance name will be replaced with `uniforms`.
+In order to use a uniform in a block both when uniform blocks are enabled and disabled, the block should have an instance name and the `INSTANCE()` macro may be used when accessing it. If uniform blocks are disabled, the instance name will be replaced with `uniforms`. Even though instance names need to be used to support targets without uniform block support, since they are put into the same block in the end the members cannot share the same name.
 
 For example:
 
@@ -174,13 +174,23 @@ To make things more complicated, push\_constant uniform blocks must have instanc
 
 To work around these issues in a reasonable manner, MSL will take all free uniforms and uniforms removed from blocks and place them implicitly into a push\_constant block of the name Uniforms with the instance name of uniforms before compiling to SPIR-V.
 
+In order to handle cases such as uniforms that use structs, some code re-ordering is performed. After parsing, the order of code passed to the compiler will be:
+
+1. Default precision declarations.
+2. Struct definitions.
+3. Non-opaque free uniforms.
+4. Uniform blocks.
+5. Everything else.
+
+The ordering within each block will be consistent with the original source, so cases such as structs containing other structs will still work.
+
 # Pipelines
 
 Pipelines can be declared within the shader with the `pipeline` keyword. Each pipeline has a name, and declares the entry point functions for the following stages:
 
 * vertex
-* tessellation_control
-* tessellation_evaluation
+* tessellation\_control
+* tessellation\_evaluation
 * geometry
 * fragment
 * compute
