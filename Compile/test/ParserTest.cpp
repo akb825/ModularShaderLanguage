@@ -56,8 +56,6 @@ TEST(ParserTest, StageFilters)
 		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Fragment) + '\n');
 	EXPECT_EQ(readFile(outputDir/"StageFilters.comp"),
 		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Compute) + '\n');
-
-	//std::cout << parser.createShaderString(lineMappings, pipeline, Parser::Stage::Vertex) << std::endl;
 }
 
 TEST(ParserTest, InvalidStageName)

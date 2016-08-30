@@ -99,6 +99,13 @@ static std::unordered_set<std::string> opaqueTypes =
 	{"usubpassInputMS"}
 };
 
+enum class ParseResult
+{
+	Success,
+	Error,
+	End
+};
+
 static bool skipWhitespace(const std::vector<Token>& tokens, std::size_t& i, std::size_t maxValue)
 {
 	for (; i < maxValue; ++i)
@@ -119,6 +126,83 @@ static bool skipWhitespace(Output& output, const std::vector<Token>& tokens, std
 	output.addMessage(Output::Level::Error, lastToken .fileName, lastToken .line,
 		lastToken .column, false, "unexpected end of file");
 	return false;
+}
+
+ParseResult readKeyValue(Output& output, const Token*& key, const Token*& value,
+	const std::vector<Token>& tokens, std::size_t& i)
+{
+	do
+	{
+		// Read the contents of the block
+		if (!skipWhitespace(output, tokens, i))
+			return ParseResult::Error;
+
+		if (tokens[i].value == ";")
+		{
+			// Empty ;
+			++i;
+			continue;
+		}
+		else if (tokens[i].value == "}")
+		{
+			// End of declaration block
+			++i;
+			return ParseResult::End;
+		}
+		else
+		{
+			// key = value;
+			if (tokens[i].type != Token::Type::Identifier)
+			{
+				output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+					tokens[i].column, false, "unexpected token: " + tokens[i].value);
+				return ParseResult::Error;
+			}
+
+			key = &tokens[i];
+
+			if (!skipWhitespace(output, tokens, ++i))
+				return ParseResult::Error;
+
+			if (tokens[i].value != "=")
+			{
+				output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+					tokens[i].column, false, "unexpected token: " + tokens[i].value);
+				return ParseResult::Error;
+			}
+
+			if (!skipWhitespace(output, tokens, ++i))
+				return ParseResult::Error;
+
+			if (tokens[i].type == Token::Type::Symbol)
+			{
+				output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+					tokens[i].column, false, "unexpected token: " + tokens[i].value);
+				return ParseResult::Error;
+			}
+
+			value = &tokens[i];
+
+			if (!skipWhitespace(output, tokens, ++i))
+				return ParseResult::Error;
+
+			if (tokens[i].value != ";")
+			{
+				output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+					tokens[i].column, false, "unexpected token: " + tokens[i].value);
+				return ParseResult::Error;
+			}
+
+			++i;
+			return ParseResult::Success;
+		}
+	} while (i < tokens.size());
+
+	const Token& lastToken = tokens.back();
+	output.addMessage(Output::Level::Error, lastToken.fileName, lastToken.line,
+		lastToken.column, false,
+		"unexpected end of file");
+	return ParseResult::Error;
 }
 
 static bool getStage(Output& output, Parser::Stage& stage, const Token& token)
@@ -603,77 +687,31 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 		return false;
 	}
 
-	bool endBlock = false;
 	++i;
+	ParseResult result;
 	do
 	{
-		// Read the contents of the block
-		if (!skipWhitespace(output, tokens, i))
+		const Token* key = nullptr;
+		const Token* value = nullptr;
+		result = readKeyValue(output, key, value, tokens, i);
+		if (result != ParseResult::Success)
+			break;
+
+		Stage stage;
+		if (!getStage(output, stage, *key))
 			return false;
 
-		if (tokens[i].value == ";")
+		if (value->type != Token::Type::Identifier)
 		{
-			// Empty ;
-			++i;
-			continue;
+			output.addMessage(Output::Level::Error, value->fileName, value->line,
+				value->column, false, "unexpected token: " + value->value);
+			return false;
 		}
-		else if (tokens[i].value == "}")
-		{
-			// End of pipeline block
-			endBlock = true;
-			++i;
-			break;
-		}
-		else
-		{
-			// stage = entryPoint;
-			Stage stage;
-			if (!getStage(output, stage, tokens[i]))
-				return false;
+		pipeline.entryPoints[static_cast<int>(stage)] = value->value;
+	} while (result == ParseResult::Success);
 
-			if (!skipWhitespace(output, tokens, ++i))
-				return false;
-
-			if (tokens[i].value != "=")
-			{
-				output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
-					tokens[i].column, false, "unexpected token: " + tokens[i].value);
-				return false;
-			}
-
-			if (!skipWhitespace(output, tokens, ++i))
-				return false;
-
-			if (tokens[i].type != Token::Type::Identifier)
-			{
-				output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
-					tokens[i].column, false, "unexpected token: " + tokens[i].value);
-				return false;
-			}
-			pipeline.entryPoints[static_cast<int>(stage)] = tokens[i].value;
-
-			if (!skipWhitespace(output, tokens, ++i))
-				return false;
-
-			if (tokens[i].value != ";")
-			{
-				output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
-					tokens[i].column, false, "unexpected token: " + tokens[i].value);
-				return false;
-			}
-
-			++i;
-		}
-	} while (i < tokens.size());
-
-	if (!endBlock)
-	{
-		const Token& lastToken = tokens.back();
-		output.addMessage(Output::Level::Error, lastToken.fileName, lastToken.line,
-			lastToken.column, false,
-			"unexpected end of file");
+	if (result == ParseResult::Error)
 		return false;
-	}
 
 	m_pipelines.push_back(std::move(pipeline));
 	return true;

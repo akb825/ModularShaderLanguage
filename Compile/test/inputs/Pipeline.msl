@@ -11,6 +11,7 @@ pipeline Foo
 	tessellation_evaluation = tessEvaluationEntry;
 	geometry = geometryEntry;
 	fragment = fragEntry;
+	/* empty */;
 	compute = computeEntry;
 }
 
