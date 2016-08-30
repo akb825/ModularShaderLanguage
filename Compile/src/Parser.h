@@ -75,9 +75,10 @@ public:
 	enum class CullMode
 	{
 		Unset = -1,
+		None,
 		Front,
 		Back,
-		Both
+		FrontAndBack
 	};
 
 	enum class FrontFace
@@ -247,7 +248,7 @@ public:
 		Bool depthBoundsTestEnable = Bool::Unset;
 		Bool stencilTestEnable = Bool::Unset;
 		StencilOpState frontStencil;
-		StencilOpState backStencilOp;
+		StencilOpState backStencil;
 		float minDepthBounds = FLT_MAX;
 		float maxDepthBounds = FLT_MAX;
 	};
@@ -255,14 +256,13 @@ public:
 	struct BlendAttachmentState
 	{
 		Bool blendEnable = Bool::Unset;
-		BlendFactor srcBlendFactor = BlendFactor::Unset;
+		BlendFactor srcColorBlendFactor = BlendFactor::Unset;
 		BlendFactor dstColorBlendFactor = BlendFactor::Unset;
 		BlendOp colorBlendOp = BlendOp::Unset;
 		BlendFactor srcAlphaBlendFactor = BlendFactor::Unset;
 		BlendFactor dstAlphaBlendFactor = BlendFactor::Unset;
 		BlendOp alphaBlendOp = BlendOp::Unset;
 		ColorMask colorWriteMask = ColorMaskUnset;
-
 	};
 
 	struct BlendState

@@ -320,7 +320,7 @@ TEST(ParserTest, PipelineUnknownStage)
 	EXPECT_EQ(path, output.getMessages()[0].file);
 	EXPECT_EQ(1U, output.getMessages()[0].line);
 	EXPECT_EQ(16U, output.getMessages()[0].column);
-	EXPECT_EQ("unknown stage type: asdf", output.getMessages()[0].message);
+	EXPECT_EQ("unknown pipeline stage or render state name: asdf", output.getMessages()[0].message);
 }
 
 TEST(ParserTest, PipelineMissingEquals)
