@@ -26,6 +26,7 @@ struct Token
 {
 	enum class Type
 	{
+		Unknown,
 		Whitespace,
 		Identifier,
 		Symbol,
@@ -33,6 +34,14 @@ struct Token
 		FloatLiteral,
 		BoolLiteral
 	};
+
+	Token()
+		: type(Type::Unknown)
+		, fileName(nullptr)
+		, line(0)
+		, column(0)
+	{
+	}
 
 	Token(Type type_, std::string value_, const char* fileName_, std::size_t line_,
 		std::size_t column_)

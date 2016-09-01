@@ -131,7 +131,7 @@ enum class KeyValueResult
 	End
 };
 
-KeyValueResult readKeyValue(Output& output, const Token*& key, const Token*& value,
+KeyValueResult readKeyValue(Output& output, const Token*& key, Token& valueToken,
 	const std::vector<Token>& tokens, std::size_t& i)
 {
 	do
@@ -177,27 +177,41 @@ KeyValueResult readKeyValue(Output& output, const Token*& key, const Token*& val
 			if (!skipWhitespace(output, tokens, ++i))
 				return KeyValueResult::Error;
 
-			if (tokens[i].type == Token::Type::Symbol)
+			if (tokens[i].value == ";" || tokens[i].value == "}")
 			{
 				output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
 					tokens[i].column, false, "unexpected token: " + tokens[i].value);
 				return KeyValueResult::Error;
 			}
 
-			value = &tokens[i];
+			// Need to concatenate the remaining tokens (up to the ending ;) to be able to handle
+			// cases like negative numbers.
+			valueToken.type = tokens[i].type;
+			valueToken.value = tokens[i].value;
+			valueToken.fileName = tokens[i].fileName;
+			valueToken.line = tokens[i].line;
+			valueToken.column = tokens[i].column;
 
-			if (!skipWhitespace(output, tokens, ++i))
-				return KeyValueResult::Error;
-
-			if (tokens[i].value != ";")
+			for (++i; i < tokens.size(); ++i)
 			{
-				output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
-					tokens[i].column, false, "unexpected token: " + tokens[i].value);
-				return KeyValueResult::Error;
-			}
+				if (tokens[i].value == ";")
+					return KeyValueResult::Success;
+				else if (tokens[i].value == "}")
+				{
+					output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+						tokens[i].column, false, "unexpected token: " + tokens[i].value);
+					return KeyValueResult::Error;
+				}
 
+				if (tokens[i].type == Token::Type::Whitespace)
+					continue;
+
+				// Override symbols with the main token type.
+				if (valueToken.type == Token::Type::Symbol)
+					valueToken.type = tokens[i].type;
+				valueToken.value += tokens[i].value;
+			}
 			++i;
-			return KeyValueResult::Success;
 		}
 	} while (i < tokens.size());
 
@@ -275,17 +289,25 @@ static bool getBool(Output& output, Parser::Bool& value, const Token& token)
 
 static bool getInt(Output& output, std::uint32_t& value, const Token& token)
 {
-	try
+	std::stringstream stream(token.value);
+	if (boost::istarts_with(token.value, "0x"))
 	{
-		value = boost::lexical_cast<std::uint32_t>(token.value);
-		return true;
+		stream.get();
+		stream.get();
+		stream << std::hex;
 	}
-	catch (...)
+	else if (boost::starts_with(token.value, "0"))
+		stream << std::oct;
+
+	stream >> value;
+	if (!stream)
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
 			token.column, false, "invalid int value: " + token.value);
 		return false;
 	}
+
+	return true;
 }
 
 static bool getFloat(Output& output, float& value, const Token& token)
@@ -315,7 +337,7 @@ static bool getPolygonMode(Output& output, Parser::PolygonMode& value, const Tok
 		value = Parser::PolygonMode::Line;
 		return true;
 	}
-	else if (token.value == "Point")
+	else if (token.value == "point")
 	{
 		value = Parser::PolygonMode::Point;
 		return true;
@@ -872,6 +894,12 @@ static ParseResult readRenderState(Output& output, Parser::Pipeline& pipeline, c
 			return ParseResult::Error;
 		return ParseResult::Success;
 	}
+	else if (key.value == "min_sample_shading")
+	{
+		if (!getFloat(output, pipeline.renderState.multisampleState.minSampleShading, value))
+			return ParseResult::Error;
+		return ParseResult::Success;
+	}
 	else if (key.value == "sample_mask")
 	{
 		if (!getInt(output, pipeline.renderState.multisampleState.sampleMask, value))
@@ -989,6 +1017,14 @@ static ParseResult readRenderState(Output& output, Parser::Pipeline& pipeline, c
 			pipeline.renderState.depthStencilState.frontStencil.compareOp;
 		return ParseResult::Success;
 	}
+	else if (key.value == "stencil_compare_mask")
+	{
+		if (!getInt(output, pipeline.renderState.depthStencilState.frontStencil.compareMask, value))
+			return ParseResult::Error;
+		pipeline.renderState.depthStencilState.backStencil.compareMask =
+			pipeline.renderState.depthStencilState.frontStencil.compareMask;
+		return ParseResult::Success;
+	}
 	else if (key.value == "stencil_write_mask")
 	{
 		if (!getInt(output, pipeline.renderState.depthStencilState.frontStencil.writeMask, value))
@@ -1051,6 +1087,12 @@ static ParseResult readRenderState(Output& output, Parser::Pipeline& pipeline, c
 		}
 		return ParseResult::Success;
 	}
+	else if (key.value == "front_stencil_compare_mask")
+	{
+		if (!getInt(output, pipeline.renderState.depthStencilState.frontStencil.compareMask, value))
+			return ParseResult::Error;
+		return ParseResult::Success;
+	}
 	else if (key.value == "front_stencil_write_mask")
 	{
 		if (!getInt(output, pipeline.renderState.depthStencilState.frontStencil.writeMask, value))
@@ -1107,6 +1149,12 @@ static ParseResult readRenderState(Output& output, Parser::Pipeline& pipeline, c
 		{
 			return ParseResult::Error;
 		}
+		return ParseResult::Success;
+	}
+	else if (key.value == "back_stencil_compare_mask")
+	{
+		if (!getInt(output, pipeline.renderState.depthStencilState.backStencil.compareMask, value))
+			return ParseResult::Error;
 		return ParseResult::Success;
 	}
 	else if (key.value == "back_stencil_write_mask")
@@ -1747,17 +1795,17 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 	do
 	{
 		const Token* key = nullptr;
-		const Token* value = nullptr;
+		Token value;
 		keyValueResult = readKeyValue(output, key, value, tokens, i);
 		if (keyValueResult != KeyValueResult::Success)
 			break;
 
-		ParseResult parseResult = readStage(output, pipeline, *key, *value);
+		ParseResult parseResult = readStage(output, pipeline, *key, value);
 		if (parseResult == ParseResult::Error)
 			return false;
 		else if (parseResult == ParseResult::NotThisType)
 		{
-			parseResult = readRenderState(output, pipeline, *key, *value);
+			parseResult = readRenderState(output, pipeline, *key, value);
 			if (parseResult == ParseResult::Error)
 				return false;
 			else if (parseResult == ParseResult::NotThisType)
@@ -1765,8 +1813,8 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 				output.addMessage(Output::Level::Error, key->fileName, key->line,
 					key->column, false, "unknown pipeline stage or render state name: " +
 					key->value);
+				return false;
 			}
-			return false;
 		}
 	} while (keyValueResult == KeyValueResult::Success);
 

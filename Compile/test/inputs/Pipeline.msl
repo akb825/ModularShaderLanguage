@@ -5,7 +5,7 @@ void vertEntry()
 
 pipeline Foo
 {
-	vertex = vertEntry;
+	vertex = vertEntry ;
 	fragment = fragEntry;
 	tessellation_control = tessControlEntry;
 	tessellation_evaluation = tessEvaluationEntry;

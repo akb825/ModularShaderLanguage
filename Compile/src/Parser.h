@@ -57,13 +57,6 @@ public:
 		True
 	};
 
-	enum class Filter
-	{
-		Unset = -1,
-		Nearest,
-		Linear
-	};
-
 	enum class PolygonMode
 	{
 		Unset = -1,
@@ -177,6 +170,13 @@ public:
 		OrInverted,
 		Nand,
 		Set
+	};
+
+	enum class Filter
+	{
+		Unset = -1,
+		Nearest,
+		Linear
 	};
 
 	enum class MipFilter

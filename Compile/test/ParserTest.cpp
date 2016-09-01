@@ -415,6 +415,51 @@ TEST(ParserTest, DuplicatePipeline)
 	EXPECT_EQ("see other declaration of pipeline Test", output.getMessages()[1].message);
 }
 
+TEST(ParserTest, PatchControlPoints)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	{
+		std::stringstream stream("pipeline Test {patch_control_points = 123 ;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_TRUE(parser.parse(output));
+
+		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		ASSERT_EQ(1U, pipelines.size());
+		EXPECT_EQ(123U, pipelines[0].renderState.patchControlPoints);
+	}
+
+	{
+		std::stringstream stream("pipeline Test {patch_control_points = 0xAbCd;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_TRUE(parser.parse(output));
+
+		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		ASSERT_EQ(1U, pipelines.size());
+		EXPECT_EQ(0xABCD, pipelines[0].renderState.patchControlPoints);
+	}
+
+	{
+		std::stringstream stream("pipeline Test {patch_control_points = asdf;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_FALSE(parser.parse(output));
+
+		ASSERT_EQ(1U, output.getMessages().size());
+		EXPECT_EQ(path, output.getMessages()[0].file);
+		EXPECT_EQ(1U, output.getMessages()[0].line);
+		EXPECT_EQ(39U, output.getMessages()[0].column);
+		EXPECT_EQ("invalid int value: asdf", output.getMessages()[0].message);
+	}
+}
+
 TEST(ParserTest, RemoveUniformBlocks)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
