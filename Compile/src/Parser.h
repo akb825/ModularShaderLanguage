@@ -269,7 +269,7 @@ public:
 	{
 		Bool logicalOpEnable = Bool::Unset;
 		LogicOp logicalOp = LogicOp::Unset;
-		Bool separateAttachmentBlending = Bool::Unset;
+		Bool separateAttachmentBlendingEnable = Bool::Unset;
 		std::array<BlendAttachmentState, maxAttachments> blendAttachments;
 		std::array<float, 4> blendConstants = {{FLT_MAX, FLT_MAX, FLT_MAX, FLT_MAX}};
 	};

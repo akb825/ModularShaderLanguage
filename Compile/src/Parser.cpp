@@ -16,8 +16,9 @@
 
 #include "Parser.h"
 #include <MSL/Compile/Output.h>
-#include <boost/algorithm/string/trim.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include <cstring>
 #include <unordered_set>
@@ -323,6 +324,58 @@ static bool getFloat(Output& output, float& value, const Token& token)
 			token.column, false, "invalid float value: " + token.value);
 		return false;
 	}
+}
+
+static bool getVec4(Output& output, std::array<float, 4>& value, const Token& token)
+{
+	const char* start = "vec4(";
+	if (!boost::algorithm::starts_with(token.value, start) ||
+		!boost::algorithm::ends_with(token.value, ")"))
+	{
+		output.addMessage(Output::Level::Error, token.fileName, token.line,
+			token.column, false, "invalid vec4 value: " + token.value);
+		return false;
+	}
+
+	std::size_t startLen = std::strlen(start);
+	std::string trimmedValueStr = token.value.substr(startLen, token.value.size() - startLen - 1);
+	std::vector<std::string> splitValues;
+	boost::algorithm::split(splitValues, trimmedValueStr, [](char c) {return c == ',';});
+	if (splitValues.size() == 4)
+	{
+		for (std::size_t i = 0; i < value.size(); ++i)
+		{
+			Token tempToken;
+			tempToken.type = Token::Type::FloatLiteral;
+			tempToken.value = std::move(splitValues[i]);
+			tempToken.fileName = token.fileName;
+			tempToken.line = token.line;
+			tempToken.column = token.column;
+			if (!getFloat(output, value[i], tempToken))
+				return false;
+		}
+	}
+	else if (splitValues.size() == 1)
+	{
+		Token tempToken;
+		tempToken.type = Token::Type::FloatLiteral;
+		tempToken.value = std::move(splitValues[0]);
+		tempToken.fileName = token.fileName;
+		tempToken.line = token.line;
+		tempToken.column = token.column;
+		float singleValue;
+		if (!getFloat(output, singleValue, tempToken))
+			return false;
+		value.fill(singleValue);
+	}
+	else
+	{
+		output.addMessage(Output::Level::Error, token.fileName, token.line,
+			token.column, false, "invalid vec4 value: " + token.value);
+		return false;
+	}
+
+	return true;
 }
 
 static bool getPolygonMode(Output& output, Parser::PolygonMode& value, const Token& token)
@@ -724,6 +777,16 @@ static bool getLogicalOp(Output& output, Parser::LogicOp& value, const Token& to
 	else if (token.value == "nor")
 	{
 		value = Parser::LogicOp::Nor;
+		return true;
+	}
+	else if (token.value == "equivalent")
+	{
+		value = Parser::LogicOp::Equivalent;
+		return true;
+	}
+	else if (token.value == "invert")
+	{
+		value = Parser::LogicOp::Invert;
 		return true;
 	}
 	else if (token.value == "or_reverse")
@@ -1182,33 +1245,18 @@ static ParseResult readRenderState(Output& output, Parser::Pipeline& pipeline, c
 			return ParseResult::Error;
 		return ParseResult::Success;
 	}
-	else if (key.value == "separate_attachment_blending")
+	else if (key.value == "separate_attachment_blending_enable")
 	{
-		if (!getBool(output, pipeline.renderState.blendState.separateAttachmentBlending, value))
+		if (!getBool(output, pipeline.renderState.blendState.separateAttachmentBlendingEnable,
+			value))
+		{
 			return ParseResult::Error;
+		}
 		return ParseResult::Success;
 	}
-	else if (key.value == "blend_constant_r")
+	else if (key.value == "blend_constant")
 	{
-		if (!getFloat(output, pipeline.renderState.blendState.blendConstants[0], value))
-			return ParseResult::Error;
-		return ParseResult::Success;
-	}
-	else if (key.value == "blend_constant_g")
-	{
-		if (!getFloat(output, pipeline.renderState.blendState.blendConstants[1], value))
-			return ParseResult::Error;
-		return ParseResult::Success;
-	}
-	else if (key.value == "blend_constant_b")
-	{
-		if (!getFloat(output, pipeline.renderState.blendState.blendConstants[2], value))
-			return ParseResult::Error;
-		return ParseResult::Success;
-	}
-	else if (key.value == "blend_constant_a")
-	{
-		if (!getFloat(output, pipeline.renderState.blendState.blendConstants[3], value))
+		if (!getVec4(output, pipeline.renderState.blendState.blendConstants, value))
 			return ParseResult::Error;
 		return ParseResult::Success;
 	}
