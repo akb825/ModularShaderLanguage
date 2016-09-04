@@ -202,8 +202,11 @@ public:
 	{
 		Unset = -1,
 		TransparentBlack,
+		TransparentIntZero,
 		OpaqueBlack,
-		OpaqueWhite
+		OpaqueIntZero,
+		OpaqueWhite,
+		OpaqueIntOne
 	};
 
 	struct RasterizationState
@@ -302,7 +305,6 @@ public:
 		AddressMode addressModeV = AddressMode::Unset;
 		AddressMode addressModeW = AddressMode::Unset;
 		float mipLodBias = FLT_MAX;
-		Bool anisotropicFiltering = Bool::Unset;
 		float maxAnisotropy = FLT_MAX;
 		float minLod = FLT_MAX;
 		float maxLod = FLT_MAX;
@@ -330,6 +332,11 @@ public:
 		return m_pipelines;
 	}
 
+	const std::vector<Sampler>& getSamplers() const
+	{
+		return m_samplers;
+	}
+
 	bool parse(Output& output, int options = 0);
 	std::string createShaderString(std::vector<LineMapping>& lineMappings, const Pipeline& pipeline,
 		Stage stage) const;
@@ -355,6 +362,7 @@ private:
 	Element getElementType(const TokenRange& tokenRange) const;
 	void endElement(std::vector<Stage>& stages, TokenRange& tokenRange, std::size_t index);
 	bool readPipeline(Output& output, const std::vector<Token>& tokens, std::size_t& i);
+	bool readSampler(Output& output, const std::vector<Token>& tokens, std::size_t& i);
 	void addElementString(std::string& str, std::vector<LineMapping>& lineMappings,
 		const TokenRange& tokenRange, const std::string& entryPoint) const;
 	bool removeUniformBlock(std::string& str, std::vector<LineMapping>& lineMappings,
@@ -365,6 +373,7 @@ private:
 	int m_options;
 	std::array<std::array<std::vector<TokenRange>, stageCount>, elementCount> m_elements;
 	std::vector<Pipeline> m_pipelines;
+	std::vector<Sampler> m_samplers;
 };
 
 } // namespace msl

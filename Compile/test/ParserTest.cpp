@@ -460,6 +460,149 @@ TEST(ParserTest, PatchControlPoints)
 	}
 }
 
+TEST(ParserTest, UnnamedSamplerState)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("sampler_state {min_filter = linear;}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(15U, output.getMessages()[0].column);
+	EXPECT_EQ("unexpected token: {", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, SamplerStateMissingOpenBrace)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("sampler_state Test min_filter = linear;}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(20U, output.getMessages()[0].column);
+	EXPECT_EQ("unexpected token: min_filter", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, SamplerStateUnknownState)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("sampler_state Test {asdf = linear;}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(21U, output.getMessages()[0].column);
+	EXPECT_EQ("unknown sampler state name: asdf", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, SamplerStateMissingEquals)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("sampler_state Test {min_filter linear;}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(32U, output.getMessages()[0].column);
+	EXPECT_EQ("unexpected token: linear", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, SamplerStateMissingValue)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("sampler_state Test {min_filter =;}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(33U, output.getMessages()[0].column);
+	EXPECT_EQ("unexpected token: ;", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, SamplerStateMissingSemicolon)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("sampler_state Test {min_filter = linear}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(40U, output.getMessages()[0].column);
+	EXPECT_EQ("unexpected token: }", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, SamplerStateMissingEndBrace)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("sampler_state Test {min_filter = linear;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	ASSERT_EQ(1U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(40U, output.getMessages()[0].column);
+	EXPECT_EQ("unexpected end of file", output.getMessages()[0].message);
+}
+
+TEST(ParserTest, DuplicateSamplerState)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("sampler_state Test {} sampler_state Test{}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	ASSERT_EQ(2U, output.getMessages().size());
+	EXPECT_EQ(path, output.getMessages()[0].file);
+	EXPECT_EQ(1U, output.getMessages()[0].line);
+	EXPECT_EQ(37U, output.getMessages()[0].column);
+	EXPECT_FALSE(output.getMessages()[0].continued);
+	EXPECT_EQ("sampler state of name Test already declared", output.getMessages()[0].message);
+
+	EXPECT_EQ(path, output.getMessages()[1].file);
+	EXPECT_EQ(1U, output.getMessages()[1].line);
+	EXPECT_EQ(15U, output.getMessages()[1].column);
+	EXPECT_TRUE(output.getMessages()[1].continued);
+	EXPECT_EQ("see other declaration of sampler state Test", output.getMessages()[1].message);
+}
+
 TEST(ParserTest, RemoveUniformBlocks)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";

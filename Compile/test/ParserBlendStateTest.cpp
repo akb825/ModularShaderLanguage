@@ -291,7 +291,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 		EXPECT_EQ(path, output.getMessages()[0].file);
 		EXPECT_EQ(1U, output.getMessages()[0].line);
 		EXPECT_EQ(29U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid logical op value: asdf", output.getMessages()[0].message);
+		EXPECT_EQ("invalid logic op value: asdf", output.getMessages()[0].message);
 	}
 }
 

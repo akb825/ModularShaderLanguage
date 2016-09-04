@@ -21,12 +21,13 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include <cstring>
+#include <unordered_map>
 #include <unordered_set>
 
 namespace msl
 {
 
-static std::unordered_set<std::string> opaqueTypes =
+static const std::unordered_set<std::string> opaqueTypes =
 {
 	// Samplers
 	{"sampler1D"},
@@ -101,6 +102,146 @@ static std::unordered_set<std::string> opaqueTypes =
 	{"isubpassInputMS"},
 	{"usubpassInput"},
 	{"usubpassInputMS"}
+};
+
+static const std::unordered_map<std::string, Parser::Stage> stageMap =
+{
+	{"vertex", Parser::Stage::Vertex},
+	{"tessellation_control", Parser::Stage::TessellationControl},
+	{"tessellation_evaluation", Parser::Stage::TessellationEvaluation},
+	{"geometry", Parser::Stage::Geometry},
+	{"fragment", Parser::Stage::Fragment},
+	{"compute", Parser::Stage::Compute}
+};
+
+static const std::unordered_map<std::string, Parser::PolygonMode> polygonModeMap =
+{
+	{"fill", Parser::PolygonMode::Fill},
+	{"line", Parser::PolygonMode::Line},
+	{"point", Parser::PolygonMode::Point}
+};
+
+static const std::unordered_map<std::string, Parser::CullMode> cullModeMap =
+{
+	{"none", Parser::CullMode::None},
+	{"front", Parser::CullMode::Front},
+	{"back", Parser::CullMode::Back},
+	{"front_and_back", Parser::CullMode::FrontAndBack}
+};
+
+static const std::unordered_map<std::string, Parser::FrontFace> frontFaceMap =
+{
+	{"counter_clockwise", Parser::FrontFace::CounterClockwise},
+	{"clockwise", Parser::FrontFace::Clockwise}
+};
+
+static const std::unordered_map<std::string, Parser::StencilOp> stencilOpMap =
+{
+	{"keep", Parser::StencilOp::Keep},
+	{"zero", Parser::StencilOp::Zero},
+	{"replace", Parser::StencilOp::Replace},
+	{"increment_and_clamp", Parser::StencilOp::IncrementAndClamp},
+	{"decrement_and_clamp", Parser::StencilOp::DecrementAndClamp},
+	{"invert", Parser::StencilOp::Invert},
+	{"increment_and_wrap", Parser::StencilOp::IncrementAndWrap},
+	{"decrement_and_wrap", Parser::StencilOp::DecrementAndWrap}
+};
+
+static const std::unordered_map<std::string, Parser::CompareOp> compareOpMap =
+{
+	{"never", Parser::CompareOp::Never},
+	{"less", Parser::CompareOp::Less},
+	{"equal", Parser::CompareOp::Equal},
+	{"less_or_equal", Parser::CompareOp::LessOrEqual},
+	{"greater", Parser::CompareOp::Greater},
+	{"not_equal", Parser::CompareOp::NotEqual},
+	{"greater_or_equal", Parser::CompareOp::GreaterOrEqual},
+	{"always", Parser::CompareOp::Always}
+};
+
+static const std::unordered_map<std::string, Parser::BlendFactor> blendFactorMap =
+{
+	{"zero", Parser::BlendFactor::Zero},
+	{"one", Parser::BlendFactor::One},
+	{"src_color", Parser::BlendFactor::SrcColor},
+	{"one_minus_src_color", Parser::BlendFactor::OneMinusSrcColor},
+	{"dst_color", Parser::BlendFactor::DstColor},
+	{"one_minus_dst_color", Parser::BlendFactor::OneMinusDstColor},
+	{"src_alpha", Parser::BlendFactor::SrcAlpha},
+	{"one_minus_src_alpha", Parser::BlendFactor::OneMinusSrcAlpha},
+	{"dst_alpha", Parser::BlendFactor::DstAlpha},
+	{"one_minus_dst_alpha", Parser::BlendFactor::OneMinusDstAlpha},
+	{"const_color", Parser::BlendFactor::ConstColor},
+	{"one_minus_const_color", Parser::BlendFactor::OneMinusConstColor},
+	{"const_alpha", Parser::BlendFactor::ConstAlpha},
+	{"one_minus_const_alpha", Parser::BlendFactor::OneMinusConstAlpha},
+	{"src_alpha_saturate", Parser::BlendFactor::SrcAlphaSaturate},
+	{"src1_color", Parser::BlendFactor::Src1Color},
+	{"one_minus_src1_color", Parser::BlendFactor::OneMinusSrc1Color},
+	{"src1_alpha", Parser::BlendFactor::Src1Alpha},
+	{"one_minus_src1_alpha", Parser::BlendFactor::OneMinusSrc1Alpha}
+};
+
+static const std::unordered_map<std::string, Parser::BlendOp> blendOpMap =
+{
+	{"add", Parser::BlendOp::Add},
+	{"subtract", Parser::BlendOp::Subtract},
+	{"reverse_subtract", Parser::BlendOp::ReverseSubtract},
+	{"min", Parser::BlendOp::Min},
+	{"max", Parser::BlendOp::Max}
+};
+
+static const std::unordered_map<std::string, Parser::LogicOp> logicOpMap =
+{
+	{"clear", Parser::LogicOp::Clear},
+	{"and", Parser::LogicOp::And},
+	{"and_reverse", Parser::LogicOp::AndReverse},
+	{"copy", Parser::LogicOp::Copy},
+	{"and_inverted", Parser::LogicOp::AndInverted},
+	{"no_op", Parser::LogicOp::NoOp},
+	{"xor", Parser::LogicOp::Xor},
+	{"or", Parser::LogicOp::Or},
+	{"nor", Parser::LogicOp::Nor},
+	{"equivalent", Parser::LogicOp::Equivalent},
+	{"invert", Parser::LogicOp::Invert},
+	{"or_reverse", Parser::LogicOp::OrReverse},
+	{"copy_inverted", Parser::LogicOp::CopyInverted},
+	{"or_inverted", Parser::LogicOp::OrInverted},
+	{"nand", Parser::LogicOp::Nand},
+	{"set", Parser::LogicOp::Set}
+};
+
+static const std::unordered_map<std::string, Parser::Filter> filterMap =
+{
+	{"nearest", Parser::Filter::Nearest},
+	{"linear", Parser::Filter::Linear}
+};
+
+static const std::unordered_map<std::string, Parser::MipFilter> mipFilterMap =
+{
+	{"none", Parser::MipFilter::None},
+	{"nearest", Parser::MipFilter::Nearest},
+	{"linear", Parser::MipFilter::Linear},
+	{"anisotropic", Parser::MipFilter::Anisotropic}
+};
+
+static const std::unordered_map<std::string, Parser::AddressMode> addressModeMap =
+{
+	{"repeat", Parser::AddressMode::Repeat},
+	{"mirrored_repeat", Parser::AddressMode::MirroredRepeat},
+	{"clamp_to_edge", Parser::AddressMode::ClampToEdge},
+	{"clamp_to_border", Parser::AddressMode::ClampToBorder},
+	{"mirror_once", Parser::AddressMode::MirrorOnce}
+};
+
+static const std::unordered_map<std::string, Parser::BorderColor> borderColorMap =
+{
+	{"transparent_black", Parser::BorderColor::TransparentBlack},
+	{"transparent_int_zero", Parser::BorderColor::TransparentIntZero},
+	{"opaque_black", Parser::BorderColor::OpaqueBlack},
+	{"opaque_int_zero", Parser::BorderColor::OpaqueIntZero},
+	{"opaque_white", Parser::BorderColor::OpaqueWhite},
+	{"opaque_int_one", Parser::BorderColor::OpaqueIntOne}
 };
 
 static bool skipWhitespace(const std::vector<Token>& tokens, std::size_t& i, std::size_t maxValue)
@@ -225,38 +366,12 @@ KeyValueResult readKeyValue(Output& output, const Token*& key, Token& valueToken
 
 static bool getStage(Parser::Stage& stage, const Token& token)
 {
-	if (token.value == "vertex")
-	{
-		stage = Parser::Stage::Vertex;
-		return true;
-	}
-	else if (token.value == "tessellation_control")
-	{
-		stage = Parser::Stage::TessellationControl;
-		return true;
-	}
-	else if (token.value == "tessellation_evaluation")
-	{
-		stage = Parser::Stage::TessellationEvaluation;
-		return true;
-	}
-	else if (token.value == "geometry")
-	{
-		stage = Parser::Stage::Geometry;
-		return true;
-	}
-	else if (token.value == "fragment")
-	{
-		stage = Parser::Stage::Fragment;
-		return true;
-	}
-	else if (token.value == "compute")
-	{
-		stage = Parser::Stage::Compute;
-		return true;
-	}
+	auto foundIter = stageMap.find(token.value);
+	if (foundIter == stageMap.end())
+		return false;
 
-	return false;
+	stage = foundIter->second;
+	return true;
 }
 
 static bool getBool(Output& output, Parser::Bool& value, const Token& token)
@@ -380,267 +495,100 @@ static bool getVec4(Output& output, std::array<float, 4>& value, const Token& to
 
 static bool getPolygonMode(Output& output, Parser::PolygonMode& value, const Token& token)
 {
-	if (token.value == "fill")
-	{
-		value = Parser::PolygonMode::Fill;
-		return true;
-	}
-	else if (token.value == "line")
-	{
-		value = Parser::PolygonMode::Line;
-		return true;
-	}
-	else if (token.value == "point")
-	{
-		value = Parser::PolygonMode::Point;
-		return true;
-	}
-	else
+	auto foundIter = polygonModeMap.find(token.value);
+	if (foundIter == polygonModeMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
 			token.column, false, "invalid polygon mode value: " + token.value);
 		return false;
 	}
+
+	value = foundIter->second;
+	return true;
 }
 
 static bool getCullMode(Output& output, Parser::CullMode& value, const Token& token)
 {
-	if (token.value == "none")
-	{
-		value = Parser::CullMode::None;
-		return true;
-	}
-	else if (token.value == "front")
-	{
-		value = Parser::CullMode::Front;
-		return true;
-	}
-	else if (token.value == "back")
-	{
-		value = Parser::CullMode::Back;
-		return true;
-	}
-	else if (token.value == "front_and_back")
-	{
-		value = Parser::CullMode::FrontAndBack;
-		return true;
-	}
-	else
+	auto foundIter = cullModeMap.find(token.value);
+	if (foundIter == cullModeMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
 			token.column, false, "invalid cull mode value: " + token.value);
 		return false;
 	}
+
+	value = foundIter->second;
+	return true;
 }
 
 static bool getFrontFace(Output& output, Parser::FrontFace& value, const Token& token)
 {
-	if (token.value == "counter_clockwise")
-	{
-		value = Parser::FrontFace::CounterClockwise;
-		return true;
-	}
-	else if (token.value == "clockwise")
-	{
-		value = Parser::FrontFace::Clockwise;
-		return true;
-	}
-	else
+	auto foundIter = frontFaceMap.find(token.value);
+	if (foundIter == frontFaceMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
 			token.column, false, "invalid front face value: " + token.value);
 		return false;
 	}
+
+	value = foundIter->second;
+	return true;
+}
+
+static bool getStencilOp(Output& output, Parser::StencilOp& value, const Token& token)
+{
+	auto foundIter = stencilOpMap.find(token.value);
+	if (foundIter == stencilOpMap.end())
+	{
+		output.addMessage(Output::Level::Error, token.fileName, token.line,
+			token.column, false, "invalid stencil op value: " + token.value);
+		return false;
+	}
+
+	value = foundIter->second;
+	return true;
 }
 
 static bool getCompareOp(Output& output, Parser::CompareOp& value, const Token& token)
 {
-	if (token.value == "never")
-	{
-		value = Parser::CompareOp::Never;
-		return true;
-	}
-	else if (token.value == "less")
-	{
-		value = Parser::CompareOp::Less;
-		return true;
-	}
-	else if (token.value == "equal")
-	{
-		value = Parser::CompareOp::Equal;
-		return true;
-	}
-	else if (token.value == "less_or_equal")
-	{
-		value = Parser::CompareOp::LessOrEqual;
-		return true;
-	}
-	else if (token.value == "greater")
-	{
-		value = Parser::CompareOp::Greater;
-		return true;
-	}
-	else if (token.value == "not_equal")
-	{
-		value = Parser::CompareOp::NotEqual;
-		return true;
-	}
-	else if (token.value == "greater_or_equal")
-	{
-		value = Parser::CompareOp::GreaterOrEqual;
-		return true;
-	}
-	else if (token.value == "always")
-	{
-		value = Parser::CompareOp::Always;
-		return true;
-	}
-	else
+	auto foundIter = compareOpMap.find(token.value);
+	if (foundIter == compareOpMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
 			token.column, false, "invalid compare op value: " + token.value);
 		return false;
 	}
+
+	value = foundIter->second;
+	return true;
 }
 
 static bool getBlendFactor(Output& output, Parser::BlendFactor& value, const Token& token)
 {
-	if (token.value == "zero")
-	{
-		value = Parser::BlendFactor::Zero;
-		return true;
-	}
-	else if (token.value == "one")
-	{
-		value = Parser::BlendFactor::One;
-		return true;
-	}
-	else if (token.value == "src_color")
-	{
-		value = Parser::BlendFactor::SrcColor;
-		return true;
-	}
-	else if (token.value == "one_minus_src_color")
-	{
-		value = Parser::BlendFactor::OneMinusSrcColor;
-		return true;
-	}
-	else if (token.value == "dst_color")
-	{
-		value = Parser::BlendFactor::DstColor;
-		return true;
-	}
-	else if (token.value == "one_minus_dst_color")
-	{
-		value = Parser::BlendFactor::OneMinusDstColor;
-		return true;
-	}
-	else if (token.value == "src_alpha")
-	{
-		value = Parser::BlendFactor::SrcAlpha;
-		return true;
-	}
-	else if (token.value == "one_minus_src_alpha")
-	{
-		value = Parser::BlendFactor::OneMinusSrcAlpha;
-		return true;
-	}
-	else if (token.value == "dst_alpha")
-	{
-		value = Parser::BlendFactor::DstAlpha;
-		return true;
-	}
-	else if (token.value == "one_minus_dst_alpha")
-	{
-		value = Parser::BlendFactor::OneMinusDstAlpha;
-		return true;
-	}
-	else if (token.value == "const_color")
-	{
-		value = Parser::BlendFactor::ConstColor;
-		return true;
-	}
-	else if (token.value == "one_minus_const_color")
-	{
-		value = Parser::BlendFactor::OneMinusConstColor;
-		return true;
-	}
-	else if (token.value == "const_alpha")
-	{
-		value = Parser::BlendFactor::ConstAlpha;
-		return true;
-	}
-	else if (token.value == "one_minus_const_alpha")
-	{
-		value = Parser::BlendFactor::OneMinusConstAlpha;
-		return true;
-	}
-	else if (token.value == "src_alpha_saturate")
-	{
-		value = Parser::BlendFactor::SrcAlphaSaturate;
-		return true;
-	}
-	else if (token.value == "src1_color")
-	{
-		value = Parser::BlendFactor::Src1Color;
-		return true;
-	}
-	else if (token.value == "one_minus_src1_color")
-	{
-		value = Parser::BlendFactor::OneMinusSrc1Color;
-		return true;
-	}
-	else if (token.value == "src1_alpha")
-	{
-		value = Parser::BlendFactor::Src1Alpha;
-		return true;
-	}
-	else if (token.value == "one_minus_src1_alpha")
-	{
-		value = Parser::BlendFactor::OneMinusSrc1Alpha;
-		return true;
-	}
-	else
+	auto foundIter = blendFactorMap.find(token.value);
+	if (foundIter == blendFactorMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
 			token.column, false, "invalid blend factor value: " + token.value);
 		return false;
 	}
+
+	value = foundIter->second;
+	return true;
 }
 
 static bool getBlendOp(Output& output, Parser::BlendOp& value, const Token& token)
 {
-	if (token.value == "add")
-	{
-		value = Parser::BlendOp::Add;
-		return true;
-	}
-	else if (token.value == "subtract")
-	{
-		value = Parser::BlendOp::Subtract;
-		return true;
-	}
-	else if (token.value == "reverse_subtract")
-	{
-		value = Parser::BlendOp::ReverseSubtract;
-		return true;
-	}
-	else if (token.value == "min")
-	{
-		value = Parser::BlendOp::Min;
-		return true;
-	}
-	else if (token.value == "max")
-	{
-		value = Parser::BlendOp::Max;
-		return true;
-	}
-	else
+	auto foundIter = blendOpMap.find(token.value);
+	if (foundIter == blendOpMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
 			token.column, false, "invalid blend op value: " + token.value);
 		return false;
 	}
+
+	value = foundIter->second;
+	return true;
 }
 
 static bool getColorMask(Output& output, Parser::ColorMask& value, const Token& token)
@@ -682,144 +630,18 @@ static bool getColorMask(Output& output, Parser::ColorMask& value, const Token& 
 	return true;
 }
 
-static bool getStencilOp(Output& output, Parser::StencilOp& value, const Token& token)
-{
-	if (token.value == "keep")
-	{
-		value = Parser::StencilOp::Keep;
-		return true;
-	}
-	else if (token.value == "zero")
-	{
-		value = Parser::StencilOp::Zero;
-		return true;
-	}
-	else if (token.value == "replace")
-	{
-		value = Parser::StencilOp::Replace;
-		return true;
-	}
-	else if (token.value == "increment_and_clamp")
-	{
-		value = Parser::StencilOp::IncrementAndClamp;
-		return true;
-	}
-	else if (token.value == "decrement_and_clamp")
-	{
-		value = Parser::StencilOp::DecrementAndClamp;
-		return true;
-	}
-	else if (token.value == "invert")
-	{
-		value = Parser::StencilOp::Invert;
-		return true;
-	}
-	else if (token.value == "increment_and_wrap")
-	{
-		value = Parser::StencilOp::IncrementAndWrap;
-		return true;
-	}
-	else if (token.value == "decrement_and_wrap")
-	{
-		value = Parser::StencilOp::DecrementAndWrap;
-		return true;
-	}
-	else
-	{
-		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid stencil op value: " + token.value);
-		return false;
-	}
-}
-
 static bool getLogicalOp(Output& output, Parser::LogicOp& value, const Token& token)
 {
-	if (token.value == "clear")
-	{
-		value = Parser::LogicOp::Clear;
-		return true;
-	}
-	else if (token.value == "and")
-	{
-		value = Parser::LogicOp::And;
-		return true;
-	}
-	else if (token.value == "and_reverse")
-	{
-		value = Parser::LogicOp::AndReverse;
-		return true;
-	}
-	else if (token.value == "copy")
-	{
-		value = Parser::LogicOp::Copy;
-		return true;
-	}
-	else if (token.value == "and_inverted")
-	{
-		value = Parser::LogicOp::AndInverted;
-		return true;
-	}
-	else if (token.value == "no_op")
-	{
-		value = Parser::LogicOp::NoOp;
-		return true;
-	}
-	else if (token.value == "xor")
-	{
-		value = Parser::LogicOp::Xor;
-		return true;
-	}
-	else if (token.value == "or")
-	{
-		value = Parser::LogicOp::Or;
-		return true;
-	}
-	else if (token.value == "nor")
-	{
-		value = Parser::LogicOp::Nor;
-		return true;
-	}
-	else if (token.value == "equivalent")
-	{
-		value = Parser::LogicOp::Equivalent;
-		return true;
-	}
-	else if (token.value == "invert")
-	{
-		value = Parser::LogicOp::Invert;
-		return true;
-	}
-	else if (token.value == "or_reverse")
-	{
-		value = Parser::LogicOp::OrReverse;
-		return true;
-	}
-	else if (token.value == "copy_inverted")
-	{
-		value = Parser::LogicOp::CopyInverted;
-		return true;
-	}
-	else if (token.value == "or_inverted")
-	{
-		value = Parser::LogicOp::OrInverted;
-		return true;
-	}
-	else if (token.value == "nand")
-	{
-		value = Parser::LogicOp::Nand;
-		return true;
-	}
-	else if (token.value == "set")
-	{
-		value = Parser::LogicOp::Set;
-		return true;
-	}
-	else
+	auto foundIter = logicOpMap.find(token.value);
+	if (foundIter == logicOpMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid logical op value: " + token.value);
+			token.column, false, "invalid logic op value: " + token.value);
 		return false;
 	}
+
+	value = foundIter->second;
+	return true;
 }
 
 static bool isAttachment(unsigned int& index, const std::string& key, const char* field)
@@ -851,6 +673,62 @@ static bool isAttachment(unsigned int& index, const std::string& key, const char
 		index = 0;
 		return key == field;
 	}
+}
+
+static bool getFilter(Output& output, Parser::Filter& value, const Token& token)
+{
+	auto foundIter = filterMap.find(token.value);
+	if (foundIter == filterMap.end())
+	{
+		output.addMessage(Output::Level::Error, token.fileName, token.line,
+			token.column, false, "invalid filter value: " + token.value);
+		return false;
+	}
+
+	value = foundIter->second;
+	return true;
+}
+
+static bool getMipFilter(Output& output, Parser::MipFilter& value, const Token& token)
+{
+	auto foundIter = mipFilterMap.find(token.value);
+	if (foundIter == mipFilterMap.end())
+	{
+		output.addMessage(Output::Level::Error, token.fileName, token.line,
+			token.column, false, "invalid mip filter value: " + token.value);
+		return false;
+	}
+
+	value = foundIter->second;
+	return true;
+}
+
+static bool getAddressMode(Output& output, Parser::AddressMode& value, const Token& token)
+{
+	auto foundIter = addressModeMap.find(token.value);
+	if (foundIter == addressModeMap.end())
+	{
+		output.addMessage(Output::Level::Error, token.fileName, token.line,
+			token.column, false, "invalid address mode value: " + token.value);
+		return false;
+	}
+
+	value = foundIter->second;
+	return true;
+}
+
+static bool getBorderColor(Output& output, Parser::BorderColor& value, const Token& token)
+{
+	auto foundIter = borderColorMap.find(token.value);
+	if (foundIter == borderColorMap.end())
+	{
+		output.addMessage(Output::Level::Error, token.fileName, token.line,
+			token.column, false, "invalid border color value: " + token.value);
+		return false;
+	}
+
+	value = foundIter->second;
+	return true;
 }
 
 enum class ParseResult
@@ -1468,10 +1346,19 @@ bool Parser::parse(Output& output, int options)
 			}
 		}
 
-		// Declarations that must be in the start: pipeline and [ for stage declaration.
+		// Declarations that must be in the start: pipeline, sampler_state, and [ for stage declaration.
 		if (elementStart && token.value == "pipeline")
 		{
 			if (!readPipeline(output, tokens, ++i))
+				return false;
+
+			if (i >= tokens.size())
+				break;
+			lastToken = &tokens[i];
+		}
+		else if (elementStart && token.value == "sampler_state")
+		{
+			if (!readSampler(output, tokens, ++i))
 				return false;
 
 			if (i >= tokens.size())
@@ -1870,6 +1757,129 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 		return false;
 
 	m_pipelines.push_back(std::move(pipeline));
+	return true;
+}
+
+bool Parser::readSampler(Output& output, const std::vector<Token>& tokens, std::size_t& i)
+{
+	// Handle all parsing of the sampler state here. This will not be output for any part of the
+	// target GLSL.
+	Sampler sampler;
+
+	if (!skipWhitespace(output, tokens, i))
+		return false;
+
+	// Read the name
+	if (tokens[i].type != Token::Type::Identifier)
+	{
+		output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+			tokens[i].column, false, "unexpected token: " + tokens[i].value);
+		return false;
+	}
+
+	sampler.token = &tokens[i];
+	sampler.name = tokens[i].value;
+	for (const Sampler& other : m_samplers)
+	{
+		if (other.name == sampler.name)
+		{
+			output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+				tokens[i].column, false, "sampler state of name " + sampler.name +
+				" already declared");
+			output.addMessage(Output::Level::Error, other.token->fileName, other.token->line,
+				other.token->column, true,
+				"see other declaration of sampler state " + sampler.name);
+			return false;
+		}
+	}
+
+	if (!skipWhitespace(output, tokens, ++i))
+		return false;
+
+	if (tokens[i].value != "{")
+	{
+		output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+			tokens[i].column, false, "unexpected token: " + tokens[i].value);
+		return false;
+	}
+
+	++i;
+	KeyValueResult keyValueResult;
+	do
+	{
+		const Token* key = nullptr;
+		Token value;
+		keyValueResult = readKeyValue(output, key, value, tokens, i);
+		if (keyValueResult != KeyValueResult::Success)
+			break;
+
+		if (key->value == "min_filter")
+		{
+			if (!getFilter(output, sampler.minFilter, value))
+				return false;
+		}
+		else if (key->value == "mag_filter")
+		{
+			if (!getFilter(output, sampler.magFilter, value))
+				return false;
+		}
+		else if (key->value == "mip_filter")
+		{
+			if (!getMipFilter(output, sampler.mipFilter, value))
+				return false;
+		}
+		else if (key->value == "address_mode_u")
+		{
+			if (!getAddressMode(output, sampler.addressModeU, value))
+				return false;
+		}
+		else if (key->value == "address_mode_v")
+		{
+			if (!getAddressMode(output, sampler.addressModeV, value))
+				return false;
+		}
+		else if (key->value == "address_mode_w")
+		{
+			if (!getAddressMode(output, sampler.addressModeW, value))
+				return false;
+		}
+		else if (key->value == "mip_lod_bias")
+		{
+			if (!getFloat(output, sampler.mipLodBias, value))
+				return false;
+		}
+		else if (key->value == "max_anisotropy")
+		{
+			if (!getFloat(output, sampler.maxAnisotropy, value))
+				return false;
+		}
+		else if (key->value == "min_lod")
+		{
+			if (!getFloat(output, sampler.minLod, value))
+				return false;
+		}
+		else if (key->value == "max_lod")
+		{
+			if (!getFloat(output, sampler.maxLod, value))
+				return false;
+		}
+		else if (key->value == "border_color")
+		{
+			if (!getBorderColor(output, sampler.borderColor, value))
+				return false;
+		}
+		else
+		{
+			output.addMessage(Output::Level::Error, key->fileName, key->line, key->column, false,
+				"unknown sampler state name: " + key->value);
+			return false;
+		}
+	} while (keyValueResult == KeyValueResult::Success);
+
+	if (keyValueResult == KeyValueResult::Error)
+		return false;
+
+	m_samplers.push_back(std::move(sampler));
 	return true;
 }
 
