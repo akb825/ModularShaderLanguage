@@ -810,12 +810,14 @@ SpirVProcessor::SpirVProcessor(const std::vector<std::uint32_t>& spirv)
 			{
 				assert(wordCount == 4);
 				std::uint32_t id = spirv[i + 1];
-				std::uint32_t typeId = spirv[i + 2];
+				std::uint32_t type = spirv[i + 2];
 				std::uint32_t constantId = spirv[i + 3];
-				assert(data.types.find(typeId) != data.types.end());
+				assert(data.types.find(type) != data.types.end() ||
+					data.arrayTypes.find(type) != data.arrayTypes.end() ||
+					data.structTypes.find(type) != data.structTypes.end());
 				assert(data.intConstants.find(constantId) != data.intConstants.end());
 				ArrayInfo& arrayInfo = data.arrayTypes[id];
-				arrayInfo.type = typeId;
+				arrayInfo.type = type;
 				arrayInfo.length = data.intConstants[constantId];
 				break;
 			}
@@ -823,10 +825,12 @@ SpirVProcessor::SpirVProcessor(const std::vector<std::uint32_t>& spirv)
 			{
 				assert(wordCount == 3);
 				std::uint32_t id = spirv[i + 1];
-				std::uint32_t typeId = spirv[i + 2];
-				assert(data.types.find(typeId) != data.types.end());
+				std::uint32_t type = spirv[i + 2];
+				assert(data.types.find(type) != data.types.end() ||
+					data.arrayTypes.find(type) != data.arrayTypes.end() ||
+					data.structTypes.find(type) != data.structTypes.end());
 				ArrayInfo& arrayInfo = data.arrayTypes[id];
-				arrayInfo.type = typeId;
+				arrayInfo.type = type;
 				arrayInfo.length = unknownLength;
 				break;
 			}
