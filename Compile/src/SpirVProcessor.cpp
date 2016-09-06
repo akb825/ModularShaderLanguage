@@ -19,6 +19,7 @@
 #include <SPIRV/spirv.hpp>
 #include <cassert>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace msl
 {
@@ -46,9 +47,10 @@ struct IntermediateData
 	std::unordered_map<std::uint32_t, std::vector<std::uint32_t>> structTypes;
 	std::unordered_map<std::uint32_t, CompiledResult::Type> types;
 	std::unordered_map<std::uint32_t, std::vector<std::uint32_t>> memberOffsets;
-	std::unordered_map<std::uint32_t, std::uint32_t> arrayStrides;
 	std::unordered_map<std::uint32_t, std::uint32_t> intConstants;
 	std::unordered_map<std::uint32_t, ArrayInfo> arrayTypes;
+	std::unordered_set<std::uint32_t> uniformBlocks;
+	std::unordered_set<std::uint32_t> uniformBuffers;
 
 	// Metadata.
 	std::unordered_map<std::uint32_t, std::uint32_t> bindings;
@@ -722,9 +724,13 @@ SpirVProcessor::SpirVProcessor(const std::vector<std::uint32_t>& spirv)
 						assert(wordCount == 5);
 						data.locations[id] = spirv[i + 4];
 						break;
-					case spv::DecorationArrayStride:
+					case spv::DecorationBlock:
+						assert(wordCount == 4);
+						data.uniformBlocks.insert(id);
+						break;
+					case spv::DecorationBufferBlock:
 						assert(wordCount == 5);
-						data.arrayStrides[id] = spirv[i + 4];
+						data.uniformBuffers.insert(id);
 						break;
 				}
 				break;
