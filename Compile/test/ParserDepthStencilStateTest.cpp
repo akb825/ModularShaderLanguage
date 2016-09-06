@@ -23,7 +23,7 @@
 namespace msl
 {
 
-static unsigned int unsetInt = Parser::unsetInt;
+static unsigned int unsetInt = unknown;
 
 TEST(ParserDepthStencilStateTest, SampledShadingEnable)
 {
@@ -36,9 +36,9 @@ TEST(ParserDepthStencilStateTest, SampledShadingEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::True,
+		EXPECT_EQ(Bool::True,
 			pipelines[0].renderState.depthStencilState.depthTestEnable);
 	}
 
@@ -50,9 +50,9 @@ TEST(ParserDepthStencilStateTest, SampledShadingEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::False,
+		EXPECT_EQ(Bool::False,
 			pipelines[0].renderState.depthStencilState.depthTestEnable);
 	}
 
@@ -83,9 +83,9 @@ TEST(ParserDepthStencilStateTest, DepthWriteEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::True,
+		EXPECT_EQ(Bool::True,
 			pipelines[0].renderState.depthStencilState.depthWriteEnable);
 	}
 
@@ -97,9 +97,9 @@ TEST(ParserDepthStencilStateTest, DepthWriteEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::False,
+		EXPECT_EQ(Bool::False,
 			pipelines[0].renderState.depthStencilState.depthWriteEnable);
 	}
 
@@ -130,9 +130,9 @@ TEST(ParserDepthStencilStateTest, DepthCompareOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::CompareOp::Never,
+		EXPECT_EQ(CompareOp::Never,
 			pipelines[0].renderState.depthStencilState.depthCompareOp);
 	}
 
@@ -144,9 +144,9 @@ TEST(ParserDepthStencilStateTest, DepthCompareOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::CompareOp::Less,
+		EXPECT_EQ(CompareOp::Less,
 			pipelines[0].renderState.depthStencilState.depthCompareOp);
 	}
 
@@ -158,9 +158,9 @@ TEST(ParserDepthStencilStateTest, DepthCompareOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::CompareOp::Equal,
+		EXPECT_EQ(CompareOp::Equal,
 			pipelines[0].renderState.depthStencilState.depthCompareOp);
 	}
 
@@ -172,9 +172,9 @@ TEST(ParserDepthStencilStateTest, DepthCompareOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::CompareOp::LessOrEqual,
+		EXPECT_EQ(CompareOp::LessOrEqual,
 			pipelines[0].renderState.depthStencilState.depthCompareOp);
 	}
 
@@ -186,9 +186,9 @@ TEST(ParserDepthStencilStateTest, DepthCompareOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::CompareOp::Greater,
+		EXPECT_EQ(CompareOp::Greater,
 			pipelines[0].renderState.depthStencilState.depthCompareOp);
 	}
 
@@ -200,9 +200,9 @@ TEST(ParserDepthStencilStateTest, DepthCompareOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::CompareOp::NotEqual,
+		EXPECT_EQ(CompareOp::NotEqual,
 			pipelines[0].renderState.depthStencilState.depthCompareOp);
 	}
 
@@ -214,9 +214,9 @@ TEST(ParserDepthStencilStateTest, DepthCompareOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::CompareOp::GreaterOrEqual,
+		EXPECT_EQ(CompareOp::GreaterOrEqual,
 			pipelines[0].renderState.depthStencilState.depthCompareOp);
 	}
 
@@ -228,9 +228,9 @@ TEST(ParserDepthStencilStateTest, DepthCompareOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::CompareOp::Always,
+		EXPECT_EQ(CompareOp::Always,
 			pipelines[0].renderState.depthStencilState.depthCompareOp);
 	}
 
@@ -261,9 +261,9 @@ TEST(ParserDepthStencilStateTest, DepthBoundsTestEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::True,
+		EXPECT_EQ(Bool::True,
 			pipelines[0].renderState.depthStencilState.depthBoundsTestEnable);
 	}
 
@@ -275,9 +275,9 @@ TEST(ParserDepthStencilStateTest, DepthBoundsTestEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::False,
+		EXPECT_EQ(Bool::False,
 			pipelines[0].renderState.depthStencilState.depthBoundsTestEnable);
 	}
 
@@ -308,9 +308,9 @@ TEST(ParserDepthStencilStateTest, StencilTestEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::True,
+		EXPECT_EQ(Bool::True,
 			pipelines[0].renderState.depthStencilState.stencilTestEnable);
 	}
 
@@ -322,9 +322,9 @@ TEST(ParserDepthStencilStateTest, StencilTestEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::False,
+		EXPECT_EQ(Bool::False,
 			pipelines[0].renderState.depthStencilState.stencilTestEnable);
 	}
 
@@ -355,11 +355,11 @@ TEST(ParserDepthStencilStateTest, StencilFailOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::Keep,
+		EXPECT_EQ(StencilOp::Keep,
 			pipelines[0].renderState.depthStencilState.frontStencil.failOp);
-		EXPECT_EQ(Parser::StencilOp::Keep,
+		EXPECT_EQ(StencilOp::Keep,
 			pipelines[0].renderState.depthStencilState.backStencil.failOp);
 	}
 
@@ -371,11 +371,11 @@ TEST(ParserDepthStencilStateTest, StencilFailOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::Zero,
+		EXPECT_EQ(StencilOp::Zero,
 			pipelines[0].renderState.depthStencilState.frontStencil.failOp);
-		EXPECT_EQ(Parser::StencilOp::Zero,
+		EXPECT_EQ(StencilOp::Zero,
 			pipelines[0].renderState.depthStencilState.backStencil.failOp);
 	}
 
@@ -387,11 +387,11 @@ TEST(ParserDepthStencilStateTest, StencilFailOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::Replace,
+		EXPECT_EQ(StencilOp::Replace,
 			pipelines[0].renderState.depthStencilState.frontStencil.failOp);
-		EXPECT_EQ(Parser::StencilOp::Replace,
+		EXPECT_EQ(StencilOp::Replace,
 			pipelines[0].renderState.depthStencilState.backStencil.failOp);
 	}
 
@@ -403,11 +403,11 @@ TEST(ParserDepthStencilStateTest, StencilFailOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::IncrementAndClamp,
+		EXPECT_EQ(StencilOp::IncrementAndClamp,
 			pipelines[0].renderState.depthStencilState.frontStencil.failOp);
-		EXPECT_EQ(Parser::StencilOp::IncrementAndClamp,
+		EXPECT_EQ(StencilOp::IncrementAndClamp,
 			pipelines[0].renderState.depthStencilState.backStencil.failOp);
 	}
 
@@ -419,11 +419,11 @@ TEST(ParserDepthStencilStateTest, StencilFailOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::DecrementAndClamp,
+		EXPECT_EQ(StencilOp::DecrementAndClamp,
 			pipelines[0].renderState.depthStencilState.frontStencil.failOp);
-		EXPECT_EQ(Parser::StencilOp::DecrementAndClamp,
+		EXPECT_EQ(StencilOp::DecrementAndClamp,
 			pipelines[0].renderState.depthStencilState.backStencil.failOp);
 	}
 
@@ -435,11 +435,11 @@ TEST(ParserDepthStencilStateTest, StencilFailOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::Invert,
+		EXPECT_EQ(StencilOp::Invert,
 			pipelines[0].renderState.depthStencilState.frontStencil.failOp);
-		EXPECT_EQ(Parser::StencilOp::Invert,
+		EXPECT_EQ(StencilOp::Invert,
 			pipelines[0].renderState.depthStencilState.backStencil.failOp);
 	}
 
@@ -451,11 +451,11 @@ TEST(ParserDepthStencilStateTest, StencilFailOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::IncrementAndWrap,
+		EXPECT_EQ(StencilOp::IncrementAndWrap,
 			pipelines[0].renderState.depthStencilState.frontStencil.failOp);
-		EXPECT_EQ(Parser::StencilOp::IncrementAndWrap,
+		EXPECT_EQ(StencilOp::IncrementAndWrap,
 			pipelines[0].renderState.depthStencilState.backStencil.failOp);
 	}
 
@@ -467,11 +467,11 @@ TEST(ParserDepthStencilStateTest, StencilFailOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::DecrementAndWrap,
+		EXPECT_EQ(StencilOp::DecrementAndWrap,
 			pipelines[0].renderState.depthStencilState.frontStencil.failOp);
-		EXPECT_EQ(Parser::StencilOp::DecrementAndWrap,
+		EXPECT_EQ(StencilOp::DecrementAndWrap,
 			pipelines[0].renderState.depthStencilState.backStencil.failOp);
 	}
 
@@ -502,11 +502,11 @@ TEST(ParserDepthStencilStateTest, StencilPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::Keep,
+		EXPECT_EQ(StencilOp::Keep,
 			pipelines[0].renderState.depthStencilState.frontStencil.passOp);
-		EXPECT_EQ(Parser::StencilOp::Keep,
+		EXPECT_EQ(StencilOp::Keep,
 			pipelines[0].renderState.depthStencilState.backStencil.passOp);
 	}
 
@@ -518,11 +518,11 @@ TEST(ParserDepthStencilStateTest, StencilPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::IncrementAndClamp,
+		EXPECT_EQ(StencilOp::IncrementAndClamp,
 			pipelines[0].renderState.depthStencilState.frontStencil.passOp);
-		EXPECT_EQ(Parser::StencilOp::IncrementAndClamp,
+		EXPECT_EQ(StencilOp::IncrementAndClamp,
 			pipelines[0].renderState.depthStencilState.backStencil.passOp);
 	}
 
@@ -553,11 +553,11 @@ TEST(ParserDepthStencilStateTest, StencilDepthPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::Keep,
+		EXPECT_EQ(StencilOp::Keep,
 			pipelines[0].renderState.depthStencilState.frontStencil.depthFailOp);
-		EXPECT_EQ(Parser::StencilOp::Keep,
+		EXPECT_EQ(StencilOp::Keep,
 			pipelines[0].renderState.depthStencilState.backStencil.depthFailOp);
 	}
 
@@ -569,11 +569,11 @@ TEST(ParserDepthStencilStateTest, StencilDepthPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::IncrementAndClamp,
+		EXPECT_EQ(StencilOp::IncrementAndClamp,
 			pipelines[0].renderState.depthStencilState.frontStencil.depthFailOp);
-		EXPECT_EQ(Parser::StencilOp::IncrementAndClamp,
+		EXPECT_EQ(StencilOp::IncrementAndClamp,
 			pipelines[0].renderState.depthStencilState.backStencil.depthFailOp);
 	}
 
@@ -604,7 +604,7 @@ TEST(ParserDepthStencilStateTest, StencilCompareMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(123U,
 			pipelines[0].renderState.depthStencilState.frontStencil.compareMask);
@@ -620,7 +620,7 @@ TEST(ParserDepthStencilStateTest, StencilCompareMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(0xABCD,
 			pipelines[0].renderState.depthStencilState.frontStencil.compareMask);
@@ -655,7 +655,7 @@ TEST(ParserDepthStencilStateTest, StencilWriteMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(123U,
 			pipelines[0].renderState.depthStencilState.frontStencil.writeMask);
@@ -671,7 +671,7 @@ TEST(ParserDepthStencilStateTest, StencilWriteMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(0xABCD,
 			pipelines[0].renderState.depthStencilState.frontStencil.writeMask);
@@ -706,7 +706,7 @@ TEST(ParserDepthStencilStateTest, StencilReference)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(123U,
 			pipelines[0].renderState.depthStencilState.frontStencil.reference);
@@ -722,7 +722,7 @@ TEST(ParserDepthStencilStateTest, StencilReference)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(0xABCD,
 			pipelines[0].renderState.depthStencilState.frontStencil.reference);
@@ -757,11 +757,11 @@ TEST(ParserDepthStencilStateTest, FrontStencilFailOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::Keep,
+		EXPECT_EQ(StencilOp::Keep,
 			pipelines[0].renderState.depthStencilState.frontStencil.failOp);
-		EXPECT_EQ(Parser::StencilOp::Unset,
+		EXPECT_EQ(StencilOp::Unset,
 			pipelines[0].renderState.depthStencilState.backStencil.failOp);
 	}
 
@@ -773,11 +773,11 @@ TEST(ParserDepthStencilStateTest, FrontStencilFailOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::IncrementAndClamp,
+		EXPECT_EQ(StencilOp::IncrementAndClamp,
 			pipelines[0].renderState.depthStencilState.frontStencil.failOp);
-		EXPECT_EQ(Parser::StencilOp::Unset,
+		EXPECT_EQ(StencilOp::Unset,
 			pipelines[0].renderState.depthStencilState.backStencil.failOp);
 	}
 
@@ -808,11 +808,11 @@ TEST(ParserDepthStencilStateTest, FrontStencilPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::Keep,
+		EXPECT_EQ(StencilOp::Keep,
 			pipelines[0].renderState.depthStencilState.frontStencil.passOp);
-		EXPECT_EQ(Parser::StencilOp::Unset,
+		EXPECT_EQ(StencilOp::Unset,
 			pipelines[0].renderState.depthStencilState.backStencil.passOp);
 	}
 
@@ -824,11 +824,11 @@ TEST(ParserDepthStencilStateTest, FrontStencilPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::IncrementAndClamp,
+		EXPECT_EQ(StencilOp::IncrementAndClamp,
 			pipelines[0].renderState.depthStencilState.frontStencil.passOp);
-		EXPECT_EQ(Parser::StencilOp::Unset,
+		EXPECT_EQ(StencilOp::Unset,
 			pipelines[0].renderState.depthStencilState.backStencil.passOp);
 	}
 
@@ -859,11 +859,11 @@ TEST(ParserDepthStencilStateTest, FrontStencilDepthPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::Keep,
+		EXPECT_EQ(StencilOp::Keep,
 			pipelines[0].renderState.depthStencilState.frontStencil.depthFailOp);
-		EXPECT_EQ(Parser::StencilOp::Unset,
+		EXPECT_EQ(StencilOp::Unset,
 			pipelines[0].renderState.depthStencilState.backStencil.depthFailOp);
 	}
 
@@ -875,11 +875,11 @@ TEST(ParserDepthStencilStateTest, FrontStencilDepthPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::IncrementAndClamp,
+		EXPECT_EQ(StencilOp::IncrementAndClamp,
 			pipelines[0].renderState.depthStencilState.frontStencil.depthFailOp);
-		EXPECT_EQ(Parser::StencilOp::Unset,
+		EXPECT_EQ(StencilOp::Unset,
 			pipelines[0].renderState.depthStencilState.backStencil.depthFailOp);
 	}
 
@@ -910,7 +910,7 @@ TEST(ParserDepthStencilStateTest, FrontStencilCompareMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(123U,
 			pipelines[0].renderState.depthStencilState.frontStencil.compareMask);
@@ -926,7 +926,7 @@ TEST(ParserDepthStencilStateTest, FrontStencilCompareMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(0xABCD,
 			pipelines[0].renderState.depthStencilState.frontStencil.compareMask);
@@ -961,7 +961,7 @@ TEST(ParserDepthStencilStateTest, FrontStencilWriteMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(123U,
 			pipelines[0].renderState.depthStencilState.frontStencil.writeMask);
@@ -977,7 +977,7 @@ TEST(ParserDepthStencilStateTest, FrontStencilWriteMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(0xABCD,
 			pipelines[0].renderState.depthStencilState.frontStencil.writeMask);
@@ -1012,7 +1012,7 @@ TEST(ParserDepthStencilStateTest, FrontStencilReference)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(123U,
 			pipelines[0].renderState.depthStencilState.frontStencil.reference);
@@ -1028,7 +1028,7 @@ TEST(ParserDepthStencilStateTest, FrontStencilReference)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(0xABCD,
 			pipelines[0].renderState.depthStencilState.frontStencil.reference);
@@ -1063,11 +1063,11 @@ TEST(ParserDepthStencilStateTest, BackStencilFailOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::Unset,
+		EXPECT_EQ(StencilOp::Unset,
 			pipelines[0].renderState.depthStencilState.frontStencil.failOp);
-		EXPECT_EQ(Parser::StencilOp::Keep,
+		EXPECT_EQ(StencilOp::Keep,
 			pipelines[0].renderState.depthStencilState.backStencil.failOp);
 	}
 
@@ -1079,11 +1079,11 @@ TEST(ParserDepthStencilStateTest, BackStencilFailOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::Unset,
+		EXPECT_EQ(StencilOp::Unset,
 			pipelines[0].renderState.depthStencilState.frontStencil.failOp);
-		EXPECT_EQ(Parser::StencilOp::IncrementAndClamp,
+		EXPECT_EQ(StencilOp::IncrementAndClamp,
 			pipelines[0].renderState.depthStencilState.backStencil.failOp);
 	}
 
@@ -1114,11 +1114,11 @@ TEST(ParserDepthStencilStateTest, BackStencilPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::Unset,
+		EXPECT_EQ(StencilOp::Unset,
 			pipelines[0].renderState.depthStencilState.frontStencil.passOp);
-		EXPECT_EQ(Parser::StencilOp::Keep,
+		EXPECT_EQ(StencilOp::Keep,
 			pipelines[0].renderState.depthStencilState.backStencil.passOp);
 	}
 
@@ -1130,11 +1130,11 @@ TEST(ParserDepthStencilStateTest, BackStencilPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::Unset,
+		EXPECT_EQ(StencilOp::Unset,
 			pipelines[0].renderState.depthStencilState.frontStencil.passOp);
-		EXPECT_EQ(Parser::StencilOp::IncrementAndClamp,
+		EXPECT_EQ(StencilOp::IncrementAndClamp,
 			pipelines[0].renderState.depthStencilState.backStencil.passOp);
 	}
 
@@ -1165,11 +1165,11 @@ TEST(ParserDepthStencilStateTest, BackStencilDepthPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::Unset,
+		EXPECT_EQ(StencilOp::Unset,
 			pipelines[0].renderState.depthStencilState.frontStencil.depthFailOp);
-		EXPECT_EQ(Parser::StencilOp::Keep,
+		EXPECT_EQ(StencilOp::Keep,
 			pipelines[0].renderState.depthStencilState.backStencil.depthFailOp);
 	}
 
@@ -1181,11 +1181,11 @@ TEST(ParserDepthStencilStateTest, BackStencilDepthPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::StencilOp::Unset,
+		EXPECT_EQ(StencilOp::Unset,
 			pipelines[0].renderState.depthStencilState.frontStencil.depthFailOp);
-		EXPECT_EQ(Parser::StencilOp::IncrementAndClamp,
+		EXPECT_EQ(StencilOp::IncrementAndClamp,
 			pipelines[0].renderState.depthStencilState.backStencil.depthFailOp);
 	}
 
@@ -1216,7 +1216,7 @@ TEST(ParserDepthStencilStateTest, BackStencilCompareMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(unsetInt,
 			pipelines[0].renderState.depthStencilState.frontStencil.compareMask);
@@ -1232,7 +1232,7 @@ TEST(ParserDepthStencilStateTest, BackStencilCompareMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(unsetInt,
 			pipelines[0].renderState.depthStencilState.frontStencil.compareMask);
@@ -1267,7 +1267,7 @@ TEST(ParserDepthStencilStateTest, BackStencilWriteMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(unsetInt,
 			pipelines[0].renderState.depthStencilState.frontStencil.writeMask);
@@ -1283,7 +1283,7 @@ TEST(ParserDepthStencilStateTest, BackStencilWriteMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(unsetInt,
 			pipelines[0].renderState.depthStencilState.frontStencil.writeMask);
@@ -1318,7 +1318,7 @@ TEST(ParserDepthStencilStateTest, BackStencilReference)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(unsetInt,
 			pipelines[0].renderState.depthStencilState.frontStencil.reference);
@@ -1334,7 +1334,7 @@ TEST(ParserDepthStencilStateTest, BackStencilReference)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(unsetInt,
 			pipelines[0].renderState.depthStencilState.frontStencil.reference);
@@ -1369,7 +1369,7 @@ TEST(ParserDepthStencilStateTest, MinDepthBounds)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(-3.0f,
 			pipelines[0].renderState.depthStencilState.minDepthBounds);
@@ -1383,7 +1383,7 @@ TEST(ParserDepthStencilStateTest, MinDepthBounds)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(1.3e4f,
 			pipelines[0].renderState.depthStencilState.minDepthBounds);
@@ -1416,7 +1416,7 @@ TEST(ParserDepthStencilStateTest, MaxDepthBounds)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(-3.0f,
 			pipelines[0].renderState.depthStencilState.maxDepthBounds);
@@ -1430,7 +1430,7 @@ TEST(ParserDepthStencilStateTest, MaxDepthBounds)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_TRUE(parser.parse(output));
 
-		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		const std::vector<Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(1.3e4f,
 			pipelines[0].renderState.depthStencilState.maxDepthBounds);

@@ -104,144 +104,144 @@ static const std::unordered_set<std::string> opaqueTypes =
 	{"usubpassInputMS"}
 };
 
-static const std::unordered_map<std::string, Parser::Stage> stageMap =
+static const std::unordered_map<std::string, Stage> stageMap =
 {
-	{"vertex", Parser::Stage::Vertex},
-	{"tessellation_control", Parser::Stage::TessellationControl},
-	{"tessellation_evaluation", Parser::Stage::TessellationEvaluation},
-	{"geometry", Parser::Stage::Geometry},
-	{"fragment", Parser::Stage::Fragment},
-	{"compute", Parser::Stage::Compute}
+	{"vertex", Stage::Vertex},
+	{"tessellation_control", Stage::TessellationControl},
+	{"tessellation_evaluation", Stage::TessellationEvaluation},
+	{"geometry", Stage::Geometry},
+	{"fragment", Stage::Fragment},
+	{"compute", Stage::Compute}
 };
 
-static const std::unordered_map<std::string, Parser::PolygonMode> polygonModeMap =
+static const std::unordered_map<std::string, PolygonMode> polygonModeMap =
 {
-	{"fill", Parser::PolygonMode::Fill},
-	{"line", Parser::PolygonMode::Line},
-	{"point", Parser::PolygonMode::Point}
+	{"fill", PolygonMode::Fill},
+	{"line", PolygonMode::Line},
+	{"point", PolygonMode::Point}
 };
 
-static const std::unordered_map<std::string, Parser::CullMode> cullModeMap =
+static const std::unordered_map<std::string, CullMode> cullModeMap =
 {
-	{"none", Parser::CullMode::None},
-	{"front", Parser::CullMode::Front},
-	{"back", Parser::CullMode::Back},
-	{"front_and_back", Parser::CullMode::FrontAndBack}
+	{"none", CullMode::None},
+	{"front", CullMode::Front},
+	{"back", CullMode::Back},
+	{"front_and_back", CullMode::FrontAndBack}
 };
 
-static const std::unordered_map<std::string, Parser::FrontFace> frontFaceMap =
+static const std::unordered_map<std::string, FrontFace> frontFaceMap =
 {
-	{"counter_clockwise", Parser::FrontFace::CounterClockwise},
-	{"clockwise", Parser::FrontFace::Clockwise}
+	{"counter_clockwise", FrontFace::CounterClockwise},
+	{"clockwise", FrontFace::Clockwise}
 };
 
-static const std::unordered_map<std::string, Parser::StencilOp> stencilOpMap =
+static const std::unordered_map<std::string, StencilOp> stencilOpMap =
 {
-	{"keep", Parser::StencilOp::Keep},
-	{"zero", Parser::StencilOp::Zero},
-	{"replace", Parser::StencilOp::Replace},
-	{"increment_and_clamp", Parser::StencilOp::IncrementAndClamp},
-	{"decrement_and_clamp", Parser::StencilOp::DecrementAndClamp},
-	{"invert", Parser::StencilOp::Invert},
-	{"increment_and_wrap", Parser::StencilOp::IncrementAndWrap},
-	{"decrement_and_wrap", Parser::StencilOp::DecrementAndWrap}
+	{"keep", StencilOp::Keep},
+	{"zero", StencilOp::Zero},
+	{"replace", StencilOp::Replace},
+	{"increment_and_clamp", StencilOp::IncrementAndClamp},
+	{"decrement_and_clamp", StencilOp::DecrementAndClamp},
+	{"invert", StencilOp::Invert},
+	{"increment_and_wrap", StencilOp::IncrementAndWrap},
+	{"decrement_and_wrap", StencilOp::DecrementAndWrap}
 };
 
-static const std::unordered_map<std::string, Parser::CompareOp> compareOpMap =
+static const std::unordered_map<std::string, CompareOp> compareOpMap =
 {
-	{"never", Parser::CompareOp::Never},
-	{"less", Parser::CompareOp::Less},
-	{"equal", Parser::CompareOp::Equal},
-	{"less_or_equal", Parser::CompareOp::LessOrEqual},
-	{"greater", Parser::CompareOp::Greater},
-	{"not_equal", Parser::CompareOp::NotEqual},
-	{"greater_or_equal", Parser::CompareOp::GreaterOrEqual},
-	{"always", Parser::CompareOp::Always}
+	{"never", CompareOp::Never},
+	{"less", CompareOp::Less},
+	{"equal", CompareOp::Equal},
+	{"less_or_equal", CompareOp::LessOrEqual},
+	{"greater", CompareOp::Greater},
+	{"not_equal", CompareOp::NotEqual},
+	{"greater_or_equal", CompareOp::GreaterOrEqual},
+	{"always", CompareOp::Always}
 };
 
-static const std::unordered_map<std::string, Parser::BlendFactor> blendFactorMap =
+static const std::unordered_map<std::string, BlendFactor> blendFactorMap =
 {
-	{"zero", Parser::BlendFactor::Zero},
-	{"one", Parser::BlendFactor::One},
-	{"src_color", Parser::BlendFactor::SrcColor},
-	{"one_minus_src_color", Parser::BlendFactor::OneMinusSrcColor},
-	{"dst_color", Parser::BlendFactor::DstColor},
-	{"one_minus_dst_color", Parser::BlendFactor::OneMinusDstColor},
-	{"src_alpha", Parser::BlendFactor::SrcAlpha},
-	{"one_minus_src_alpha", Parser::BlendFactor::OneMinusSrcAlpha},
-	{"dst_alpha", Parser::BlendFactor::DstAlpha},
-	{"one_minus_dst_alpha", Parser::BlendFactor::OneMinusDstAlpha},
-	{"const_color", Parser::BlendFactor::ConstColor},
-	{"one_minus_const_color", Parser::BlendFactor::OneMinusConstColor},
-	{"const_alpha", Parser::BlendFactor::ConstAlpha},
-	{"one_minus_const_alpha", Parser::BlendFactor::OneMinusConstAlpha},
-	{"src_alpha_saturate", Parser::BlendFactor::SrcAlphaSaturate},
-	{"src1_color", Parser::BlendFactor::Src1Color},
-	{"one_minus_src1_color", Parser::BlendFactor::OneMinusSrc1Color},
-	{"src1_alpha", Parser::BlendFactor::Src1Alpha},
-	{"one_minus_src1_alpha", Parser::BlendFactor::OneMinusSrc1Alpha}
+	{"zero", BlendFactor::Zero},
+	{"one", BlendFactor::One},
+	{"src_color", BlendFactor::SrcColor},
+	{"one_minus_src_color", BlendFactor::OneMinusSrcColor},
+	{"dst_color", BlendFactor::DstColor},
+	{"one_minus_dst_color", BlendFactor::OneMinusDstColor},
+	{"src_alpha", BlendFactor::SrcAlpha},
+	{"one_minus_src_alpha", BlendFactor::OneMinusSrcAlpha},
+	{"dst_alpha", BlendFactor::DstAlpha},
+	{"one_minus_dst_alpha", BlendFactor::OneMinusDstAlpha},
+	{"const_color", BlendFactor::ConstColor},
+	{"one_minus_const_color", BlendFactor::OneMinusConstColor},
+	{"const_alpha", BlendFactor::ConstAlpha},
+	{"one_minus_const_alpha", BlendFactor::OneMinusConstAlpha},
+	{"src_alpha_saturate", BlendFactor::SrcAlphaSaturate},
+	{"src1_color", BlendFactor::Src1Color},
+	{"one_minus_src1_color", BlendFactor::OneMinusSrc1Color},
+	{"src1_alpha", BlendFactor::Src1Alpha},
+	{"one_minus_src1_alpha", BlendFactor::OneMinusSrc1Alpha}
 };
 
-static const std::unordered_map<std::string, Parser::BlendOp> blendOpMap =
+static const std::unordered_map<std::string, BlendOp> blendOpMap =
 {
-	{"add", Parser::BlendOp::Add},
-	{"subtract", Parser::BlendOp::Subtract},
-	{"reverse_subtract", Parser::BlendOp::ReverseSubtract},
-	{"min", Parser::BlendOp::Min},
-	{"max", Parser::BlendOp::Max}
+	{"add", BlendOp::Add},
+	{"subtract", BlendOp::Subtract},
+	{"reverse_subtract", BlendOp::ReverseSubtract},
+	{"min", BlendOp::Min},
+	{"max", BlendOp::Max}
 };
 
-static const std::unordered_map<std::string, Parser::LogicOp> logicOpMap =
+static const std::unordered_map<std::string, LogicOp> logicOpMap =
 {
-	{"clear", Parser::LogicOp::Clear},
-	{"and", Parser::LogicOp::And},
-	{"and_reverse", Parser::LogicOp::AndReverse},
-	{"copy", Parser::LogicOp::Copy},
-	{"and_inverted", Parser::LogicOp::AndInverted},
-	{"no_op", Parser::LogicOp::NoOp},
-	{"xor", Parser::LogicOp::Xor},
-	{"or", Parser::LogicOp::Or},
-	{"nor", Parser::LogicOp::Nor},
-	{"equivalent", Parser::LogicOp::Equivalent},
-	{"invert", Parser::LogicOp::Invert},
-	{"or_reverse", Parser::LogicOp::OrReverse},
-	{"copy_inverted", Parser::LogicOp::CopyInverted},
-	{"or_inverted", Parser::LogicOp::OrInverted},
-	{"nand", Parser::LogicOp::Nand},
-	{"set", Parser::LogicOp::Set}
+	{"clear", LogicOp::Clear},
+	{"and", LogicOp::And},
+	{"and_reverse", LogicOp::AndReverse},
+	{"copy", LogicOp::Copy},
+	{"and_inverted", LogicOp::AndInverted},
+	{"no_op", LogicOp::NoOp},
+	{"xor", LogicOp::Xor},
+	{"or", LogicOp::Or},
+	{"nor", LogicOp::Nor},
+	{"equivalent", LogicOp::Equivalent},
+	{"invert", LogicOp::Invert},
+	{"or_reverse", LogicOp::OrReverse},
+	{"copy_inverted", LogicOp::CopyInverted},
+	{"or_inverted", LogicOp::OrInverted},
+	{"nand", LogicOp::Nand},
+	{"set", LogicOp::Set}
 };
 
-static const std::unordered_map<std::string, Parser::Filter> filterMap =
+static const std::unordered_map<std::string, Filter> filterMap =
 {
-	{"nearest", Parser::Filter::Nearest},
-	{"linear", Parser::Filter::Linear}
+	{"nearest", Filter::Nearest},
+	{"linear", Filter::Linear}
 };
 
-static const std::unordered_map<std::string, Parser::MipFilter> mipFilterMap =
+static const std::unordered_map<std::string, MipFilter> mipFilterMap =
 {
-	{"none", Parser::MipFilter::None},
-	{"nearest", Parser::MipFilter::Nearest},
-	{"linear", Parser::MipFilter::Linear},
-	{"anisotropic", Parser::MipFilter::Anisotropic}
+	{"none", MipFilter::None},
+	{"nearest", MipFilter::Nearest},
+	{"linear", MipFilter::Linear},
+	{"anisotropic", MipFilter::Anisotropic}
 };
 
-static const std::unordered_map<std::string, Parser::AddressMode> addressModeMap =
+static const std::unordered_map<std::string, AddressMode> addressModeMap =
 {
-	{"repeat", Parser::AddressMode::Repeat},
-	{"mirrored_repeat", Parser::AddressMode::MirroredRepeat},
-	{"clamp_to_edge", Parser::AddressMode::ClampToEdge},
-	{"clamp_to_border", Parser::AddressMode::ClampToBorder},
-	{"mirror_once", Parser::AddressMode::MirrorOnce}
+	{"repeat", AddressMode::Repeat},
+	{"mirrored_repeat", AddressMode::MirroredRepeat},
+	{"clamp_to_edge", AddressMode::ClampToEdge},
+	{"clamp_to_border", AddressMode::ClampToBorder},
+	{"mirror_once", AddressMode::MirrorOnce}
 };
 
-static const std::unordered_map<std::string, Parser::BorderColor> borderColorMap =
+static const std::unordered_map<std::string, BorderColor> borderColorMap =
 {
-	{"transparent_black", Parser::BorderColor::TransparentBlack},
-	{"transparent_int_zero", Parser::BorderColor::TransparentIntZero},
-	{"opaque_black", Parser::BorderColor::OpaqueBlack},
-	{"opaque_int_zero", Parser::BorderColor::OpaqueIntZero},
-	{"opaque_white", Parser::BorderColor::OpaqueWhite},
-	{"opaque_int_one", Parser::BorderColor::OpaqueIntOne}
+	{"transparent_black", BorderColor::TransparentBlack},
+	{"transparent_int_zero", BorderColor::TransparentIntZero},
+	{"opaque_black", BorderColor::OpaqueBlack},
+	{"opaque_int_zero", BorderColor::OpaqueIntZero},
+	{"opaque_white", BorderColor::OpaqueWhite},
+	{"opaque_int_one", BorderColor::OpaqueIntOne}
 };
 
 static bool skipWhitespace(const std::vector<Token>& tokens, std::size_t& i, std::size_t maxValue)
@@ -364,7 +364,7 @@ KeyValueResult readKeyValue(Output& output, const Token*& key, Token& valueToken
 	return KeyValueResult::Error;
 }
 
-static bool getStage(Parser::Stage& stage, const Token& token)
+static bool getStage(Stage& stage, const Token& token)
 {
 	auto foundIter = stageMap.find(token.value);
 	if (foundIter == stageMap.end())
@@ -374,16 +374,16 @@ static bool getStage(Parser::Stage& stage, const Token& token)
 	return true;
 }
 
-static bool getBool(Output& output, Parser::Bool& value, const Token& token)
+static bool getBool(Output& output, Bool& value, const Token& token)
 {
 	if (token.value == "true")
 	{
-		value = Parser::Bool::True;
+		value = Bool::True;
 		return true;
 	}
 	else if (token.value == "false")
 	{
-		value = Parser::Bool::False;
+		value = Bool::False;
 		return true;
 	}
 	else
@@ -391,7 +391,7 @@ static bool getBool(Output& output, Parser::Bool& value, const Token& token)
 		try
 		{
 			value = boost::lexical_cast<bool>(token.value) ?
-				Parser::Bool::True : Parser::Bool::False;
+				Bool::True : Bool::False;
 			return true;
 		}
 		catch (...)
@@ -493,7 +493,7 @@ static bool getVec4(Output& output, std::array<float, 4>& value, const Token& to
 	return true;
 }
 
-static bool getPolygonMode(Output& output, Parser::PolygonMode& value, const Token& token)
+static bool getPolygonMode(Output& output, PolygonMode& value, const Token& token)
 {
 	auto foundIter = polygonModeMap.find(token.value);
 	if (foundIter == polygonModeMap.end())
@@ -507,7 +507,7 @@ static bool getPolygonMode(Output& output, Parser::PolygonMode& value, const Tok
 	return true;
 }
 
-static bool getCullMode(Output& output, Parser::CullMode& value, const Token& token)
+static bool getCullMode(Output& output, CullMode& value, const Token& token)
 {
 	auto foundIter = cullModeMap.find(token.value);
 	if (foundIter == cullModeMap.end())
@@ -521,7 +521,7 @@ static bool getCullMode(Output& output, Parser::CullMode& value, const Token& to
 	return true;
 }
 
-static bool getFrontFace(Output& output, Parser::FrontFace& value, const Token& token)
+static bool getFrontFace(Output& output, FrontFace& value, const Token& token)
 {
 	auto foundIter = frontFaceMap.find(token.value);
 	if (foundIter == frontFaceMap.end())
@@ -535,7 +535,7 @@ static bool getFrontFace(Output& output, Parser::FrontFace& value, const Token& 
 	return true;
 }
 
-static bool getStencilOp(Output& output, Parser::StencilOp& value, const Token& token)
+static bool getStencilOp(Output& output, StencilOp& value, const Token& token)
 {
 	auto foundIter = stencilOpMap.find(token.value);
 	if (foundIter == stencilOpMap.end())
@@ -549,7 +549,7 @@ static bool getStencilOp(Output& output, Parser::StencilOp& value, const Token& 
 	return true;
 }
 
-static bool getCompareOp(Output& output, Parser::CompareOp& value, const Token& token)
+static bool getCompareOp(Output& output, CompareOp& value, const Token& token)
 {
 	auto foundIter = compareOpMap.find(token.value);
 	if (foundIter == compareOpMap.end())
@@ -563,7 +563,7 @@ static bool getCompareOp(Output& output, Parser::CompareOp& value, const Token& 
 	return true;
 }
 
-static bool getBlendFactor(Output& output, Parser::BlendFactor& value, const Token& token)
+static bool getBlendFactor(Output& output, BlendFactor& value, const Token& token)
 {
 	auto foundIter = blendFactorMap.find(token.value);
 	if (foundIter == blendFactorMap.end())
@@ -577,7 +577,7 @@ static bool getBlendFactor(Output& output, Parser::BlendFactor& value, const Tok
 	return true;
 }
 
-static bool getBlendOp(Output& output, Parser::BlendOp& value, const Token& token)
+static bool getBlendOp(Output& output, BlendOp& value, const Token& token)
 {
 	auto foundIter = blendOpMap.find(token.value);
 	if (foundIter == blendOpMap.end())
@@ -591,34 +591,34 @@ static bool getBlendOp(Output& output, Parser::BlendOp& value, const Token& toke
 	return true;
 }
 
-static bool getColorMask(Output& output, Parser::ColorMask& value, const Token& token)
+static bool getColorMask(Output& output, ColorMask& value, const Token& token)
 {
 	if (token.value == "0")
 	{
-		value = Parser::ColorMaskNone;
+		value = ColorMaskNone;
 		return true;
 	}
 
-	value = Parser::ColorMaskNone;
+	value = ColorMaskNone;
 	for (std::size_t i = 0; i < token.value.size(); ++i)
 	{
 		switch (token.value[i])
 		{
 			case 'r':
 			case 'R':
-				value = static_cast<Parser::ColorMask>(value | Parser::ColorMaskRed);
+				value = static_cast<ColorMask>(value | ColorMaskRed);
 				break;
 			case 'g':
 			case 'G':
-				value = static_cast<Parser::ColorMask>(value | Parser::ColorMaskGreen);
+				value = static_cast<ColorMask>(value | ColorMaskGreen);
 				break;
 			case 'b':
 			case 'B':
-				value = static_cast<Parser::ColorMask>(value | Parser::ColorMaskBlue);
+				value = static_cast<ColorMask>(value | ColorMaskBlue);
 				break;
 			case 'a':
 			case 'A':
-				value = static_cast<Parser::ColorMask>(value | Parser::ColorMaskAlpha);
+				value = static_cast<ColorMask>(value | ColorMaskAlpha);
 				break;
 			default:
 				output.addMessage(Output::Level::Error, token.fileName, token.line,
@@ -630,7 +630,7 @@ static bool getColorMask(Output& output, Parser::ColorMask& value, const Token& 
 	return true;
 }
 
-static bool getLogicalOp(Output& output, Parser::LogicOp& value, const Token& token)
+static bool getLogicalOp(Output& output, LogicOp& value, const Token& token)
 {
 	auto foundIter = logicOpMap.find(token.value);
 	if (foundIter == logicOpMap.end())
@@ -658,7 +658,7 @@ static bool isAttachment(unsigned int& index, const std::string& key, const char
 		try
 		{
 			index = boost::lexical_cast<unsigned int>(indexStr);
-			if (index >= Parser::maxAttachments)
+			if (index >= maxAttachments)
 				return false;
 		}
 		catch (...)
@@ -675,7 +675,7 @@ static bool isAttachment(unsigned int& index, const std::string& key, const char
 	}
 }
 
-static bool getFilter(Output& output, Parser::Filter& value, const Token& token)
+static bool getFilter(Output& output, Filter& value, const Token& token)
 {
 	auto foundIter = filterMap.find(token.value);
 	if (foundIter == filterMap.end())
@@ -689,7 +689,7 @@ static bool getFilter(Output& output, Parser::Filter& value, const Token& token)
 	return true;
 }
 
-static bool getMipFilter(Output& output, Parser::MipFilter& value, const Token& token)
+static bool getMipFilter(Output& output, MipFilter& value, const Token& token)
 {
 	auto foundIter = mipFilterMap.find(token.value);
 	if (foundIter == mipFilterMap.end())
@@ -703,7 +703,7 @@ static bool getMipFilter(Output& output, Parser::MipFilter& value, const Token& 
 	return true;
 }
 
-static bool getAddressMode(Output& output, Parser::AddressMode& value, const Token& token)
+static bool getAddressMode(Output& output, AddressMode& value, const Token& token)
 {
 	auto foundIter = addressModeMap.find(token.value);
 	if (foundIter == addressModeMap.end())
@@ -717,7 +717,7 @@ static bool getAddressMode(Output& output, Parser::AddressMode& value, const Tok
 	return true;
 }
 
-static bool getBorderColor(Output& output, Parser::BorderColor& value, const Token& token)
+static bool getBorderColor(Output& output, BorderColor& value, const Token& token)
 {
 	auto foundIter = borderColorMap.find(token.value);
 	if (foundIter == borderColorMap.end())
@@ -741,7 +741,7 @@ enum class ParseResult
 static ParseResult readStage(Output& output, Parser::Pipeline& pipeline, const Token& key,
 	const Token& value)
 {
-	Parser::Stage stage;
+	Stage stage;
 	if (!getStage(stage, key))
 		return ParseResult::NotThisType;
 
@@ -1815,57 +1815,57 @@ bool Parser::readSampler(Output& output, const std::vector<Token>& tokens, std::
 
 		if (key->value == "min_filter")
 		{
-			if (!getFilter(output, sampler.minFilter, value))
+			if (!getFilter(output, sampler.state.minFilter, value))
 				return false;
 		}
 		else if (key->value == "mag_filter")
 		{
-			if (!getFilter(output, sampler.magFilter, value))
+			if (!getFilter(output, sampler.state.magFilter, value))
 				return false;
 		}
 		else if (key->value == "mip_filter")
 		{
-			if (!getMipFilter(output, sampler.mipFilter, value))
+			if (!getMipFilter(output, sampler.state.mipFilter, value))
 				return false;
 		}
 		else if (key->value == "address_mode_u")
 		{
-			if (!getAddressMode(output, sampler.addressModeU, value))
+			if (!getAddressMode(output, sampler.state.addressModeU, value))
 				return false;
 		}
 		else if (key->value == "address_mode_v")
 		{
-			if (!getAddressMode(output, sampler.addressModeV, value))
+			if (!getAddressMode(output, sampler.state.addressModeV, value))
 				return false;
 		}
 		else if (key->value == "address_mode_w")
 		{
-			if (!getAddressMode(output, sampler.addressModeW, value))
+			if (!getAddressMode(output, sampler.state.addressModeW, value))
 				return false;
 		}
 		else if (key->value == "mip_lod_bias")
 		{
-			if (!getFloat(output, sampler.mipLodBias, value))
+			if (!getFloat(output, sampler.state.mipLodBias, value))
 				return false;
 		}
 		else if (key->value == "max_anisotropy")
 		{
-			if (!getFloat(output, sampler.maxAnisotropy, value))
+			if (!getFloat(output, sampler.state.maxAnisotropy, value))
 				return false;
 		}
 		else if (key->value == "min_lod")
 		{
-			if (!getFloat(output, sampler.minLod, value))
+			if (!getFloat(output, sampler.state.minLod, value))
 				return false;
 		}
 		else if (key->value == "max_lod")
 		{
-			if (!getFloat(output, sampler.maxLod, value))
+			if (!getFloat(output, sampler.state.maxLod, value))
 				return false;
 		}
 		else if (key->value == "border_color")
 		{
-			if (!getBorderColor(output, sampler.borderColor, value))
+			if (!getBorderColor(output, sampler.state.borderColor, value))
 				return false;
 		}
 		else

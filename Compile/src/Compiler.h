@@ -28,7 +28,7 @@ class Compiler
 public:
 	struct Stages
 	{
-		std::array<std::unique_ptr<glslang::TShader>, Parser::stageCount> shaders;
+		std::array<std::unique_ptr<glslang::TShader>, stageCount> shaders;
 	};
 
 	enum ProcessOptions
@@ -45,12 +45,12 @@ public:
 
 	static bool compile(Stages& stages, Output& output, const std::string& baseFileName,
 		const std::string& glsl, const std::vector<Parser::LineMapping>& lineMappings,
-		Parser::Stage stage, const TBuiltInResource& resources);
+		Stage stage, const TBuiltInResource& resources);
 
 	static bool link(glslang::TProgram& program, Output& output, const Parser::Pipeline& pipeline,
 		const Stages& stages);
 
-	static SpirV assemble(Output& output, const glslang::TProgram& program, Parser::Stage stage,
+	static SpirV assemble(Output& output, const glslang::TProgram& program, Stage stage,
 		const Parser::Pipeline& pipeline);
 
 	static void process(SpirV& spirv, int processOptions);

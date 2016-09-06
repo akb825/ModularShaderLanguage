@@ -133,13 +133,16 @@ static const char* typeNames[] =
 	"uimage2DMSArray",
 	"uimage2DRect",
 
-	// Other
+	// Subpass inputs
 	"subpassInput",
 	"subpassInputMS",
 	"isubpassInput",
 	"isubpassInputMS",
 	"usubpassInput",
 	"usubpassInputMS",
+
+	// Other
+	"struct",
 };
 static_assert(sizeof(typeNames)/sizeof(*typeNames) == msl::Module::typeCount,
 	"typeNames out of sync with enum");

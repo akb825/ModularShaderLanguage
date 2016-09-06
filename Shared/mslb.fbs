@@ -113,13 +113,16 @@ enum Type : ubyte
 	UImage2DMSArray, // uimage2DMSArray
 	UImage2DRect,    // uimage2DRect
 
-	// Other
+	// Subpass inputs.
 	SubpassInput,    // subpassInput
 	SubpassInputMS,  // subpassInputMS
 	ISubpassInput,   // isubpassInput
 	ISubpassInputMS, // isubpassInputMS
 	USubpassInput,   // usubpassInput
 	USubpassInputMS, // usubpassInputMS
+
+	// Other
+	Struct, // User-defined structure.
 }
 
 /*

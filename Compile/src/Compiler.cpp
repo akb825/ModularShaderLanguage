@@ -48,7 +48,7 @@ static const EShLanguage stageMap[] =
 	EShLangCompute
 };
 
-static_assert(sizeof(stageMap)/sizeof(*stageMap) == Parser::stageCount,
+static_assert(sizeof(stageMap)/sizeof(*stageMap) == stageCount,
 	"Stage map has an incorrect number of elements");
 
 static EShMessages glslMessages =
@@ -240,7 +240,7 @@ void Compiler::shutdown()
 
 bool Compiler::compile(Stages& stages, Output &output, const std::string& baseFileName,
 	const std::string& glsl, const std::vector<Parser::LineMapping>& lineMappings,
-	Parser::Stage stage, const TBuiltInResource& resources)
+	Stage stage, const TBuiltInResource& resources)
 {
 	const char* glslStr = glsl.c_str();
 	std::unique_ptr<glslang::TShader> shader(
@@ -258,7 +258,7 @@ bool Compiler::compile(Stages& stages, Output &output, const std::string& baseFi
 bool Compiler::link(glslang::TProgram& program, Output& output, const Parser::Pipeline& pipeline,
 	const Stages& stages)
 {
-	for (unsigned int i = 0; i < Parser::stageCount; ++i)
+	for (unsigned int i = 0; i < stageCount; ++i)
 	{
 		if (stages.shaders[i])
 			program.addShader(stages.shaders[i].get());
@@ -272,7 +272,7 @@ bool Compiler::link(glslang::TProgram& program, Output& output, const Parser::Pi
 }
 
 Compiler::SpirV Compiler::assemble(Output& output, const glslang::TProgram& program,
-	Parser::Stage stage, const Parser::Pipeline& pipeline)
+	Stage stage, const Parser::Pipeline& pipeline)
 {
 	glslang::TIntermediate* intermediate = program.getIntermediate(
 		stageMap[static_cast<unsigned int>(stage)]);

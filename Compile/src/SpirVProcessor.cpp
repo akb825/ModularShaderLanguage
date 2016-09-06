@@ -45,7 +45,7 @@ struct IntermediateData
 
 	// Type info.
 	std::unordered_map<std::uint32_t, std::vector<std::uint32_t>> structTypes;
-	std::unordered_map<std::uint32_t, CompiledResult::Type> types;
+	std::unordered_map<std::uint32_t, Type> types;
 	std::unordered_map<std::uint32_t, std::vector<std::uint32_t>> memberOffsets;
 	std::unordered_map<std::uint32_t, std::uint32_t> intConstants;
 	std::unordered_map<std::uint32_t, ArrayInfo> arrayTypes;
@@ -113,85 +113,85 @@ void readVector(IntermediateData& data, const std::vector<std::uint32_t>& spirv,
 	assert(data.types.find(typeId) != data.types.end());
 	switch (data.types[typeId])
 	{
-		case CompiledResult::Type::Bool:
+		case Type::Bool:
 			switch (length)
 			{
 				case 2:
-					data.types[id] = CompiledResult::Type::BVec2;
+					data.types[id] = Type::BVec2;
 					break;
 				case 3:
-					data.types[id] = CompiledResult::Type::BVec3;
+					data.types[id] = Type::BVec3;
 					break;
 				case 4:
-					data.types[id] = CompiledResult::Type::BVec4;
+					data.types[id] = Type::BVec4;
 					break;
 				default:
 					assert(false);
 					break;
 			}
 			break;
-		case CompiledResult::Type::Int:
+		case Type::Int:
 			switch (length)
 			{
 				case 2:
-					data.types[id] = CompiledResult::Type::IVec2;
+					data.types[id] = Type::IVec2;
 					break;
 				case 3:
-					data.types[id] = CompiledResult::Type::IVec3;
+					data.types[id] = Type::IVec3;
 					break;
 				case 4:
-					data.types[id] = CompiledResult::Type::IVec4;
+					data.types[id] = Type::IVec4;
 					break;
 				default:
 					assert(false);
 					break;
 			}
 			break;
-		case CompiledResult::Type::UInt:
+		case Type::UInt:
 			switch (length)
 			{
 				case 2:
-					data.types[id] = CompiledResult::Type::UVec2;
+					data.types[id] = Type::UVec2;
 					break;
 				case 3:
-					data.types[id] = CompiledResult::Type::UVec3;
+					data.types[id] = Type::UVec3;
 					break;
 				case 4:
-					data.types[id] = CompiledResult::Type::UVec4;
+					data.types[id] = Type::UVec4;
 					break;
 				default:
 					assert(false);
 					break;
 			}
 			break;
-		case CompiledResult::Type::Float:
+		case Type::Float:
 			switch (length)
 			{
 				case 2:
-					data.types[id] = CompiledResult::Type::Vec2;
+					data.types[id] = Type::Vec2;
 					break;
 				case 3:
-					data.types[id] = CompiledResult::Type::Vec3;
+					data.types[id] = Type::Vec3;
 					break;
 				case 4:
-					data.types[id] = CompiledResult::Type::Vec4;
+					data.types[id] = Type::Vec4;
 					break;
 				default:
 					assert(false);
 					break;
 			}
 			break;
-		case CompiledResult::Type::Double:
+		case Type::Double:
 			switch (length)
 			{
 				case 2:
-					data.types[id] = CompiledResult::Type::DVec2;
+					data.types[id] = Type::DVec2;
 					break;
 				case 3:
-					data.types[id] = CompiledResult::Type::DVec3;
+					data.types[id] = Type::DVec3;
 					break;
 				case 4:
-					data.types[id] = CompiledResult::Type::DVec4;
+					data.types[id] = Type::DVec4;
 					break;
 				default:
 					assert(false);
@@ -214,92 +214,92 @@ void readMatrix(IntermediateData& data, const std::vector<std::uint32_t>& spirv,
 	assert(data.types.find(typeId) != data.types.end());
 	switch (data.types[typeId])
 	{
-		case CompiledResult::Type::Vec2:
+		case Type::Vec2:
 			switch (length)
 			{
 				case 2:
-					data.types[id] = CompiledResult::Type::Mat2;
+					data.types[id] = Type::Mat2;
 					break;
 				case 3:
-					data.types[id] = CompiledResult::Type::Mat2x3;
+					data.types[id] = Type::Mat2x3;
 					break;
 				case 4:
-					data.types[id] = CompiledResult::Type::Mat2x4;
+					data.types[id] = Type::Mat2x4;
 					break;
 				default:
 					assert(false);
 			}
-		case CompiledResult::Type::Vec3:
+		case Type::Vec3:
 			switch (length)
 			{
 				case 2:
-					data.types[id] = CompiledResult::Type::Mat3x2;
+					data.types[id] = Type::Mat3x2;
 					break;
 				case 3:
-					data.types[id] = CompiledResult::Type::Mat3;
+					data.types[id] = Type::Mat3;
 					break;
 				case 4:
-					data.types[id] = CompiledResult::Type::Mat3x4;
+					data.types[id] = Type::Mat3x4;
 					break;
 				default:
 					assert(false);
 			}
-		case CompiledResult::Type::Vec4:
+		case Type::Vec4:
 			switch (length)
 			{
 				case 2:
-					data.types[id] = CompiledResult::Type::Mat4x2;
+					data.types[id] = Type::Mat4x2;
 					break;
 				case 3:
-					data.types[id] = CompiledResult::Type::Mat4x3;
+					data.types[id] = Type::Mat4x3;
 					break;
 				case 4:
-					data.types[id] = CompiledResult::Type::Mat4;
+					data.types[id] = Type::Mat4;
 					break;
 				default:
 					assert(false);
 			}
-		case CompiledResult::Type::DVec2:
+		case Type::DVec2:
 			switch (length)
 			{
 				case 2:
-					data.types[id] = CompiledResult::Type::DMat2;
+					data.types[id] = Type::DMat2;
 					break;
 				case 3:
-					data.types[id] = CompiledResult::Type::DMat2x3;
+					data.types[id] = Type::DMat2x3;
 					break;
 				case 4:
-					data.types[id] = CompiledResult::Type::DMat2x4;
+					data.types[id] = Type::DMat2x4;
 					break;
 				default:
 					assert(false);
 			}
-		case CompiledResult::Type::DVec3:
+		case Type::DVec3:
 			switch (length)
 			{
 				case 2:
-					data.types[id] = CompiledResult::Type::DMat3x2;
+					data.types[id] = Type::DMat3x2;
 					break;
 				case 3:
-					data.types[id] = CompiledResult::Type::DMat3;
+					data.types[id] = Type::DMat3;
 					break;
 				case 4:
-					data.types[id] = CompiledResult::Type::DMat3x4;
+					data.types[id] = Type::DMat3x4;
 					break;
 				default:
 					assert(false);
 			}
-		case CompiledResult::Type::DVec4:
+		case Type::DVec4:
 			switch (length)
 			{
 				case 2:
-					data.types[id] = CompiledResult::Type::DMat4x2;
+					data.types[id] = Type::DMat4x2;
 					break;
 				case 3:
-					data.types[id] = CompiledResult::Type::DMat4x3;
+					data.types[id] = Type::DMat4x3;
 					break;
 				case 4:
-					data.types[id] = CompiledResult::Type::DMat4;
+					data.types[id] = Type::DMat4;
 					break;
 				default:
 					assert(false);
@@ -329,62 +329,62 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 			assert(data.types.find(typeId) != data.types.end());
 			switch (data.types[typeId])
 			{
-				case CompiledResult::Type::Float:
+				case Type::Float:
 					if (sampled)
 					{
 						if (depth == 1)
 						{
 							if (array)
-								data.types[id] = CompiledResult::Type::Sampler1DArrayShadow;
+								data.types[id] = Type::Sampler1DArrayShadow;
 							else
-								data.types[id] = CompiledResult::Type::Sampler1DShadow;
+								data.types[id] = Type::Sampler1DShadow;
 						}
 						else
 						{
 							if (array)
-								data.types[id] = CompiledResult::Type::Sampler1DArray;
+								data.types[id] = Type::Sampler1DArray;
 							else
-								data.types[id] = CompiledResult::Type::Sampler1D;
+								data.types[id] = Type::Sampler1D;
 						}
 					}
 					else
 					{
 						if (array)
-							data.types[id] = CompiledResult::Type::Image1DArray;
+							data.types[id] = Type::Image1DArray;
 						else
-							data.types[id] = CompiledResult::Type::Image1D;
+							data.types[id] = Type::Image1D;
 					}
 					break;
-				case CompiledResult::Type::Int:
+				case Type::Int:
 					if (sampled)
 					{
 						if (array)
-							data.types[id] = CompiledResult::Type::ISampler1DArray;
+							data.types[id] = Type::ISampler1DArray;
 						else
-							data.types[id] = CompiledResult::Type::ISampler1D;
+							data.types[id] = Type::ISampler1D;
 					}
 					else
 					{
 						if (array)
-							data.types[id] = CompiledResult::Type::IImage1DArray;
+							data.types[id] = Type::IImage1DArray;
 						else
-							data.types[id] = CompiledResult::Type::IImage1D;
+							data.types[id] = Type::IImage1D;
 					}
 					break;
-				case CompiledResult::Type::UInt:
+				case Type::UInt:
 					if (sampled)
 					{
 						if (array)
-							data.types[id] = CompiledResult::Type::USampler1DArray;
+							data.types[id] = Type::USampler1DArray;
 						else
-							data.types[id] = CompiledResult::Type::USampler1D;
+							data.types[id] = Type::USampler1D;
 					}
 					else
 					{
 						if (array)
-							data.types[id] = CompiledResult::Type::UImage1DArray;
+							data.types[id] = Type::UImage1DArray;
 						else
-							data.types[id] = CompiledResult::Type::UImage1D;
+							data.types[id] = Type::UImage1D;
 					}
 					break;
 				default:
@@ -397,32 +397,32 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 			assert(data.types.find(typeId) != data.types.end());
 			switch (data.types[typeId])
 			{
-				case CompiledResult::Type::Float:
+				case Type::Float:
 					if (sampled)
 					{
 						if (depth == 1)
 						{
 							assert(!ms);
 							if (array)
-								data.types[id] = CompiledResult::Type::Sampler2DArrayShadow;
+								data.types[id] = Type::Sampler2DArrayShadow;
 							else
-								data.types[id] = CompiledResult::Type::Sampler2DShadow;
+								data.types[id] = Type::Sampler2DShadow;
 						}
 						else
 						{
 							if (ms)
 							{
 								if (array)
-									data.types[id] = CompiledResult::Type::Sampler2DMSArray;
+									data.types[id] = Type::Sampler2DMSArray;
 								else
-									data.types[id] = CompiledResult::Type::Sampler2DMS;
+									data.types[id] = Type::Sampler2DMS;
 							}
 							else
 							{
 								if (array)
-									data.types[id] = CompiledResult::Type::Sampler2DArray;
+									data.types[id] = Type::Sampler2DArray;
 								else
-									data.types[id] = CompiledResult::Type::Sampler2D;
+									data.types[id] = Type::Sampler2D;
 							}
 						}
 					}
@@ -431,35 +431,35 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 						if (ms)
 						{
 							if (array)
-								data.types[id] = CompiledResult::Type::Image2DMSArray;
+								data.types[id] = Type::Image2DMSArray;
 							else
-								data.types[id] = CompiledResult::Type::Image2DMS;
+								data.types[id] = Type::Image2DMS;
 						}
 						else
 						{
 							if (array)
-								data.types[id] = CompiledResult::Type::Image2DArray;
+								data.types[id] = Type::Image2DArray;
 							else
-								data.types[id] = CompiledResult::Type::Image2D;
+								data.types[id] = Type::Image2D;
 						}
 					}
 					break;
-				case CompiledResult::Type::Int:
+				case Type::Int:
 					if (sampled)
 					{
 						if (ms)
 						{
 							if (array)
-								data.types[id] = CompiledResult::Type::ISampler2DMSArray;
+								data.types[id] = Type::ISampler2DMSArray;
 							else
-								data.types[id] = CompiledResult::Type::ISampler2DMS;
+								data.types[id] = Type::ISampler2DMS;
 						}
 						else
 						{
 							if (array)
-								data.types[id] = CompiledResult::Type::ISampler2DArray;
+								data.types[id] = Type::ISampler2DArray;
 							else
-								data.types[id] = CompiledResult::Type::ISampler2D;
+								data.types[id] = Type::ISampler2D;
 						}
 					}
 					else
@@ -467,35 +467,35 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 						if (ms)
 						{
 							if (array)
-								data.types[id] = CompiledResult::Type::IImage2DMSArray;
+								data.types[id] = Type::IImage2DMSArray;
 							else
-								data.types[id] = CompiledResult::Type::IImage2DMS;
+								data.types[id] = Type::IImage2DMS;
 						}
 						else
 						{
 							if (array)
-								data.types[id] = CompiledResult::Type::IImage2DArray;
+								data.types[id] = Type::IImage2DArray;
 							else
-								data.types[id] = CompiledResult::Type::IImage2D;
+								data.types[id] = Type::IImage2D;
 						}
 					}
 					break;
-				case CompiledResult::Type::UInt:
+				case Type::UInt:
 					if (sampled)
 					{
 						if (ms)
 						{
 							if (array)
-								data.types[id] = CompiledResult::Type::USampler2DMSArray;
+								data.types[id] = Type::USampler2DMSArray;
 							else
-								data.types[id] = CompiledResult::Type::USampler2DMS;
+								data.types[id] = Type::USampler2DMS;
 						}
 						else
 						{
 							if (array)
-								data.types[id] = CompiledResult::Type::USampler2DArray;
+								data.types[id] = Type::USampler2DArray;
 							else
-								data.types[id] = CompiledResult::Type::USampler2D;
+								data.types[id] = Type::USampler2D;
 						}
 					}
 					else
@@ -503,16 +503,16 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 						if (ms)
 						{
 							if (array)
-								data.types[id] = CompiledResult::Type::UImage2DMSArray;
+								data.types[id] = Type::UImage2DMSArray;
 							else
-								data.types[id] = CompiledResult::Type::UImage2DMS;
+								data.types[id] = Type::UImage2DMS;
 						}
 						else
 						{
 							if (array)
-								data.types[id] = CompiledResult::Type::UImage2DArray;
+								data.types[id] = Type::UImage2DArray;
 							else
-								data.types[id] = CompiledResult::Type::UImage2D;
+								data.types[id] = Type::UImage2D;
 						}
 					}
 					break;
@@ -529,23 +529,23 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 			assert(data.types.find(typeId) != data.types.end());
 			switch (data.types[typeId])
 			{
-				case CompiledResult::Type::Float:
+				case Type::Float:
 					if (sampled)
-						data.types[id] = CompiledResult::Type::Sampler3D;
+						data.types[id] = Type::Sampler3D;
 					else
-						data.types[id] = CompiledResult::Type::Image3D;
+						data.types[id] = Type::Image3D;
 					break;
-				case CompiledResult::Type::Int:
+				case Type::Int:
 					if (sampled)
-						data.types[id] = CompiledResult::Type::ISampler3D;
+						data.types[id] = Type::ISampler3D;
 					else
-						data.types[id] = CompiledResult::Type::IImage3D;
+						data.types[id] = Type::IImage3D;
 					break;
-				case CompiledResult::Type::UInt:
+				case Type::UInt:
 					if (sampled)
-						data.types[id] = CompiledResult::Type::USampler3D;
+						data.types[id] = Type::USampler3D;
 					else
-						data.types[id] = CompiledResult::Type::UImage3D;
+						data.types[id] = Type::UImage3D;
 					break;
 				default:
 					assert(false);
@@ -560,28 +560,28 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 			assert(data.types.find(typeId) != data.types.end());
 			switch (data.types[typeId])
 			{
-				case CompiledResult::Type::Float:
+				case Type::Float:
 					if (sampled)
 					{
 						if (depth == 1)
-							data.types[id] = CompiledResult::Type::SamplerCubeShadow;
+							data.types[id] = Type::SamplerCubeShadow;
 						else
-							data.types[id] = CompiledResult::Type::SamplerCube;
+							data.types[id] = Type::SamplerCube;
 					}
 					else
-						data.types[id] = CompiledResult::Type::ImageCube;
+						data.types[id] = Type::ImageCube;
 					break;
-				case CompiledResult::Type::Int:
+				case Type::Int:
 					if (sampled)
-						data.types[id] = CompiledResult::Type::ISamplerCube;
+						data.types[id] = Type::ISamplerCube;
 					else
-						data.types[id] = CompiledResult::Type::IImageCube;
+						data.types[id] = Type::IImageCube;
 					break;
-				case CompiledResult::Type::UInt:
+				case Type::UInt:
 					if (sampled)
-						data.types[id] = CompiledResult::Type::USamplerCube;
+						data.types[id] = Type::USamplerCube;
 					else
-						data.types[id] = CompiledResult::Type::UImageCube;
+						data.types[id] = Type::UImageCube;
 					break;
 				default:
 					assert(false);
@@ -596,28 +596,28 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 			assert(data.types.find(typeId) != data.types.end());
 			switch (data.types[typeId])
 			{
-				case CompiledResult::Type::Float:
+				case Type::Float:
 					if (sampled)
 					{
 						if (depth == 1)
-							data.types[id] = CompiledResult::Type::Sampler2DRectShadow;
+							data.types[id] = Type::Sampler2DRectShadow;
 						else
-							data.types[id] = CompiledResult::Type::Sampler2DRect;
+							data.types[id] = Type::Sampler2DRect;
 					}
 					else
-						data.types[id] = CompiledResult::Type::Image2DRect;
+						data.types[id] = Type::Image2DRect;
 					break;
-				case CompiledResult::Type::Int:
+				case Type::Int:
 					if (sampled)
-						data.types[id] = CompiledResult::Type::ISampler2DRect;
+						data.types[id] = Type::ISampler2DRect;
 					else
-						data.types[id] = CompiledResult::Type::IImage2DRect;
+						data.types[id] = Type::IImage2DRect;
 					break;
-				case CompiledResult::Type::UInt:
+				case Type::UInt:
 					if (sampled)
-						data.types[id] = CompiledResult::Type::USampler2DRect;
+						data.types[id] = Type::USampler2DRect;
 					else
-						data.types[id] = CompiledResult::Type::UImage2DRect;
+						data.types[id] = Type::UImage2DRect;
 					break;
 				default:
 					assert(false);
@@ -630,9 +630,9 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 			assert(!ms);
 			assert(!array);
 			if (sampled)
-				data.types[id] = CompiledResult::Type::SamplerBuffer;
+				data.types[id] = Type::SamplerBuffer;
 			else
-				data.types[id] = CompiledResult::Type::ImageBuffer;
+				data.types[id] = Type::ImageBuffer;
 			break;
 		}
 		case spv::DimSubpassData:
@@ -642,23 +642,23 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 			assert(data.types.find(typeId) != data.types.end());
 			switch (data.types[typeId])
 			{
-				case CompiledResult::Type::Float:
+				case Type::Float:
 					if (ms)
-						data.types[id] = CompiledResult::Type::SubpassInputMS;
+						data.types[id] = Type::SubpassInputMS;
 					else
-						data.types[id] = CompiledResult::Type::SubpassInput;
+						data.types[id] = Type::SubpassInput;
 					break;
-				case CompiledResult::Type::Int:
+				case Type::Int:
 					if (ms)
-						data.types[id] = CompiledResult::Type::ISubpassInputMS;
+						data.types[id] = Type::ISubpassInputMS;
 					else
-						data.types[id] = CompiledResult::Type::ISubpassInput;
+						data.types[id] = Type::ISubpassInput;
 					break;
-				case CompiledResult::Type::UInt:
+				case Type::UInt:
 					if (ms)
-						data.types[id] = CompiledResult::Type::USubpassInputMS;
+						data.types[id] = Type::USubpassInputMS;
 					else
-						data.types[id] = CompiledResult::Type::USubpassInput;
+						data.types[id] = Type::USubpassInput;
 					break;
 				default:
 					assert(false);
@@ -762,8 +762,8 @@ SpirVProcessor::SpirVProcessor(const std::vector<std::uint32_t>& spirv)
 				assert(data.types.find(typeId) != data.types.end());
 				switch (data.types[typeId])
 				{
-					case CompiledResult::Type::Int:
-					case CompiledResult::Type::UInt:
+					case Type::Int:
+					case Type::UInt:
 						data.intConstants[id] = spirv[i + 3];
 						break;
 					default:
@@ -775,7 +775,7 @@ SpirVProcessor::SpirVProcessor(const std::vector<std::uint32_t>& spirv)
 			// Extract type declarations.
 			case spv::OpTypeBool:
 				assert(wordCount == 2);
-				data.types[spirv[i + 1]] = CompiledResult::Type::Bool;
+				data.types[spirv[i + 1]] = Type::Bool;
 				break;
 			case spv::OpTypeInt:
 			{
@@ -783,9 +783,9 @@ SpirVProcessor::SpirVProcessor(const std::vector<std::uint32_t>& spirv)
 				assert(spirv[i + 2] == 32);
 				std::uint32_t id = spirv[i + 1];
 				if (spirv[i + 3])
-					data.types[id] = CompiledResult::Type::Int;
+					data.types[id] = Type::Int;
 				else
-					data.types[id] = CompiledResult::Type::UInt;
+					data.types[id] = Type::UInt;
 				break;
 			}
 			case spv::OpTypeFloat:
@@ -795,9 +795,9 @@ SpirVProcessor::SpirVProcessor(const std::vector<std::uint32_t>& spirv)
 				std::uint32_t width = spirv[i + 2];
 				assert(width == 32 || width == 64);
 				if (width == 64)
-					data.types[id] = CompiledResult::Type::Double;
+					data.types[id] = Type::Double;
 				else
-					data.types[id] = CompiledResult::Type::Float;
+					data.types[id] = Type::Float;
 				break;
 			}
 			case spv::OpTypeVector:

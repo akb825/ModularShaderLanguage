@@ -171,19 +171,22 @@ public:
 		UImage2DMSArray, ///< uimage2DMSArray
 		UImage2DRect,    ///< uimage2DRect
 
-		// Other
+		// Subpass inputs.
 		SubpassInput,    ///< subpassInput
 		SubpassInputMS,  ///< subpassInputMS
 		ISubpassInput,   ///< isubpassInput
 		ISubpassInputMS, ///< isubpassInputMS
 		USubpassInput,   ///< usubpassInput
 		USubpassInputMS, ///< usubpassInputMS
+
+		// Other.
+		Struct, ///< User-defined structure.
 	};
 
 	/**
 	 * @brief Constant for the number of types.
 	 */
-	static const unsigned int typeCount = static_cast<unsigned int>(Type::USubpassInputMS) + 1;
+	static const unsigned int typeCount = static_cast<unsigned int>(Type::Struct) + 1;
 
 	/**
 	* @brief Enum for a stage within a shader pipeline.

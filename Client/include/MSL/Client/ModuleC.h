@@ -245,13 +245,16 @@ typedef enum mslType
 	mslType_UImage2DMSArray, ///< uimage2DMSArray
 	mslType_UImage2DRect,    ///< uimage2DRect
 
-	// Other
+	// Subpass inputs.
 	mslType_SubpassInput,    ///< subpassInput
 	mslType_SubpassInputMS,  ///< subpassInputMS
 	mslType_ISubpassInput,   ///< isubpassInput
 	mslType_ISubpassInputMS, ///< isubpassInputMS
 	mslType_USubpassInput,   ///< usubpassInput
 	mslType_USubpassInputMS, ///< usubpassInputMS
+
+	// Other.
+	mslType_Struct, ///< User-defined structure.
 
 	// Count
 	mslType_Count ///< Number of types.

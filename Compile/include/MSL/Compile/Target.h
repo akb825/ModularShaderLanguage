@@ -18,6 +18,7 @@
 
 #include <MSL/Config.h>
 #include <MSL/Compile/Export.h>
+#include <MSL/Compile/Types.h>
 #include <array>
 #include <cstdint>
 #include <istream>
@@ -54,24 +55,6 @@ class Preprocessor;
 class MSL_COMPILE_EXPORT Target
 {
 public:
-
-	/**
-	 * @brief Enum for the a stage within the pipeline.
-	 */
-	enum class Stage
-	{
-		Vertex,                 ///< Vertex stage.
-		TessellationControl,    ///< Tessellation control stage.
-		TessellationEvaluation, ///< Tessellation evaluation stage.
-		Geometry,               ///< Geometry stage.
-		Fragment,               ///< Fragment stage.
-		Compute                 ///< Compute stage.
-	};
-
-	/**
-	 * @brief Constant for the number of pipelien stages.
-	 */
-	static const unsigned int stageCount = static_cast<unsigned int>(Stage::Compute) + 1;
 
 	/**
 	 * @brief List of features to query if they are supported.

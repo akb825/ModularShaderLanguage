@@ -97,118 +97,118 @@ static Target::FeatureInfo featureInfos[] =
 static_assert(sizeof(featureInfos)/sizeof(*featureInfos) == Target::featureCount,
 	"Not all features are in the featureInfos array.");
 
-static std::unordered_map<int, CompiledResult::Type> typeMap =
+static std::unordered_map<int, Type> typeMap =
 {
 	// Scalars and vectors
-	{GL_FLOAT, CompiledResult::Type::Float},
-	{GL_FLOAT_VEC2, CompiledResult::Type::Vec2},
-	{GL_FLOAT_VEC3, CompiledResult::Type::Vec3},
-	{GL_FLOAT_VEC4, CompiledResult::Type::Vec4},
-	{GL_DOUBLE, CompiledResult::Type::Double},
-	{GL_DOUBLE_VEC2, CompiledResult::Type::DVec2},
-	{GL_DOUBLE_VEC3, CompiledResult::Type::DVec3},
-	{GL_DOUBLE_VEC4, CompiledResult::Type::DVec4},
-	{GL_INT, CompiledResult::Type::Int},
-	{GL_INT_VEC2, CompiledResult::Type::IVec2},
-	{GL_INT_VEC3, CompiledResult::Type::IVec3},
-	{GL_INT_VEC4, CompiledResult::Type::IVec4},
-	{GL_UNSIGNED_INT, CompiledResult::Type::UInt},
-	{GL_UNSIGNED_INT_VEC2, CompiledResult::Type::UVec2},
-	{GL_UNSIGNED_INT_VEC3, CompiledResult::Type::UVec3},
-	{GL_UNSIGNED_INT_VEC4, CompiledResult::Type::UVec4},
-	{GL_BOOL, CompiledResult::Type::Bool},
-	{GL_BOOL_VEC2, CompiledResult::Type::BVec2},
-	{GL_BOOL_VEC3, CompiledResult::Type::BVec3},
-	{GL_BOOL_VEC4, CompiledResult::Type::BVec4},
+	{GL_FLOAT, Type::Float},
+	{GL_FLOAT_VEC2, Type::Vec2},
+	{GL_FLOAT_VEC3, Type::Vec3},
+	{GL_FLOAT_VEC4, Type::Vec4},
+	{GL_DOUBLE, Type::Double},
+	{GL_DOUBLE_VEC2, Type::DVec2},
+	{GL_DOUBLE_VEC3, Type::DVec3},
+	{GL_DOUBLE_VEC4, Type::DVec4},
+	{GL_INT, Type::Int},
+	{GL_INT_VEC2, Type::IVec2},
+	{GL_INT_VEC3, Type::IVec3},
+	{GL_INT_VEC4, Type::IVec4},
+	{GL_UNSIGNED_INT, Type::UInt},
+	{GL_UNSIGNED_INT_VEC2, Type::UVec2},
+	{GL_UNSIGNED_INT_VEC3, Type::UVec3},
+	{GL_UNSIGNED_INT_VEC4, Type::UVec4},
+	{GL_BOOL, Type::Bool},
+	{GL_BOOL_VEC2, Type::BVec2},
+	{GL_BOOL_VEC3, Type::BVec3},
+	{GL_BOOL_VEC4, Type::BVec4},
 
 	// Matrices
-	{GL_FLOAT_MAT2, CompiledResult::Type::Mat2},
-	{GL_FLOAT_MAT3, CompiledResult::Type::Mat3},
-	{GL_FLOAT_MAT4, CompiledResult::Type::Mat4},
-	{GL_FLOAT_MAT2x3, CompiledResult::Type::Mat2x3},
-	{GL_FLOAT_MAT2x3, CompiledResult::Type::Mat2x4},
-	{GL_FLOAT_MAT3x2, CompiledResult::Type::Mat3x2},
-	{GL_FLOAT_MAT3x4, CompiledResult::Type::Mat3x4},
-	{GL_FLOAT_MAT4x2, CompiledResult::Type::Mat4x2},
-	{GL_FLOAT_MAT4x3, CompiledResult::Type::Mat4x3},
-	{GL_DOUBLE_MAT2, CompiledResult::Type::DMat2},
-	{GL_DOUBLE_MAT3, CompiledResult::Type::DMat3},
-	{GL_DOUBLE_MAT4, CompiledResult::Type::DMat4},
-	{GL_DOUBLE_MAT2x3, CompiledResult::Type::DMat2x3},
-	{GL_DOUBLE_MAT2x4, CompiledResult::Type::DMat2x4},
-	{GL_DOUBLE_MAT3x2, CompiledResult::Type::DMat3x2},
-	{GL_DOUBLE_MAT3x4, CompiledResult::Type::DMat3x4},
-	{GL_DOUBLE_MAT4x2, CompiledResult::Type::DMat4x2},
-	{GL_DOUBLE_MAT4x3, CompiledResult::Type::DMat4x3},
+	{GL_FLOAT_MAT2, Type::Mat2},
+	{GL_FLOAT_MAT3, Type::Mat3},
+	{GL_FLOAT_MAT4, Type::Mat4},
+	{GL_FLOAT_MAT2x3, Type::Mat2x3},
+	{GL_FLOAT_MAT2x3, Type::Mat2x4},
+	{GL_FLOAT_MAT3x2, Type::Mat3x2},
+	{GL_FLOAT_MAT3x4, Type::Mat3x4},
+	{GL_FLOAT_MAT4x2, Type::Mat4x2},
+	{GL_FLOAT_MAT4x3, Type::Mat4x3},
+	{GL_DOUBLE_MAT2, Type::DMat2},
+	{GL_DOUBLE_MAT3, Type::DMat3},
+	{GL_DOUBLE_MAT4, Type::DMat4},
+	{GL_DOUBLE_MAT2x3, Type::DMat2x3},
+	{GL_DOUBLE_MAT2x4, Type::DMat2x4},
+	{GL_DOUBLE_MAT3x2, Type::DMat3x2},
+	{GL_DOUBLE_MAT3x4, Type::DMat3x4},
+	{GL_DOUBLE_MAT4x2, Type::DMat4x2},
+	{GL_DOUBLE_MAT4x3, Type::DMat4x3},
 
 	// Samplers
-	{GL_SAMPLER_1D, CompiledResult::Type::Sampler1D},
-	{GL_SAMPLER_2D, CompiledResult::Type::Sampler2D},
-	{GL_SAMPLER_3D, CompiledResult::Type::Sampler3D},
-	{GL_SAMPLER_CUBE, CompiledResult::Type::SamplerCube},
-	{GL_SAMPLER_1D_SHADOW, CompiledResult::Type::Sampler1DShadow},
-	{GL_SAMPLER_2D_SHADOW, CompiledResult::Type::Sampler2DShadow},
-	{GL_SAMPLER_1D_ARRAY, CompiledResult::Type::Sampler1DArray},
-	{GL_SAMPLER_2D_ARRAY, CompiledResult::Type::Sampler2DArray},
-	{GL_SAMPLER_1D_ARRAY_SHADOW, CompiledResult::Type::Sampler1DArrayShadow},
-	{GL_SAMPLER_2D_ARRAY_SHADOW, CompiledResult::Type::Sampler2DArrayShadow},
-	{GL_SAMPLER_2D_MULTISAMPLE, CompiledResult::Type::Sampler2DMS},
-	{GL_SAMPLER_2D_MULTISAMPLE_ARRAY, CompiledResult::Type::Sampler2DMSArray},
-	{GL_SAMPLER_CUBE_SHADOW, CompiledResult::Type::SamplerCubeShadow},
-	{GL_SAMPLER_BUFFER, CompiledResult::Type::SamplerBuffer},
-	{GL_SAMPLER_2D_RECT, CompiledResult::Type::Sampler2DRect},
-	{GL_SAMPLER_2D_RECT_SHADOW, CompiledResult::Type::Sampler2DRectShadow},
-	{GL_INT_SAMPLER_1D, CompiledResult::Type::ISampler1D},
-	{GL_INT_SAMPLER_2D, CompiledResult::Type::ISampler2D},
-	{GL_INT_SAMPLER_3D, CompiledResult::Type::ISampler3D},
-	{GL_INT_SAMPLER_CUBE, CompiledResult::Type::ISamplerCube},
-	{GL_INT_SAMPLER_1D_ARRAY, CompiledResult::Type::ISampler1DArray},
-	{GL_INT_SAMPLER_2D_ARRAY, CompiledResult::Type::ISampler2DArray},
-	{GL_INT_SAMPLER_2D_MULTISAMPLE, CompiledResult::Type::ISampler2DMS},
-	{GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY, CompiledResult::Type::ISampler2DMSArray},
-	{GL_INT_SAMPLER_2D_RECT, CompiledResult::Type::ISampler2DRect},
-	{GL_UNSIGNED_INT_SAMPLER_1D, CompiledResult::Type::USampler1D},
-	{GL_UNSIGNED_INT_SAMPLER_2D, CompiledResult::Type::USampler2D},
-	{GL_UNSIGNED_INT_SAMPLER_3D, CompiledResult::Type::USampler3D},
-	{GL_UNSIGNED_INT_SAMPLER_CUBE, CompiledResult::Type::USamplerCube},
-	{GL_UNSIGNED_INT_SAMPLER_1D_ARRAY, CompiledResult::Type::USampler1DArray},
-	{GL_UNSIGNED_INT_SAMPLER_2D_ARRAY, CompiledResult::Type::USampler2DArray},
-	{GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE, CompiledResult::Type::USampler2DMS},
-	{GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY, CompiledResult::Type::USampler2DMSArray},
-	{GL_UNSIGNED_INT_SAMPLER_2D_RECT, CompiledResult::Type::USampler2DRect},
+	{GL_SAMPLER_1D, Type::Sampler1D},
+	{GL_SAMPLER_2D, Type::Sampler2D},
+	{GL_SAMPLER_3D, Type::Sampler3D},
+	{GL_SAMPLER_CUBE, Type::SamplerCube},
+	{GL_SAMPLER_1D_SHADOW, Type::Sampler1DShadow},
+	{GL_SAMPLER_2D_SHADOW, Type::Sampler2DShadow},
+	{GL_SAMPLER_1D_ARRAY, Type::Sampler1DArray},
+	{GL_SAMPLER_2D_ARRAY, Type::Sampler2DArray},
+	{GL_SAMPLER_1D_ARRAY_SHADOW, Type::Sampler1DArrayShadow},
+	{GL_SAMPLER_2D_ARRAY_SHADOW, Type::Sampler2DArrayShadow},
+	{GL_SAMPLER_2D_MULTISAMPLE, Type::Sampler2DMS},
+	{GL_SAMPLER_2D_MULTISAMPLE_ARRAY, Type::Sampler2DMSArray},
+	{GL_SAMPLER_CUBE_SHADOW, Type::SamplerCubeShadow},
+	{GL_SAMPLER_BUFFER, Type::SamplerBuffer},
+	{GL_SAMPLER_2D_RECT, Type::Sampler2DRect},
+	{GL_SAMPLER_2D_RECT_SHADOW, Type::Sampler2DRectShadow},
+	{GL_INT_SAMPLER_1D, Type::ISampler1D},
+	{GL_INT_SAMPLER_2D, Type::ISampler2D},
+	{GL_INT_SAMPLER_3D, Type::ISampler3D},
+	{GL_INT_SAMPLER_CUBE, Type::ISamplerCube},
+	{GL_INT_SAMPLER_1D_ARRAY, Type::ISampler1DArray},
+	{GL_INT_SAMPLER_2D_ARRAY, Type::ISampler2DArray},
+	{GL_INT_SAMPLER_2D_MULTISAMPLE, Type::ISampler2DMS},
+	{GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY, Type::ISampler2DMSArray},
+	{GL_INT_SAMPLER_2D_RECT, Type::ISampler2DRect},
+	{GL_UNSIGNED_INT_SAMPLER_1D, Type::USampler1D},
+	{GL_UNSIGNED_INT_SAMPLER_2D, Type::USampler2D},
+	{GL_UNSIGNED_INT_SAMPLER_3D, Type::USampler3D},
+	{GL_UNSIGNED_INT_SAMPLER_CUBE, Type::USamplerCube},
+	{GL_UNSIGNED_INT_SAMPLER_1D_ARRAY, Type::USampler1DArray},
+	{GL_UNSIGNED_INT_SAMPLER_2D_ARRAY, Type::USampler2DArray},
+	{GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE, Type::USampler2DMS},
+	{GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY, Type::USampler2DMSArray},
+	{GL_UNSIGNED_INT_SAMPLER_2D_RECT, Type::USampler2DRect},
 
 	// Images
-	{GL_IMAGE_1D, CompiledResult::Type::Image1D},
-	{GL_IMAGE_2D, CompiledResult::Type::Image2D},
-	{GL_IMAGE_3D, CompiledResult::Type::Image3D},
-	{GL_IMAGE_CUBE, CompiledResult::Type::ImageCube},
-	{GL_IMAGE_1D_ARRAY, CompiledResult::Type::Image1DArray},
-	{GL_IMAGE_2D_ARRAY, CompiledResult::Type::Image2DArray},
-	{GL_IMAGE_2D_MULTISAMPLE, CompiledResult::Type::Image2DMS},
-	{GL_IMAGE_2D_MULTISAMPLE_ARRAY, CompiledResult::Type::Image2DMSArray},
-	{GL_IMAGE_BUFFER, CompiledResult::Type::ImageBuffer},
-	{GL_IMAGE_2D_RECT, CompiledResult::Type::Image2DRect},
-	{GL_INT_IMAGE_1D, CompiledResult::Type::IImage1D},
-	{GL_INT_IMAGE_2D, CompiledResult::Type::IImage2D},
-	{GL_INT_IMAGE_3D, CompiledResult::Type::IImage3D},
-	{GL_INT_IMAGE_CUBE, CompiledResult::Type::IImageCube},
-	{GL_INT_IMAGE_1D_ARRAY, CompiledResult::Type::IImage1DArray},
-	{GL_INT_IMAGE_2D_ARRAY, CompiledResult::Type::IImage2DArray},
-	{GL_INT_IMAGE_2D_MULTISAMPLE, CompiledResult::Type::IImage2DMS},
-	{GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY, CompiledResult::Type::IImage2DMSArray},
-	{GL_INT_IMAGE_2D_RECT, CompiledResult::Type::IImage2DRect},
-	{GL_UNSIGNED_INT_IMAGE_1D, CompiledResult::Type::UImage1D},
-	{GL_UNSIGNED_INT_IMAGE_2D, CompiledResult::Type::UImage2D},
-	{GL_UNSIGNED_INT_IMAGE_3D, CompiledResult::Type::UImage3D},
-	{GL_UNSIGNED_INT_IMAGE_CUBE, CompiledResult::Type::UImageCube},
-	{GL_UNSIGNED_INT_IMAGE_1D_ARRAY, CompiledResult::Type::UImage1DArray},
-	{GL_UNSIGNED_INT_IMAGE_2D_ARRAY, CompiledResult::Type::UImage2DArray},
-	{GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE, CompiledResult::Type::UImage2DMS},
-	{GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY, CompiledResult::Type::UImage2DMSArray},
-	{GL_UNSIGNED_INT_IMAGE_2D_RECT, CompiledResult::Type::UImage2DRect},
+	{GL_IMAGE_1D, Type::Image1D},
+	{GL_IMAGE_2D, Type::Image2D},
+	{GL_IMAGE_3D, Type::Image3D},
+	{GL_IMAGE_CUBE, Type::ImageCube},
+	{GL_IMAGE_1D_ARRAY, Type::Image1DArray},
+	{GL_IMAGE_2D_ARRAY, Type::Image2DArray},
+	{GL_IMAGE_2D_MULTISAMPLE, Type::Image2DMS},
+	{GL_IMAGE_2D_MULTISAMPLE_ARRAY, Type::Image2DMSArray},
+	{GL_IMAGE_BUFFER, Type::ImageBuffer},
+	{GL_IMAGE_2D_RECT, Type::Image2DRect},
+	{GL_INT_IMAGE_1D, Type::IImage1D},
+	{GL_INT_IMAGE_2D, Type::IImage2D},
+	{GL_INT_IMAGE_3D, Type::IImage3D},
+	{GL_INT_IMAGE_CUBE, Type::IImageCube},
+	{GL_INT_IMAGE_1D_ARRAY, Type::IImage1DArray},
+	{GL_INT_IMAGE_2D_ARRAY, Type::IImage2DArray},
+	{GL_INT_IMAGE_2D_MULTISAMPLE, Type::IImage2DMS},
+	{GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY, Type::IImage2DMSArray},
+	{GL_INT_IMAGE_2D_RECT, Type::IImage2DRect},
+	{GL_UNSIGNED_INT_IMAGE_1D, Type::UImage1D},
+	{GL_UNSIGNED_INT_IMAGE_2D, Type::UImage2D},
+	{GL_UNSIGNED_INT_IMAGE_3D, Type::UImage3D},
+	{GL_UNSIGNED_INT_IMAGE_CUBE, Type::UImageCube},
+	{GL_UNSIGNED_INT_IMAGE_1D_ARRAY, Type::UImage1DArray},
+	{GL_UNSIGNED_INT_IMAGE_2D_ARRAY, Type::UImage2DArray},
+	{GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE, Type::UImage2DMS},
+	{GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY, Type::UImage2DMSArray},
+	{GL_UNSIGNED_INT_IMAGE_2D_RECT, Type::UImage2DRect},
 
 	// Other
-	{0, CompiledResult::Type::SubpassInput},
+	{0, Type::SubpassInput},
 };
 
 static std::string readLine(std::istream& stream)
@@ -708,7 +708,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 	{
 		// Add the current pipeline to the result.
 		auto addPair = result.m_pipelines.emplace(pipeline.name,
-			CompiledResult::Pipeline());
+			Pipeline());
 		if (!addPair.second)
 		{
 			output.addMessage(Output::Level::Error, pipeline.token->fileName, pipeline.token->line,
@@ -719,16 +719,16 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			return false;
 		}
 
-		CompiledResult::Pipeline& addedPipeline = addPair.first->second;
+		Pipeline& addedPipeline = addPair.first->second;
 		addedPipeline.file = pipeline.token->fileName;
 		addedPipeline.line = pipeline.token->line;
 		addedPipeline.column = pipeline.token->column;
 
 		// Compile the stages.
 		Compiler::Stages stages;
-		for (unsigned int i = 0; i < Parser::stageCount; ++i)
+		for (unsigned int i = 0; i < stageCount; ++i)
 		{
-			auto stage = static_cast<Parser::Stage>(i);
+			auto stage = static_cast<Stage>(i);
 			if (pipeline.entryPoints[i].empty())
 				continue;
 
@@ -750,9 +750,9 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 		}
 
 		// Cross-compile the stages.
-		for (unsigned int i = 0; i < Parser::stageCount; ++i)
+		for (unsigned int i = 0; i < stageCount; ++i)
 		{
-			auto stage = static_cast<Parser::Stage>(i);
+			auto stage = static_cast<Stage>(i);
 
 			if (!stages.shaders[i])
 				continue;

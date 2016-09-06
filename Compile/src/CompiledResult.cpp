@@ -21,7 +21,7 @@
 namespace msl
 {
 
-static_assert(static_cast<unsigned int>(mslb::Type::MAX) == CompiledResult::typeCount - 1,
+static_assert(static_cast<unsigned int>(mslb::Type::MAX) == typeCount - 1,
 	"Type enum mismatch between flatbuffer and CompiledResult.");
 
 CompiledResult::CompiledResult()
