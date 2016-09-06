@@ -114,7 +114,12 @@ enum Type : ubyte
 	UImage2DRect,    // uimage2DRect
 
 	// Other
-	SubpassInput, // [u/i]subpassInput[MS]
+	SubpassInput,    // subpassInput
+	SubpassInputMS,  // subpassInputMS
+	ISubpassInput,   // isubpassInput
+	ISubpassInputMS, // isubpassInputMS
+	USubpassInput,   // usubpassInput
+	USubpassInputMS, // usubpassInputMS
 }
 
 /*

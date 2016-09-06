@@ -135,6 +135,11 @@ static const char* typeNames[] =
 
 	// Other
 	"subpassInput",
+	"subpassInputMS",
+	"isubpassInput",
+	"isubpassInputMS",
+	"usubpassInput",
+	"usubpassInputMS",
 };
 static_assert(sizeof(typeNames)/sizeof(*typeNames) == msl::Module::typeCount,
 	"typeNames out of sync with enum");

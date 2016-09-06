@@ -171,13 +171,18 @@ public:
 		UImage2DRect,    ///< uimage2DRect
 
 		// Other
-		SubpassInput, ///< [u/i]subpassInput[MS]
+		SubpassInput,    ///< subpassInput
+		SubpassInputMS,  ///< subpassInputMS
+		ISubpassInput,   ///< isubpassInput
+		ISubpassInputMS, ///< isubpassInputMS
+		USubpassInput,   ///< usubpassInput
+		USubpassInputMS, ///< usubpassInputMS
 	};
 
 	/**
 	 * @brief Constant for the number of types.
 	 */
-	static const unsigned int typeCount = static_cast<unsigned int>(Type::SubpassInput) + 1;
+	static const unsigned int typeCount = static_cast<unsigned int>(Type::USubpassInputMS) + 1;
 
 	/**
 	 * @brief Structure describing a uniform.
