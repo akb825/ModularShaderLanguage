@@ -69,8 +69,8 @@ enum class Stage
 static const unsigned int stageCount = static_cast<unsigned int>(Stage::Compute) + 1;
 
 /**
-* @brief Enum for the type of a uniform.
-*/
+ * @brief Enum for the type of a uniform.
+ */
 enum class Type
 {
 	// Scalars and vectors
@@ -784,9 +784,24 @@ struct SamplerState
 	BorderColor borderColor = BorderColor::Unset;
 };
 
+struct ArrayInfo
+{
+	/**
+	 * @brief The length of the array.
+	 *
+	 * This will be set to unknown if the size is unknown at compile time.
+	 */
+	std::uint32_t length;
+
+	/**
+	 * @brief The stride of the array.
+	 */
+	std::uint32_t stride;
+};
+
 /**
-* @brief Structure describing a member of a user-defined struct
-*/
+ * @brief Structure describing a member of a user-defined struct
+ */
 struct StructMember
 {
 	/**
@@ -800,6 +815,11 @@ struct StructMember
 	std::uint32_t offset;
 
 	/**
+	 * @brief The size of this member.
+	 */
+	std::uint32_t size;
+
+	/**
 	 * @brief The type of the element.
 	 */
 	Type type;
@@ -810,17 +830,16 @@ struct StructMember
 	std::uint32_t structIndex;
 
 	/**
-	 * @brief The number of array elements.
+	 * @brief Info about each element in the array.
 	 *
-	 * This is set to 0 if the member isn't an array. It is set to unknown if the array length
-	 * is determined at runtime.
+	 * This will be empty if this member isn't an array.
 	 */
-	std::uint32_t arrayElements;
+	std::vector<ArrayInfo> arrayElements;
 };
 
 /**
-* @brief Structure describing a user-defined struct.
-*/
+ * @brief Structure describing a user-defined struct.
+ */
 struct Struct
 {
 	/**
@@ -843,8 +862,8 @@ struct Struct
 };
 
 /**
-* @brief Structure defining a uniform.
-*/
+ * @brief Structure defining a uniform.
+ */
 struct Uniform
 {
 	/**
@@ -870,11 +889,11 @@ struct Uniform
 	std::uint32_t structIndex;
 
 	/**
-	 * @brief The number of array elements.
+	 * @brief Info about each element in the array.
 	 *
-	 * This is set to 0 if the uniform isn't an array.
+	 * This will be empty if this member isn't an array.
 	 */
-	std::uint32_t arrayElements;
+	std::vector<ArrayInfo> arrayElements;
 
 	/**
 	 * @brief The index of the descriptor set.
@@ -899,8 +918,8 @@ struct Uniform
 };
 
 /**
-* @brief Structure describing a vertex input attribute.
-*/
+ * @brief Structure describing a vertex input attribute.
+ */
 struct Attribute
 {
 	/**
@@ -914,11 +933,11 @@ struct Attribute
 	Type type;
 
 	/**
-	 * @brief The number of array elements.
+	 * @brief Info about each element in the array.
 	 *
-	 * This is set to 0 if the attribute isn't an array.
+	 * This will be empty if this member isn't an array.
 	 */
-	std::uint32_t arrayElements;
+	std::vector<ArrayInfo> arrayElements;
 
 	/**
 	 * @brief The location of the attribute.
@@ -927,8 +946,8 @@ struct Attribute
 };
 
 /**
-* @brief Structure defining a shader within the pipeline.
-*/
+ * @brief Structure defining a shader within the pipeline.
+ */
 struct Shader
 {
 	/**
@@ -950,8 +969,8 @@ struct Shader
 };
 
 /**
-* @brief Structure that holds the information about the a pipeline within the compiled result.
-*/
+ * @brief Structure that holds the information about the a pipeline within the compiled result.
+ */
 struct Pipeline
 {
 	/**
@@ -980,6 +999,14 @@ struct Pipeline
 	 * This can be indexed by the Stage enum.
 	 */
 	std::array<Shader, stageCount> shaders;
+
+	/**
+	 * @brief Index for the push constant structure.
+	 *
+	 * The push constant struct members will become individual uniforms for non-Vulkan targets.
+	 * This is set to unknown if there are no push constants.
+	 */
+	std::uint32_t pushConstantStruct;
 
 	/**
 	 * @brief The render state to apply to the pipeline.

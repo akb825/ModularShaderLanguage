@@ -17,6 +17,7 @@
 #pragma once
 
 #include <MSL/Config.h>
+#include <MSL/Compile/Types.h>
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -30,7 +31,15 @@ public:
 
 	explicit SpirVProcessor(const std::vector<std::uint32_t>& spirv);
 
-private:
+	std::vector<Struct> structs;
+	std::vector<std::uint32_t> structIds;
+	std::vector<Uniform> uniforms;
+	std::vector<std::uint32_t> uniformIds;
+	std::vector<Attribute> inputs;
+	std::vector<std::uint32_t> inputIds;
+	std::vector<Attribute> outputs;
+	std::vector<std::uint32_t> outputIds;
+	std::uint32_t pushConstantStruct;
 };
 
 } // namespace msl
