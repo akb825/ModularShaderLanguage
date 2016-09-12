@@ -16,6 +16,7 @@
 
 #include "SpirVProcessor.h"
 #include <MSL/Compile/CompiledResult.h>
+#include <MSL/Compile/Output.h>
 #include <SPIRV/spirv.hpp>
 #include <algorithm>
 #include <cassert>
@@ -31,7 +32,7 @@ namespace
 
 static const unsigned int firstInstruction = 5;
 static const unsigned int unknownLength = (unsigned int)-1;
-static const std::uint32_t unset = (std::uint32_t)-1;;
+static const std::uint32_t unset = (std::uint32_t)-1;
 
 static std::uint32_t typeSizes[] =
 {
@@ -105,6 +106,7 @@ struct IntermediateData
 	std::unordered_map<std::uint32_t, std::uint32_t> descriptorSets;
 	std::unordered_map<std::uint32_t, std::uint32_t> bindings;
 	std::unordered_map<std::uint32_t, std::uint32_t> locations;
+	std::unordered_map<std::uint32_t, std::vector<std::uint32_t>> memberLocations;
 
 	// Variable declarations
 	// Make these ordered (except for pointers) so they will be consistent across runs.
@@ -758,6 +760,66 @@ bool isMatrix(Type type)
 	}
 }
 
+bool isSampledImage(Type type)
+{
+	switch (type)
+	{
+		case Type::Sampler1D:
+		case Type::Sampler2D:
+		case Type::Sampler3D:
+		case Type::SamplerCube:
+		case Type::Sampler1DShadow:
+		case Type::Sampler2DShadow:
+		case Type::Sampler1DArray:
+		case Type::Sampler2DArray:
+		case Type::Sampler1DArrayShadow:
+		case Type::Sampler2DArrayShadow:
+		case Type::Sampler2DMS:
+		case Type::Sampler2DMSArray:
+		case Type::SamplerCubeShadow:
+		case Type::SamplerBuffer:
+		case Type::Sampler2DRect:
+		case Type::Sampler2DRectShadow:
+		case Type::ISampler1D:
+		case Type::ISampler2D:
+		case Type::ISampler3D:
+		case Type::ISamplerCube:
+		case Type::ISampler1DArray:
+		case Type::ISampler2DArray:
+		case Type::ISampler2DMS:
+		case Type::ISampler2DMSArray:
+		case Type::ISampler2DRect:
+		case Type::USampler1D:
+		case Type::USampler2D:
+		case Type::USampler3D:
+		case Type::USamplerCube:
+		case Type::USampler1DArray:
+		case Type::USampler2DArray:
+		case Type::USampler2DMS:
+		case Type::USampler2DMSArray:
+		case Type::USampler2DRect:
+			return true;
+		default:
+			return false;
+	}
+}
+
+bool isSubpassInput(Type type)
+{
+	switch (type)
+	{
+		case Type::SubpassInput:
+		case Type::SubpassInputMS:
+		case Type::ISubpassInput:
+		case Type::ISubpassInputMS:
+		case Type::USubpassInput:
+		case Type::USubpassInputMS:
+			return true;
+		default:
+			return false;
+	}
+}
+
 std::uint32_t getTypeSize(const SpirVProcessor& processor, Type type, std::uint32_t structIndex)
 {
 	if (type == Type::Struct)
@@ -890,10 +952,11 @@ Type getType(std::vector<ArrayInfo>& arrayElements, std::uint32_t& structIndex,
 
 void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 {
-	processor.uniforms.resize(data.uniformVars.size());
-	processor.uniformIds.resize(data.uniformVars.size());
+	std::size_t totalUniforms = data.uniformVars.size() + data.imageVars.size();
+	processor.uniforms.resize(totalUniforms);
+	processor.uniformIds.resize(totalUniforms);
 	std::size_t i = 0;
-	for (const std::pair<std::uint32_t, std::uint32_t>& uniformIndices: data.uniformVars)
+	for (const std::pair<std::uint32_t, std::uint32_t>& uniformIndices : data.uniformVars)
 	{
 		processor.uniformIds[i] = uniformIndices.first;
 
@@ -933,12 +996,151 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 			uniform.binding = foundBinding->second;
 
 		uniform.samplerIndex = unknown;
+
+		++i;
 	}
+
+	for (const std::pair<std::uint32_t, std::uint32_t>& imageIndices : data.imageVars)
+	{
+		processor.uniformIds[i] = imageIndices.first;
+
+		auto foundPointer = data.pointers.find(imageIndices.first);
+		assert(foundPointer != data.pointers.end());
+		std::uint32_t typeId = foundPointer->second;
+
+		Uniform& uniform = processor.uniforms[i];
+
+		auto foundName = data.names.find(imageIndices.first);
+		assert(foundName != data.names.end());
+		uniform.name = foundName->second;
+
+		uniform.type = getType(uniform.arrayElements, uniform.structIndex, processor, data, typeId);
+
+		if (isSampledImage(uniform.type))
+			uniform.uniformType = UniformType::SampledImage;
+		else if (isSubpassInput(uniform.type))
+			uniform.uniformType = UniformType::SubpassInput;
+		else
+			uniform.uniformType = UniformType::Image;
+
+		auto foundDescriptorSet = data.descriptorSets.find(imageIndices.first);
+		if (foundDescriptorSet == data.descriptorSets.end())
+			uniform.descriptorSet = unknown;
+		else
+			uniform.descriptorSet = foundDescriptorSet->second;
+
+		auto foundBinding = data.bindings.find(imageIndices.first);
+		if (foundBinding == data.bindings.end())
+			uniform.binding = unknown;
+		else
+			uniform.binding = foundBinding->second;
+
+		uniform.samplerIndex = unknown;
+
+		++i;
+	}
+}
+
+bool addInputsOutputs(Output& output, const std::string& fileName, std::size_t line,
+	std::size_t column, std::vector<SpirVProcessor::InputOutput>& inputOutputs,
+	std::vector<std::uint32_t>& inputOutputIds,
+	SpirVProcessor& processor, const IntermediateData& data,
+	const std::map<std::uint32_t, std::uint32_t>& inputOutputVars)
+{
+	inputOutputs.resize(inputOutputVars.size());
+	inputOutputIds.resize(inputOutputVars.size());
+	std::size_t i = 0;
+	for (const std::pair<std::uint32_t, std::uint32_t>& inputOutputIndices : inputOutputVars)
+	{
+		inputOutputIds[i] = inputOutputIndices.first;
+
+		auto foundPointer = data.pointers.find(inputOutputIndices.first);
+		assert(foundPointer != data.pointers.end());
+		std::uint32_t typeId = foundPointer->second;
+
+		SpirVProcessor::InputOutput& inputOutput = inputOutputs[i];
+
+		auto foundName = data.names.find(inputOutputIndices.first);
+		assert(foundName != data.names.end());
+		inputOutput.name = foundName->second;
+
+		inputOutput.type = getType(inputOutput.arrayElements, inputOutput.structIndex, processor,
+			data, typeId);
+		if (inputOutput.type == Type::Struct)
+		{
+			// Make sure there's no recursive structs.
+			const Struct& structType = processor.structs[inputOutput.structIndex];
+			for (const StructMember& member : structType.members)
+			{
+				if (member.type == Type::Struct)
+				{
+					output.addMessage(Output::Level::Error, fileName, line, column, false,
+						"link error: cannot have struct members for shader inputs or outputs");
+					return false;
+				}
+			}
+
+			inputOutput.memberLocations.resize(structType.members.size(), unknown);
+			auto foundLocations = data.memberLocations.find(
+				processor.structIds[inputOutput.structIndex]);
+			if (foundLocations != data.memberLocations.end())
+			{
+				assert(foundLocations->second.size() <= inputOutput.memberLocations.size());
+				for (std::size_t j = 0; j < foundLocations->second.size(); ++j)
+					inputOutput.memberLocations[j] = foundLocations->second[j];
+			}
+
+			inputOutput.location = unknown;
+		}
+		else
+		{
+			auto foundLocation = data.locations.find(inputOutputIndices.first);
+			if (foundLocation == data.locations.end())
+				inputOutput.location = unknown;
+			else
+				inputOutput.location = foundLocation->second;
+		}
+
+		++i;
+	}
+
+	return true;
+}
+
+bool addInputs(Output& output, const std::string& fileName, std::size_t line,
+	std::size_t column, SpirVProcessor& processor, const IntermediateData& data)
+{
+	return addInputsOutputs(output, fileName, line, column, processor.inputs, processor.inputIds,
+		processor, data, data.inputVars);
+}
+
+bool addOutputs(Output& output, const std::string& fileName, std::size_t line,
+	std::size_t column, SpirVProcessor& processor, const IntermediateData& data)
+{
+	return addInputsOutputs(output, fileName, line, column, processor.outputs, processor.outputIds,
+		processor, data, data.outputVars);
+}
+
+void addPushConstants(SpirVProcessor& processor, const IntermediateData& data)
+{
+	if (data.pushConstantPointer.first == unset)
+	{
+		processor.pushConstantStruct = unknown;
+		return;
+	}
+
+	std::vector<ArrayInfo> arrayElements;
+	Type type = getType(arrayElements, processor.pushConstantStruct, processor, data,
+		data.pushConstantPointer.second);
+	assert(type == Type::Struct);
+	MSL_UNUSED(type);
+	assert(arrayElements.empty());
 }
 
 } // namespace
 
-SpirVProcessor::SpirVProcessor(const std::vector<std::uint32_t>& spirv)
+bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::size_t line,
+	std::size_t column, const std::vector<std::uint32_t>& spirv)
 {
 	assert(spirv[0] == spv::MagicNumber);
 	assert(spirv[1] == spv::Version);
@@ -1032,6 +1234,15 @@ SpirVProcessor::SpirVProcessor(const std::vector<std::uint32_t>& spirv)
 						if (thisMemberStrides.size() <= member)
 							thisMemberStrides.resize(member + 1, unset);
 						thisMemberStrides[member] = spirv[i + 4];
+						break;
+					}
+					case spv::DecorationLocation:
+					{
+						assert(wordCount == 5);
+						std::vector<std::uint32_t>& thisMemberLocations = data.memberLocations[id];
+						if (thisMemberLocations.size() <= member)
+							thisMemberLocations.resize(member + 1, unset);
+						thisMemberLocations[member] = spirv[i + 4];
 						break;
 					}
 				}
@@ -1226,6 +1437,13 @@ SpirVProcessor::SpirVProcessor(const std::vector<std::uint32_t>& spirv)
 
 	// Construct our own metadata structures based on what was extracted from SPIR-V.
 	addUniforms(*this, data);
+	if (!addInputs(output, fileName, line, column, *this, data))
+		return false;
+	if (!addOutputs(output, fileName, line, column, *this, data))
+		return false;
+	addPushConstants(*this, data);
+
+	return true;
 }
 
 } // namespace msl

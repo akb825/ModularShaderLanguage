@@ -221,9 +221,14 @@ enum class UniformType
 	BlockBuffer,
 
 	/**
-	 * An image or texture.
+	 * An image that doesn't use a sampler.
 	 */
 	Image,
+
+	/**
+	 * An image that uses a sampler to perform filtering, mipmapping, etc.
+	 */
+	SampledImage,
 
 	/**
 	 * Framebuffer input for subpasses.

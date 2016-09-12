@@ -25,19 +25,31 @@
 namespace msl
 {
 
+class Output;
+
 class SpirVProcessor
 {
 public:
+	struct InputOutput
+	{
+		std::string name;
+		Type type;
+		std::uint32_t structIndex;
+		std::vector<ArrayInfo> arrayElements;
+		std::vector<std::uint32_t> memberLocations;
+		std::uint32_t location;
+	};
 
-	explicit SpirVProcessor(const std::vector<std::uint32_t>& spirv);
+	bool extract(Output& output, const std::string& fileName, std::size_t line,
+		std::size_t column, const std::vector<std::uint32_t>& spirv);
 
 	std::vector<Struct> structs;
 	std::vector<std::uint32_t> structIds;
 	std::vector<Uniform> uniforms;
 	std::vector<std::uint32_t> uniformIds;
-	std::vector<Attribute> inputs;
+	std::vector<InputOutput> inputs;
 	std::vector<std::uint32_t> inputIds;
-	std::vector<Attribute> outputs;
+	std::vector<InputOutput> outputs;
 	std::vector<std::uint32_t> outputIds;
 	std::uint32_t pushConstantStruct;
 };
