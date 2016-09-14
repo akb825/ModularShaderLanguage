@@ -948,6 +948,11 @@ struct Attribute
 	 * @brief The location of the attribute.
 	 */
 	std::uint32_t location;
+
+	/**
+	 * @brief The first component at location to use.
+	 */
+	std::uint32_t component;
 };
 
 /**

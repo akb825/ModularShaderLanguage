@@ -20,6 +20,7 @@
 #include <MSL/Compile/Types.h>
 #include <cstdint>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace msl
@@ -36,8 +37,9 @@ public:
 		Type type;
 		std::uint32_t structIndex;
 		std::vector<ArrayInfo> arrayElements;
-		std::vector<std::uint32_t> memberLocations;
+		std::vector<std::pair<std::uint32_t, std::uint32_t>> memberLocations;
 		std::uint32_t location;
+		std::uint32_t component;
 	};
 
 	bool extract(Output& output, const std::string& fileName, std::size_t line,

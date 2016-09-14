@@ -106,7 +106,9 @@ struct IntermediateData
 	std::unordered_map<std::uint32_t, std::uint32_t> descriptorSets;
 	std::unordered_map<std::uint32_t, std::uint32_t> bindings;
 	std::unordered_map<std::uint32_t, std::uint32_t> locations;
+	std::unordered_map<std::uint32_t, std::uint32_t> components;
 	std::unordered_map<std::uint32_t, std::vector<std::uint32_t>> memberLocations;
+	std::unordered_map<std::uint32_t, std::vector<std::uint32_t>> memberComponents;
 
 	// Variable declarations
 	// Make these ordered (except for pointers) so they will be consistent across runs.
@@ -1080,14 +1082,24 @@ bool addInputsOutputs(Output& output, const std::string& fileName, std::size_t l
 				}
 			}
 
-			inputOutput.memberLocations.resize(structType.members.size(), unknown);
+			inputOutput.memberLocations.resize(structType.members.size(),
+				std::make_pair(unknown, unknown));
 			auto foundLocations = data.memberLocations.find(
 				processor.structIds[inputOutput.structIndex]);
 			if (foundLocations != data.memberLocations.end())
 			{
+				auto foundComponents = data.memberComponents.find(
+					processor.structIds[inputOutput.structIndex]);
 				assert(foundLocations->second.size() <= inputOutput.memberLocations.size());
 				for (std::size_t j = 0; j < foundLocations->second.size(); ++j)
-					inputOutput.memberLocations[j] = foundLocations->second[j];
+				{
+					inputOutput.memberLocations[j].first = foundLocations->second[j];
+					if (foundComponents != data.memberComponents.end() &&
+						j < foundComponents->second.size())
+					{
+						inputOutput.memberLocations[j].second = foundComponents->second[j];
+					}
+				}
 			}
 
 			inputOutput.location = unknown;
@@ -1098,7 +1110,12 @@ bool addInputsOutputs(Output& output, const std::string& fileName, std::size_t l
 			if (foundLocation == data.locations.end())
 				inputOutput.location = unknown;
 			else
+			{
 				inputOutput.location = foundLocation->second;
+				auto foundComponent = data.components.find(inputOutputIndices.first);
+				if (foundComponent != data.locations.end())
+					inputOutput.component = foundComponent->second;
+			}
 		}
 
 		++i;
@@ -1196,6 +1213,10 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 						assert(wordCount == 5);
 						data.locations[id] = spirv[i + 4];
 						break;
+					case spv::DecorationComponent:
+						assert(wordCount == 5);
+						data.components[id] = spirv[i + 4];
+						break;
 					case spv::DecorationArrayStride:
 						assert(wordCount == 5);
 						data.arrayStrides[id] = spirv[i + 4];
@@ -1243,6 +1264,15 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 						if (thisMemberLocations.size() <= member)
 							thisMemberLocations.resize(member + 1, unset);
 						thisMemberLocations[member] = spirv[i + 4];
+						break;
+					}
+					case spv::DecorationComponent:
+					{
+						assert(wordCount == 5);
+						std::vector<std::uint32_t>& thisMemberComponents = data.memberComponents[id];
+						if (thisMemberComponents.size() <= member)
+							thisMemberComponents.resize(member + 1, unset);
+						thisMemberComponents[member] = spirv[i + 4];
 						break;
 					}
 				}
