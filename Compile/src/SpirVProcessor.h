@@ -43,7 +43,9 @@ public:
 	};
 
 	bool extract(Output& output, const std::string& fileName, std::size_t line,
-		std::size_t column, const std::vector<std::uint32_t>& spirv);
+		std::size_t column, const std::vector<std::uint32_t>& spirv, Stage stage);
+	bool uniformsCompatible(Output& output, const std::string& fileName, std::size_t line,
+		std::size_t column, const SpirVProcessor& other) const;
 
 	std::vector<Struct> structs;
 	std::vector<std::uint32_t> structIds;
@@ -53,7 +55,7 @@ public:
 	std::vector<std::uint32_t> inputIds;
 	std::vector<InputOutput> outputs;
 	std::vector<std::uint32_t> outputIds;
-	std::uint32_t pushConstantStruct;
+	std::uint32_t pushConstantStruct = unknown;
 };
 
 } // namespace msl
