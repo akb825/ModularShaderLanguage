@@ -1164,59 +1164,6 @@ bool operator!=(const ArrayInfo& info1, const ArrayInfo& info2)
 	return !(info1 == info2);
 }
 
-bool structsEquivalent(Output& output, const std::string& fileName, std::size_t line,
-	std::size_t column, const SpirVProcessor& processor1, std::uint32_t struct1Index,
-	const SpirVProcessor& processor2, std::uint32_t struct2Index, bool printError)
-{
-	const Struct& struct1 = processor1.structs[struct1Index];
-	const Struct& struct2 = processor2.structs[struct2Index];
-
-	// Names should have been checked beforehand.
-	assert(struct1.name == struct2.name);
-
-	bool compatible = true;
-	if (struct1.size != struct2.size || struct1.members.size() != struct2.members.size())
-		compatible = false;
-
-	if (compatible)
-	{
-		for (std::size_t i = 0; i < struct1.members.size(); ++i)
-		{
-			const StructMember& member1 = struct1.members[i];
-			const StructMember& member2 = struct2.members[i];
-			if (member1.name != member2.name ||
-				member1.offset != member2.offset ||
-				member1.size != member2.size ||
-				member1.type != member2.type ||
-				member1.arrayElements != member2.arrayElements ||
-				(member1.type == Type::Struct && processor1.structs[member1.structIndex].name !=
-					processor2.structs[member2.structIndex].name))
-			{
-				compatible = false;
-				break;
-			}
-
-			if (member1.type == Type::Struct)
-			{
-				if (!structsEquivalent(output, fileName, line, column, processor1,
-					member1.structIndex, processor2, member2.structIndex, printError))
-				{
-					// Return immediately when recursing since the recursive call will print an
-					// error.
-					return false;
-				}
-			}
-		}
-	}
-
-	if (!compatible && printError)
-	{
-		output.addMessage(Output::Level::Error, fileName, line, column, false,
-			"linker error: struct " + struct1.name + " has different declarations between stages.");
-	}
-	return compatible;
-}
-
 } // namespace
 
 bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::size_t line,
@@ -1555,7 +1502,9 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 		if (!encounteredNames.insert(thisStruct.name).second)
 		{
 			output.addMessage(Output::Level::Error, fileName, line, column, false,
-				"linker error: multiple sructs of name " + thisStruct.name + " declared");
+				"linker error: multiple sructs of name " + thisStruct.name + " declared; this "
+				"could be due to using the same struct in different contexts, such a uniform "
+				"block and uniform buffer");
 			return false;
 		}
 	}
@@ -1601,6 +1550,9 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 bool SpirVProcessor::uniformsCompatible(Output& output, const std::string& fileName,
 	std::size_t line, std::size_t column, const SpirVProcessor& other) const
 {
+	bool success = true;
+
+	// Uniforms
 	for (const Uniform& uniform : uniforms)
 	{
 		for (const Uniform& otherUniform : other.uniforms)
@@ -1619,31 +1571,61 @@ bool SpirVProcessor::uniformsCompatible(Output& output, const std::string& fileN
 				output.addMessage(Output::Level::Error, fileName, line, column, false,
 					"linker error: uniform " + uniform.name +
 					" has different declarations between stages");
-				return false;
-			}
-
-			if (uniform.type == Type::Struct &&
-				!structsEquivalent(output, fileName, line, column, *this, uniform.structIndex,
-					other, otherUniform.structIndex, true))
-			{
-				return false;
+				success = false;
 			}
 
 			break;
 		}
 	}
 
-	if (pushConstantStruct != unknown && other.pushConstantStruct != unknown &&
-		!structsEquivalent(output, fileName, line, column, *this, pushConstantStruct, other,
-			other.pushConstantStruct, false))
+	// Structs
+	for (const Struct& thisStruct : structs)
 	{
-		output.addMessage(Output::Level::Error, fileName, line, column, false,
-			"linker error: non-opaque uniform declarations outside of uniform blocks and buffers "
-			" are different declarations between stages");
-		return false;
+		for (const Struct& otherStruct : other.structs)
+		{
+			if (thisStruct.name != otherStruct.name)
+				continue;
+
+			bool compatible = true;
+			if (thisStruct.size != otherStruct.size ||
+				thisStruct.members.size() != otherStruct.members.size())
+			{
+				compatible = false;
+			}
+
+			if (compatible)
+			{
+				for (std::size_t i = 0; i < thisStruct.members.size(); ++i)
+				{
+					const StructMember& thisMember = thisStruct.members[i];
+					const StructMember& otherMember = otherStruct.members[i];
+					if (thisMember.name != otherMember.name ||
+						thisMember.offset != otherMember.offset ||
+						thisMember.size != otherMember.size ||
+						thisMember.type != otherMember.type ||
+						thisMember.arrayElements != otherMember.arrayElements ||
+						(thisMember.type == Type::Struct && structs[thisMember.structIndex].name !=
+							other.structs[otherMember.structIndex].name))
+					{
+						compatible = false;
+						break;
+					}
+				}
+			}
+
+			if (!compatible)
+			{
+				output.addMessage(Output::Level::Error, fileName, line, column, false,
+					"linker error: struct " + thisStruct.name +
+					" has different declarations between stages.");
+				success = false;
+			}
+
+			break;
+		}
 	}
 
-	return false;
+	return success;
 }
 
 } // namespace msl
