@@ -32,7 +32,18 @@ namespace
 
 static const unsigned int firstInstruction = 5;
 static const unsigned int unknownLength = (unsigned int)-1;
-static const std::uint32_t unset = (std::uint32_t)-1;
+
+static const char* stageNames[] =
+{
+	"vertex",
+	"tessellation_control",
+	"tessellation_evaluation",
+	"geometry",
+	"fragment",
+	"compute"
+};
+static_assert(sizeof(stageNames)/sizeof(*stageNames) == stageCount,
+	"stage name array is out of sync with enum");
 
 static std::uint32_t typeSizes[] =
 {
@@ -99,7 +110,7 @@ struct IntermediateData
 	std::unordered_map<std::uint32_t, std::uint32_t> intConstants;
 	std::unordered_map<std::uint32_t, SpirArrayInfo> arrayTypes;
 	std::unordered_map<std::uint32_t, std::uint32_t> arrayStrides;
-	std::unordered_set<std::uint32_t> uniformBlocks;
+	std::unordered_set<std::uint32_t> blocks;
 	std::unordered_set<std::uint32_t> uniformBuffers;
 
 	// Metadata
@@ -117,8 +128,28 @@ struct IntermediateData
 	std::map<std::uint32_t, std::uint32_t> inputVars;
 	std::map<std::uint32_t, std::uint32_t> outputVars;
 	std::map<std::uint32_t, std::uint32_t> imageVars;
-	std::pair<std::uint32_t, std::uint32_t> pushConstantPointer = std::make_pair(unset, unset);
+	std::pair<std::uint32_t, std::uint32_t> pushConstantPointer = std::make_pair(unknown, unknown);
 };
+
+bool operator==(const ArrayInfo& info1, const ArrayInfo& info2)
+{
+	return info1.length == info2.length && info1.stride == info2.stride;
+}
+
+bool operator!=(const ArrayInfo& info1, const ArrayInfo& info2)
+{
+	return !(info1 == info2);
+}
+
+bool inputIsArray(Stage stage)
+{
+	return stage == Stage::TessellationControl || stage == Stage::TessellationEvaluation;
+}
+
+bool outputIsArray(Stage stage)
+{
+	return stage == Stage::TessellationControl;
+}
 
 spv::Op getOp(std::uint32_t value)
 {
@@ -977,7 +1008,7 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 			uniform.name = foundName->second;
 		}
 
-		if (data.uniformBlocks.find(uniformIndices.first) != data.uniformBlocks.end())
+		if (data.blocks.find(uniformIndices.first) != data.blocks.end())
 			uniform.uniformType = UniformType::Block;
 		else
 		{
@@ -1043,12 +1074,13 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 	}
 }
 
-bool addInputsOutputs(Output& output, const std::string& fileName, std::size_t line,
-	std::size_t column, std::vector<SpirVProcessor::InputOutput>& inputOutputs,
+bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& inputOutputs,
 	std::vector<std::uint32_t>& inputOutputIds,
 	SpirVProcessor& processor, const IntermediateData& data,
 	const std::map<std::uint32_t, std::uint32_t>& inputOutputVars)
 {
+	std::string ioName = &inputOutputs == &processor.inputs ? "input" : "output";
+
 	inputOutputs.resize(inputOutputVars.size());
 	inputOutputIds.resize(inputOutputVars.size());
 	std::size_t i = 0;
@@ -1070,20 +1102,52 @@ bool addInputsOutputs(Output& output, const std::string& fileName, std::size_t l
 			data, typeId);
 		if (inputOutput.type == Type::Struct)
 		{
+			if (data.blocks.find(processor.structIds[inputOutput.structIndex]) == data.blocks.end())
+			{
+				output.addMessage(Output::Level::Error, processor.fileName, processor.line,
+					processor.column, false,
+					"linker error: " + ioName + " " + inputOutput.name + " for stage " +
+					stageNames[static_cast<unsigned int>(processor.stage)] + " is a struct");
+			}
+
 			// Make sure there's no recursive structs.
 			const Struct& structType = processor.structs[inputOutput.structIndex];
 			for (const StructMember& member : structType.members)
 			{
 				if (member.type == Type::Struct)
 				{
-					output.addMessage(Output::Level::Error, fileName, line, column, false,
-						"linker error: cannot have struct members for shader inputs or outputs");
+					output.addMessage(Output::Level::Error, processor.fileName, processor.line,
+						processor.column, false,
+						"linker error: " + ioName + " interface block member " + structType.name +
+						"." + member.name + " is a struct");
 					return false;
 				}
 			}
 
+			// Don't allow arbitrary arrays of input/output blocks.
+			bool shouldBeArray = &inputOutputs == &processor.inputs ?
+				inputIsArray(processor.stage) : outputIsArray(processor.stage);
+			if (inputOutput.arrayElements.size() != shouldBeArray)
+			{
+				if (shouldBeArray)
+				{
+					output.addMessage(Output::Level::Error, processor.fileName, processor.line,
+						processor.column, false,
+						"linker error: " + ioName + " interface block " + structType.name +
+						" must be an array");
+				}
+				else
+				{
+					output.addMessage(Output::Level::Error, processor.fileName, processor.line,
+						processor.column, false,
+						"linker error: " + ioName + " interface block " + structType.name +
+						" must not be an array");
+				}
+				return false;
+			}
+
 			inputOutput.memberLocations.resize(structType.members.size(),
-				std::make_pair(unknown, unknown));
+				std::make_pair(unknown, 0));
 			auto foundLocations = data.memberLocations.find(
 				processor.structIds[inputOutput.structIndex]);
 			if (foundLocations != data.memberLocations.end())
@@ -1103,9 +1167,11 @@ bool addInputsOutputs(Output& output, const std::string& fileName, std::size_t l
 			}
 
 			inputOutput.location = unknown;
+			inputOutput.component = unknown;
 		}
 		else
 		{
+			inputOutput.component = 0;
 			auto foundLocation = data.locations.find(inputOutputIndices.first);
 			if (foundLocation == data.locations.end())
 				inputOutput.location = unknown;
@@ -1124,23 +1190,21 @@ bool addInputsOutputs(Output& output, const std::string& fileName, std::size_t l
 	return true;
 }
 
-bool addInputs(Output& output, const std::string& fileName, std::size_t line,
-	std::size_t column, SpirVProcessor& processor, const IntermediateData& data)
+bool addInputs(Output& output, SpirVProcessor& processor, const IntermediateData& data)
 {
-	return addInputsOutputs(output, fileName, line, column, processor.inputs, processor.inputIds,
-		processor, data, data.inputVars);
+	return addInputsOutputs(output, processor.inputs, processor.inputIds, processor, data,
+		data.inputVars);
 }
 
-bool addOutputs(Output& output, const std::string& fileName, std::size_t line,
-	std::size_t column, SpirVProcessor& processor, const IntermediateData& data)
+bool addOutputs(Output& output, SpirVProcessor& processor, const IntermediateData& data)
 {
-	return addInputsOutputs(output, fileName, line, column, processor.outputs, processor.outputIds,
-		processor, data, data.outputVars);
+	return addInputsOutputs(output, processor.outputs, processor.outputIds, processor, data,
+		data.outputVars);
 }
 
 void addPushConstants(SpirVProcessor& processor, const IntermediateData& data)
 {
-	if (data.pushConstantPointer.first == unset)
+	if (data.pushConstantPointer.first == unknown)
 	{
 		processor.pushConstantStruct = unknown;
 		return;
@@ -1154,14 +1218,363 @@ void addPushConstants(SpirVProcessor& processor, const IntermediateData& data)
 	assert(arrayElements.empty());
 }
 
-bool operator==(const ArrayInfo& info1, const ArrayInfo& info2)
+bool addComponents(std::vector<std::uint8_t>& locations, std::uint32_t curLocation,
+	std::uint8_t componentMask)
 {
-	return info1.length == info2.length && info1.stride == info2.stride;
+	if (locations.size() <= curLocation)
+		locations.resize(curLocation + 1, 0);
+
+	if (locations[curLocation] & componentMask)
+		return false;
+
+	locations[curLocation] |= componentMask;
+	return true;
 }
 
-bool operator!=(const ArrayInfo& info1, const ArrayInfo& info2)
+bool fillLocation(std::vector<std::uint8_t>& locations, std::size_t& curLocation,
+	std::uint32_t component, Type type, const std::vector<ArrayInfo>& arrayElements,
+	bool removeFirstArray)
 {
-	return !(info1 == info2);
+	assert(component < 4);
+
+	// Get the total number of elements.
+	std::uint32_t elementCount = 1;
+	for (std::size_t i = removeFirstArray; i < arrayElements.size(); ++i)
+	{
+		assert(arrayElements[i].length != 0 && arrayElements[i].length != unknown);
+		elementCount *= arrayElements[i].length;
+	}
+
+	// Treat matrices the same as arrays.
+	switch (type)
+	{
+		case Type::Mat2:
+			type = Type::Vec2;
+			elementCount *= 2;
+			break;
+		case Type::Mat3:
+			type = Type::Vec3;
+			elementCount *= 3;
+			break;
+		case Type::Mat4:
+			type = Type::Vec4;
+			elementCount *= 4;
+			break;
+		case Type::Mat2x3:
+			type = Type::Vec3;
+			elementCount *= 2;
+			break;
+		case Type::Mat2x4:
+			type = Type::Vec4;
+			elementCount *= 2;
+			break;
+		case Type::Mat3x2:
+			type = Type::Vec2;
+			elementCount *= 3;
+			break;
+		case Type::Mat3x4:
+			type = Type::Vec4;
+			elementCount *= 3;
+			break;
+		case Type::Mat4x2:
+			type = Type::Vec2;
+			elementCount *= 4;
+			break;
+		case Type::Mat4x3:
+			type = Type::Vec3;
+			elementCount *= 4;
+			break;
+		case Type::DMat2:
+			type = Type::DVec2;
+			elementCount *= 2;
+			break;
+		case Type::DMat3:
+			type = Type::DVec3;
+			elementCount *= 3;
+			break;
+		case Type::DMat4:
+			type = Type::DVec4;
+			elementCount *= 4;
+			break;
+		case Type::DMat2x3:
+			type = Type::DVec3;
+			elementCount *= 2;
+			break;
+		case Type::DMat2x4:
+			type = Type::DVec4;
+			elementCount *= 2;
+			break;
+		case Type::DMat3x2:
+			type = Type::DVec2;
+			elementCount *= 3;
+			break;
+		case Type::DMat3x4:
+			type = Type::DVec4;
+			elementCount *= 3;
+			break;
+		case Type::DMat4x2:
+			type = Type::DVec2;
+			elementCount *= 4;
+			break;
+		case Type::DMat4x3:
+			type = Type::DVec3;
+			elementCount *= 4;
+			break;
+		default:
+			break;
+	}
+
+	switch (type)
+	{
+		case Type::Float:
+		case Type::Int:
+		case Type::Bool:
+			for (std::uint32_t i = 0; i < elementCount; ++i, ++curLocation)
+			{
+				if (!addComponents(locations, curLocation, 1 << component))
+					return false;
+			}
+			break;
+
+		case Type::Vec2:
+		case Type::IVec2:
+		case Type::BVec2:
+			if (component > 2)
+				return false;
+			for (std::uint32_t i = 0; i < elementCount; ++i, ++curLocation)
+			{
+				if (!addComponents(locations, curLocation, (1 << component) | (2 << component)))
+					return false;
+			}
+			break;
+
+		case Type::Vec3:
+		case Type::IVec3:
+		case Type::BVec3:
+			if (component > 1)
+				return false;
+			for (std::uint32_t i = 0; i < elementCount; ++i, ++curLocation)
+			{
+				if (!addComponents(locations, curLocation,
+					(1 << component) | (2 << component) | (4 << component)))
+					return false;
+			}
+			break;
+
+		case Type::Vec4:
+		case Type::IVec4:
+		case Type::BVec4:
+			if (component != 0)
+				return false;
+			for (std::uint32_t i = 0; i < elementCount; ++i, ++curLocation)
+			{
+				if (!addComponents(locations, curLocation, 0xF))
+					return false;
+			}
+			break;
+
+		case Type::Double:
+			if (component != 0 && component != 2)
+				return false;
+			for (std::uint32_t i = 0; i < elementCount; ++i, ++curLocation)
+			{
+				if (!addComponents(locations, curLocation, (1 << component) | (2 << component)))
+					return false;
+			}
+			break;
+
+		case Type::DVec2:
+			if (component != 0)
+				return false;
+			for (std::uint32_t i = 0; i < elementCount; ++i, ++curLocation)
+			{
+				if (!addComponents(locations, curLocation, 0xF))
+					return false;
+			}
+			break;
+
+		case Type::DVec3:
+			if (component != 0)
+				return false;
+			for (std::uint32_t i = 0; i < elementCount; ++i, ++curLocation)
+			{
+				if (!addComponents(locations, curLocation, 0xF))
+					return false;
+				if (!addComponents(locations, ++curLocation, 0x3))
+					return false;
+			}
+			break;
+
+		case Type::DVec4:
+			if (component != 0)
+				return false;
+			for (std::uint32_t i = 0; i < elementCount; ++i, ++curLocation)
+			{
+				if (!addComponents(locations, curLocation, 0xF))
+					return false;
+				if (!addComponents(locations, ++curLocation, 0xF))
+					return false;
+			}
+			break;
+
+		default:
+			assert(false);
+			return false;
+	}
+
+	return true;
+}
+
+bool assignInputsOutputs(Output& output, const SpirVProcessor& processor,
+	std::vector<SpirVProcessor::InputOutput>& inputsOutputs, bool removeFirstArray)
+{
+	std::string ioName = &inputsOutputs == &processor.inputs ? "input" : "output";
+	std::size_t curLocation = 0;
+	std::vector<std::uint8_t> locations;
+	bool hasExplicitLocations = false;
+	bool hasImplicitLocations = false;
+
+	for (SpirVProcessor::InputOutput& io : inputsOutputs)
+	{
+		if (io.type == Type::Struct)
+		{
+			const Struct& ioStruct = processor.structs[io.structIndex];
+			assert(ioStruct.members.size() == io.memberLocations.size());
+			if (!io.memberLocations.empty())
+			{
+				if (io.memberLocations[0].first == unknown)
+					hasImplicitLocations = true;
+				else
+					hasExplicitLocations = true;
+			}
+
+			for (std::size_t i = 0; i < ioStruct.members.size(); ++i)
+			{
+				std::uint32_t component = 0;
+				if (io.memberLocations[i].first == unknown)
+				{
+					io.memberLocations[i].first = curLocation;
+					io.memberLocations[i].second = component;
+				}
+				else
+				{
+					curLocation = io.memberLocations[i].first;
+					component = io.memberLocations[i].second;
+				}
+
+				if (!fillLocation(locations, curLocation, component, ioStruct.members[i].type,
+					ioStruct.members[i].arrayElements, removeFirstArray))
+				{
+					output.addMessage(Output::Level::Error, processor.fileName, processor.line,
+						processor.column, false,
+						"linker error: cannot assign location for " + ioName + " block element " +
+						ioStruct.name + "." + ioStruct.members[i].name);
+					return false;
+				}
+			}
+		}
+		else
+		{
+			std::uint32_t component = 0;
+			if (io.location == unknown)
+			{
+				io.location = curLocation;
+				io.component = component;
+				hasImplicitLocations = true;
+			}
+			else
+			{
+				curLocation = io.location;
+				component = io.component;
+				hasExplicitLocations = true;
+			}
+
+			if (!fillLocation(locations, curLocation, component, io.type, io.arrayElements,
+				removeFirstArray))
+			{
+				output.addMessage(Output::Level::Error, processor.fileName, processor.line,
+					processor.column, false,
+					"linker error: cannot assign location for " + ioName + " " + io.name);
+				return false;
+			}
+		}
+	}
+
+	if (hasImplicitLocations && hasExplicitLocations)
+	{
+		output.addMessage(Output::Level::Error, processor.fileName, processor.line,
+			processor.column, false,
+			"linker error: " + ioName + " declarations mixe implicit and explicit locations " +
+			"for stage " + stageNames[static_cast<unsigned int>(processor.stage)]);
+		return false;
+	}
+
+	return true;
+}
+
+bool findLinkedMember(Output& output, std::uint32_t& outputIndex, std::uint32_t& memberIndex,
+	const SpirVProcessor& processor, const std::string& name)
+{
+	outputIndex = unknown;
+	memberIndex = unknown;
+
+	for (std::uint32_t i = 0; i < processor.outputs.size(); ++i)
+	{
+		if (processor.outputs[i] .type != Type::Struct)
+			continue;
+
+		const Struct& outputStruct = processor.structs[processor.outputs[i].structIndex];
+		for (std::uint32_t j = 0; j < outputStruct.members.size(); ++j)
+		{
+			if (outputStruct.members[j].name == name)
+			{
+				if (outputIndex != unknown)
+				{
+					output.addMessage(Output::Level::Error, processor.fileName, processor.line,
+						processor.column, false,
+						"linker error: multiple members from output interface blocks match the "
+						"name " + name + "in stage " +
+						stageNames[static_cast<unsigned int>(processor.stage)]);
+					return false;
+				}
+
+				outputIndex = i;
+				memberIndex = j;
+			}
+		}
+	}
+
+	if (outputIndex == unknown)
+	{
+		output.addMessage(Output::Level::Error, processor.fileName, processor.line,
+			processor.column, false,
+			"linker error: cannot find output interface block member with name " + name +
+			"in stage " + stageNames[static_cast<unsigned int>(processor.stage)]);
+		return false;
+	}
+
+	assert(memberIndex != unknown);
+	return true;
+}
+
+bool inputOutputArraysEqual(const std::vector<ArrayInfo>& outputArray, bool removeFirstOutput,
+	const std::vector<ArrayInfo>& inputArray, bool removeFirstInput)
+{
+	if (removeFirstOutput && outputArray.empty())
+		return false;
+	if (removeFirstInput && inputArray.empty())
+		return false;
+
+	if (outputArray.size() - removeFirstOutput != inputArray.size() - removeFirstInput)
+		return false;
+
+	for (std::size_t i = removeFirstOutput; i < outputArray.size(); ++i)
+	{
+		if (outputArray[i].length != inputArray[i - removeFirstOutput + removeFirstInput].length)
+			return false;
+	}
+
+	return true;
 }
 
 } // namespace
@@ -1169,17 +1582,10 @@ bool operator!=(const ArrayInfo& info1, const ArrayInfo& info2)
 bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::size_t line,
 	std::size_t column, const std::vector<std::uint32_t>& spirv, Stage stage)
 {
-	const char* stageNames[] =
-	{
-		"vertex",
-		"tessellation_control",
-		"tessellation_evaluation",
-		"geometry",
-		"fragment",
-		"compute"
-	};
-	static_assert(sizeof(stageNames)/sizeof(*stageNames) == stageCount,
-		"stage name array is out of sync with enum");
+	this->stage = stage;
+	this->fileName = fileName;
+	this->line = line;
+	this->column = column;
 
 	assert(spirv[0] == spv::MagicNumber);
 	assert(spirv[1] == spv::Version);
@@ -1228,6 +1634,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 						data.descriptorSets[id] = spirv[i + 4];
 						break;
 					case spv::DecorationBinding:
+					case spv::DecorationInputAttachmentIndex:
 						assert(wordCount == 5);
 						data.bindings[id] = spirv[i + 4];
 						break;
@@ -1245,7 +1652,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 						break;
 					case spv::DecorationBlock:
 						assert(wordCount == 4);
-						data.uniformBlocks.insert(id);
+						data.blocks.insert(id);
 						break;
 					case spv::DecorationBufferBlock:
 						assert(wordCount == 5);
@@ -1266,7 +1673,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 						assert(wordCount == 5);
 						std::vector<std::uint32_t>& thisMemberOffsets = data.memberOffsets[id];
 						if (thisMemberOffsets.size() <= member)
-							thisMemberOffsets.resize(member + 1, unset);
+							thisMemberOffsets.resize(member + 1, unknown);
 						thisMemberOffsets[member] = spirv[i + 4];
 						break;
 					}
@@ -1275,7 +1682,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 						assert(wordCount == 5);
 						std::vector<std::uint32_t>& thisMemberStrides = data.matrixStrides[id];
 						if (thisMemberStrides.size() <= member)
-							thisMemberStrides.resize(member + 1, unset);
+							thisMemberStrides.resize(member + 1, unknown);
 						thisMemberStrides[member] = spirv[i + 4];
 						break;
 					}
@@ -1284,7 +1691,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 						assert(wordCount == 5);
 						std::vector<std::uint32_t>& thisMemberLocations = data.memberLocations[id];
 						if (thisMemberLocations.size() <= member)
-							thisMemberLocations.resize(member + 1, unset);
+							thisMemberLocations.resize(member + 1, unknown);
 						thisMemberLocations[member] = spirv[i + 4];
 						break;
 					}
@@ -1293,7 +1700,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 						assert(wordCount == 5);
 						std::vector<std::uint32_t>& thisMemberComponents = data.memberComponents[id];
 						if (thisMemberComponents.size() <= member)
-							thisMemberComponents.resize(member + 1, unset);
+							thisMemberComponents.resize(member + 1, unknown);
 						thisMemberComponents[member] = spirv[i + 4];
 						break;
 					}
@@ -1466,7 +1873,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 					{
 						auto foundPointer = data.pointers.find(pointerType);
 						assert(foundPointer != data.pointers.end());
-						assert(data.pushConstantPointer.first == unset);
+						assert(data.pushConstantPointer.first == unknown);
 						data.pushConstantPointer = std::make_pair(id, foundPointer->second);
 						break;
 					}
@@ -1489,9 +1896,9 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 
 	// Construct our own metadata structures based on what was extracted from SPIR-V.
 	addUniforms(*this, data);
-	if (!addInputs(output, fileName, line, column, *this, data))
+	if (!addInputs(output, *this, data))
 		return false;
-	if (!addOutputs(output, fileName, line, column, *this, data))
+	if (!addOutputs(output, *this, data))
 		return false;
 	addPushConstants(*this, data);
 
@@ -1547,8 +1954,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 	return true;
 }
 
-bool SpirVProcessor::uniformsCompatible(Output& output, const std::string& fileName,
-	std::size_t line, std::size_t column, const SpirVProcessor& other) const
+bool SpirVProcessor::uniformsCompatible(Output& output, const SpirVProcessor& other) const
 {
 	bool success = true;
 
@@ -1617,11 +2023,103 @@ bool SpirVProcessor::uniformsCompatible(Output& output, const std::string& fileN
 			{
 				output.addMessage(Output::Level::Error, fileName, line, column, false,
 					"linker error: struct " + thisStruct.name +
-					" has different declarations between stages.");
+					" has different declarations between stages");
 				success = false;
 			}
 
 			break;
+		}
+	}
+
+	return success;
+}
+
+bool SpirVProcessor::assignInputs(Output& output)
+{
+	return assignInputsOutputs(output, *this, inputs, inputIsArray(stage));
+}
+
+bool SpirVProcessor::assignOutputs(Output& output)
+{
+	return assignInputsOutputs(output, *this, outputs, outputIsArray(stage));
+}
+
+bool SpirVProcessor::linkInputs(Output& output, const SpirVProcessor& prevStage)
+{
+	bool success = true;
+	bool inputArrays = inputIsArray(stage);
+	bool outputArrays = outputIsArray(prevStage.stage);
+	for (InputOutput& input : inputs)
+	{
+		if (input.type == Type::Struct)
+		{
+			Struct& inputStruct = structs[input.structIndex];
+			assert(inputStruct.members.size() == input.memberLocations.size());
+			for (std::size_t i = 0; i < inputStruct.members.size(); ++i)
+			{
+				if (input.memberLocations[i].first != unknown)
+					continue;
+
+				std::uint32_t otherOutIndex, otherMemberIndex;
+				if (!findLinkedMember(output, otherOutIndex, otherMemberIndex, prevStage,
+					inputStruct.members[i].name))
+				{
+					success = false;
+					continue;
+				}
+
+				const Struct& outputStruct =
+					prevStage.structs[prevStage.outputs[otherOutIndex].structIndex];
+				if (inputStruct.members[i].type != outputStruct.members[otherMemberIndex].type ||
+					!inputOutputArraysEqual(outputStruct.members[otherMemberIndex].arrayElements,
+					false, inputStruct.members[i].arrayElements, false))
+				{
+					output.addMessage(Output::Level::Error, fileName, line, column, false,
+						"linker error: type mismatch when linking input member " +
+						inputStruct.name + "." + inputStruct.members[i].name + " in stage " +
+						stageNames[static_cast<unsigned int>(stage)]);
+					success = false;
+					continue;
+				}
+
+				input.memberLocations[i] =
+					prevStage.outputs[otherOutIndex].memberLocations[otherMemberIndex];
+			}
+		}
+		else
+		{
+			if (input.location != unknown)
+				continue;
+
+			bool found = false;
+			for (const InputOutput& out : prevStage.outputs)
+			{
+				if (input.name != out.name)
+					continue;
+
+				found = true;
+				if (input.type != out.type || !inputOutputArraysEqual(out.arrayElements,
+					outputArrays, input.arrayElements, inputArrays))
+				{
+					output.addMessage(Output::Level::Error, fileName, line, column, false,
+						"linker error: type mismatch when linking input " + input.name +
+						" in stage " + stageNames[static_cast<unsigned int>(stage)]);
+					success = false;
+					break;
+				}
+
+				input.location = out.location;
+				input.component = out.component;
+				break;
+			}
+
+			if (!found)
+			{
+				output.addMessage(Output::Level::Error, fileName, line, column, false,
+					"linker error: cannot find output with name " + input.name + " in stage " +
+					stageNames[static_cast<unsigned int>(prevStage.stage)]);
+				success = false;
+			}
 		}
 	}
 

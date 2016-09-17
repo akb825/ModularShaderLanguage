@@ -42,10 +42,17 @@ public:
 		std::uint32_t component;
 	};
 
-	bool extract(Output& output, const std::string& fileName, std::size_t line,
-		std::size_t column, const std::vector<std::uint32_t>& spirv, Stage stage);
-	bool uniformsCompatible(Output& output, const std::string& fileName, std::size_t line,
-		std::size_t column, const SpirVProcessor& other) const;
+	bool extract(Output& output, const std::string& fileName, std::size_t line, std::size_t column,
+		const std::vector<std::uint32_t>& spirv, Stage stage);
+	bool uniformsCompatible(Output& output, const SpirVProcessor& other) const;
+	bool assignInputs(Output& output);
+	bool assignOutputs(Output& output);
+	bool linkInputs(Output& output, const SpirVProcessor& prevStage);
+
+	Stage stage;
+	std::string fileName;
+	std::size_t line;
+	std::size_t column;
 
 	std::vector<Struct> structs;
 	std::vector<std::uint32_t> structIds;
