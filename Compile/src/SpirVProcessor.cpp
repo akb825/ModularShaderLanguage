@@ -124,6 +124,7 @@ struct IntermediateData
 	// Variable declarations
 	// Make these ordered (except for pointers) so they will be consistent across runs.
 	std::unordered_map<std::uint32_t, std::uint32_t> pointers;
+	std::unordered_set<std::uint32_t> patchVars;
 	std::map<std::uint32_t, std::uint32_t> uniformVars;
 	std::map<std::uint32_t, std::uint32_t> inputVars;
 	std::map<std::uint32_t, std::uint32_t> outputVars;
@@ -1100,6 +1101,7 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 
 		inputOutput.type = getType(inputOutput.arrayElements, inputOutput.structIndex, processor,
 			data, typeId);
+		inputOutput.patch = data.patchVars.find(inputOutputIndices.first) != data.patchVars.end();
 		if (inputOutput.type == Type::Struct)
 		{
 			if (data.blocks.find(processor.structIds[inputOutput.structIndex]) == data.blocks.end())
@@ -1125,8 +1127,8 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 			}
 
 			// Don't allow arbitrary arrays of input/output blocks.
-			bool shouldBeArray = &inputOutputs == &processor.inputs ?
-				inputIsArray(processor.stage) : outputIsArray(processor.stage);
+			bool shouldBeArray = !inputOutput.patch && (&inputOutputs == &processor.inputs ?
+				inputIsArray(processor.stage) : outputIsArray(processor.stage));
 			if (inputOutput.arrayElements.size() != shouldBeArray)
 			{
 				if (shouldBeArray)
@@ -1241,7 +1243,9 @@ bool fillLocation(std::vector<std::uint8_t>& locations, std::size_t& curLocation
 	std::uint32_t elementCount = 1;
 	for (std::size_t i = removeFirstArray; i < arrayElements.size(); ++i)
 	{
-		assert(arrayElements[i].length != 0 && arrayElements[i].length != unknown);
+		assert(arrayElements[i].length != 0);
+		if (arrayElements[i].length == unknown)
+			return false;
 		elementCount *= arrayElements[i].length;
 	}
 
@@ -1655,8 +1659,12 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 						data.blocks.insert(id);
 						break;
 					case spv::DecorationBufferBlock:
-						assert(wordCount == 5);
+						assert(wordCount == 4);
 						data.uniformBuffers.insert(id);
+						break;
+					case spv::DecorationPatch:
+						assert(wordCount == 4);
+						data.patchVars.insert(id);
 						break;
 				}
 				break;
@@ -1930,6 +1938,9 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 	encounteredNames.clear();
 	for (const InputOutput& stageInput : inputs)
 	{
+		if (stageInput.type == Type::Struct)
+			continue;
+
 		if (!encounteredNames.insert(stageInput.name).second)
 		{
 			output.addMessage(Output::Level::Error, fileName, line, column, false,
@@ -1942,6 +1953,9 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 	encounteredNames.clear();
 	for (const InputOutput& stageOutput : outputs)
 	{
+		if (stageOutput.type == Type::Struct)
+			continue;
+
 		if (!encounteredNames.insert(stageOutput.name).second)
 		{
 			output.addMessage(Output::Level::Error, fileName, line, column, false,
@@ -2071,6 +2085,7 @@ bool SpirVProcessor::linkInputs(Output& output, const SpirVProcessor& prevStage)
 				const Struct& outputStruct =
 					prevStage.structs[prevStage.outputs[otherOutIndex].structIndex];
 				if (inputStruct.members[i].type != outputStruct.members[otherMemberIndex].type ||
+					input.patch != prevStage.outputs[otherOutIndex].patch ||
 					!inputOutputArraysEqual(outputStruct.members[otherMemberIndex].arrayElements,
 					false, inputStruct.members[i].arrayElements, false))
 				{
@@ -2098,8 +2113,9 @@ bool SpirVProcessor::linkInputs(Output& output, const SpirVProcessor& prevStage)
 					continue;
 
 				found = true;
-				if (input.type != out.type || !inputOutputArraysEqual(out.arrayElements,
-					outputArrays, input.arrayElements, inputArrays))
+				if (input.type != out.type || input.patch != out.patch ||
+					!inputOutputArraysEqual(out.arrayElements, outputArrays && !out.patch,
+					input.arrayElements, inputArrays && !input.patch))
 				{
 					output.addMessage(Output::Level::Error, fileName, line, column, false,
 						"linker error: type mismatch when linking input " + input.name +

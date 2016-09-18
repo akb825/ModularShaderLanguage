@@ -38,6 +38,7 @@ public:
 		std::uint32_t structIndex;
 		std::vector<ArrayInfo> arrayElements;
 		std::vector<std::pair<std::uint32_t, std::uint32_t>> memberLocations;
+		bool patch;
 		std::uint32_t location;
 		std::uint32_t component;
 	};
