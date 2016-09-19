@@ -796,7 +796,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 				if (!processors[i].linkInputs(output, *lastStage))
 					return false;
 			}
-			else if (!processors[i].assignInputs(output))
+			else if (stage == Stage::Vertex && !processors[i].assignInputs(output))
 				return false;
 
 			// Add uniforms.
@@ -810,6 +810,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 
 			// Proces the SPIR-V.
 			spirv[i] = processors[i].process(strip, m_adjustableBindings);
+			lastStage = &processors[i];
 		}
 
 		// Make sure all of the uniform ID vectors are the same size.
