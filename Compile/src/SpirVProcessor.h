@@ -31,6 +31,13 @@ class Output;
 class SpirVProcessor
 {
 public:
+	enum class Strip
+	{
+		None,
+		All,
+		AllButReflection
+	};
+
 	struct InputOutput
 	{
 		std::string name;
@@ -49,11 +56,13 @@ public:
 	bool assignInputs(Output& output);
 	bool assignOutputs(Output& output);
 	bool linkInputs(Output& output, const SpirVProcessor& prevStage);
+	std::vector<std::uint32_t> process(Strip strip, bool dummyBindings) const;
 
 	Stage stage;
 	std::string fileName;
 	std::size_t line;
 	std::size_t column;
+	const std::vector<std::uint32_t>* spirv;
 
 	std::vector<Struct> structs;
 	std::vector<std::uint32_t> structIds;

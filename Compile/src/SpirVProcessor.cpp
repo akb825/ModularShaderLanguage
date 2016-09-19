@@ -1581,6 +1581,30 @@ bool inputOutputArraysEqual(const std::vector<ArrayInfo>& outputArray, bool remo
 	return true;
 }
 
+void addDummyDescriptorSet(std::vector<std::uint32_t>& spirv, std::uint32_t id)
+{
+	spirv.push_back((5 << spv::WordCountShift) | spv::OpDecorate);
+	spirv.push_back(id);
+	spirv.push_back(spv::DecorationDescriptorSet);
+	spirv.push_back(unknown);
+}
+
+void addDummyBinding(std::vector<std::uint32_t>& spirv, std::uint32_t id)
+{
+	spirv.push_back((5 << spv::WordCountShift) | spv::OpDecorate);
+	spirv.push_back(id);
+	spirv.push_back(spv::DecorationBinding);
+	spirv.push_back(unknown);
+}
+
+void addDummyInputAttachmentIndex(std::vector<std::uint32_t>& spirv, std::uint32_t id)
+{
+	spirv.push_back((5 << spv::WordCountShift) | spv::OpDecorate);
+	spirv.push_back(id);
+	spirv.push_back(spv::DecorationInputAttachmentIndex);
+	spirv.push_back(unknown);
+}
+
 } // namespace
 
 bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::size_t line,
@@ -1590,6 +1614,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 	this->fileName = fileName;
 	this->line = line;
 	this->column = column;
+	this->spirv = &spirv;
 
 	assert(spirv[0] == spv::MagicNumber);
 	assert(spirv[1] == spv::Version);
@@ -1634,36 +1659,36 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 				switch (spirv[i + 2])
 				{
 					case spv::DecorationDescriptorSet:
-						assert(wordCount == 5);
-						data.descriptorSets[id] = spirv[i + 4];
+						assert(wordCount == 4);
+						data.descriptorSets[id] = spirv[i + 3];
 						break;
 					case spv::DecorationBinding:
 					case spv::DecorationInputAttachmentIndex:
-						assert(wordCount == 5);
-						data.bindings[id] = spirv[i + 4];
+						assert(wordCount == 4);
+						data.bindings[id] = spirv[i + 3];
 						break;
 					case spv::DecorationLocation:
-						assert(wordCount == 5);
-						data.locations[id] = spirv[i + 4];
+						assert(wordCount == 4);
+						data.locations[id] = spirv[i + 3];
 						break;
 					case spv::DecorationComponent:
-						assert(wordCount == 5);
-						data.components[id] = spirv[i + 4];
+						assert(wordCount == 4);
+						data.components[id] = spirv[i + 3];
 						break;
 					case spv::DecorationArrayStride:
-						assert(wordCount == 5);
-						data.arrayStrides[id] = spirv[i + 4];
+						assert(wordCount == 4);
+						data.arrayStrides[id] = spirv[i + 3];
 						break;
 					case spv::DecorationBlock:
-						assert(wordCount == 4);
+						assert(wordCount == 3);
 						data.blocks.insert(id);
 						break;
 					case spv::DecorationBufferBlock:
-						assert(wordCount == 4);
+						assert(wordCount == 3);
 						data.uniformBuffers.insert(id);
 						break;
 					case spv::DecorationPatch:
-						assert(wordCount == 4);
+						assert(wordCount == 3);
 						data.patchVars.insert(id);
 						break;
 				}
@@ -2087,7 +2112,7 @@ bool SpirVProcessor::linkInputs(Output& output, const SpirVProcessor& prevStage)
 				if (inputStruct.members[i].type != outputStruct.members[otherMemberIndex].type ||
 					input.patch != prevStage.outputs[otherOutIndex].patch ||
 					!inputOutputArraysEqual(outputStruct.members[otherMemberIndex].arrayElements,
-					false, inputStruct.members[i].arrayElements, false))
+						false, inputStruct.members[i].arrayElements, false))
 				{
 					output.addMessage(Output::Level::Error, fileName, line, column, false,
 						"linker error: type mismatch when linking input member " +
@@ -2140,6 +2165,93 @@ bool SpirVProcessor::linkInputs(Output& output, const SpirVProcessor& prevStage)
 	}
 
 	return success;
+}
+
+std::vector<std::uint32_t> SpirVProcessor::process(Strip strip, bool dummyBindings) const
+{
+	if (strip == Strip::None && !dummyBindings)
+		return *spirv;
+
+	std::unordered_set<std::uint32_t> keepNames;
+	if (strip == Strip::AllButReflection)
+	{
+		for (std::uint32_t id : structIds)
+			keepNames.insert(id);
+		for (std::uint32_t id : uniformIds)
+			keepNames.insert(id);
+		for (std::uint32_t id : inputIds)
+			keepNames.insert(id);
+		for (std::uint32_t id : outputIds)
+			keepNames.insert(id);
+	}
+
+	std::vector<std::uint32_t> result;
+	result.insert(result.end(), spirv->begin(), spirv->begin() + firstInstruction);
+
+	bool encounteredFunction = false;
+	for (std::size_t i = firstInstruction; i < spirv->size();)
+	{
+		spv::Op op = getOp((*spirv)[i]);
+		unsigned int wordCount = getWordCount((*spirv)[i]);
+		assert(wordCount > 0 && wordCount + i <= spirv->size());
+		switch (op)
+		{
+			// Strip debug info.
+			case spv::OpSource:
+			case spv::OpSourceContinued:
+			case spv::OpSourceExtension:
+			case spv::OpString:
+			case spv::OpLine:
+				if (strip == Strip::None)
+				{
+					result.insert(result.begin(), spirv->begin() + i,
+						spirv->begin() + i + wordCount);
+				}
+				break;
+
+			// Strip names.
+			case spv::OpName:
+			case spv::OpMemberName:
+			{
+				assert(wordCount >= 3);
+				std::uint32_t id = (*spirv)[i + 1];
+				if (strip == Strip::None || (strip == Strip::AllButReflection &&
+					keepNames.find(id) != keepNames.end()))
+				{
+					result.insert(result.begin(), spirv->begin() + i,
+						spirv->begin() + i + wordCount);
+				}
+				break;
+			}
+
+			// Add dummy bindings.
+			case spv::OpFunction:
+				if (dummyBindings && !encounteredFunction)
+				{
+					encounteredFunction = true;
+					for (std::size_t j = 0; j < uniforms.size(); ++j)
+					{
+						if (uniforms[j].descriptorSet == unknown)
+							addDummyDescriptorSet(result, uniformIds[j]);
+						if (uniforms[j].descriptorSet == unknown)
+						{
+							if (uniforms[j].uniformType == UniformType::SubpassInput)
+								addDummyInputAttachmentIndex(result, uniformIds[j]);
+							else
+								addDummyBinding(result, uniformIds[j]);
+						}
+					}
+				}
+				// fall through
+			default:
+				// Pass through all other instructions.
+				result.insert(result.begin(), spirv->begin() + i,
+					spirv->begin() + i + wordCount);
+				break;
+		}
+	}
+
+	return result;
 }
 
 } // namespace msl

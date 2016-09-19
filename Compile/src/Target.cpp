@@ -17,15 +17,19 @@
 #include <MSL/Compile/Target.h>
 #include <MSL/Compile/CompiledResult.h>
 #include <MSL/Compile/Output.h>
+
 #include "Compiler.h"
 #include "ExecuteCommand.h"
 #include "Parser.h"
 #include "Preprocessor.h"
-#include "glslang/MachineIndependent/gl_types.h"
+#include "SpirVProcessor.h"
+
 #include "StandAlone/ResourceLimits.h"
+
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <cassert>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
@@ -96,120 +100,6 @@ static Target::FeatureInfo featureInfos[] =
 
 static_assert(sizeof(featureInfos)/sizeof(*featureInfos) == Target::featureCount,
 	"Not all features are in the featureInfos array.");
-
-static std::unordered_map<int, Type> typeMap =
-{
-	// Scalars and vectors
-	{GL_FLOAT, Type::Float},
-	{GL_FLOAT_VEC2, Type::Vec2},
-	{GL_FLOAT_VEC3, Type::Vec3},
-	{GL_FLOAT_VEC4, Type::Vec4},
-	{GL_DOUBLE, Type::Double},
-	{GL_DOUBLE_VEC2, Type::DVec2},
-	{GL_DOUBLE_VEC3, Type::DVec3},
-	{GL_DOUBLE_VEC4, Type::DVec4},
-	{GL_INT, Type::Int},
-	{GL_INT_VEC2, Type::IVec2},
-	{GL_INT_VEC3, Type::IVec3},
-	{GL_INT_VEC4, Type::IVec4},
-	{GL_UNSIGNED_INT, Type::UInt},
-	{GL_UNSIGNED_INT_VEC2, Type::UVec2},
-	{GL_UNSIGNED_INT_VEC3, Type::UVec3},
-	{GL_UNSIGNED_INT_VEC4, Type::UVec4},
-	{GL_BOOL, Type::Bool},
-	{GL_BOOL_VEC2, Type::BVec2},
-	{GL_BOOL_VEC3, Type::BVec3},
-	{GL_BOOL_VEC4, Type::BVec4},
-
-	// Matrices
-	{GL_FLOAT_MAT2, Type::Mat2},
-	{GL_FLOAT_MAT3, Type::Mat3},
-	{GL_FLOAT_MAT4, Type::Mat4},
-	{GL_FLOAT_MAT2x3, Type::Mat2x3},
-	{GL_FLOAT_MAT2x3, Type::Mat2x4},
-	{GL_FLOAT_MAT3x2, Type::Mat3x2},
-	{GL_FLOAT_MAT3x4, Type::Mat3x4},
-	{GL_FLOAT_MAT4x2, Type::Mat4x2},
-	{GL_FLOAT_MAT4x3, Type::Mat4x3},
-	{GL_DOUBLE_MAT2, Type::DMat2},
-	{GL_DOUBLE_MAT3, Type::DMat3},
-	{GL_DOUBLE_MAT4, Type::DMat4},
-	{GL_DOUBLE_MAT2x3, Type::DMat2x3},
-	{GL_DOUBLE_MAT2x4, Type::DMat2x4},
-	{GL_DOUBLE_MAT3x2, Type::DMat3x2},
-	{GL_DOUBLE_MAT3x4, Type::DMat3x4},
-	{GL_DOUBLE_MAT4x2, Type::DMat4x2},
-	{GL_DOUBLE_MAT4x3, Type::DMat4x3},
-
-	// Samplers
-	{GL_SAMPLER_1D, Type::Sampler1D},
-	{GL_SAMPLER_2D, Type::Sampler2D},
-	{GL_SAMPLER_3D, Type::Sampler3D},
-	{GL_SAMPLER_CUBE, Type::SamplerCube},
-	{GL_SAMPLER_1D_SHADOW, Type::Sampler1DShadow},
-	{GL_SAMPLER_2D_SHADOW, Type::Sampler2DShadow},
-	{GL_SAMPLER_1D_ARRAY, Type::Sampler1DArray},
-	{GL_SAMPLER_2D_ARRAY, Type::Sampler2DArray},
-	{GL_SAMPLER_1D_ARRAY_SHADOW, Type::Sampler1DArrayShadow},
-	{GL_SAMPLER_2D_ARRAY_SHADOW, Type::Sampler2DArrayShadow},
-	{GL_SAMPLER_2D_MULTISAMPLE, Type::Sampler2DMS},
-	{GL_SAMPLER_2D_MULTISAMPLE_ARRAY, Type::Sampler2DMSArray},
-	{GL_SAMPLER_CUBE_SHADOW, Type::SamplerCubeShadow},
-	{GL_SAMPLER_BUFFER, Type::SamplerBuffer},
-	{GL_SAMPLER_2D_RECT, Type::Sampler2DRect},
-	{GL_SAMPLER_2D_RECT_SHADOW, Type::Sampler2DRectShadow},
-	{GL_INT_SAMPLER_1D, Type::ISampler1D},
-	{GL_INT_SAMPLER_2D, Type::ISampler2D},
-	{GL_INT_SAMPLER_3D, Type::ISampler3D},
-	{GL_INT_SAMPLER_CUBE, Type::ISamplerCube},
-	{GL_INT_SAMPLER_1D_ARRAY, Type::ISampler1DArray},
-	{GL_INT_SAMPLER_2D_ARRAY, Type::ISampler2DArray},
-	{GL_INT_SAMPLER_2D_MULTISAMPLE, Type::ISampler2DMS},
-	{GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY, Type::ISampler2DMSArray},
-	{GL_INT_SAMPLER_2D_RECT, Type::ISampler2DRect},
-	{GL_UNSIGNED_INT_SAMPLER_1D, Type::USampler1D},
-	{GL_UNSIGNED_INT_SAMPLER_2D, Type::USampler2D},
-	{GL_UNSIGNED_INT_SAMPLER_3D, Type::USampler3D},
-	{GL_UNSIGNED_INT_SAMPLER_CUBE, Type::USamplerCube},
-	{GL_UNSIGNED_INT_SAMPLER_1D_ARRAY, Type::USampler1DArray},
-	{GL_UNSIGNED_INT_SAMPLER_2D_ARRAY, Type::USampler2DArray},
-	{GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE, Type::USampler2DMS},
-	{GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY, Type::USampler2DMSArray},
-	{GL_UNSIGNED_INT_SAMPLER_2D_RECT, Type::USampler2DRect},
-
-	// Images
-	{GL_IMAGE_1D, Type::Image1D},
-	{GL_IMAGE_2D, Type::Image2D},
-	{GL_IMAGE_3D, Type::Image3D},
-	{GL_IMAGE_CUBE, Type::ImageCube},
-	{GL_IMAGE_1D_ARRAY, Type::Image1DArray},
-	{GL_IMAGE_2D_ARRAY, Type::Image2DArray},
-	{GL_IMAGE_2D_MULTISAMPLE, Type::Image2DMS},
-	{GL_IMAGE_2D_MULTISAMPLE_ARRAY, Type::Image2DMSArray},
-	{GL_IMAGE_BUFFER, Type::ImageBuffer},
-	{GL_IMAGE_2D_RECT, Type::Image2DRect},
-	{GL_INT_IMAGE_1D, Type::IImage1D},
-	{GL_INT_IMAGE_2D, Type::IImage2D},
-	{GL_INT_IMAGE_3D, Type::IImage3D},
-	{GL_INT_IMAGE_CUBE, Type::IImageCube},
-	{GL_INT_IMAGE_1D_ARRAY, Type::IImage1DArray},
-	{GL_INT_IMAGE_2D_ARRAY, Type::IImage2DArray},
-	{GL_INT_IMAGE_2D_MULTISAMPLE, Type::IImage2DMS},
-	{GL_INT_IMAGE_2D_MULTISAMPLE_ARRAY, Type::IImage2DMSArray},
-	{GL_INT_IMAGE_2D_RECT, Type::IImage2DRect},
-	{GL_UNSIGNED_INT_IMAGE_1D, Type::UImage1D},
-	{GL_UNSIGNED_INT_IMAGE_2D, Type::UImage2D},
-	{GL_UNSIGNED_INT_IMAGE_3D, Type::UImage3D},
-	{GL_UNSIGNED_INT_IMAGE_CUBE, Type::UImageCube},
-	{GL_UNSIGNED_INT_IMAGE_1D_ARRAY, Type::UImage1DArray},
-	{GL_UNSIGNED_INT_IMAGE_2D_ARRAY, Type::UImage2DArray},
-	{GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE, Type::UImage2DMS},
-	{GL_UNSIGNED_INT_IMAGE_2D_MULTISAMPLE_ARRAY, Type::UImage2DMSArray},
-	{GL_UNSIGNED_INT_IMAGE_2D_RECT, Type::UImage2DRect},
-
-	// Other
-	{0, Type::SubpassInput},
-};
 
 static std::string readLine(std::istream& stream)
 {
@@ -453,6 +343,67 @@ static bool decodeResourceLimits(Output& output, TBuiltInResource& resources, st
 	return true;
 }
 
+static std::uint32_t addStruct(Pipeline& pipeline, const std::vector<Struct>& structs, const Struct& addedStruct)
+{
+	for (std::size_t i = 0; i < pipeline.structs.size(); ++i)
+	{
+		if (pipeline.structs[i].name == addedStruct.name)
+			return i;
+	}
+
+	std::uint32_t structIndex = static_cast<std::uint32_t>(pipeline.structs.size());
+	pipeline.structs.push_back(addedStruct);
+
+	// Recursively add struct members.
+	for (StructMember& member : pipeline.structs.back().members)
+	{
+		if (member.type == Type::Struct)
+			member.structIndex = addStruct(pipeline, structs, structs[member.structIndex]);
+	}
+
+	return structIndex;
+}
+
+static void addUniforms(Pipeline& pipeline, Stage stage, const SpirVProcessor& processor)
+{
+	std::vector<std::uint32_t>& uniformIds =
+		pipeline.shaders[static_cast<unsigned int>(stage)].uniformIds;
+	const std::size_t notFound = std::size_t(-1);
+	for (std::size_t i = 0; i < processor.uniforms.size(); ++i)
+	{
+		std::size_t foundIndex = notFound;
+		for (std::size_t j = 0; j < pipeline.uniforms.size(); ++j)
+		{
+			if (processor.uniforms[i].name == pipeline.uniforms[j].name)
+			{
+				assert(processor.uniforms[i].type == pipeline.uniforms[j].type);
+				foundIndex = j;
+				break;
+			}
+		}
+
+		if (foundIndex != notFound)
+		{
+			if (uniformIds.size() <= foundIndex)
+				uniformIds.resize(foundIndex + 1, unknown);
+			uniformIds[foundIndex] = processor.uniformIds[i];
+			continue;
+		}
+
+		pipeline.uniforms.push_back(processor.uniforms[i]);
+		if (processor.uniforms[i].type == Type::Struct)
+		{
+			pipeline.uniforms.back().structIndex =
+				addStruct(pipeline, processor.structs,
+				processor.structs[processor.uniforms[i].structIndex]);
+		}
+
+		if (uniformIds.size() < pipeline.uniforms.size())
+			uniformIds.resize(pipeline.uniforms.size(), unknown);
+		uniformIds[pipeline.uniforms.size() - 1] = processor.uniformIds[i];
+	}
+}
+
 const Target::FeatureInfo& Target::getFeatureInfo(Target::Feature feature)
 {
 	return featureInfos[static_cast<unsigned int>(feature)];
@@ -462,6 +413,7 @@ Target::Target()
 	: m_remapVariables(false)
 	, m_optimize(false)
 	, m_stripDebug(false)
+	, m_adjustableBindings(false)
 {
 	Compiler::initialize();
 	m_featureStates.fill(State::Default);
@@ -572,6 +524,16 @@ void Target::setStripDebug(bool strip)
 	m_stripDebug = strip;
 }
 
+bool Target::getAdjustableBindings() const
+{
+	return m_adjustableBindings;
+}
+
+void Target::setAdjustableBindings(bool add)
+{
+	m_adjustableBindings = add;
+}
+
 const std::string& Target::getResourcesFileName() const
 {
 	return m_resourcesFile;
@@ -620,6 +582,11 @@ bool Target::finish(CompiledResult& result, Output& output)
 	if (!getSharedData(result.m_sharedData, output))
 		return false;
 
+	return true;
+}
+
+bool Target::needsReflectionNames() const
+{
 	return true;
 }
 
@@ -698,17 +665,25 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 		processOptions |= Compiler::RemapVariables;
 	if (m_optimize)
 		processOptions |= Compiler::Optimize;
+
+	SpirVProcessor::Strip strip;
 	if (m_stripDebug)
-		processOptions |= Compiler::StripDebug;
+	{
+		if (needsReflectionNames())
+			strip = SpirVProcessor::Strip::AllButReflection;
+		else
+			strip = SpirVProcessor::Strip::All;
+	}
+	else
+		strip = SpirVProcessor::Strip::None;
 
 	std::vector<char> tempData;
-	std::vector<uint8_t> shaderData;
+	std::vector<std::uint8_t> shaderData;
 	std::vector<Parser::LineMapping> lineMappings;
 	for (const Parser::Pipeline& pipeline : parser.getPipelines())
 	{
 		// Add the current pipeline to the result.
-		auto addPair = result.m_pipelines.emplace(pipeline.name,
-			Pipeline());
+		auto addPair = result.m_pipelines.emplace(pipeline.name, Pipeline());
 		if (!addPair.second)
 		{
 			output.addMessage(Output::Level::Error, pipeline.token->fileName, pipeline.token->line,
@@ -749,26 +724,108 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			return false;
 		}
 
-		// Cross-compile the stages.
+		// Compile the stages to SPIR-V.
+		std::array<Compiler::SpirV, stageCount> spirv;
+		std::array<SpirVProcessor, stageCount> processors;
 		for (unsigned int i = 0; i < stageCount; ++i)
 		{
 			auto stage = static_cast<Stage>(i);
-
 			if (!stages.shaders[i])
 				continue;
 
 			// Create SPIR-V.
-			Compiler::SpirV spirV = Compiler::assemble(output, program, stage, pipeline);
-			if (spirV.empty())
+			spirv[i] = Compiler::assemble(output, program, stage, pipeline);
+			if (spirv[i].empty())
 				return false;
-			Compiler::process(spirV, processOptions);
+
+			if (!processors[i].extract(output, pipeline.token->fileName, pipeline.token->line,
+				pipeline.token->column, spirv[i], stage))
+			{
+				return false;
+			}
+		}
+
+		// Link the SPIR-V stages and process them.
+		const SpirVProcessor* lastStage = nullptr;
+		for (unsigned int i = 0; i < stageCount; ++i)
+		{
+			auto stage = static_cast<Stage>(i);
+			if (!stages.shaders[i])
+				continue;
+
+			// Make sure that the uniforms are compatible.
+			for (unsigned int j = i + 1; j < stageCount; ++j)
+			{
+				if (!stages.shaders[j])
+					continue;
+
+				if (!processors[i].uniformsCompatible(output, processors[j]))
+					return false;
+			}
+
+			if (!processors[i].assignOutputs(output))
+				return false;
+
+			if (lastStage)
+			{
+				if (!processors[i].linkInputs(output, *lastStage))
+					return false;
+			}
+			else if (!processors[i].assignInputs(output))
+				return false;
+
+			addUniforms(addedPipeline, stage, processors[i]);
+			spirv[i] = processors[i].process(strip, m_adjustableBindings);
+		}
+
+		// Make sure all of the uniform ID vectors are the same size.
+		for (unsigned int i = 0; i < stageCount; ++i)
+		{
+			if (!stages.shaders[i])
+				continue;
+
+			assert(addedPipeline.shaders[i].uniformIds.size() <= addedPipeline.uniforms.size());
+			addedPipeline.shaders[i].uniformIds.resize(addedPipeline.uniforms.size(), unknown);
+		}
+
+		// Add vertex attributes
+		if (stages.shaders[static_cast<unsigned int>(Stage::Vertex)])
+		{
+			const SpirVProcessor& vertexProcessor =
+				processors[static_cast<unsigned int>(Stage::Vertex)];
+			addedPipeline.attributes.resize(vertexProcessor.inputs.size());
+			for (std::size_t i = 0; i < vertexProcessor.inputs.size(); ++i)
+			{
+				addedPipeline.attributes[i].name = vertexProcessor.inputs[i].name;
+				if (vertexProcessor.inputs[i].type == Type::Struct)
+				{
+					output.addMessage(Output::Level::Error, pipeline.token->fileName,
+						pipeline.token->line, pipeline.token->column, false,
+						"linker error: vertex inputs may not use interface blocks");
+					return false;
+				}
+				addedPipeline.attributes[i].type = vertexProcessor.inputs[i].type;
+				addedPipeline.attributes[i].arrayElements = vertexProcessor.inputs[i].arrayElements;
+				addedPipeline.attributes[i].location = vertexProcessor.inputs[i].location;
+				addedPipeline.attributes[i].component = vertexProcessor.inputs[i].component;
+			}
+		}
+
+		// Cross-compile the stages.
+		for (unsigned int i = 0; i < stageCount; ++i)
+		{
+			auto stage = static_cast<Stage>(i);
+			if (!stages.shaders[i])
+				continue;
+
+			Compiler::process(spirv[i], processOptions);
 
 			// Use external command if set.
 			if (!m_spirVToolCommand.empty())
 			{
 				ExecuteCommand command;
-				command.getInput().write(reinterpret_cast<const char*>(spirV.data()),
-					spirV.size()*sizeof(std::uint32_t));
+				command.getInput().write(reinterpret_cast<const char*>(spirv[i].data()),
+					spirv[i].size()*sizeof(std::uint32_t));
 				if (!command.execute(output, m_spirVToolCommand))
 					return false;
 
@@ -781,89 +838,19 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 					return false;
 				}
 
-				spirV.reserve(tempData.size()/sizeof(std::uint32_t));
-				std::memcpy(spirV.data(), tempData.data(), tempData.size());
+				spirv[i].reserve(tempData.size()/sizeof(std::uint32_t));
+				std::memcpy(spirv[i].data(), tempData.data(), tempData.size());
 			}
 
 			shaderData.clear();
-			if (!crossCompile(shaderData, output, static_cast<Stage>(stage), spirV,
-				pipeline.entryPoints[i], fileName, pipeline.token->line, pipeline.token->column))
+			if (!crossCompile(shaderData, output, stage, spirv[i], pipeline.entryPoints[i],
+				fileName, pipeline.token->line, pipeline.token->column))
 			{
 				return false;
 			}
 
-			std::size_t shaderIndex = result.addShader(std::move(shaderData));
-			switch (stage)
-			{
-				case Parser::Stage::Vertex:
-					addedPipeline.vertex = shaderIndex;
-					break;
-				case Parser::Stage::TessellationControl:
-					addedPipeline.tessellationControl = shaderIndex;
-					break;
-				case Parser::Stage::TessellationEvaluation:
-					addedPipeline.tessellationEvaluation = shaderIndex;
-					break;
-				case Parser::Stage::Geometry:
-					addedPipeline.geometry = shaderIndex;
-					break;
-				case Parser::Stage::Fragment:
-					addedPipeline.fragment = shaderIndex;
-					break;
-				case Parser::Stage::Compute:
-					addedPipeline.compute = shaderIndex;
-					break;
-			}
-		}
-
-		// Add reflection info.
-		// Uniforms
-		addedPipeline.uniforms.resize(program.getNumLiveUniformVariables());
-		for (int i = 0; i < program.getNumLiveUniformVariables(); ++i)
-		{
-			addedPipeline.uniforms[i].name = program.getUniformName(i);
-
-			auto foundType = typeMap.find(program.getUniformType(i));
-			if (foundType == typeMap.end())
-			{
-				std::stringstream stream;
-				stream << "internal error: unknown OpenGL type for uniform variable " <<
-					addedPipeline.uniforms[i].name << ": " << std::hex << program.getUniformType(i);
-				output.addMessage(Output::Level::Error, fileName, 0, 0, false, stream.str());
-				return false;
-			}
-			addedPipeline.uniforms[i].type = foundType->second;
-
-			addedPipeline.uniforms[i].blockIndex = program.getUniformBlockIndex(i);
-			addedPipeline.uniforms[i].bufferOffset = program.getUniformBufferOffset(i);
-			addedPipeline.uniforms[i].elements = program.getUniformArraySize(i);
-		}
-
-		// Uniform blocks
-		addedPipeline.uniformBlocks.resize(program.getNumLiveUniformBlocks());
-		for (int i = 0; i < program.getNumLiveUniformBlocks(); ++i)
-		{
-			addedPipeline.uniformBlocks[i].name = program.getUniformBlockName(i);
-			addedPipeline.uniformBlocks[i].size = program.getUniformBlockSize(i);
-		}
-
-		// Attributes
-		addedPipeline.attributes.resize(program.getNumLiveAttributes());
-		for (int i = 0; i < program.getNumLiveAttributes(); ++i)
-		{
-			addedPipeline.attributes[i].name = program.getAttributeName(i);
-
-			auto foundType = typeMap.find(program.getAttributeType(i));
-			if (foundType == typeMap.end())
-			{
-				std::stringstream stream;
-				stream << "internal error: unknown OpenGL type for vertex attribute " <<
-					addedPipeline.attributes[i].name << ": " << std::hex <<
-					program.getUniformType(i);
-				output.addMessage(Output::Level::Error, fileName, 0, 0, false, stream.str());
-				return false;
-			}
-			addedPipeline.attributes[i].type = foundType->second;
+			addedPipeline.shaders[i].shader = result.addShader(std::move(shaderData),
+				m_adjustableBindings);
 		}
 	}
 

@@ -31,12 +31,15 @@ CompiledResult::CompiledResult()
 {
 }
 
-std::size_t CompiledResult::addShader(std::vector<uint8_t> shader)
+std::size_t CompiledResult::addShader(std::vector<uint8_t> shader, bool dontRemoveDuplicates)
 {
-	for (std::size_t i = 0; i < m_shaders.size(); ++i)
+	if (!dontRemoveDuplicates)
 	{
-		if (m_shaders[i] == shader)
-			return i;
+		for (std::size_t i = 0; i < m_shaders.size(); ++i)
+		{
+			if (m_shaders[i] == shader)
+				return i;
+		}
 	}
 
 	m_shaders.push_back(std::move(shader));

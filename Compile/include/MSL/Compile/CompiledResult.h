@@ -103,7 +103,7 @@ public:
 private:
 	friend class Target;
 
-	std::size_t addShader(std::vector<std::uint8_t> shader);
+	std::size_t addShader(std::vector<std::uint8_t> shader, bool dontRemoveDuplicates);
 
 	const Target* m_target;
 	std::uint32_t m_targetId;

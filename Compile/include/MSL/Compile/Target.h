@@ -320,6 +320,23 @@ public:
 	void setStripDebug(bool strip);
 
 	/**
+	 * @brief Gets whether or not to use adjustable descriptor sets and bindings.
+	 * @return True to add dummy bindings.
+	 */
+	bool getAdjustableBindings() const;
+
+	/**
+	 * @brief Sets whether or not to use adjustable descriptor sets and bindings.
+	 *
+	 * This can be done for SPIR-V to assign the bndings at runtime before sending them to Vulkan.
+	 * No duplicate shader results will be removed to ensure that each one can have the bindings
+	 * set separately.
+	 *
+	 * @param add True to use adjustable bindings.
+	 */
+	void setAdjustableBindings(bool add);
+
+	/**
 	 * @brief Gets the file name to a text file describing the resource limits.
 	 *
 	 * This is the same format as used by the glslang validator tool. When empty, the default
@@ -371,6 +388,15 @@ public:
 protected:
 
 	/**
+	 * @brief Gets whether or not reflection names should be kept when stripping debug info.
+	 *
+	 * Reflection names include the names for uniforms, inputs, and outputs.
+	 *
+	 * @return True if reflection names should be kept. Default implementation returns true.
+	 */
+	virtual bool needsReflectionNames() const;
+
+	/**
 	 * @brief Cross-compiles SPIR-V to the final target.
 	 *
 	 * If an error occurred, a message should be added to output explaining why.
@@ -380,7 +406,7 @@ protected:
 	 * @param stage The stage being compiled.
 	 * @param spirv The SPIR-V input.
 	 * @param entryPoint The name of the entry point. This can be used to rename main back to the
-	 * original entry point name.
+	 *     original entry point name.
 	 * @param fileName The file name for the message of any error.
 	 * @param line The line number for the message of any error.
 	 * @param column The column number for the message of any error.
@@ -418,6 +444,7 @@ private:
 	bool m_remapVariables;
 	bool m_optimize;
 	bool m_stripDebug;
+	bool m_adjustableBindings;
 	std::string m_resourcesFile;
 };
 
