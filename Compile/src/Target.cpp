@@ -760,6 +760,8 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			if (spirv[i].empty())
 				return false;
 
+			// Process the SPIR-V first so that remapping IDs doesn't mess up our mappings.
+			Compiler::process(spirv[i], processOptions);
 			if (!processors[i].extract(output, pipeline.token->fileName, pipeline.token->line,
 				pipeline.token->column, spirv[i], stage))
 			{
@@ -855,8 +857,6 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 				addedPipeline.shaders[i].shader = unknown;
 				continue;
 			}
-
-			Compiler::process(spirv[i], processOptions);
 
 			// Use external command if set.
 			if (!m_spirVToolCommand.empty())
