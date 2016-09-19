@@ -343,7 +343,8 @@ static bool decodeResourceLimits(Output& output, TBuiltInResource& resources, st
 	return true;
 }
 
-static std::uint32_t addStruct(Pipeline& pipeline, const std::vector<Struct>& structs, const Struct& addedStruct)
+static std::uint32_t addStruct(Pipeline& pipeline, const std::vector<Struct>& structs,
+	const Struct& addedStruct)
 {
 	for (std::size_t i = 0; i < pipeline.structs.size(); ++i)
 	{
@@ -402,6 +403,27 @@ static void addUniforms(Pipeline& pipeline, Stage stage, const SpirVProcessor& p
 			uniformIds.resize(pipeline.uniforms.size(), unknown);
 		uniformIds[pipeline.uniforms.size() - 1] = processor.uniformIds[i];
 	}
+}
+
+bool operator==(const SamplerState& s1, const SamplerState& s2)
+{
+	return s1.minFilter == s2.minFilter && s1.magFilter == s2.magFilter &&
+		s1.mipFilter == s2.mipFilter && s1.addressModeU == s2.addressModeU &&
+		s1.addressModeV == s2.addressModeV && s1.addressModeW == s2.addressModeW &&
+		s1.mipLodBias == s2.mipLodBias && s1.maxAnisotropy == s2.maxAnisotropy &&
+		s1.minLod == s2.minLod && s1.maxLod == s2.maxLod && s1.borderColor == s2.borderColor;
+}
+
+static std::uint32_t addSampler(Pipeline& pipeline, const SamplerState& sampler)
+{
+	for (std::uint32_t i = 0; i < pipeline.samplerStates.size(); ++i)
+	{
+		if (pipeline.samplerStates[i] == sampler)
+			return i;
+	}
+
+	pipeline.samplerStates.push_back(sampler);
+	return static_cast<std::uint32_t>(pipeline.samplerStates.size() - 1);
 }
 
 const Target::FeatureInfo& Target::getFeatureInfo(Target::Feature feature)
@@ -747,6 +769,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 
 		// Link the SPIR-V stages and process them.
 		const SpirVProcessor* lastStage = nullptr;
+		addedPipeline.pushConstantStruct = unknown;
 		for (unsigned int i = 0; i < stageCount; ++i)
 		{
 			auto stage = static_cast<Stage>(i);
@@ -763,9 +786,11 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 					return false;
 			}
 
+			// Outputs
 			if (!processors[i].assignOutputs(output))
 				return false;
 
+			// Inputs
 			if (lastStage)
 			{
 				if (!processors[i].linkInputs(output, *lastStage))
@@ -774,7 +799,16 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			else if (!processors[i].assignInputs(output))
 				return false;
 
+			// Add uniforms.
 			addUniforms(addedPipeline, stage, processors[i]);
+			if (addedPipeline.pushConstantStruct == unknown &&
+				processors[i].pushConstantStruct != unknown)
+			{
+				addedPipeline.pushConstantStruct = addStruct(addedPipeline, processors[i].structs,
+					processors[i].structs[processors[i].pushConstantStruct]);
+			}
+
+			// Proces the SPIR-V.
 			spirv[i] = processors[i].process(strip, m_adjustableBindings);
 		}
 
@@ -816,7 +850,10 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 		{
 			auto stage = static_cast<Stage>(i);
 			if (!stages.shaders[i])
+			{
+				addedPipeline.shaders[i].shader = unknown;
 				continue;
+			}
 
 			Compiler::process(spirv[i], processOptions);
 
@@ -851,6 +888,25 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 
 			addedPipeline.shaders[i].shader = result.addShader(std::move(shaderData),
 				m_adjustableBindings);
+		}
+
+		// Set the render and sampler states.
+		addedPipeline.renderState = pipeline.renderState;
+		for (std::size_t i = 0; i < addedPipeline.uniforms.size(); ++i)
+		{
+			if (addedPipeline.uniforms[i].uniformType != UniformType::SampledImage)
+				continue;
+
+			const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
+			for (std::size_t j = 0; j < samplers.size(); ++j)
+			{
+				if (samplers[j].name == addedPipeline.uniforms[i].name)
+				{
+					addedPipeline.uniforms[j].samplerIndex = addSampler(addedPipeline,
+						samplers[j].state);
+					break;
+				}
+			}
 		}
 	}
 
