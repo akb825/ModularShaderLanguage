@@ -403,18 +403,18 @@ protected:
 	 *
 	 * @param data The data from cross-compiling.
 	 * @param output The output to add errors and warnings.
+	 * @param fileName The file name for the message of any output message.
+	 * @param line The line number for the message of any output message.
+	 * @param column The column number for the message of any output message.
 	 * @param stage The stage being compiled.
 	 * @param spirv The SPIR-V input.
 	 * @param entryPoint The name of the entry point. This can be used to rename main back to the
 	 *     original entry point name.
-	 * @param fileName The file name for the message of any error.
-	 * @param line The line number for the message of any error.
-	 * @param column The column number for the message of any error.
 	 * @return False if the compilation failed.
 	 */
-	virtual bool crossCompile(std::vector<std::uint8_t>& data, Output& output,
-		Stage stage, const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
-		const std::string& fileName, std::size_t line, std::size_t column) = 0;
+	virtual bool crossCompile(std::vector<std::uint8_t>& data, Output& output, const std::string& fileName, std::size_t line,
+		std::size_t column, compile::Stage stage, const std::vector<std::uint32_t>& spirv,
+		const std::string& entryPoint) = 0;
 
 	/**
 	 * @brief Gets the shared data for the compiled shader.

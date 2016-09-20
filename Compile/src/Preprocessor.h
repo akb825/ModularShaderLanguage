@@ -17,6 +17,7 @@
 #pragma once
 
 #include <MSL/Config.h>
+#include <MSL/Compile/Export.h>
 #include "TokenList.h"
 #include <istream>
 #include <string>
@@ -28,7 +29,8 @@ namespace msl
 
 class Output;
 
-class Preprocessor
+// Export for tests.
+class MSL_COMPILE_EXPORT Preprocessor
 {
 public:
 	Preprocessor();

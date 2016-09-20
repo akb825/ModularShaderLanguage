@@ -39,6 +39,8 @@
 namespace msl
 {
 
+using namespace compile;
+
 static Target::FeatureInfo featureInfos[] =
 {
 	// Types
@@ -349,7 +351,7 @@ static std::uint32_t addStruct(Pipeline& pipeline, const std::vector<Struct>& st
 	for (std::size_t i = 0; i < pipeline.structs.size(); ++i)
 	{
 		if (pipeline.structs[i].name == addedStruct.name)
-			return i;
+			return static_cast<std::uint32_t>(i);
 	}
 
 	std::uint32_t structIndex = static_cast<std::uint32_t>(pipeline.structs.size());
@@ -881,8 +883,8 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			}
 
 			shaderData.clear();
-			if (!crossCompile(shaderData, output, stage, spirv[i], pipeline.entryPoints[i],
-				fileName, pipeline.token->line, pipeline.token->column))
+			if (!crossCompile(shaderData, output, fileName, pipeline.token->line,
+				pipeline.token->column, stage, spirv[i], pipeline.entryPoints[i]))
 			{
 				return false;
 			}

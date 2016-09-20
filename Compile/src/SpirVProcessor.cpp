@@ -132,16 +132,6 @@ struct IntermediateData
 	std::pair<std::uint32_t, std::uint32_t> pushConstantPointer = std::make_pair(unknown, unknown);
 };
 
-bool operator==(const ArrayInfo& info1, const ArrayInfo& info2)
-{
-	return info1.length == info2.length && info1.stride == info2.stride;
-}
-
-bool operator!=(const ArrayInfo& info1, const ArrayInfo& info2)
-{
-	return !(info1 == info2);
-}
-
 bool inputIsArray(Stage stage)
 {
 	return stage == Stage::TessellationControl || stage == Stage::TessellationEvaluation;
@@ -1220,8 +1210,8 @@ void addPushConstants(SpirVProcessor& processor, const IntermediateData& data)
 	assert(arrayElements.empty());
 }
 
-bool addComponents(std::vector<std::uint8_t>& locations, std::uint32_t curLocation,
-	std::uint8_t componentMask)
+bool addComponents(std::vector<std::uint8_t>& locations, std::size_t curLocation,
+	std::uint32_t componentMask)
 {
 	if (locations.size() <= curLocation)
 		locations.resize(curLocation + 1, 0);
@@ -1229,7 +1219,7 @@ bool addComponents(std::vector<std::uint8_t>& locations, std::uint32_t curLocati
 	if (locations[curLocation] & componentMask)
 		return false;
 
-	locations[curLocation] |= componentMask;
+	locations[curLocation] |= static_cast<std::uint8_t>(componentMask);
 	return true;
 }
 
@@ -1457,7 +1447,7 @@ bool assignInputsOutputs(Output& output, const SpirVProcessor& processor,
 				std::uint32_t component = 0;
 				if (io.memberLocations[i].first == unknown)
 				{
-					io.memberLocations[i].first = curLocation;
+					io.memberLocations[i].first = static_cast<std::uint32_t>(curLocation);
 					io.memberLocations[i].second = component;
 				}
 				else
@@ -1482,7 +1472,7 @@ bool assignInputsOutputs(Output& output, const SpirVProcessor& processor,
 			std::uint32_t component = 0;
 			if (io.location == unknown)
 			{
-				io.location = curLocation;
+				io.location = static_cast<std::uint32_t>(curLocation);
 				io.component = component;
 				hasImplicitLocations = true;
 			}
@@ -1606,6 +1596,21 @@ void addDummyInputAttachmentIndex(std::vector<std::uint32_t>& spirv, std::uint32
 }
 
 } // namespace
+
+namespace compile
+{
+
+inline bool operator==(const ArrayInfo& info1, const ArrayInfo& info2)
+{
+	return info1.length == info2.length && info1.stride == info2.stride;
+}
+
+inline bool operator!=(const ArrayInfo& info1, const ArrayInfo& info2)
+{
+	return !(info1 == info2);
+}
+
+} // namespace compile
 
 bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::size_t line,
 	std::size_t column, const std::vector<std::uint32_t>& spirv, Stage stage)

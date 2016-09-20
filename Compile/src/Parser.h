@@ -17,6 +17,7 @@
 #pragma once
 
 #include <MSL/Config.h>
+#include <MSL/Compile/Export.h>
 #include <MSL/Compile/Types.h>
 #include "TokenList.h"
 #include <array>
@@ -25,9 +26,12 @@
 namespace msl
 {
 
+using namespace compile;
+
 class Output;
 
-class Parser
+// Export for tests.
+class MSL_COMPILE_EXPORT Parser
 {
 public:
 	enum Options

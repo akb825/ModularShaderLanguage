@@ -43,9 +43,14 @@ std::vector<std::pair<std::string, std::string>> TargetSpirV::getExtraDefines() 
 	return {{"SPIRV_VERSION", stream.str()}};
 }
 
-bool TargetSpirV::crossCompile(std::vector<std::uint8_t>& data, Output&, Stage,
-	const std::vector<std::uint32_t>& spirv, const std::string&, const std::string&, std::size_t,
-	std::size_t)
+bool TargetSpirV::needsReflectionNames() const
+{
+	return false;
+}
+
+bool TargetSpirV::crossCompile(std::vector<std::uint8_t>& data, Output&, const std::string&,
+	std::size_t, std::size_t, compile::Stage, const std::vector<std::uint32_t>& spirv,
+	const std::string&)
 {
 	data.resize(spirv.size()*sizeof(std::uint32_t));
 	std::memcpy(data.data(), spirv.data(), data.size());

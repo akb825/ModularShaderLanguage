@@ -119,14 +119,14 @@ public:
 	 * @param stage The stage to add the header line for.
 	 * @param header The header line.
 	 */
-	void addHeaderLine(Stage stage, std::string header);
+	void addHeaderLine(compile::Stage stage, std::string header);
 
 	/**
 	 * @brief Gets the header lines to be added to the final GLSL source.
 	 * @param stage The stage to get the header lines for.
 	 * @return The header lines.
 	 */
-	const std::vector<std::string>& getHeaderLines(Stage stage) const;
+	const std::vector<std::string>& getHeaderLines(compile::Stage stage) const;
 
 	/**
 	 * @brief Clears the header lines.
@@ -144,14 +144,14 @@ public:
 	 * @param stage The stage to add the extension for.
 	 * @param extension The extension.
 	 */
-	void addRequiredExtension(Stage stage, std::string extension);
+	void addRequiredExtension(compile::Stage stage, std::string extension);
 
 	/**
 	 * @brief Gets the require extensions.
 	 * @param stage The stage to get the extensions for.
 	 * @return The required extensions.
 	 */
-	const std::vector<std::string>& getRequiredExtensions(Stage stage) const;
+	const std::vector<std::string>& getRequiredExtensions(compile::Stage stage) const;
 
 	/**
 	 * @brief Clears the required extensions.
@@ -163,7 +163,7 @@ public:
 	 * @param stage The stage the command is run on.
 	 * @return The GLSL tool command.
 	 */
-	const std::string& getGlslToolCommand(Stage stage) const;
+	const std::string& getGlslToolCommand(compile::Stage stage) const;
 
 	/**
 	 * @brief Sets the GLSL tool command to run on the output GLSL.
@@ -180,7 +180,7 @@ public:
 	 * @param stage The stage to run the command on.
 	 * @param command The command to run.
 	 */
-	void setGlslToolCommand(Stage stage, std::string command);
+	void setGlslToolCommand(compile::Stage stage, std::string command);
 
 	std::uint32_t getId() const override;
 	std::uint32_t getVersion() const override;
@@ -188,9 +188,9 @@ public:
 	std::vector<std::pair<std::string, std::string>> getExtraDefines() const override;
 
 protected:
-	bool crossCompile(std::vector<std::uint8_t>& data, Output& output, Stage stage,
-		const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
-		const std::string& fileName, std::size_t line, std::size_t column) override;
+	bool crossCompile(std::vector<std::uint8_t>& data, Output& output,
+		const std::string& fileName, std::size_t line, std::size_t column, compile::Stage stage,
+		const std::vector<std::uint32_t>& spirv, const std::string& entryPoint) override;
 
 private:
 	std::uint32_t m_version;
@@ -199,9 +199,9 @@ private:
 	bool m_remapDepthRange;
 	Precision m_defaultFloatPrecision;
 	Precision m_defaultIntPrecision;
-	std::array<std::vector<std::string>, stageCount> m_headerLines;
-	std::array<std::vector<std::string>, stageCount> m_requiredExtensions;
-	std::array<std::string, stageCount> m_glslToolCommand;
+	std::array<std::vector<std::string>, compile::stageCount> m_headerLines;
+	std::array<std::vector<std::string>, compile::stageCount> m_requiredExtensions;
+	std::array<std::string, compile::stageCount> m_glslToolCommand;
 };
 
 } // namespace msl

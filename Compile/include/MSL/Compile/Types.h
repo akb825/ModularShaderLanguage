@@ -30,6 +30,11 @@
 namespace msl
 {
 
+class Target;
+
+namespace compile
+{
+
 /**
  * @brief Constant for no shader being set.
  */
@@ -199,7 +204,7 @@ enum class Type
 static const unsigned int typeCount = static_cast<unsigned int>(Type::Struct) + 1;
 
 /**
- * @brief Type of a uniform.
+ * @brief Enum for how a uniform is used.
  */
 enum class UniformType
 {
@@ -358,11 +363,11 @@ enum class BlendOp
  */
 enum ColorMask
 {
-	ColorMaskUnset = -1,  ///< No value set.
-	ColorMaskNone = 0,    ///< Write no color channels.
-	ColorMaskRed = 0x1,   ///< Write the red channel.
+	ColorMaskUnset =  -1, ///< No value set.
+	ColorMaskNone =    0, ///< Write no color channels.
+	ColorMaskRed =   0x1, ///< Write the red channel.
 	ColorMaskGreen = 0x2, ///< Write the green channel.
-	ColorMaskBlue = 0x4,  ///< Write the blue channel.
+	ColorMaskBlue =  0x4, ///< Write the blue channel.
 	ColorMaskAlpha = 0x8  ///< Write the alpha channel.
 };
 
@@ -789,6 +794,9 @@ struct SamplerState
 	BorderColor borderColor = BorderColor::Unset;
 };
 
+/**
+ * @brief Structure holding info for an array within a uniform or attribute.
+ */
 struct ArrayInfo
 {
 	/**
@@ -1024,7 +1032,7 @@ struct Pipeline
 	RenderState renderState;
 
 private:
-	friend class Target;
+	friend class msl::Target;
 
 	// Internal use for error reporting.
 	std::string file;
@@ -1032,4 +1040,5 @@ private:
 	std::size_t column = 0;
 };
 
+} // namespace compile
 } // namespace msl

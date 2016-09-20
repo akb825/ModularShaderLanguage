@@ -23,6 +23,8 @@
 namespace msl
 {
 
+using namespace compile;
+
 TargetGlsl::TargetGlsl(std::uint32_t version, bool isEs)
 	: m_version(version)
 	, m_es(isEs)
@@ -322,9 +324,9 @@ std::vector<std::pair<std::string, std::string>> TargetGlsl::getExtraDefines() c
 		return {{"GLSL_VERSION", stream.str()}};
 }
 
-bool TargetGlsl::crossCompile(std::vector<std::uint8_t>& data, Output& output, Stage stage,
-	const std::vector<std::uint32_t>& spirv, const std::string&, const std::string& fileName,
-	std::size_t line, std::size_t column)
+bool TargetGlsl::crossCompile(std::vector<std::uint8_t>& data, Output& output,
+	const std::string& fileName, std::size_t line, std::size_t column, Stage stage,
+	const std::vector<std::uint32_t>& spirv, const std::string&)
 {
 	std::size_t stageIndex = static_cast<std::size_t>(stage);
 

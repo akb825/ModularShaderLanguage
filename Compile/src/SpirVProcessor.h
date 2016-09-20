@@ -26,6 +26,8 @@
 namespace msl
 {
 
+using namespace compile;
+
 class Output;
 
 class SpirVProcessor

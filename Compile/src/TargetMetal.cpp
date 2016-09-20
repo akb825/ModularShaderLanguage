@@ -115,9 +115,9 @@ std::vector<std::pair<std::string, std::string>> TargetMetal::getExtraDefines() 
 		return {{"METAL_OSX_VERSION", stream.str()}};
 }
 
-bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output, Stage,
-	const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
-	const std::string& fileName, std::size_t line, std::size_t column)
+bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
+	const std::string& fileName, std::size_t line, std::size_t column, compile::Stage,
+	const std::vector<std::uint32_t>& spirv, const std::string& entryPoint)
 {
 
 	// Check to see if the entry point was already compiled.

@@ -16,6 +16,8 @@
 
 #pragma once
 
+#include <MSL/Config.h>
+#include <MSL/Compile/Export.h>
 #include "Parser.h"
 #include "glslang/Public/ShaderLang.h"
 #include <memory>
@@ -23,7 +25,10 @@
 namespace msl
 {
 
-class Compiler
+using namespace compile;
+
+// Export for tests.
+class MSL_COMPILE_EXPORT Compiler
 {
 public:
 	struct Stages

@@ -17,6 +17,7 @@
 #pragma once
 
 #include <MSL/Config.h>
+#include <MSL/Compile/Export.h>
 #include <fstream>
 #include <string>
 
@@ -25,7 +26,8 @@ namespace msl
 
 class Output;
 
-class ExecuteCommand
+// Export for tests.
+class MSL_COMPILE_EXPORT ExecuteCommand
 {
 public:
 	ExecuteCommand();

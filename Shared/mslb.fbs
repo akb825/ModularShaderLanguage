@@ -1,6 +1,19 @@
 namespace mslb;
 
 /*
+ * Enum for a stage within a shader pipeline.
+ */
+enum Stage : ubyte
+{
+	Vertex,                 // Vertex shader.
+	TessellationControl,    // Tessellation control for tessellation shaders.
+	TessellationEvaluation, // Evaluation for tessellation shaders.
+	Geometry,               // Geometry shader.
+	Fragment,               // Fragment shader.
+	Compute                 // Compute shader.
+}
+
+/*
  * Enum for the type of a uniform.
  */
 enum Type : ubyte
@@ -126,69 +139,716 @@ enum Type : ubyte
 }
 
 /*
- * Structure describing a uniform.
- *
- * This includes free-floating uniforms, elements of a uniform buffer, or elements of a storage
- * buffer.
+ * Enum for how a uniform is used.
  */
-table Uniform
+enum UniformType : ubyte
 {
 	/*
-	 * The name of the uniform.
+	 * Push-constant buffer. For non-Vulkan targets, the structure elements will become free
+	 * uniforms. This will always be a struct.
+	 */
+	PushConstant = 0,
+
+	/*
+	 * A uniform block, which cannot be written to from the shader. This will always be a struct.
+	 */
+	Block,
+
+	/*
+	 * A uniform block buffer, which can be written to from the shader. This will always be a
+	 * struct.
+	 */
+	BlockBuffer,
+
+	/*
+	 * An image that doesn't use a sampler.
+	 */
+	Image,
+
+	/*
+	 * An image that uses a sampler to perform filtering, mipmapping, etc.
+	 */
+	SampledImage,
+
+	/*
+	 * Framebuffer input for subpasses.
+	 */
+	SubpassInput
+}
+
+/*
+ * Enum for a boolean value that may be unset.
+ */
+enum Bool : byte
+{
+	Unset = -1, // No value set.
+	False,      // false
+	True        // true
+}
+
+/*
+ * Enum for the polygon mode.
+ */
+enum PolygonMode : byte
+{
+	Unset = -1, // No value set.
+	Fill,       // Draw filled polygons.
+	Line,       // Draw outlines of polygons.
+	Point       // Draw points for each vertex.
+}
+
+/*
+ * Enum for the cull mode.
+ */
+enum CullMode : byte
+{
+	Unset = -1,  // No value set.
+	None,        // Don't cull any faces.
+	Front,       // Cull front faces.
+	Back,        // Cull back faces.
+	FrontAndBack // Cull front and back faces.
+}
+
+/*
+ * Enum for the front face.
+ */
+enum FrontFace : byte
+{
+	Unset = -1,       // No value set.
+	CounterClockwise, // Counter-clockwise faces are front.
+	Clockwise         // Clockwise faces are front.
+}
+
+/*
+ * Enum for stencil operations.
+ */
+enum StencilOp : byte
+{
+	Unset = -1,        // No value set.
+	Keep,              // Keep the current value.
+	Zero,              // Set the value to 0.
+	Replace,           // Replace the current value.
+	IncrementAndClamp, // Increment the value, clamping to the maximum.
+	DecrementAndClamp, // Decrement the value, clamping to 0.
+	Invert,            // Inverts the bits of the value.
+	IncrementAndWrap,  // Increments the value, wrapping around to 0.
+	DecrementAndWrap   // Decrements the value, wrapping around to the maximum.
+}
+
+/*
+ * Enum for compare operations.
+ */
+enum CompareOp : byte
+{
+	Unset = -1,     // No value set.
+	Never,          // Never succeed.
+	Less,           // Check if a < b.
+	Equal,          // Check if a == b.
+	LessOrEqual,    // Check if a <= b.
+	Greater,        // Check if a > b.
+	NotEqual,       // Check if a != b.
+	GreaterOrEqual, // Check if a >= b.
+	Always          // Always succeed.
+}
+
+/*
+ * Enum for a blend factor.
+ */
+enum BlendFactor : byte
+{
+	Unset = -1,         // No value set.
+	Zero,               // Value of 0.
+	One,                // Value of 1.
+	SrcColor,           // Source color. (from the current fragment)
+	OneMinusSrcColor,   // 1 - source color.
+	DstColor,           // Destination color. (from the framebuffer)
+	OneMinusDstColor,   // 1 - destination color.
+	SrcAlpha,           // Source alpha. (from the current fragment)
+	OneMinusSrcAlpha,   // 1 - source alpha.
+	DstAlpha,           // Destination alpha. (from the framebuffer)
+	OneMinusDstAlpha,   // 1 - destination alpha.
+	ConstColor,         // Constant user-specified color.
+	OneMinusConstColor, // 1 - const color.
+	ConstAlpha,         // Constant uer-specified alpha.
+	OneMinusConstAlpha, // 1 - const alpha.
+	SrcAlphaSaturate,   // Source alpha, clamped the range [0, 1].
+	Src1Color,          // Source color from the secondary color buffer.
+	OneMinusSrc1Color,  // 1 - secondary source color.
+	Src1Alpha,          // Source alpha from the secondary color buffer.
+	OneMinusSrc1Alpha   // 1 - secondary source alpha.
+}
+
+/*
+ * Enum for a blend operation.
+ */
+enum BlendOp : byte
+{
+	Unset = -1,      // No value set.
+	Add,             // Evaluates a + b.
+	Subtract,        // Evaluates a - b.
+	ReverseSubtract, // Evaluates b - a.
+	Min,             // Evaluates min(a, b).
+	Max              // Evaluates max(a, b).
+}
+
+/*
+ * Enum for a color mask. These values can be OR'd together.
+ */
+enum ColorMask : byte
+{
+	ColorMaskUnset =  -1, // No value set.
+	ColorMaskNone =    0, // Write no color channels.
+	ColorMaskRed =   0x1, // Write the red channel.
+	ColorMaskGreen = 0x2, // Write the green channel.
+	ColorMaskBlue =  0x4, // Write the blue channel.
+	ColorMaskAlpha = 0x8  // Write the alpha channel.
+}
+
+/*
+ * Enum for a logical operation.
+ */
+enum LogicOp : byte
+{
+	Unset = -1,   // No value set.
+	Clear,        // Clear the value to 0.
+	And,          // Evaluate a & b.
+	AndReverse,   // Evaluate a & ~b.
+	Copy,         // Copy a to b.
+	AndInverted,  // Evaluate ~a & b.
+	NoOp,         // Don't modify the value.
+	Xor,          // Evaluate a ^ b.
+	Or,           // Evaluate a | b.
+	Nor,          // Evaluate ~(a | b).
+	Equivalent,   // Evaluate ~(a ^ b).
+	Invert,       // Evaluate ~b.
+	OrReverse,    // Evaluate a | ~b.
+	CopyInverted, // Evaluate ~a.
+	OrInverted,   // Evaluate ~a | b.
+	Nand,         // Evaluate ~(a & b).
+	Set           // Set the value to all 1.
+}
+
+/*
+ * Enum for how to filter a texture.
+ */
+enum Filter : byte
+{
+	Unset = -1, // No value set.
+	Nearest,    // Nearest-neighbor filtering.
+	Linear      // Linear filtering.
+}
+
+/*
+ * Enum for how to filter between mips.
+ */
+enum MipFilter : byte
+{
+	Unset = -1, // No value set.
+	None,       // No mip-mapping.
+	Nearest,    // Nearest-neighbor filtering.
+	Linear,     // Linear filtering.
+	Anisotropic // Anisotropic filtering.
+}
+
+/*
+ * Enum for how to handle texture addressing.
+ */
+enum AddressMode : byte
+{
+	Unset = -1,     // No value set.
+	Repeat,         // Repeat the texture beyond the boundary.
+	MirroredRepeat, // Repeat the textore, mirroring on each odd repeat.
+	ClampToEdge,    // Clamp to the edge, using the texture value along the edge.
+	ClampToBorder,  // Clamp to the edge, using the border color.
+	MirrorOnce      // Mirror the texture once before clamping it.
+}
+
+/*
+ * Enum for the border color when using AddressMode ClampToBorder.
+ */
+enum BorderColor : byte
+{
+	Unset = -1,         // No value set.
+	TransparentBlack,   // All color channels and alpha 0.
+	TransparentIntZero, // All color channels and alpha 0. (as integers)
+	OpaqueBlack,        // Color channels 0, alpha value 1.
+	OpaqueIntZero,      // Color channels 0, alpha value as the int value 1.
+	OpaqueWhite,        // All color channelsa and alpha 1.
+	OpaqueIntOne        // All color channels and alpha as the int value 1.
+}
+
+/*
+ * Structure holding the render states used for rasterization.
+ */
+struct RasterizationState
+{
+	/*
+	 * Clamp the depth values in range rather than clipping.
+	 */
+	depthClampEnable : Bool;
+
+	/*
+	 * Whether or not to discard all samples.
+	 */
+	rasterizerDiscardEnable : Bool;
+
+	/*
+	 * Mode for how to draw polygons.
+	 */
+	polygonMode : PolygonMode;
+
+	/*
+	 * Mode for how to cull front and back faces.
+	 */
+	cullMode : CullMode;
+
+	/*
+	 * The polygon front face.
+	 */
+	frontFace : FrontFace;
+
+	/*
+	 * Whether or not to use depth bias.
+	 */
+	depthBiasEnable : Bool;
+
+	/*
+	 * The constant depth bias to apply.
+	 */
+	depthBiasConstantFactor : float;
+
+	/*
+	 * The minimum or maximum value to clamp the depth bias to.
+	 */
+	depthBiasClamp : float;
+
+	/*
+	 * The depth bias to apply based on the slope of the polygon.
+	 */
+	depthBiasSlopeFactor : float;
+
+	/*
+	 * The width of lines.
+	 */
+	lineWidth : float;
+}
+
+/*
+ * Structure for holding multisampling render states.
+ */
+struct MultisampleState
+{
+	/*
+	 * Whether or not to run the shader for multiple samples.
+	 */
+	sampleShadingEnable : Bool;
+
+	/*
+	 * Hint for how many samples to run the shader on.
+	 */
+	minSampleShading : float;
+
+	/*
+	 * Mask for which samples to run the shader on.
+	 */
+	sampleMask : uint;
+
+	/*
+	 * Whether or not to use the alpha value to control how many samples to use.
+	 */
+	alphaToCoverageEnable : Bool;
+
+	/*
+	 * Whether or not to force the alpha value to 1.
+	 */
+	alphaToOneEnable : Bool;
+}
+
+/*
+ * Structure for holding the stencil state.
+ */
+struct StencilOpState
+{
+	/*
+	 * The operation to perform when failing the stencil test.
+	 */
+	failOp : StencilOp;
+
+	/*
+	 * The operation to perform when passing the stencil test.
+	 */
+	passOp : StencilOp;
+
+	/*
+	 * The operation to perform when failing the depth test.
+	 */
+	depthFailOp : StencilOp;
+
+	/*
+	 * The compare operation for stencil values.
+	 */
+	compareOp : CompareOp;
+
+	/*
+	 * The mask to apply to the values for comparisson.
+	 */
+	compareMask : uint;
+
+	/*
+	 * The mask to apply to the value before writing to the stencil buffer.
+	 */
+	writeMask : uint;
+
+	/*
+	 * Constant reference value.
+	 */
+	reference : uint;
+}
+
+/*
+ * Structure for holding the depth render states.
+ */
+struct DepthStencilState
+{
+	/*
+	 * Whether or not to enable the depth test.
+	 */
+	depthTestEnable : Bool;
+
+	/*
+	 * Whether or not to write the depth value to the depth buffer.
+	 */
+	depthWriteEnable : Bool;
+
+	/*
+	 * The comparisson operation for depth values.
+	 */
+	depthCompareOp : CompareOp;
+
+	/*
+	 * Whether or not to limit the depth range.
+	 */
+	depthBoundsTestEnable : Bool;
+
+	/*
+	 * Whether or not to enable the stencil test.
+	 */
+	stencilTestEnable : Bool;
+
+	/*
+	 * Stencil operations for front faces.
+	 */
+	frontStencil : StencilOpState;
+
+	/*
+	 * Stencil operations for back faces.
+	 */
+	backStencil : StencilOpState;
+
+	/*
+	 * Minimum value when limiting the depth range.
+	 */
+	minDepthBounds : float;
+
+	/*
+	 * Maximum value when limiting the depth range.
+	 */
+	maxDepthBounds : float;
+}
+
+/*
+ * Structure for holding the blend states for a color attachment.
+ */
+struct BlendAttachmentState
+{
+	/*
+	 * Whether or not to enable blending.
+	 */
+	blendEnable : Bool;
+
+	/*
+	 * Blend factor for the source color.
+	 */
+	srcColorBlendFactor : BlendFactor;
+
+	/*
+	 * Blend factor for the destination color.
+	 */
+	dstColorBlendFactor : BlendFactor;
+
+	/*
+	 * The operation to apply to the source and destination color factors.
+	 */
+	colorBlendOp : BlendOp;
+
+	/*
+	 * Blend factor for the source alpha.
+	 */
+	srcAlphaBlendFactor : BlendFactor;
+
+	/*
+	 * Blend factor for the destination alpha.
+	 */
+	dstAlphaBlendFactor : BlendFactor;
+
+	/*
+	 * The operation to apply to the source and destination alpha factors.
+	 */
+	alphaBlendOp : BlendOp;
+
+	/*
+	 * Mask of color channels to write to.
+	 */
+	colorWriteMask : ColorMask;
+}
+
+/*
+ * Structure for holding the blend states.
+ */
+table BlendState
+{
+	/*
+	 * Whether or not to enable logical operations.
+	 */
+	logicalOpEnable : Bool;
+
+	/*
+	 * The logical operation to apply.
+	 */
+	logicalOp : LogicOp;
+
+	/*
+	 * Whether or not to apply separate blending operations for each attachment. If unset, only the
+	 * first attachment blend states should be used.
+	 */
+	separateAttachmentBlendingEnable : Bool;
+
+	/*
+	 * The blend states for each color attachment.
+	 */
+	blendAttachments : [BlendAttachmentState] (required);
+
+	/*
+	 * The constant blend factor.
+	 */
+	blendConstants : [float] (required);
+}
+
+/*
+ * Structure for holding the render states.
+ */
+table RenderState
+{
+	/*
+	 * The rasterization states.
+	 */
+	rasterizationState : RasterizationState;
+
+	/*
+	 * The multisample states.
+	 */
+	multisampleState : MultisampleState;
+
+	/*
+	 * The depth-stencil states.
+	 */
+	depthStencilState : DepthStencilState;
+
+	/*
+	 * The blending states.
+	 */
+	blendState : BlendState (required);
+
+	/*
+	 * The number of control points for each patch for tessellation.
+	 */
+	patchControlPoints : uint;
+}
+
+/*
+ * Structure for holding the states used for a texture sampler.
+ */
+struct SamplerState
+{
+	/*
+	 * The filter used for minification.
+	 */
+	minFilter : Filter;
+
+	/*
+	 * The filter used for magnification.
+	 */
+	magFilter : Filter;
+
+	/*
+	 * The filter used for mip-mapping.
+	 */
+	mipFilter : MipFilter;
+
+	/*
+	 * How to address the U (or S) texture coordinate.
+	 */
+	addressModeU : AddressMode;
+
+	/*
+	 * How to address the U (or T) texture coordinate.
+	 */
+	addressModeV : AddressMode;
+
+	/*
+	 * How to address the W (or R) texture coordinate.
+	 */
+	addressModeW : AddressMode;
+
+	/*
+	 * Bias to apply when calculating the mip-mapping LOD.
+	 */
+	mipLodBias : float;
+
+	/*
+	 * The maximum anisotropy factor to apply.
+	 */
+	maxAnisotropy : float;
+
+	/*
+	 * The minimum mip level to use.
+	 */
+	minLod : float;
+
+	/*
+	 * The maximum mip level to use.
+	 */
+	maxLod : float;
+
+	/*
+	 * The border color to apply.
+	 */
+	borderColor : BorderColor;
+}
+
+/*
+ * Structure holding info for an array within a uniform or attribute.
+ */
+struct ArrayInfo
+{
+	/*
+	 * The length of the array. This will be set to unknown if the size is unknown at compile time.
+	 */
+	length : uint;
+
+	/*
+	 * The stride of the array.
+	 */
+	stride : uint;
+}
+
+/*
+ * Structure describing a member of a user-defined struct
+ */
+table StructMember
+{
+	/*
+	 * The name of the element.
 	 */
 	name : string (required);
 
 	/*
-	 * The type of the uniform.
+	 * The offset from the beginning of the structure.
+	 */
+	offset : uint;
+
+	/*
+	 * The size of this member.
+	 */
+	size : uint;
+
+	/*
+	 * The type of the element.
 	 */
 	type : Type;
 
 	/*
-	 * The index of the uniform block this belongs to.
-	 *
-	 * This is set to 0xFFFFFFFF when not part of a uniform block.
+	 * If type is Struct, this is the index to the stucture the member refers to.
 	 */
-	blockIndex : uint;
+	structIndex : uint;
 
 	/*
-	 * The offset within the uniform block buffer.
-	 *
-	 * This is set to 0xFFFFFFFF if the offset isn't known or is not part of a uniform block.
-	 * When the offset isn't known, it must be queried from the graphics API.
+	 * Info about each element in the array. This will be empty if this member isn't an array.
 	 */
-	bufferOffset : uint;
-
-	/*
-	 * The number of array elements.
-	 *
-	 * This will be a minimum of 1.
-	 */
-	elements : uint;
+	arrayElements : [ArrayInfo];
 }
 
 /*
- * Structure describing a uniform block or storage buffer.
- *
- * This contains information about the block itself. The contents of the buffer are stored
- * described in the list of Uniforms.
+ * Structure describing a user-defined struct.
  */
-table UniformBlock
+table Struct
 {
 	/*
-	 * The name of the block.
+	 * The type name of the struct.
 	 */
 	name : string (required);
 
 	/*
-	 * The size of the block.
-	 *
-	 * If set to unknown, the size is unknown and must be queried by the graphics API.
+	 * The size of the structure. If an element contains an unknown array length, this will be the
+	 * size of the known elements.
 	 */
 	size : uint;
+
+	/*
+	 * The members of the structures.
+	 */
+	members : [StructMember] (required);
 }
 
 /*
- * Structure describing a vertex attribute.
+ * Structure defining a uniform.
+ */
+table Uniform
+{
+	/**
+	 * The name of the uniform. If the uniform is a structure, it is the same as the structure name.
+	 */
+	name : string (required);
+
+	/*
+	 * The uniform type, describing how the uniform is bound.
+	 */
+	uniformType : UniformType;
+
+	/*
+	 * The type of the uniform value.
+	 */
+	type : Type;
+
+	/*
+	 * If type is Struct, this is the index to the stucture the member refers to.
+	 */
+	structIndex : uint;
+
+	/*
+	 * Info about each element in the array. This will be empty if this member isn't an array.
+	 */
+	arrayElements : [ArrayInfo];
+
+	/*
+	 * The index of the descriptor set. This may be set to unknown if not set.
+	 */
+	descriptorSet : uint;
+
+	/*
+	 * The binding index. This may be set to unknown if not set.
+	 */
+	binding : uint;
+
+	/*
+	 * The index of the sampler state to use for sampler states. This will be set to unknown for
+	 * non-sampler types or when no sampler state is defined.
+	 */
+	samplerIndex : uint;
+}
+
+/*
+ * Structure describing a vertex input attribute.
  */
 table Attribute
 {
@@ -201,6 +861,42 @@ table Attribute
 	 * The type of the attribute.
 	 */
 	type : Type;
+
+	/*
+	 * Info about each element in the array. This will be empty if this member isn't an array.
+	 */
+	arrayElements : [ArrayInfo];
+
+	/*
+	 * The location of the attribute.
+	 */
+	location : uint;
+
+	/*
+	 * The first component at location to use.
+	 */
+	component : uint;
+}
+
+/*
+ * Structure defining a shader within the pipeline.
+ */
+table Shader
+{
+	/*
+	 * The index of the shader data. This is set to noShader if this stage isn't used.
+	 */
+	shader : uint;
+
+	/*
+	 * The IDs for each unfirom.
+	 *
+	 * Each unused uniform will be set to unknown, and the vector will be empty if shader is set
+	 * to noShader. This will correspond to the SPIR-V IDs for the uniforms, which can be used
+	 * to easily adjust the descriptor sets or binding points of the uniforms with minimal
+	 * processing.
+	 */
+	uniformIds : uint;
 }
 
 /*
@@ -209,77 +905,42 @@ table Attribute
 table Pipeline
 {
 	/*
-	 * The name of the pipeline.
+	 * The user-defined structs declared for the pipeline.
 	 */
-	name : string (required);
+	structs : [Struct];
 
 	/*
-	 * Index for the shader data for the vertex stage.
+	 * The sampler states to apply to samplers.
+	 */
+	samplerStates : [SamplerState];
+
+	/*
+	 * The uniforms declared for the pipeline.
+	 */
+	uniforms : [Uniform];
+
+	/*
+	 * The vertex attributes used within the pipeline.
+	 */
+	attributes : [Attribute];
+
+	/*
+	 * The shaders for the different pipeline stages. This can be indexed by the Stage enum.
+	 */
+	shaders : [Shader] (required);
+
+	/*
+	 * Index for the push constant structure.
 	 *
-	 * This will be set to 0xFFFFFFFF when no vertex stage.
+	 * The push constant struct members will become individual uniforms for non-Vulkan targets.
+	 * This is set to unknown if there are no push constants.
 	 */
-	vertex : uint;
+	pushConstantStruct : uint;
 
 	/*
-	 * Index for the shader data for the tessellation control stage.
-	 *
-	 * This will be set to 0xFFFFFFFF when no vertex stage.
+	 * The render state to apply to the pipeline.
 	 */
-	tessellationControl : uint;
-
-	/*
-	 * Index for the shader data for the tessellation evaluation stage.
-	 *
-	 * This will be set to 0xFFFFFFFF when no vertex stage.
-	 */
-	tessellationEvaluation : uint;
-
-	/*
-	 * Index for the shader data for the geometry stage.
-	 *
-	 * This will be set to 0xFFFFFFFF when no vertex stage.
-	 */
-	geometry : uint;
-
-	/*
-	 * Index for the shader data for the fragment stage.
-	 *
-	 * This will be set to 0xFFFFFFFF when no vertex stage.
-	 */
-	fragment : uint;
-
-	/*
-	 * Index for the shader data for the compute stage.
-	 *
-	 * This will be set to 0xFFFFFFFF when no vertex stage.
-	 */
-	compute : uint;
-
-	/*
-	 * The active uniforms used within the pipeline.
-	 */
-	uniforms : [Uniform] (required);
-
-	/*
-	 * The active uniform blocks used within the pipeline.
-	 */
-	uniformBlocks : [UniformBlock] (required);
-
-	/*
-	 * The active vertex attributes used within the pipeline.
-	 */
-	attributes : [Attribute] (required);
-}
-
-/*
- * The compiled data for a shader stage.
- */
-table Shader
-{
-	/*
-	 * The shader data.
-	 */
-	data : [ubyte];
+	renderState : RenderState;
 }
 
 /*
@@ -305,6 +966,11 @@ table Module
 	 * The version of the target.
 	 */
 	targetVersion : uint;
+
+	/**
+	 * Whether or not the bindings are adjustable.
+	 */
+	adjustableBindings : bool;
 
 	/*
 	 * The shader pipelines.

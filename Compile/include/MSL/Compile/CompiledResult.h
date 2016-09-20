@@ -69,7 +69,7 @@ public:
 	 *
 	 * @return The pipelines.
 	 */
-	inline const std::map<std::string, Pipeline>& getPipelines() const;
+	inline const std::map<std::string, compile::Pipeline>& getPipelines() const;
 
 	/**
 	 * @brief Gets the shaders.
@@ -110,7 +110,7 @@ private:
 	std::uint32_t m_targetVersion;
 
 	// Use a map to ensure consistent ordering.
-	std::map<std::string, Pipeline> m_pipelines;
+	std::map<std::string, compile::Pipeline> m_pipelines;
 	std::vector<std::vector<std::uint8_t>> m_shaders;
 	std::vector<std::uint8_t> m_sharedData;
 };
@@ -125,7 +125,7 @@ inline std::uint32_t CompiledResult::getTargetVersion() const
 	return m_targetVersion;
 }
 
-inline const std::map<std::string, Pipeline>& CompiledResult::getPipelines() const
+inline const std::map<std::string, compile::Pipeline>& CompiledResult::getPipelines() const
 {
 	return m_pipelines;
 }
