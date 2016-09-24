@@ -904,7 +904,7 @@ struct Uniform
 	/**
 	 * @brief Info about each element in the array.
 	 *
-	 * This will be empty if this member isn't an array.
+	 * This will be empty if this uniform isn't an array.
 	 */
 	std::vector<ArrayInfo> arrayElements;
 
@@ -948,7 +948,7 @@ struct Attribute
 	/**
 	 * @brief Info about each element in the array.
 	 *
-	 * This will be empty if this member isn't an array.
+	 * This will be empty if this attribute isn't an array.
 	 */
 	std::vector<ArrayInfo> arrayElements;
 

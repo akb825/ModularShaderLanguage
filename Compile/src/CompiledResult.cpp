@@ -166,10 +166,12 @@ bool CompiledResult::save(std::ostream& stream) const
 			}
 
 			assert(uniform.structIndex == unknown || uniform.structIndex < structs.size());
+			assert(uniform.samplerIndex == unknown || uniform.samplerIndex < samplerStates.size());
 			uniforms[j] = mslb::CreateUniform(builder, builder.CreateString(uniform.name),
 				static_cast<mslb::UniformType>(uniform.uniformType),
 				static_cast<mslb::Type>(uniform.type), uniform.structIndex,
-				arrayElements.empty() ? 0 : builder.CreateVectorOfStructs(arrayElements));
+				arrayElements.empty() ? 0 : builder.CreateVectorOfStructs(arrayElements),
+				uniform.descriptorSet, uniform.binding, uniform.samplerIndex);
 		}
 
 		attributes.resize(pipeline.second.attributes.size());
@@ -311,7 +313,7 @@ bool CompiledResult::save(std::ostream& stream) const
 		version,
 		m_target->getId(),
 		m_target->getVersion(),
-		m_target->getAdjustableBindings(),
+		m_target->getAdjustableBindings() && isSpirV,
 		builder.CreateVector(pipelines),
 		builder.CreateVector(shaderData),
 		builder.CreateVector(m_sharedData)));
