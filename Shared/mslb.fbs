@@ -642,17 +642,17 @@ table RenderState
 	/*
 	 * The rasterization states.
 	 */
-	rasterizationState : RasterizationState;
+	rasterizationState : RasterizationState (required);
 
 	/*
 	 * The multisample states.
 	 */
-	multisampleState : MultisampleState;
+	multisampleState : MultisampleState (required);
 
 	/*
 	 * The depth-stencil states.
 	 */
-	depthStencilState : DepthStencilState;
+	depthStencilState : DepthStencilState (required);
 
 	/*
 	 * The blending states.
@@ -896,7 +896,7 @@ table Shader
 	 * to easily adjust the descriptor sets or binding points of the uniforms with minimal
 	 * processing.
 	 */
-	uniformIds : uint;
+	uniformIds : [uint];
 }
 
 /*
@@ -925,11 +925,6 @@ table Pipeline
 	attributes : [Attribute];
 
 	/*
-	 * The shaders for the different pipeline stages. This can be indexed by the Stage enum.
-	 */
-	shaders : [Shader] (required);
-
-	/*
 	 * Index for the push constant structure.
 	 *
 	 * The push constant struct members will become individual uniforms for non-Vulkan targets.
@@ -941,6 +936,22 @@ table Pipeline
 	 * The render state to apply to the pipeline.
 	 */
 	renderState : RenderState;
+
+	/*
+	* The shaders for the different pipeline stages. This can be indexed by the Stage enum.
+	*/
+	shaders : [Shader] (required);
+}
+
+/*
+ * The data for a compiled shader.
+ */
+table ShaderData
+{
+	/*
+	 * The data for the shader.
+	 */
+	data : [ubyte] (required);
 }
 
 /*
@@ -980,7 +991,7 @@ table Module
 	/*
 	 * The compiled shader data.
 	 */
-	shaders : [Shader] (required);
+	shaders : [ShaderData] (required);
 
 	/*
 	 * The shared shader data for all shaders.

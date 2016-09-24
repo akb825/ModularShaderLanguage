@@ -653,11 +653,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 
 	// Set the target info on the result.
 	if (!result.m_target)
-	{
 		result.m_target = this;
-		result.m_targetId = getId();
-		result.m_targetVersion = getVersion();
-	}
 	else if (result.m_target != this)
 	{
 		output.addMessage(Output::Level::Error, fileName, 0, 0, false,

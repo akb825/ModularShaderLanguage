@@ -54,13 +54,13 @@ public:
 	 * @brief Gets the target ID.
 	 * @return The target ID.
 	 */
-	inline std::uint32_t getTargetId() const;
+	std::uint32_t getTargetId() const;
 
 	/**
 	 * @brief Gets the target version.
 	 * @return The target version.
 	 */
-	inline std::uint32_t getTargetVersion() const;
+	std::uint32_t getTargetVersion() const;
 
 	/**
 	 * @brief Gets the pipelines.
@@ -106,24 +106,12 @@ private:
 	std::size_t addShader(std::vector<std::uint8_t> shader, bool dontRemoveDuplicates);
 
 	const Target* m_target;
-	std::uint32_t m_targetId;
-	std::uint32_t m_targetVersion;
 
 	// Use a map to ensure consistent ordering.
 	std::map<std::string, compile::Pipeline> m_pipelines;
 	std::vector<std::vector<std::uint8_t>> m_shaders;
 	std::vector<std::uint8_t> m_sharedData;
 };
-
-inline std::uint32_t CompiledResult::getTargetId() const
-{
-	return m_targetId;
-}
-
-inline std::uint32_t CompiledResult::getTargetVersion() const
-{
-	return m_targetVersion;
-}
 
 inline const std::map<std::string, compile::Pipeline>& CompiledResult::getPipelines() const
 {

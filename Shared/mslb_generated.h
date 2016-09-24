@@ -23,6 +23,7 @@ struct Uniform;
 struct Attribute;
 struct Shader;
 struct Pipeline;
+struct ShaderData;
 struct Module;
 
 enum class Stage : uint8_t {
@@ -470,15 +471,25 @@ MANUALLY_ALIGNED_STRUCT(4) RasterizationState FLATBUFFERS_FINAL_CLASS {
     : depthClampEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthClampEnable))), rasterizerDiscardEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_rasterizerDiscardEnable))), polygonMode_(flatbuffers::EndianScalar(static_cast<int8_t>(_polygonMode))), cullMode_(flatbuffers::EndianScalar(static_cast<int8_t>(_cullMode))), frontFace_(flatbuffers::EndianScalar(static_cast<int8_t>(_frontFace))), depthBiasEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthBiasEnable))), __padding0(0), depthBiasConstantFactor_(flatbuffers::EndianScalar(_depthBiasConstantFactor)), depthBiasClamp_(flatbuffers::EndianScalar(_depthBiasClamp)), depthBiasSlopeFactor_(flatbuffers::EndianScalar(_depthBiasSlopeFactor)), lineWidth_(flatbuffers::EndianScalar(_lineWidth)) { (void)__padding0; }
 
   Bool depthClampEnable() const { return static_cast<Bool>(flatbuffers::EndianScalar(depthClampEnable_)); }
+  void mutate_depthClampEnable(Bool _depthClampEnable) { flatbuffers::WriteScalar(&depthClampEnable_, static_cast<int8_t>(_depthClampEnable)); }
   Bool rasterizerDiscardEnable() const { return static_cast<Bool>(flatbuffers::EndianScalar(rasterizerDiscardEnable_)); }
+  void mutate_rasterizerDiscardEnable(Bool _rasterizerDiscardEnable) { flatbuffers::WriteScalar(&rasterizerDiscardEnable_, static_cast<int8_t>(_rasterizerDiscardEnable)); }
   PolygonMode polygonMode() const { return static_cast<PolygonMode>(flatbuffers::EndianScalar(polygonMode_)); }
+  void mutate_polygonMode(PolygonMode _polygonMode) { flatbuffers::WriteScalar(&polygonMode_, static_cast<int8_t>(_polygonMode)); }
   CullMode cullMode() const { return static_cast<CullMode>(flatbuffers::EndianScalar(cullMode_)); }
+  void mutate_cullMode(CullMode _cullMode) { flatbuffers::WriteScalar(&cullMode_, static_cast<int8_t>(_cullMode)); }
   FrontFace frontFace() const { return static_cast<FrontFace>(flatbuffers::EndianScalar(frontFace_)); }
+  void mutate_frontFace(FrontFace _frontFace) { flatbuffers::WriteScalar(&frontFace_, static_cast<int8_t>(_frontFace)); }
   Bool depthBiasEnable() const { return static_cast<Bool>(flatbuffers::EndianScalar(depthBiasEnable_)); }
+  void mutate_depthBiasEnable(Bool _depthBiasEnable) { flatbuffers::WriteScalar(&depthBiasEnable_, static_cast<int8_t>(_depthBiasEnable)); }
   float depthBiasConstantFactor() const { return flatbuffers::EndianScalar(depthBiasConstantFactor_); }
+  void mutate_depthBiasConstantFactor(float _depthBiasConstantFactor) { flatbuffers::WriteScalar(&depthBiasConstantFactor_, _depthBiasConstantFactor); }
   float depthBiasClamp() const { return flatbuffers::EndianScalar(depthBiasClamp_); }
+  void mutate_depthBiasClamp(float _depthBiasClamp) { flatbuffers::WriteScalar(&depthBiasClamp_, _depthBiasClamp); }
   float depthBiasSlopeFactor() const { return flatbuffers::EndianScalar(depthBiasSlopeFactor_); }
+  void mutate_depthBiasSlopeFactor(float _depthBiasSlopeFactor) { flatbuffers::WriteScalar(&depthBiasSlopeFactor_, _depthBiasSlopeFactor); }
   float lineWidth() const { return flatbuffers::EndianScalar(lineWidth_); }
+  void mutate_lineWidth(float _lineWidth) { flatbuffers::WriteScalar(&lineWidth_, _lineWidth); }
 };
 STRUCT_END(RasterizationState, 24);
 
@@ -498,10 +509,15 @@ MANUALLY_ALIGNED_STRUCT(4) MultisampleState FLATBUFFERS_FINAL_CLASS {
     : sampleShadingEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_sampleShadingEnable))), __padding0(0), __padding1(0), minSampleShading_(flatbuffers::EndianScalar(_minSampleShading)), sampleMask_(flatbuffers::EndianScalar(_sampleMask)), alphaToCoverageEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_alphaToCoverageEnable))), alphaToOneEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_alphaToOneEnable))), __padding2(0) { (void)__padding0; (void)__padding1; (void)__padding2; }
 
   Bool sampleShadingEnable() const { return static_cast<Bool>(flatbuffers::EndianScalar(sampleShadingEnable_)); }
+  void mutate_sampleShadingEnable(Bool _sampleShadingEnable) { flatbuffers::WriteScalar(&sampleShadingEnable_, static_cast<int8_t>(_sampleShadingEnable)); }
   float minSampleShading() const { return flatbuffers::EndianScalar(minSampleShading_); }
+  void mutate_minSampleShading(float _minSampleShading) { flatbuffers::WriteScalar(&minSampleShading_, _minSampleShading); }
   uint32_t sampleMask() const { return flatbuffers::EndianScalar(sampleMask_); }
+  void mutate_sampleMask(uint32_t _sampleMask) { flatbuffers::WriteScalar(&sampleMask_, _sampleMask); }
   Bool alphaToCoverageEnable() const { return static_cast<Bool>(flatbuffers::EndianScalar(alphaToCoverageEnable_)); }
+  void mutate_alphaToCoverageEnable(Bool _alphaToCoverageEnable) { flatbuffers::WriteScalar(&alphaToCoverageEnable_, static_cast<int8_t>(_alphaToCoverageEnable)); }
   Bool alphaToOneEnable() const { return static_cast<Bool>(flatbuffers::EndianScalar(alphaToOneEnable_)); }
+  void mutate_alphaToOneEnable(Bool _alphaToOneEnable) { flatbuffers::WriteScalar(&alphaToOneEnable_, static_cast<int8_t>(_alphaToOneEnable)); }
 };
 STRUCT_END(MultisampleState, 16);
 
@@ -520,12 +536,19 @@ MANUALLY_ALIGNED_STRUCT(4) StencilOpState FLATBUFFERS_FINAL_CLASS {
     : failOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_failOp))), passOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_passOp))), depthFailOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthFailOp))), compareOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_compareOp))), compareMask_(flatbuffers::EndianScalar(_compareMask)), writeMask_(flatbuffers::EndianScalar(_writeMask)), reference_(flatbuffers::EndianScalar(_reference)) { }
 
   StencilOp failOp() const { return static_cast<StencilOp>(flatbuffers::EndianScalar(failOp_)); }
+  void mutate_failOp(StencilOp _failOp) { flatbuffers::WriteScalar(&failOp_, static_cast<int8_t>(_failOp)); }
   StencilOp passOp() const { return static_cast<StencilOp>(flatbuffers::EndianScalar(passOp_)); }
+  void mutate_passOp(StencilOp _passOp) { flatbuffers::WriteScalar(&passOp_, static_cast<int8_t>(_passOp)); }
   StencilOp depthFailOp() const { return static_cast<StencilOp>(flatbuffers::EndianScalar(depthFailOp_)); }
+  void mutate_depthFailOp(StencilOp _depthFailOp) { flatbuffers::WriteScalar(&depthFailOp_, static_cast<int8_t>(_depthFailOp)); }
   CompareOp compareOp() const { return static_cast<CompareOp>(flatbuffers::EndianScalar(compareOp_)); }
+  void mutate_compareOp(CompareOp _compareOp) { flatbuffers::WriteScalar(&compareOp_, static_cast<int8_t>(_compareOp)); }
   uint32_t compareMask() const { return flatbuffers::EndianScalar(compareMask_); }
+  void mutate_compareMask(uint32_t _compareMask) { flatbuffers::WriteScalar(&compareMask_, _compareMask); }
   uint32_t writeMask() const { return flatbuffers::EndianScalar(writeMask_); }
+  void mutate_writeMask(uint32_t _writeMask) { flatbuffers::WriteScalar(&writeMask_, _writeMask); }
   uint32_t reference() const { return flatbuffers::EndianScalar(reference_); }
+  void mutate_reference(uint32_t _reference) { flatbuffers::WriteScalar(&reference_, _reference); }
 };
 STRUCT_END(StencilOpState, 16);
 
@@ -548,14 +571,23 @@ MANUALLY_ALIGNED_STRUCT(4) DepthStencilState FLATBUFFERS_FINAL_CLASS {
     : depthTestEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthTestEnable))), depthWriteEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthWriteEnable))), depthCompareOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthCompareOp))), depthBoundsTestEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthBoundsTestEnable))), stencilTestEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_stencilTestEnable))), __padding0(0), __padding1(0), frontStencil_(_frontStencil), backStencil_(_backStencil), minDepthBounds_(flatbuffers::EndianScalar(_minDepthBounds)), maxDepthBounds_(flatbuffers::EndianScalar(_maxDepthBounds)) { (void)__padding0; (void)__padding1; }
 
   Bool depthTestEnable() const { return static_cast<Bool>(flatbuffers::EndianScalar(depthTestEnable_)); }
+  void mutate_depthTestEnable(Bool _depthTestEnable) { flatbuffers::WriteScalar(&depthTestEnable_, static_cast<int8_t>(_depthTestEnable)); }
   Bool depthWriteEnable() const { return static_cast<Bool>(flatbuffers::EndianScalar(depthWriteEnable_)); }
+  void mutate_depthWriteEnable(Bool _depthWriteEnable) { flatbuffers::WriteScalar(&depthWriteEnable_, static_cast<int8_t>(_depthWriteEnable)); }
   CompareOp depthCompareOp() const { return static_cast<CompareOp>(flatbuffers::EndianScalar(depthCompareOp_)); }
+  void mutate_depthCompareOp(CompareOp _depthCompareOp) { flatbuffers::WriteScalar(&depthCompareOp_, static_cast<int8_t>(_depthCompareOp)); }
   Bool depthBoundsTestEnable() const { return static_cast<Bool>(flatbuffers::EndianScalar(depthBoundsTestEnable_)); }
+  void mutate_depthBoundsTestEnable(Bool _depthBoundsTestEnable) { flatbuffers::WriteScalar(&depthBoundsTestEnable_, static_cast<int8_t>(_depthBoundsTestEnable)); }
   Bool stencilTestEnable() const { return static_cast<Bool>(flatbuffers::EndianScalar(stencilTestEnable_)); }
+  void mutate_stencilTestEnable(Bool _stencilTestEnable) { flatbuffers::WriteScalar(&stencilTestEnable_, static_cast<int8_t>(_stencilTestEnable)); }
   const StencilOpState &frontStencil() const { return frontStencil_; }
+  StencilOpState &mutable_frontStencil() { return frontStencil_; }
   const StencilOpState &backStencil() const { return backStencil_; }
+  StencilOpState &mutable_backStencil() { return backStencil_; }
   float minDepthBounds() const { return flatbuffers::EndianScalar(minDepthBounds_); }
+  void mutate_minDepthBounds(float _minDepthBounds) { flatbuffers::WriteScalar(&minDepthBounds_, _minDepthBounds); }
   float maxDepthBounds() const { return flatbuffers::EndianScalar(maxDepthBounds_); }
+  void mutate_maxDepthBounds(float _maxDepthBounds) { flatbuffers::WriteScalar(&maxDepthBounds_, _maxDepthBounds); }
 };
 STRUCT_END(DepthStencilState, 48);
 
@@ -575,13 +607,21 @@ MANUALLY_ALIGNED_STRUCT(1) BlendAttachmentState FLATBUFFERS_FINAL_CLASS {
     : blendEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_blendEnable))), srcColorBlendFactor_(flatbuffers::EndianScalar(static_cast<int8_t>(_srcColorBlendFactor))), dstColorBlendFactor_(flatbuffers::EndianScalar(static_cast<int8_t>(_dstColorBlendFactor))), colorBlendOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_colorBlendOp))), srcAlphaBlendFactor_(flatbuffers::EndianScalar(static_cast<int8_t>(_srcAlphaBlendFactor))), dstAlphaBlendFactor_(flatbuffers::EndianScalar(static_cast<int8_t>(_dstAlphaBlendFactor))), alphaBlendOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_alphaBlendOp))), colorWriteMask_(flatbuffers::EndianScalar(static_cast<int8_t>(_colorWriteMask))) { }
 
   Bool blendEnable() const { return static_cast<Bool>(flatbuffers::EndianScalar(blendEnable_)); }
+  void mutate_blendEnable(Bool _blendEnable) { flatbuffers::WriteScalar(&blendEnable_, static_cast<int8_t>(_blendEnable)); }
   BlendFactor srcColorBlendFactor() const { return static_cast<BlendFactor>(flatbuffers::EndianScalar(srcColorBlendFactor_)); }
+  void mutate_srcColorBlendFactor(BlendFactor _srcColorBlendFactor) { flatbuffers::WriteScalar(&srcColorBlendFactor_, static_cast<int8_t>(_srcColorBlendFactor)); }
   BlendFactor dstColorBlendFactor() const { return static_cast<BlendFactor>(flatbuffers::EndianScalar(dstColorBlendFactor_)); }
+  void mutate_dstColorBlendFactor(BlendFactor _dstColorBlendFactor) { flatbuffers::WriteScalar(&dstColorBlendFactor_, static_cast<int8_t>(_dstColorBlendFactor)); }
   BlendOp colorBlendOp() const { return static_cast<BlendOp>(flatbuffers::EndianScalar(colorBlendOp_)); }
+  void mutate_colorBlendOp(BlendOp _colorBlendOp) { flatbuffers::WriteScalar(&colorBlendOp_, static_cast<int8_t>(_colorBlendOp)); }
   BlendFactor srcAlphaBlendFactor() const { return static_cast<BlendFactor>(flatbuffers::EndianScalar(srcAlphaBlendFactor_)); }
+  void mutate_srcAlphaBlendFactor(BlendFactor _srcAlphaBlendFactor) { flatbuffers::WriteScalar(&srcAlphaBlendFactor_, static_cast<int8_t>(_srcAlphaBlendFactor)); }
   BlendFactor dstAlphaBlendFactor() const { return static_cast<BlendFactor>(flatbuffers::EndianScalar(dstAlphaBlendFactor_)); }
+  void mutate_dstAlphaBlendFactor(BlendFactor _dstAlphaBlendFactor) { flatbuffers::WriteScalar(&dstAlphaBlendFactor_, static_cast<int8_t>(_dstAlphaBlendFactor)); }
   BlendOp alphaBlendOp() const { return static_cast<BlendOp>(flatbuffers::EndianScalar(alphaBlendOp_)); }
+  void mutate_alphaBlendOp(BlendOp _alphaBlendOp) { flatbuffers::WriteScalar(&alphaBlendOp_, static_cast<int8_t>(_alphaBlendOp)); }
   ColorMask colorWriteMask() const { return static_cast<ColorMask>(flatbuffers::EndianScalar(colorWriteMask_)); }
+  void mutate_colorWriteMask(ColorMask _colorWriteMask) { flatbuffers::WriteScalar(&colorWriteMask_, static_cast<int8_t>(_colorWriteMask)); }
 };
 STRUCT_END(BlendAttachmentState, 8);
 
@@ -607,16 +647,27 @@ MANUALLY_ALIGNED_STRUCT(4) SamplerState FLATBUFFERS_FINAL_CLASS {
     : minFilter_(flatbuffers::EndianScalar(static_cast<int8_t>(_minFilter))), magFilter_(flatbuffers::EndianScalar(static_cast<int8_t>(_magFilter))), mipFilter_(flatbuffers::EndianScalar(static_cast<int8_t>(_mipFilter))), addressModeU_(flatbuffers::EndianScalar(static_cast<int8_t>(_addressModeU))), addressModeV_(flatbuffers::EndianScalar(static_cast<int8_t>(_addressModeV))), addressModeW_(flatbuffers::EndianScalar(static_cast<int8_t>(_addressModeW))), __padding0(0), mipLodBias_(flatbuffers::EndianScalar(_mipLodBias)), maxAnisotropy_(flatbuffers::EndianScalar(_maxAnisotropy)), minLod_(flatbuffers::EndianScalar(_minLod)), maxLod_(flatbuffers::EndianScalar(_maxLod)), borderColor_(flatbuffers::EndianScalar(static_cast<int8_t>(_borderColor))), __padding1(0), __padding2(0) { (void)__padding0; (void)__padding1; (void)__padding2; }
 
   Filter minFilter() const { return static_cast<Filter>(flatbuffers::EndianScalar(minFilter_)); }
+  void mutate_minFilter(Filter _minFilter) { flatbuffers::WriteScalar(&minFilter_, static_cast<int8_t>(_minFilter)); }
   Filter magFilter() const { return static_cast<Filter>(flatbuffers::EndianScalar(magFilter_)); }
+  void mutate_magFilter(Filter _magFilter) { flatbuffers::WriteScalar(&magFilter_, static_cast<int8_t>(_magFilter)); }
   MipFilter mipFilter() const { return static_cast<MipFilter>(flatbuffers::EndianScalar(mipFilter_)); }
+  void mutate_mipFilter(MipFilter _mipFilter) { flatbuffers::WriteScalar(&mipFilter_, static_cast<int8_t>(_mipFilter)); }
   AddressMode addressModeU() const { return static_cast<AddressMode>(flatbuffers::EndianScalar(addressModeU_)); }
+  void mutate_addressModeU(AddressMode _addressModeU) { flatbuffers::WriteScalar(&addressModeU_, static_cast<int8_t>(_addressModeU)); }
   AddressMode addressModeV() const { return static_cast<AddressMode>(flatbuffers::EndianScalar(addressModeV_)); }
+  void mutate_addressModeV(AddressMode _addressModeV) { flatbuffers::WriteScalar(&addressModeV_, static_cast<int8_t>(_addressModeV)); }
   AddressMode addressModeW() const { return static_cast<AddressMode>(flatbuffers::EndianScalar(addressModeW_)); }
+  void mutate_addressModeW(AddressMode _addressModeW) { flatbuffers::WriteScalar(&addressModeW_, static_cast<int8_t>(_addressModeW)); }
   float mipLodBias() const { return flatbuffers::EndianScalar(mipLodBias_); }
+  void mutate_mipLodBias(float _mipLodBias) { flatbuffers::WriteScalar(&mipLodBias_, _mipLodBias); }
   float maxAnisotropy() const { return flatbuffers::EndianScalar(maxAnisotropy_); }
+  void mutate_maxAnisotropy(float _maxAnisotropy) { flatbuffers::WriteScalar(&maxAnisotropy_, _maxAnisotropy); }
   float minLod() const { return flatbuffers::EndianScalar(minLod_); }
+  void mutate_minLod(float _minLod) { flatbuffers::WriteScalar(&minLod_, _minLod); }
   float maxLod() const { return flatbuffers::EndianScalar(maxLod_); }
+  void mutate_maxLod(float _maxLod) { flatbuffers::WriteScalar(&maxLod_, _maxLod); }
   BorderColor borderColor() const { return static_cast<BorderColor>(flatbuffers::EndianScalar(borderColor_)); }
+  void mutate_borderColor(BorderColor _borderColor) { flatbuffers::WriteScalar(&borderColor_, static_cast<int8_t>(_borderColor)); }
 };
 STRUCT_END(SamplerState, 28);
 
@@ -630,7 +681,9 @@ MANUALLY_ALIGNED_STRUCT(4) ArrayInfo FLATBUFFERS_FINAL_CLASS {
     : length_(flatbuffers::EndianScalar(_length)), stride_(flatbuffers::EndianScalar(_stride)) { }
 
   uint32_t length() const { return flatbuffers::EndianScalar(length_); }
+  void mutate_length(uint32_t _length) { flatbuffers::WriteScalar(&length_, _length); }
   uint32_t stride() const { return flatbuffers::EndianScalar(stride_); }
+  void mutate_stride(uint32_t _stride) { flatbuffers::WriteScalar(&stride_, _stride); }
 };
 STRUCT_END(ArrayInfo, 8);
 
@@ -643,10 +696,15 @@ struct BlendState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_BLENDCONSTANTS = 12
   };
   Bool logicalOpEnable() const { return static_cast<Bool>(GetField<int8_t>(VT_LOGICALOPENABLE, 0)); }
+  bool mutate_logicalOpEnable(Bool _logicalOpEnable) { return SetField(VT_LOGICALOPENABLE, static_cast<int8_t>(_logicalOpEnable)); }
   LogicOp logicalOp() const { return static_cast<LogicOp>(GetField<int8_t>(VT_LOGICALOP, 0)); }
+  bool mutate_logicalOp(LogicOp _logicalOp) { return SetField(VT_LOGICALOP, static_cast<int8_t>(_logicalOp)); }
   Bool separateAttachmentBlendingEnable() const { return static_cast<Bool>(GetField<int8_t>(VT_SEPARATEATTACHMENTBLENDINGENABLE, 0)); }
+  bool mutate_separateAttachmentBlendingEnable(Bool _separateAttachmentBlendingEnable) { return SetField(VT_SEPARATEATTACHMENTBLENDINGENABLE, static_cast<int8_t>(_separateAttachmentBlendingEnable)); }
   const flatbuffers::Vector<const BlendAttachmentState *> *blendAttachments() const { return GetPointer<const flatbuffers::Vector<const BlendAttachmentState *> *>(VT_BLENDATTACHMENTS); }
+  flatbuffers::Vector<const BlendAttachmentState *> *mutable_blendAttachments() { return GetPointer<flatbuffers::Vector<const BlendAttachmentState *> *>(VT_BLENDATTACHMENTS); }
   const flatbuffers::Vector<float> *blendConstants() const { return GetPointer<const flatbuffers::Vector<float> *>(VT_BLENDCONSTANTS); }
+  flatbuffers::Vector<float> *mutable_blendConstants() { return GetPointer<flatbuffers::Vector<float> *>(VT_BLENDCONSTANTS); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<int8_t>(verifier, VT_LOGICALOPENABLE) &&
@@ -702,15 +760,20 @@ struct RenderState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_PATCHCONTROLPOINTS = 12
   };
   const RasterizationState *rasterizationState() const { return GetStruct<const RasterizationState *>(VT_RASTERIZATIONSTATE); }
+  RasterizationState *mutable_rasterizationState() { return GetStruct<RasterizationState *>(VT_RASTERIZATIONSTATE); }
   const MultisampleState *multisampleState() const { return GetStruct<const MultisampleState *>(VT_MULTISAMPLESTATE); }
+  MultisampleState *mutable_multisampleState() { return GetStruct<MultisampleState *>(VT_MULTISAMPLESTATE); }
   const DepthStencilState *depthStencilState() const { return GetStruct<const DepthStencilState *>(VT_DEPTHSTENCILSTATE); }
+  DepthStencilState *mutable_depthStencilState() { return GetStruct<DepthStencilState *>(VT_DEPTHSTENCILSTATE); }
   const BlendState *blendState() const { return GetPointer<const BlendState *>(VT_BLENDSTATE); }
+  BlendState *mutable_blendState() { return GetPointer<BlendState *>(VT_BLENDSTATE); }
   uint32_t patchControlPoints() const { return GetField<uint32_t>(VT_PATCHCONTROLPOINTS, 0); }
+  bool mutate_patchControlPoints(uint32_t _patchControlPoints) { return SetField(VT_PATCHCONTROLPOINTS, _patchControlPoints); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<RasterizationState>(verifier, VT_RASTERIZATIONSTATE) &&
-           VerifyField<MultisampleState>(verifier, VT_MULTISAMPLESTATE) &&
-           VerifyField<DepthStencilState>(verifier, VT_DEPTHSTENCILSTATE) &&
+           VerifyFieldRequired<RasterizationState>(verifier, VT_RASTERIZATIONSTATE) &&
+           VerifyFieldRequired<MultisampleState>(verifier, VT_MULTISAMPLESTATE) &&
+           VerifyFieldRequired<DepthStencilState>(verifier, VT_DEPTHSTENCILSTATE) &&
            VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_BLENDSTATE) &&
            verifier.VerifyTable(blendState()) &&
            VerifyField<uint32_t>(verifier, VT_PATCHCONTROLPOINTS) &&
@@ -730,6 +793,9 @@ struct RenderStateBuilder {
   RenderStateBuilder &operator=(const RenderStateBuilder &);
   flatbuffers::Offset<RenderState> Finish() {
     auto o = flatbuffers::Offset<RenderState>(fbb_.EndTable(start_, 5));
+    fbb_.Required(o, RenderState::VT_RASTERIZATIONSTATE);  // rasterizationState
+    fbb_.Required(o, RenderState::VT_MULTISAMPLESTATE);  // multisampleState
+    fbb_.Required(o, RenderState::VT_DEPTHSTENCILSTATE);  // depthStencilState
     fbb_.Required(o, RenderState::VT_BLENDSTATE);  // blendState
     return o;
   }
@@ -760,11 +826,17 @@ struct StructMember FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_ARRAYELEMENTS = 14
   };
   const flatbuffers::String *name() const { return GetPointer<const flatbuffers::String *>(VT_NAME); }
+  flatbuffers::String *mutable_name() { return GetPointer<flatbuffers::String *>(VT_NAME); }
   uint32_t offset() const { return GetField<uint32_t>(VT_OFFSET, 0); }
+  bool mutate_offset(uint32_t _offset) { return SetField(VT_OFFSET, _offset); }
   uint32_t size() const { return GetField<uint32_t>(VT_SIZE, 0); }
+  bool mutate_size(uint32_t _size) { return SetField(VT_SIZE, _size); }
   Type type() const { return static_cast<Type>(GetField<uint8_t>(VT_TYPE, 0)); }
+  bool mutate_type(Type _type) { return SetField(VT_TYPE, static_cast<uint8_t>(_type)); }
   uint32_t structIndex() const { return GetField<uint32_t>(VT_STRUCTINDEX, 0); }
+  bool mutate_structIndex(uint32_t _structIndex) { return SetField(VT_STRUCTINDEX, _structIndex); }
   const flatbuffers::Vector<const ArrayInfo *> *arrayElements() const { return GetPointer<const flatbuffers::Vector<const ArrayInfo *> *>(VT_ARRAYELEMENTS); }
+  flatbuffers::Vector<const ArrayInfo *> *mutable_arrayElements() { return GetPointer<flatbuffers::Vector<const ArrayInfo *> *>(VT_ARRAYELEMENTS); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
@@ -821,8 +893,11 @@ struct Struct FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_MEMBERS = 8
   };
   const flatbuffers::String *name() const { return GetPointer<const flatbuffers::String *>(VT_NAME); }
+  flatbuffers::String *mutable_name() { return GetPointer<flatbuffers::String *>(VT_NAME); }
   uint32_t size() const { return GetField<uint32_t>(VT_SIZE, 0); }
+  bool mutate_size(uint32_t _size) { return SetField(VT_SIZE, _size); }
   const flatbuffers::Vector<flatbuffers::Offset<StructMember>> *members() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<StructMember>> *>(VT_MEMBERS); }
+  flatbuffers::Vector<flatbuffers::Offset<StructMember>> *mutable_members() { return GetPointer<flatbuffers::Vector<flatbuffers::Offset<StructMember>> *>(VT_MEMBERS); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
@@ -874,13 +949,21 @@ struct Uniform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_SAMPLERINDEX = 18
   };
   const flatbuffers::String *name() const { return GetPointer<const flatbuffers::String *>(VT_NAME); }
+  flatbuffers::String *mutable_name() { return GetPointer<flatbuffers::String *>(VT_NAME); }
   UniformType uniformType() const { return static_cast<UniformType>(GetField<uint8_t>(VT_UNIFORMTYPE, 0)); }
+  bool mutate_uniformType(UniformType _uniformType) { return SetField(VT_UNIFORMTYPE, static_cast<uint8_t>(_uniformType)); }
   Type type() const { return static_cast<Type>(GetField<uint8_t>(VT_TYPE, 0)); }
+  bool mutate_type(Type _type) { return SetField(VT_TYPE, static_cast<uint8_t>(_type)); }
   uint32_t structIndex() const { return GetField<uint32_t>(VT_STRUCTINDEX, 0); }
+  bool mutate_structIndex(uint32_t _structIndex) { return SetField(VT_STRUCTINDEX, _structIndex); }
   const flatbuffers::Vector<const ArrayInfo *> *arrayElements() const { return GetPointer<const flatbuffers::Vector<const ArrayInfo *> *>(VT_ARRAYELEMENTS); }
+  flatbuffers::Vector<const ArrayInfo *> *mutable_arrayElements() { return GetPointer<flatbuffers::Vector<const ArrayInfo *> *>(VT_ARRAYELEMENTS); }
   uint32_t descriptorSet() const { return GetField<uint32_t>(VT_DESCRIPTORSET, 0); }
+  bool mutate_descriptorSet(uint32_t _descriptorSet) { return SetField(VT_DESCRIPTORSET, _descriptorSet); }
   uint32_t binding() const { return GetField<uint32_t>(VT_BINDING, 0); }
+  bool mutate_binding(uint32_t _binding) { return SetField(VT_BINDING, _binding); }
   uint32_t samplerIndex() const { return GetField<uint32_t>(VT_SAMPLERINDEX, 0); }
+  bool mutate_samplerIndex(uint32_t _samplerIndex) { return SetField(VT_SAMPLERINDEX, _samplerIndex); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
@@ -947,10 +1030,15 @@ struct Attribute FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_COMPONENT = 12
   };
   const flatbuffers::String *name() const { return GetPointer<const flatbuffers::String *>(VT_NAME); }
+  flatbuffers::String *mutable_name() { return GetPointer<flatbuffers::String *>(VT_NAME); }
   Type type() const { return static_cast<Type>(GetField<uint8_t>(VT_TYPE, 0)); }
+  bool mutate_type(Type _type) { return SetField(VT_TYPE, static_cast<uint8_t>(_type)); }
   const flatbuffers::Vector<const ArrayInfo *> *arrayElements() const { return GetPointer<const flatbuffers::Vector<const ArrayInfo *> *>(VT_ARRAYELEMENTS); }
+  flatbuffers::Vector<const ArrayInfo *> *mutable_arrayElements() { return GetPointer<flatbuffers::Vector<const ArrayInfo *> *>(VT_ARRAYELEMENTS); }
   uint32_t location() const { return GetField<uint32_t>(VT_LOCATION, 0); }
+  bool mutate_location(uint32_t _location) { return SetField(VT_LOCATION, _location); }
   uint32_t component() const { return GetField<uint32_t>(VT_COMPONENT, 0); }
+  bool mutate_component(uint32_t _component) { return SetField(VT_COMPONENT, _component); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
@@ -1002,11 +1090,14 @@ struct Shader FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_UNIFORMIDS = 6
   };
   uint32_t shader() const { return GetField<uint32_t>(VT_SHADER, 0); }
-  uint32_t uniformIds() const { return GetField<uint32_t>(VT_UNIFORMIDS, 0); }
+  bool mutate_shader(uint32_t _shader) { return SetField(VT_SHADER, _shader); }
+  const flatbuffers::Vector<uint32_t> *uniformIds() const { return GetPointer<const flatbuffers::Vector<uint32_t> *>(VT_UNIFORMIDS); }
+  flatbuffers::Vector<uint32_t> *mutable_uniformIds() { return GetPointer<flatbuffers::Vector<uint32_t> *>(VT_UNIFORMIDS); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_SHADER) &&
-           VerifyField<uint32_t>(verifier, VT_UNIFORMIDS) &&
+           VerifyField<flatbuffers::uoffset_t>(verifier, VT_UNIFORMIDS) &&
+           verifier.Verify(uniformIds()) &&
            verifier.EndTable();
   }
 };
@@ -1015,7 +1106,7 @@ struct ShaderBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
   void add_shader(uint32_t shader) { fbb_.AddElement<uint32_t>(Shader::VT_SHADER, shader, 0); }
-  void add_uniformIds(uint32_t uniformIds) { fbb_.AddElement<uint32_t>(Shader::VT_UNIFORMIDS, uniformIds, 0); }
+  void add_uniformIds(flatbuffers::Offset<flatbuffers::Vector<uint32_t>> uniformIds) { fbb_.AddOffset(Shader::VT_UNIFORMIDS, uniformIds); }
   ShaderBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   ShaderBuilder &operator=(const ShaderBuilder &);
   flatbuffers::Offset<Shader> Finish() {
@@ -1026,7 +1117,7 @@ struct ShaderBuilder {
 
 inline flatbuffers::Offset<Shader> CreateShader(flatbuffers::FlatBufferBuilder &_fbb,
    uint32_t shader = 0,
-   uint32_t uniformIds = 0) {
+   flatbuffers::Offset<flatbuffers::Vector<uint32_t>> uniformIds = 0) {
   ShaderBuilder builder_(_fbb);
   builder_.add_uniformIds(uniformIds);
   builder_.add_shader(shader);
@@ -1039,17 +1130,24 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_SAMPLERSTATES = 6,
     VT_UNIFORMS = 8,
     VT_ATTRIBUTES = 10,
-    VT_SHADERS = 12,
-    VT_PUSHCONSTANTSTRUCT = 14,
-    VT_RENDERSTATE = 16
+    VT_PUSHCONSTANTSTRUCT = 12,
+    VT_RENDERSTATE = 14,
+    VT_SHADERS = 16
   };
   const flatbuffers::Vector<flatbuffers::Offset<Struct>> *structs() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Struct>> *>(VT_STRUCTS); }
+  flatbuffers::Vector<flatbuffers::Offset<Struct>> *mutable_structs() { return GetPointer<flatbuffers::Vector<flatbuffers::Offset<Struct>> *>(VT_STRUCTS); }
   const flatbuffers::Vector<const SamplerState *> *samplerStates() const { return GetPointer<const flatbuffers::Vector<const SamplerState *> *>(VT_SAMPLERSTATES); }
+  flatbuffers::Vector<const SamplerState *> *mutable_samplerStates() { return GetPointer<flatbuffers::Vector<const SamplerState *> *>(VT_SAMPLERSTATES); }
   const flatbuffers::Vector<flatbuffers::Offset<Uniform>> *uniforms() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Uniform>> *>(VT_UNIFORMS); }
+  flatbuffers::Vector<flatbuffers::Offset<Uniform>> *mutable_uniforms() { return GetPointer<flatbuffers::Vector<flatbuffers::Offset<Uniform>> *>(VT_UNIFORMS); }
   const flatbuffers::Vector<flatbuffers::Offset<Attribute>> *attributes() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Attribute>> *>(VT_ATTRIBUTES); }
-  const flatbuffers::Vector<flatbuffers::Offset<Shader>> *shaders() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Shader>> *>(VT_SHADERS); }
+  flatbuffers::Vector<flatbuffers::Offset<Attribute>> *mutable_attributes() { return GetPointer<flatbuffers::Vector<flatbuffers::Offset<Attribute>> *>(VT_ATTRIBUTES); }
   uint32_t pushConstantStruct() const { return GetField<uint32_t>(VT_PUSHCONSTANTSTRUCT, 0); }
+  bool mutate_pushConstantStruct(uint32_t _pushConstantStruct) { return SetField(VT_PUSHCONSTANTSTRUCT, _pushConstantStruct); }
   const RenderState *renderState() const { return GetPointer<const RenderState *>(VT_RENDERSTATE); }
+  RenderState *mutable_renderState() { return GetPointer<RenderState *>(VT_RENDERSTATE); }
+  const flatbuffers::Vector<flatbuffers::Offset<Shader>> *shaders() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Shader>> *>(VT_SHADERS); }
+  flatbuffers::Vector<flatbuffers::Offset<Shader>> *mutable_shaders() { return GetPointer<flatbuffers::Vector<flatbuffers::Offset<Shader>> *>(VT_SHADERS); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, VT_STRUCTS) &&
@@ -1063,12 +1161,12 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<flatbuffers::uoffset_t>(verifier, VT_ATTRIBUTES) &&
            verifier.Verify(attributes()) &&
            verifier.VerifyVectorOfTables(attributes()) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_SHADERS) &&
-           verifier.Verify(shaders()) &&
-           verifier.VerifyVectorOfTables(shaders()) &&
            VerifyField<uint32_t>(verifier, VT_PUSHCONSTANTSTRUCT) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, VT_RENDERSTATE) &&
            verifier.VerifyTable(renderState()) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_SHADERS) &&
+           verifier.Verify(shaders()) &&
+           verifier.VerifyVectorOfTables(shaders()) &&
            verifier.EndTable();
   }
 };
@@ -1080,9 +1178,9 @@ struct PipelineBuilder {
   void add_samplerStates(flatbuffers::Offset<flatbuffers::Vector<const SamplerState *>> samplerStates) { fbb_.AddOffset(Pipeline::VT_SAMPLERSTATES, samplerStates); }
   void add_uniforms(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Uniform>>> uniforms) { fbb_.AddOffset(Pipeline::VT_UNIFORMS, uniforms); }
   void add_attributes(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Attribute>>> attributes) { fbb_.AddOffset(Pipeline::VT_ATTRIBUTES, attributes); }
-  void add_shaders(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Shader>>> shaders) { fbb_.AddOffset(Pipeline::VT_SHADERS, shaders); }
   void add_pushConstantStruct(uint32_t pushConstantStruct) { fbb_.AddElement<uint32_t>(Pipeline::VT_PUSHCONSTANTSTRUCT, pushConstantStruct, 0); }
   void add_renderState(flatbuffers::Offset<RenderState> renderState) { fbb_.AddOffset(Pipeline::VT_RENDERSTATE, renderState); }
+  void add_shaders(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Shader>>> shaders) { fbb_.AddOffset(Pipeline::VT_SHADERS, shaders); }
   PipelineBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   PipelineBuilder &operator=(const PipelineBuilder &);
   flatbuffers::Offset<Pipeline> Finish() {
@@ -1097,17 +1195,51 @@ inline flatbuffers::Offset<Pipeline> CreatePipeline(flatbuffers::FlatBufferBuild
    flatbuffers::Offset<flatbuffers::Vector<const SamplerState *>> samplerStates = 0,
    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Uniform>>> uniforms = 0,
    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Attribute>>> attributes = 0,
-   flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Shader>>> shaders = 0,
    uint32_t pushConstantStruct = 0,
-   flatbuffers::Offset<RenderState> renderState = 0) {
+   flatbuffers::Offset<RenderState> renderState = 0,
+   flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Shader>>> shaders = 0) {
   PipelineBuilder builder_(_fbb);
+  builder_.add_shaders(shaders);
   builder_.add_renderState(renderState);
   builder_.add_pushConstantStruct(pushConstantStruct);
-  builder_.add_shaders(shaders);
   builder_.add_attributes(attributes);
   builder_.add_uniforms(uniforms);
   builder_.add_samplerStates(samplerStates);
   builder_.add_structs(structs);
+  return builder_.Finish();
+}
+
+struct ShaderData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_DATA = 4
+  };
+  const flatbuffers::Vector<uint8_t> *data() const { return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_DATA); }
+  flatbuffers::Vector<uint8_t> *mutable_data() { return GetPointer<flatbuffers::Vector<uint8_t> *>(VT_DATA); }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_DATA) &&
+           verifier.Verify(data()) &&
+           verifier.EndTable();
+  }
+};
+
+struct ShaderDataBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_data(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> data) { fbb_.AddOffset(ShaderData::VT_DATA, data); }
+  ShaderDataBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
+  ShaderDataBuilder &operator=(const ShaderDataBuilder &);
+  flatbuffers::Offset<ShaderData> Finish() {
+    auto o = flatbuffers::Offset<ShaderData>(fbb_.EndTable(start_, 1));
+    fbb_.Required(o, ShaderData::VT_DATA);  // data
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<ShaderData> CreateShaderData(flatbuffers::FlatBufferBuilder &_fbb,
+   flatbuffers::Offset<flatbuffers::Vector<uint8_t>> data = 0) {
+  ShaderDataBuilder builder_(_fbb);
+  builder_.add_data(data);
   return builder_.Finish();
 }
 
@@ -1122,12 +1254,19 @@ struct Module FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_SHAREDDATA = 16
   };
   uint32_t version() const { return GetField<uint32_t>(VT_VERSION, 0); }
+  bool mutate_version(uint32_t _version) { return SetField(VT_VERSION, _version); }
   uint32_t targetId() const { return GetField<uint32_t>(VT_TARGETID, 0); }
+  bool mutate_targetId(uint32_t _targetId) { return SetField(VT_TARGETID, _targetId); }
   uint32_t targetVersion() const { return GetField<uint32_t>(VT_TARGETVERSION, 0); }
+  bool mutate_targetVersion(uint32_t _targetVersion) { return SetField(VT_TARGETVERSION, _targetVersion); }
   bool adjustableBindings() const { return GetField<uint8_t>(VT_ADJUSTABLEBINDINGS, 0) != 0; }
+  bool mutate_adjustableBindings(bool _adjustableBindings) { return SetField(VT_ADJUSTABLEBINDINGS, static_cast<uint8_t>(_adjustableBindings)); }
   const flatbuffers::Vector<flatbuffers::Offset<Pipeline>> *pipelines() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Pipeline>> *>(VT_PIPELINES); }
-  const flatbuffers::Vector<flatbuffers::Offset<Shader>> *shaders() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Shader>> *>(VT_SHADERS); }
+  flatbuffers::Vector<flatbuffers::Offset<Pipeline>> *mutable_pipelines() { return GetPointer<flatbuffers::Vector<flatbuffers::Offset<Pipeline>> *>(VT_PIPELINES); }
+  const flatbuffers::Vector<flatbuffers::Offset<ShaderData>> *shaders() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<ShaderData>> *>(VT_SHADERS); }
+  flatbuffers::Vector<flatbuffers::Offset<ShaderData>> *mutable_shaders() { return GetPointer<flatbuffers::Vector<flatbuffers::Offset<ShaderData>> *>(VT_SHADERS); }
   const flatbuffers::Vector<uint8_t> *sharedData() const { return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_SHAREDDATA); }
+  flatbuffers::Vector<uint8_t> *mutable_sharedData() { return GetPointer<flatbuffers::Vector<uint8_t> *>(VT_SHAREDDATA); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_VERSION) &&
@@ -1154,7 +1293,7 @@ struct ModuleBuilder {
   void add_targetVersion(uint32_t targetVersion) { fbb_.AddElement<uint32_t>(Module::VT_TARGETVERSION, targetVersion, 0); }
   void add_adjustableBindings(bool adjustableBindings) { fbb_.AddElement<uint8_t>(Module::VT_ADJUSTABLEBINDINGS, static_cast<uint8_t>(adjustableBindings), 0); }
   void add_pipelines(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Pipeline>>> pipelines) { fbb_.AddOffset(Module::VT_PIPELINES, pipelines); }
-  void add_shaders(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Shader>>> shaders) { fbb_.AddOffset(Module::VT_SHADERS, shaders); }
+  void add_shaders(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<ShaderData>>> shaders) { fbb_.AddOffset(Module::VT_SHADERS, shaders); }
   void add_sharedData(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> sharedData) { fbb_.AddOffset(Module::VT_SHAREDDATA, sharedData); }
   ModuleBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   ModuleBuilder &operator=(const ModuleBuilder &);
@@ -1173,7 +1312,7 @@ inline flatbuffers::Offset<Module> CreateModule(flatbuffers::FlatBufferBuilder &
    uint32_t targetVersion = 0,
    bool adjustableBindings = false,
    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Pipeline>>> pipelines = 0,
-   flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Shader>>> shaders = 0,
+   flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<ShaderData>>> shaders = 0,
    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> sharedData = 0) {
   ModuleBuilder builder_(_fbb);
   builder_.add_sharedData(sharedData);
@@ -1187,6 +1326,8 @@ inline flatbuffers::Offset<Module> CreateModule(flatbuffers::FlatBufferBuilder &
 }
 
 inline const mslb::Module *GetModule(const void *buf) { return flatbuffers::GetRoot<mslb::Module>(buf); }
+
+inline Module *GetMutableModule(void *buf) { return flatbuffers::GetMutableRoot<Module>(buf); }
 
 inline bool VerifyModuleBuffer(flatbuffers::Verifier &verifier) { return verifier.VerifyBuffer<mslb::Module>(); }
 

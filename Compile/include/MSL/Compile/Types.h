@@ -1012,13 +1012,6 @@ struct Pipeline
 	std::vector<Attribute> attributes;
 
 	/**
-	 * @brief The shaders for the different pipeline stages.
-	 *
-	 * This can be indexed by the Stage enum.
-	 */
-	std::array<Shader, stageCount> shaders;
-
-	/**
 	 * @brief Index for the push constant structure.
 	 *
 	 * The push constant struct members will become individual uniforms for non-Vulkan targets.
@@ -1030,6 +1023,13 @@ struct Pipeline
 	 * @brief The render state to apply to the pipeline.
 	 */
 	RenderState renderState;
+
+	/**
+	 * @brief The shaders for the different pipeline stages.
+	 *
+	 * This can be indexed by the Stage enum.
+	 */
+	std::array<Shader, stageCount> shaders;
 
 private:
 	friend class msl::Target;
