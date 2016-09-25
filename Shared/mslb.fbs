@@ -296,12 +296,12 @@ enum BlendOp : byte
  */
 enum ColorMask : byte
 {
-	ColorMaskUnset =  -1, // No value set.
-	ColorMaskNone =    0, // Write no color channels.
-	ColorMaskRed =   0x1, // Write the red channel.
-	ColorMaskGreen = 0x2, // Write the green channel.
-	ColorMaskBlue =  0x4, // Write the blue channel.
-	ColorMaskAlpha = 0x8  // Write the alpha channel.
+	Unset =  -1, // No value set.
+	None =    0, // Write no color channels.
+	Red =   0x1, // Write the red channel.
+	Green = 0x2, // Write the green channel.
+	Blue =  0x4, // Write the blue channel.
+	Alpha = 0x8  // Write the alpha channel.
 }
 
 /*
@@ -905,24 +905,29 @@ table Shader
 table Pipeline
 {
 	/*
+	 * The name of the pipeline.
+	 */
+	name : string (required);
+
+	/*
 	 * The user-defined structs declared for the pipeline.
 	 */
-	structs : [Struct];
+	structs : [Struct] (required);
 
 	/*
 	 * The sampler states to apply to samplers.
 	 */
-	samplerStates : [SamplerState];
+	samplerStates : [SamplerState] (required);
 
 	/*
 	 * The uniforms declared for the pipeline.
 	 */
-	uniforms : [Uniform];
+	uniforms : [Uniform] (required);
 
 	/*
 	 * The vertex attributes used within the pipeline.
 	 */
-	attributes : [Attribute];
+	attributes : [Attribute] (required);
 
 	/*
 	 * Index for the push constant structure.

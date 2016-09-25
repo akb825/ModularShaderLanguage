@@ -44,7 +44,7 @@ static_assert(static_cast<int>(mslb::CompareOp::MAX) == static_cast<int>(Compare
 	"CompareOp enum mismatch between flatbuffer and C++.");
 static_assert(static_cast<int>(mslb::BlendFactor::MAX) ==
 	static_cast<int>(BlendFactor::OneMinusSrc1Alpha),
-	"CullMode enum mismatch between flatbuffer and C++.");
+	"BlendFactor enum mismatch between flatbuffer and C++.");
 static_assert(static_cast<int>(mslb::BlendOp::MAX) == static_cast<int>(BlendOp::Max),
 	"BlendOp enum mismatch between flatbuffer and C++.");
 static_assert(static_cast<int>(mslb::LogicOp::MAX) == static_cast<int>(LogicOp::Set),
@@ -269,15 +269,18 @@ bool CompiledResult::save(std::ostream& stream) const
 		for (unsigned int j = 0; j < maxAttachments; ++j)
 		{
 			const Shader& shader = pipeline.second.shaders[j];
-			assert(shader.shader == unknown || shader.shader < m_shaders.size());
-			shaders[j] = mslb::CreateShader(builder, static_cast<std::uint32_t>(shader.shader),
-				shader.shader == unknown || !isSpirV ?
-				0 : builder.CreateVector(shader.uniformIds));
+			if (shader.shader != unknown)
+			{
+				assert(shader.shader < m_shaders.size());
+				shaders[j] = mslb::CreateShader(builder, static_cast<std::uint32_t>(shader.shader),
+					isSpirV ? builder.CreateVector(shader.uniformIds) : 0);
+			}
 		}
 
 		assert(pipeline.second.pushConstantStruct == unknown ||
 			pipeline.second.pushConstantStruct < structs.size());
 		pipelines[i] = mslb::CreatePipeline(builder,
+			builder.CreateString(pipeline.first),
 			builder.CreateVector(structs),
 			builder.CreateVectorOfStructs(samplerStates),
 			builder.CreateVector(uniforms),

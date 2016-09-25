@@ -22,15 +22,119 @@
 #include <string.h>
 
 static_assert(static_cast<unsigned int>(mslb::Type::MAX) == mslType_Count - 1,
-	"Type enum mismatch between flatbuffer and mslType.");
+	"Type enum mismatch between flatbuffer and C.");
+static_assert(static_cast<int>(mslb::UniformType::MAX) ==
+	static_cast<int>(mslUniformType_SubpassInput),
+	"UniformType enum mismatch between flatbuffer and C.");
+static_assert(static_cast<int>(mslb::Bool::MAX) == static_cast<int>(mslBool_True),
+	"Bool enum mismatch between flatbuffer and C.");
+static_assert(static_cast<int>(mslb::PolygonMode::MAX) == static_cast<int>(mslPolygonMode_Point),
+	"PolygonMode enum mismatch between flatbuffer and C.");
+static_assert(static_cast<int>(mslb::CullMode::MAX) == static_cast<int>(mslCullMode_FrontAndBack),
+	"CullMode enum mismatch between flatbuffer and C.");
+static_assert(static_cast<int>(mslb::FrontFace::MAX) == static_cast<int>(mslFrontFace_Clockwise),
+	"FrontFace enum mismatch between flatbuffer and C.");
+static_assert(static_cast<int>(mslb::StencilOp::MAX) ==
+	static_cast<int>(mslStencilOp_DecrementAndWrap),
+	"StencilOp enum mismatch between flatbuffer and C.");
+static_assert(static_cast<int>(mslb::CompareOp::MAX) == static_cast<int>(mslCompareOp_Always),
+	"CompareOp enum mismatch between flatbuffer and C.");
+static_assert(static_cast<int>(mslb::BlendFactor::MAX) ==
+	static_cast<int>(mslBlendFactor_OneMinusSrc1Alpha),
+	"BlendFactor enum mismatch between flatbuffer and C.");
+static_assert(static_cast<int>(mslb::BlendOp::MAX) == static_cast<int>(mslBlendOp_Max),
+	"BlendOp enum mismatch between flatbuffer and C.");
+static_assert(static_cast<int>(mslb::LogicOp::MAX) == static_cast<int>(mslLogicOp_Set),
+	"LogicOp enum mismatch between flatbuffer and C.");
+static_assert(static_cast<int>(mslb::Filter::MAX) == static_cast<int>(mslFilter_Linear),
+	"Filter enum mismatch between flatbuffer and C.");
+static_assert(static_cast<int>(mslb::MipFilter::MAX) == static_cast<int>(mslMipFilter_Anisotropic),
+	"MipFilter enum mismatch between flatbuffer and C.");
+static_assert(static_cast<int>(mslb::AddressMode::MAX) == static_cast<int>(mslAddressMode_MirrorOnce),
+	"AddressMode enum mismatch between flatbuffer and C.");
+static_assert(static_cast<int>(mslb::BorderColor::MAX) ==
+	static_cast<int>(mslBorderColor_OpaqueIntOne),
+	"BorderColor enum mismatch between flatbuffer and C.");
 
-extern "C"
+static bool enumInRange(mslb::Type value)
 {
+	return value >= mslb::Type::MIN && value <= mslb::Type::MAX;
+}
+
+static bool enumInRange(mslb::UniformType value)
+{
+	return value >= mslb::UniformType::MIN && value <= mslb::UniformType::MAX;
+}
+
+static bool enumInRange(mslb::Bool value)
+{
+	return value >= mslb::Bool::MIN && value <= mslb::Bool::MAX;
+}
+
+static bool enumInRange(mslb::PolygonMode value)
+{
+	return value >= mslb::PolygonMode::MIN && value <= mslb::PolygonMode::MAX;
+}
+
+static bool enumInRange(mslb::CullMode value)
+{
+	return value >= mslb::CullMode::MIN && value <= mslb::CullMode::MAX;
+}
+
+static bool enumInRange(mslb::FrontFace value)
+{
+	return value >= mslb::FrontFace::MIN && value <= mslb::FrontFace::MAX;
+}
+
+static bool enumInRange(mslb::StencilOp value)
+{
+	return value >= mslb::StencilOp::MIN && value <= mslb::StencilOp::MAX;
+}
+
+static bool enumInRange(mslb::CompareOp value)
+{
+	return value >= mslb::CompareOp::MIN && value <= mslb::CompareOp::MAX;
+}
+
+static bool enumInRange(mslb::BlendFactor value)
+{
+	return value >= mslb::BlendFactor::MIN && value <= mslb::BlendFactor::MAX;
+}
+
+static bool enumInRange(mslb::BlendOp value)
+{
+	return value >= mslb::BlendOp::MIN && value <= mslb::BlendOp::MAX;
+}
+
+static bool enumInRange(mslb::LogicOp value)
+{
+	return value >= mslb::LogicOp::MIN && value <= mslb::LogicOp::MAX;
+}
+
+static bool enumInRange(mslb::Filter value)
+{
+	return value >= mslb::Filter::MIN && value <= mslb::Filter::MAX;
+}
+
+static bool enumInRange(mslb::MipFilter value)
+{
+	return value >= mslb::MipFilter::MIN && value <= mslb::MipFilter::MAX;
+}
+
+static bool enumInRange(mslb::AddressMode value)
+{
+	return value >= mslb::AddressMode::MIN && value <= mslb::AddressMode::MAX;
+}
+
+static bool enumInRange(mslb::BorderColor value)
+{
+	return value >= mslb::BorderColor::MIN && value <= mslb::BorderColor::MAX;
+}
 
 struct mslModule
 {
 	mslAllocator allocator;
-	const mslb::Module* module;
+	mslb::Module* module;
 	uint8_t data[];
 };
 
@@ -89,6 +193,289 @@ static size_t readFile(void* userData, void* buffer, size_t size)
 	return fread(buffer, sizeof(uint8_t), size, file);
 }
 
+static bool isStencilOpStateValid(const mslb::StencilOpState& state)
+{
+	if (!enumInRange(state.failOp()))
+		return false;
+	if (!enumInRange(state.passOp()))
+		return false;
+	if (!enumInRange(state.depthFailOp()))
+		return false;
+	if (!enumInRange(state.compareOp()))
+		return false;
+	return true;
+}
+
+static bool isValid(const void* data, size_t size)
+{
+	flatbuffers::Verifier verifier(reinterpret_cast<const uint8_t*>(data), size);
+	if (!mslb::VerifyModuleBuffer(verifier))
+		return false;
+
+	const mslb::Module* module = mslb::GetModule(data);
+	if (module->version() > MSL_MODULE_VERSION)
+		return false;
+
+	bool isSpirV = module->targetId() != MSL_CREATE_ID('S', 'P', 'R', 'V');
+	if (module->adjustableBindings() && isSpirV)
+		return false;
+
+	auto shaderData = module->shaders();
+	if (!shaderData)
+		return false;
+	for (uint32_t i = 0; i < shaderData->size(); ++i)
+	{
+		if (!(*shaderData)[i])
+			return false;
+	}
+
+	auto pipelines = module->pipelines();
+	if (!pipelines)
+		return false;
+	for (uint32_t i = 0; i < pipelines->size(); ++i)
+	{
+		const mslb::Pipeline* pipeline = (*pipelines)[i];
+		if (!pipeline)
+			return false;
+
+		if (!pipeline->name())
+			return false;
+
+		// Verify structs
+		auto structs = pipeline->structs();
+		if (!structs)
+			return false;
+		for (uint32_t j = 0; j < structs->size(); ++j)
+		{
+			const mslb::Struct* thisStruct = (*structs)[j];
+			if (!thisStruct->name())
+				return false;
+			auto members = thisStruct->members();
+			if (!members)
+				return false;
+			for (uint32_t k = 0; k < members->size(); ++k)
+			{
+				const mslb::StructMember* member = (*members)[j];
+				if (!member)
+					return false;
+				if (!member->name())
+					return false;
+				if (!enumInRange(member->type()))
+					return false;
+				if (member->type() == mslb::Type::Struct &&
+					member->structIndex() >= structs->size())
+				{
+					return false;
+				}
+
+				auto arrayElements = member->arrayElements();
+				if (arrayElements)
+				{
+					for (uint32_t l = 0; l < arrayElements->size(); ++l)
+					{
+						if (!(*arrayElements)[l])
+							return false;
+					}
+				}
+			}
+		}
+
+		// Verify samplers
+		auto samplerStates = pipeline->samplerStates();
+		if (!samplerStates)
+			return false;
+		for (uint32_t j = 0; j < samplerStates->size(); ++j)
+		{
+			const mslb::SamplerState* sampler = (*samplerStates)[j];
+			if (!sampler)
+				return false;
+			if (!enumInRange(sampler->minFilter()))
+				return false;
+			if (!enumInRange(sampler->magFilter()))
+				return false;
+			if (!enumInRange(sampler->mipFilter()))
+				return false;
+			if (!enumInRange(sampler->addressModeU()))
+				return false;
+			if (!enumInRange(sampler->addressModeV()))
+				return false;
+			if (!enumInRange(sampler->addressModeW()))
+				return false;
+			if (!enumInRange(sampler->borderColor()))
+				return false;
+		}
+
+		// Verify uniforms
+		auto uniforms = pipeline->uniforms();
+		if (!uniforms)
+			return false;
+		for (uint32_t j = 0; j < uniforms->size(); ++j)
+		{
+			const mslb::Uniform* uniform = (*uniforms)[j];
+			if (!uniform)
+				return false;
+			if (!uniform->name())
+				return false;
+			if (!enumInRange(uniform->uniformType()))
+				return false;
+			if (!enumInRange(uniform->type()))
+				return false;
+			if (uniform->type() == mslb::Type::Struct && uniform->structIndex() >= structs->size())
+				return false;
+
+			auto arrayElements = uniform->arrayElements();
+			if (arrayElements)
+			{
+				for (uint32_t l = 0; l < arrayElements->size(); ++l)
+				{
+					if (!(*arrayElements)[l])
+						return false;
+				}
+			}
+		}
+
+		// Verify attributes
+		auto attributes = pipeline->attributes();
+		if (!attributes)
+			return false;
+		for (uint32_t j = 0; j < attributes->size(); ++j)
+		{
+			const mslb::Attribute* attribute = (*attributes)[j];
+			if (!attribute)
+				return false;
+			if (!attribute->name())
+				return false;
+			if (!enumInRange(attribute->type()) || attribute->type() == mslb::Type::Struct)
+				return false;
+
+			auto arrayElements = attribute->arrayElements();
+			if (arrayElements)
+			{
+				for (uint32_t l = 0; l < arrayElements->size(); ++l)
+				{
+					if (!(*arrayElements)[l])
+						return false;
+				}
+			}
+		}
+
+		// Verify push constant
+		uint32_t pushConstantStruct = pipeline->pushConstantStruct();
+		if (pushConstantStruct != MSL_UNKNOWN && pushConstantStruct >= structs->size())
+			return false;
+
+		// Verify render state
+		const mslb::RenderState* renderState = pipeline->renderState();
+		if (!renderState)
+			return false;
+		const mslb::RasterizationState* rasterizationState = renderState->rasterizationState();
+		if (!rasterizationState)
+			return false;
+		if (!enumInRange(rasterizationState->depthClampEnable()))
+			return false;
+		if (!enumInRange(rasterizationState->rasterizerDiscardEnable()))
+			return false;
+		if (!enumInRange(rasterizationState->polygonMode()))
+			return false;
+		if (!enumInRange(rasterizationState->cullMode()))
+			return false;
+		if (!enumInRange(rasterizationState->frontFace()))
+			return false;
+		if (!enumInRange(rasterizationState->depthBiasEnable()))
+			return false;
+
+		const mslb::MultisampleState* multisampleState = renderState->multisampleState();
+		if (!multisampleState)
+			return false;
+		if (!enumInRange(multisampleState->sampleShadingEnable()))
+			return false;
+		if (!enumInRange(multisampleState->alphaToCoverageEnable()))
+			return false;
+		if (!enumInRange(multisampleState->alphaToOneEnable()))
+			return false;
+
+		const mslb::DepthStencilState* depthStencilState = renderState->depthStencilState();
+		if (!depthStencilState)
+			return false;
+		if (!enumInRange(depthStencilState->depthTestEnable()))
+			return false;
+		if (!enumInRange(depthStencilState->depthWriteEnable()))
+			return false;
+		if (!enumInRange(depthStencilState->depthCompareOp()))
+			return false;
+		if (!enumInRange(depthStencilState->depthBoundsTestEnable()))
+			return false;
+		if (!enumInRange(depthStencilState->stencilTestEnable()))
+			return false;
+		if (!isStencilOpStateValid(depthStencilState->frontStencil()))
+			return false;
+		if (!isStencilOpStateValid(depthStencilState->backStencil()))
+			return false;
+
+		const mslb::BlendState* blendState = renderState->blendState();
+		if (!blendState)
+			return false;
+		if (!enumInRange(blendState->logicalOpEnable()))
+			return false;
+		if (!enumInRange(blendState->logicalOp()))
+			return false;
+		if (!enumInRange(blendState->separateAttachmentBlendingEnable()))
+			return false;
+		auto blendAttachments = blendState->blendAttachments();
+		if (!blendAttachments || blendAttachments->size() != MSL_MAX_ATTACHMENTS)
+			return false;
+		for (uint32_t j = 0; j < MSL_MAX_ATTACHMENTS; ++j)
+		{
+			const mslb::BlendAttachmentState* attachment = (*blendAttachments)[j];
+			if (!attachment)
+				return false;
+			if (!enumInRange(attachment->blendEnable()))
+				return false;
+			if (!enumInRange(attachment->srcColorBlendFactor()))
+				return false;
+			if (!enumInRange(attachment->dstColorBlendFactor()))
+				return false;
+			if (!enumInRange(attachment->colorBlendOp()))
+				return false;
+			if (!enumInRange(attachment->srcAlphaBlendFactor()))
+				return false;
+			if (!enumInRange(attachment->dstAlphaBlendFactor()))
+				return false;
+			if (!enumInRange(attachment->alphaBlendOp()))
+				return false;
+		}
+		auto blendConstants = blendState->blendAttachments();
+		if (!blendConstants || blendConstants->size() != 4)
+			return false;
+
+		// Verify shaders
+		auto shaders = pipeline->shaders();
+		if (!shaders || shaders->size() != mslStage_Count)
+			return false;
+		for (int j = 0; j < mslStage_Count; ++j)
+		{
+			const mslb::Shader* shader = (*shaders)[i];
+			if (shader)
+			{
+				if (shader->shader() >= shaderData->size())
+					return false;
+
+				if (isSpirV)
+				{
+					auto uniformIds = shader->uniformIds();
+					if (!uniformIds || uniformIds->size() != uniforms->size())
+						return false;
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
+extern "C"
+{
+
 size_t mslModule_sizeof(size_t dataSize)
 {
 	return sizeof(mslModule) + dataSize;
@@ -121,16 +508,7 @@ mslModule* mslModule_readStream(mslReadFunction readFunc, void* userData,
 		readSize += thisRead;
 	} while (readSize < size);
 
-	flatbuffers::Verifier verifier(module->data, size);
-	if (!mslb::VerifyModuleBuffer(verifier))
-	{
-		mslModule_destroy(module);
-		errno = EILSEQ;
-		return nullptr;
-	}
-
-	module->module = mslb::GetModule(module->data);
-	if (module->module->version() > MSL_MODULE_VERSION)
+	if (!isValid(module->data, size))
 	{
 		mslModule_destroy(module);
 		errno = EILSEQ;
@@ -149,8 +527,7 @@ mslModule* mslModule_readData(const void* data, size_t size, const mslAllocator*
 		return nullptr;
 	}
 
-	flatbuffers::Verifier verifier(reinterpret_cast<const uint8_t*>(data), size);
-	if (!mslb::VerifyModuleBuffer(verifier))
+	if (!isValid(data, size))
 	{
 		errno = EILSEQ;
 		return nullptr;
@@ -161,7 +538,7 @@ mslModule* mslModule_readData(const void* data, size_t size, const mslAllocator*
 		return nullptr;
 
 	memcpy(module->data, data, size);
-	module->module = mslb::GetModule(module->data);
+	module->module = mslb::GetMutableModule(module->data);
 	if (module->module->version() > MSL_MODULE_VERSION)
 	{
 		mslModule_destroy(module);
@@ -228,6 +605,14 @@ uint32_t mslModule_targetVersion(const mslModule* module)
 	return module->module->targetVersion();
 }
 
+bool mslModule_adjustableBindings(const mslModule* module)
+{
+	if (!module)
+		return false;
+
+	return module->module->adjustableBindings();
+}
+
 uint32_t mslModule_pipelineCount(const mslModule* module)
 {
 	if (!module)
@@ -236,225 +621,418 @@ uint32_t mslModule_pipelineCount(const mslModule* module)
 	return module->module->pipelines()->size();
 }
 
-const char* mslModule_pipelineName(const mslModule* module, uint32_t pipeline)
+bool mslModule_pipeline(mslPipeline* outPipeline, const mslModule* module,
+	uint32_t pipelineIndex)
 {
-	if (!module)
-		return nullptr;
+	if (!outPipeline || !module)
+		return false;
 
 	auto& pipelines = *module->module->pipelines();
-	if (pipeline >= pipelines.size())
-		return nullptr;
+	if (pipelineIndex >= pipelines.size())
+		return false;
 
-	return pipelines[pipeline]->name()->c_str();
+	const mslb::Pipeline* pipeline = pipelines[pipelineIndex];
+	outPipeline->name = pipeline->name()->c_str();
+	outPipeline->structCount = pipeline->structs()->size();
+	outPipeline->samplerStateCount = pipeline->samplerStates()->size();
+	outPipeline->uniformCount = pipeline->uniforms()->size();
+	outPipeline->attributeCount = pipeline->attributes()->size();
+	outPipeline->pushConstantStruct = pipeline->pushConstantStruct();
+
+	auto& shaders = *pipeline->shaders();
+	for (int i = 0; i < mslStage_Count; ++i)
+		outPipeline->shaders[i] = shaders[i] ? shaders[i]->shader() : MSL_UNKNOWN;
+
+	return true;
 }
 
-uint32_t mslModule_pipelineShader(const mslModule* module, uint32_t pipeline, mslStage stage)
+bool mslModule_struct(mslStruct* outStruct, const mslModule* module, uint32_t pipelineIndex,
+	uint32_t structIndex)
 {
-	if (!module)
-		return MSL_NO_SHADER;
+	if (!outStruct || !module)
+		return false;
 
 	auto& pipelines = *module->module->pipelines();
-	if (pipeline >= pipelines.size())
-		return MSL_NO_SHADER;
+	if (pipelineIndex >= pipelines.size())
+		return false;
+	auto& structs = *pipelines[pipelineIndex]->structs();
+	if (structIndex >= structs.size())
+		return false;
 
-	switch (stage)
+	const mslb::Struct* pipelineStruct = structs[structIndex];
+	outStruct->name = pipelineStruct->name()->c_str();
+	outStruct->size = pipelineStruct->size();
+	outStruct->memberCount = pipelineStruct->members()->size();
+	return true;
+}
+
+bool mslModule_structMember(mslStructMember* outStructMember, const mslModule* module,
+	uint32_t pipelineIndex, uint32_t structIndex, uint32_t structMemberIndex)
+{
+	if (!outStructMember || !module)
+		return false;
+
+	auto& pipelines = *module->module->pipelines();
+	if (pipelineIndex >= pipelines.size())
+		return false;
+	auto& structs = *pipelines[pipelineIndex]->structs();
+	if (structIndex >= structs.size())
+		return false;
+	auto& members = *structs[structIndex]->members();
+	if (structMemberIndex >= members.size())
+		return false;
+
+	const mslb::StructMember* member = members[structMemberIndex];
+	outStructMember->name = member->name()->c_str();
+	outStructMember->offset = member->offset();
+	outStructMember->size = member->size();
+	outStructMember->type = static_cast<mslType>(member->type());
+	outStructMember->structIndex = member->structIndex();
+	auto arrayElements = member->arrayElements();
+	outStructMember->arrayElementCount = arrayElements ? arrayElements->size() : 0;
+	return true;
+}
+
+bool mslModule_structMemberArrayInfo(mslArrayInfo* outArrayInfo,
+	const mslModule* module, uint32_t pipelineIndex, uint32_t structIndex,
+	uint32_t structMemberIndex, uint32_t arrayElement)
+{
+	if (!outArrayInfo || !module)
+		return false;
+
+	auto& pipelines = *module->module->pipelines();
+	if (pipelineIndex >= pipelines.size())
+		return false;
+	auto& structs = *pipelines[pipelineIndex]->structs();
+	if (structIndex >= structs.size())
+		return false;
+	auto& members = *structs[structIndex]->members();
+	if (structMemberIndex >= members.size())
+		return false;
+	auto arrayElements = members[structMemberIndex]->arrayElements();
+	if (!arrayElements || arrayElement >= arrayElements->size())
+		return false;
+
+	const mslb::ArrayInfo* arrayInfo = (*arrayElements)[arrayElement];
+	outArrayInfo->length = arrayInfo->length();
+	outArrayInfo->stride = arrayInfo->stride();
+	return true;
+}
+
+bool mslModule_samplerState(mslSamplerState* outSamplerState, const mslModule* module,
+	uint32_t pipelineIndex, uint32_t samplerStateIndex)
+{
+	if (!outSamplerState || !module)
+		return false;
+
+	auto& pipelines = *module->module->pipelines();
+	if (pipelineIndex >= pipelines.size())
+		return false;
+	auto& samplerStates = *pipelines[pipelineIndex]->samplerStates();
+	if (samplerStateIndex >= samplerStates.size())
+		return false;
+
+	const mslb::SamplerState* samplerState = samplerStates[samplerStateIndex];
+	outSamplerState->minFilter = static_cast<mslFilter>(samplerState->minFilter());
+	outSamplerState->magFilter = static_cast<mslFilter>(samplerState->magFilter());
+	outSamplerState->mipFilter = static_cast<mslMipFilter>(samplerState->mipFilter());
+	outSamplerState->addressModeU = static_cast<mslAddressMode>(samplerState->addressModeU());
+	outSamplerState->addressModeV = static_cast<mslAddressMode>(samplerState->addressModeV());
+	outSamplerState->addressModeW = static_cast<mslAddressMode>(samplerState->addressModeW());
+	outSamplerState->mipLodBias = samplerState->mipLodBias();
+	outSamplerState->maxAnisotropy = samplerState->maxAnisotropy();
+	outSamplerState->minLod = samplerState->minLod();
+	outSamplerState->maxLod = samplerState->maxLod();
+	outSamplerState->borderColor = static_cast<mslBorderColor>(samplerState->borderColor());
+	return true;
+}
+
+bool mslModule_uniform(mslUniform* outUniform, const mslModule* module, uint32_t pipelineIndex,
+	uint32_t uniformIndex)
+{
+	if (!outUniform || !module)
+		return false;
+
+	auto& pipelines = *module->module->pipelines();
+	if (pipelineIndex >= pipelines.size())
+		return false;
+	auto& uniforms = *pipelines[pipelineIndex]->uniforms();
+	if (uniformIndex >= uniforms.size())
+		return false;
+
+	const mslb::Uniform* uniform = uniforms[uniformIndex];
+	outUniform->name = uniform->name()->c_str();
+	outUniform->uniformType = static_cast<mslUniformType>(uniform->uniformType());
+	outUniform->type = static_cast<mslType>(uniform->type());
+	outUniform->structIndex = uniform->structIndex();
+	auto arrayElements = uniform->arrayElements();
+	outUniform->arrayElementCount = arrayElements ? arrayElements->size() : 0;
+	outUniform->descriptorSet = uniform->descriptorSet();
+	outUniform->binding = uniform->binding();
+	outUniform->samplerIndex = uniform->samplerIndex();
+	return true;
+}
+
+bool mslModule_uniformArrayInfo(mslArrayInfo* outArrayInfo, const mslModule* module,
+	uint32_t pipelineIndex, uint32_t uniformIndex, uint32_t arrayElement)
+{
+	if (!outArrayInfo || !module)
+		return false;
+
+	auto& pipelines = *module->module->pipelines();
+	if (pipelineIndex >= pipelines.size())
+		return false;
+	auto& uniforms = *pipelines[pipelineIndex]->uniforms();
+	if (uniformIndex >= uniforms.size())
+		return false;
+	auto arrayElements = uniforms[uniformIndex]->arrayElements();
+	if (!arrayElements || arrayElement >= arrayElements->size())
+		return false;
+
+	const mslb::ArrayInfo* arrayInfo = (*arrayElements)[arrayElement];
+	outArrayInfo->length = arrayInfo->length();
+	outArrayInfo->stride = arrayInfo->stride();
+	return true;
+}
+
+bool mslModule_attribute(mslAttribute* outAttribute, const mslModule* module, uint32_t pipelineIndex,
+	uint32_t attributeIndex)
+{
+	if (!outAttribute || !module)
+		return false;
+
+	auto& pipelines = *module->module->pipelines();
+	if (pipelineIndex >= pipelines.size())
+		return false;
+	auto& attributes = *pipelines[pipelineIndex]->attributes();
+	if (attributeIndex >= attributes.size())
+		return false;
+
+	const mslb::Attribute* attribute = attributes[attributeIndex];
+	outAttribute->name = attribute->name()->c_str();
+	outAttribute->type = static_cast<mslType>(attribute->type());
+	auto arrayElements = attribute->arrayElements();
+	outAttribute->arrayElementCount = arrayElements ? arrayElements->size() : 0;
+	outAttribute->location = attribute->location();
+	outAttribute->component = attribute->component();
+	return true;
+}
+
+bool mslModule_attributeArrayInfo(mslArrayInfo* outArrayInfo, const mslModule* module,
+	uint32_t pipelineIndex, uint32_t attributeIndex, uint32_t arrayElement)
+{
+	if (!outArrayInfo || !module)
+		return false;
+
+	auto& pipelines = *module->module->pipelines();
+	if (pipelineIndex >= pipelines.size())
+		return false;
+	auto& attributes = *pipelines[pipelineIndex]->attributes();
+	if (attributeIndex >= attributes.size())
+		return false;
+	auto arrayElements = attributes[attributeIndex]->arrayElements();
+	if (!arrayElements || arrayElement >= arrayElements->size())
+		return false;
+
+	const mslb::ArrayInfo* arrayInfo = (*arrayElements)[arrayElement];
+	outArrayInfo->length = arrayInfo->length();
+	outArrayInfo->stride = arrayInfo->stride();
+	return true;
+}
+
+bool mslModule_renderState(mslRenderState* outRenderState, const mslModule* module,
+	uint32_t pipelineIndex)
+{
+	if (!outRenderState || !module)
+		return false;
+
+	auto& pipelines = *module->module->pipelines();
+	if (pipelineIndex >= pipelines.size())
+		return false;
+
+	const mslb::RenderState* renderState = pipelines[pipelineIndex]->renderState();
+
+	const mslb::RasterizationState* rasterizationState = renderState->rasterizationState();
+	outRenderState->rasterizationState.depthClampEnable =
+		static_cast<mslBool>(rasterizationState->depthClampEnable());
+	outRenderState->rasterizationState.rasterizerDiscardEnable =
+		static_cast<mslBool>(rasterizationState->rasterizerDiscardEnable());
+	outRenderState->rasterizationState.polygonMode =
+		static_cast<mslPolygonMode>(rasterizationState->polygonMode());
+	outRenderState->rasterizationState.cullMode =
+		static_cast<mslCullMode>(rasterizationState->cullMode());
+	outRenderState->rasterizationState.frontFace =
+		static_cast<mslFrontFace>(rasterizationState->frontFace());
+	outRenderState->rasterizationState.depthBiasEnable =
+		static_cast<mslBool>(rasterizationState->depthBiasEnable());
+	outRenderState->rasterizationState.depthBiasConstantFactor =
+		rasterizationState->depthBiasConstantFactor();
+	outRenderState->rasterizationState.depthBiasClamp = rasterizationState->depthBiasClamp();
+	outRenderState->rasterizationState.depthBiasSlopeFactor =
+		rasterizationState->depthBiasSlopeFactor();
+	outRenderState->rasterizationState.lineWidth = rasterizationState->lineWidth();
+
+	const mslb::MultisampleState* multisampleState = renderState->multisampleState();
+	outRenderState->multisampleState.sampleShadingEnable =
+		static_cast<mslBool>(multisampleState->sampleShadingEnable());
+	outRenderState->multisampleState.minSampleShading = multisampleState->minSampleShading();
+	outRenderState->multisampleState.sampleMask = multisampleState->sampleMask();
+	outRenderState->multisampleState.alphaToCoverageEnable =
+		static_cast<mslBool>(multisampleState->alphaToCoverageEnable());
+	outRenderState->multisampleState.alphaToOneEnable =
+		static_cast<mslBool>(multisampleState->alphaToOneEnable());
+
+	const mslb::DepthStencilState* depthStencilState = renderState->depthStencilState();
+	outRenderState->depthStencilState.depthTestEnable =
+		static_cast<mslBool>(depthStencilState->depthTestEnable());
+	outRenderState->depthStencilState.depthWriteEnable =
+		static_cast<mslBool>(depthStencilState->depthWriteEnable());
+	outRenderState->depthStencilState.depthCompareOp =
+		static_cast<mslCompareOp>(depthStencilState->depthCompareOp());
+	outRenderState->depthStencilState.depthBoundsTestEnable =
+		static_cast<mslBool>(depthStencilState->depthBoundsTestEnable());
+	outRenderState->depthStencilState.stencilTestEnable =
+		static_cast<mslBool>(depthStencilState->stencilTestEnable());
+
+	outRenderState->depthStencilState.frontStencil.failOp =
+		static_cast<mslStencilOp>(depthStencilState->frontStencil().failOp());
+	outRenderState->depthStencilState.frontStencil.passOp =
+		static_cast<mslStencilOp>(depthStencilState->frontStencil().passOp());
+	outRenderState->depthStencilState.frontStencil.depthFailOp =
+		static_cast<mslStencilOp>(depthStencilState->frontStencil().depthFailOp());
+	outRenderState->depthStencilState.frontStencil.compareOp =
+		static_cast<mslCompareOp>(depthStencilState->frontStencil().compareOp());
+	outRenderState->depthStencilState.frontStencil.compareMask =
+		depthStencilState->frontStencil().compareMask();
+	outRenderState->depthStencilState.frontStencil.writeMask =
+		depthStencilState->frontStencil().writeMask();
+	outRenderState->depthStencilState.frontStencil.reference =
+		depthStencilState->frontStencil().reference();
+
+	outRenderState->depthStencilState.backStencil.failOp =
+		static_cast<mslStencilOp>(depthStencilState->backStencil().failOp());
+	outRenderState->depthStencilState.backStencil.passOp =
+		static_cast<mslStencilOp>(depthStencilState->backStencil().passOp());
+	outRenderState->depthStencilState.backStencil.depthFailOp =
+		static_cast<mslStencilOp>(depthStencilState->backStencil().depthFailOp());
+	outRenderState->depthStencilState.backStencil.compareOp =
+		static_cast<mslCompareOp>(depthStencilState->backStencil().compareOp());
+	outRenderState->depthStencilState.backStencil.compareMask =
+		depthStencilState->backStencil().compareMask();
+	outRenderState->depthStencilState.backStencil.writeMask =
+		depthStencilState->backStencil().writeMask();
+	outRenderState->depthStencilState.backStencil.reference =
+		depthStencilState->backStencil().reference();
+
+	outRenderState->depthStencilState.minDepthBounds = depthStencilState->minDepthBounds();
+	outRenderState->depthStencilState.maxDepthBounds = depthStencilState->maxDepthBounds();
+
+	const mslb::BlendState* blendState = renderState->blendState();
+	outRenderState->blendState.logicalOpEnable =
+		static_cast<mslBool>(blendState->logicalOpEnable());
+	outRenderState->blendState.logicalOp = static_cast<mslLogicOp>(blendState->logicalOp());
+	outRenderState->blendState.separateAttachmentBlendingEnable =
+		static_cast<mslBool>(blendState->separateAttachmentBlendingEnable());
+	auto& blendAttachments = *blendState->blendAttachments();
+	for (unsigned int i = 0; i < MSL_MAX_ATTACHMENTS; ++i)
 	{
-		case mslStage_Vertex:
-			return pipelines[pipeline]->vertex();
-		case mslStage_TessellationControl:
-			return pipelines[pipeline]->tessellationControl();
-		case mslStage_TessellationEvaluation:
-			return pipelines[pipeline]->tessellationEvaluation();
-		case mslStage_Geometry:
-			return pipelines[pipeline]->geometry();
-		case mslStage_Fragment:
-			return pipelines[pipeline]->fragment();
-		case mslStage_Compute:
-			return pipelines[pipeline]->compute();
-		default:
-			return MSL_NO_SHADER;
+		const mslb::BlendAttachmentState* blendAttachmentState = blendAttachments[i];
+		outRenderState->blendState.blendAttachments[i].blendEnable =
+			static_cast<mslBool>(blendAttachmentState->blendEnable());
+		outRenderState->blendState.blendAttachments[i].srcColorBlendFactor =
+			static_cast<mslBlendFactor>(blendAttachmentState->srcColorBlendFactor());
+		outRenderState->blendState.blendAttachments[i].dstColorBlendFactor =
+			static_cast<mslBlendFactor>(blendAttachmentState->dstColorBlendFactor());
+		outRenderState->blendState.blendAttachments[i].colorBlendOp =
+			static_cast<mslBlendOp>(blendAttachmentState->colorBlendOp());
+		outRenderState->blendState.blendAttachments[i].srcAlphaBlendFactor =
+			static_cast<mslBlendFactor>(blendAttachmentState->srcAlphaBlendFactor());
+		outRenderState->blendState.blendAttachments[i].dstAlphaBlendFactor =
+			static_cast<mslBlendFactor>(blendAttachmentState->dstAlphaBlendFactor());
+		outRenderState->blendState.blendAttachments[i].alphaBlendOp =
+			static_cast<mslBlendOp>(blendAttachmentState->alphaBlendOp());
+		outRenderState->blendState.blendAttachments[i].colorWriteMask =
+			static_cast<mslColorMask>(blendAttachmentState->colorWriteMask());
 	}
+	auto& blendConstants = *blendState->blendConstants();
+	for (unsigned int i = 0; i < 4; ++i)
+		outRenderState->blendState.blendConstants[i] = blendConstants[i];
+
+	outRenderState->patchControlPoints = renderState->patchControlPoints();
+	return true;
 }
 
-uint32_t mslModule_uniformCount(const mslModule* module, uint32_t pipeline)
+bool mslModule_setUniformBinding(mslModule* module, uint32_t pipelineIndex, uint32_t uniformIndex,
+	uint32_t descriptorSet, uint32_t binding)
 {
-	if (!module)
-		return 0;
+	if (!module || !module->module->adjustableBindings())
+		return false;
 
 	auto& pipelines = *module->module->pipelines();
-	if (pipeline >= pipelines.size())
-		return 0;
+	if (pipelineIndex >= pipelines.size())
+		return false;
 
-	return pipelines[pipeline]->uniforms()->size();
-}
+	const mslb::Pipeline* pipeline = pipelines[pipelineIndex];
+	auto& uniforms = *pipeline->uniforms();
+	if (uniformIndex >= uniforms.size())
+		return false;
+	mslb::Uniform* uniform = const_cast<mslb::Uniform*>(uniforms[uniformIndex]);
 
-const char* mslModule_uniformName(const mslModule* module, uint32_t pipeline, uint32_t uniform)
-{
-	if (!module)
-		return nullptr;
+	// Set the new indices.
+	uniform->mutate_descriptorSet(descriptorSet);
+	uniform->mutate_binding(binding);
 
-	auto& pipelines = *module->module->pipelines();
-	if (pipeline >= pipelines.size())
-		return nullptr;
+	// Modify the SPIR-V.
+	auto& shaders = *pipeline->shaders();
+	auto& shaderData = *module->module->shaders();
+	const unsigned int firstInstruction = 5;
+	const uint32_t opCodeMask = 0xFFFF;
+	const uint32_t wordCountShift = 16;
+	const uint32_t opFunction = 54;
+	const uint32_t opDecorate = 71;
+	const uint32_t decorationBinding = 33;
+	const uint32_t decorationDescriptorSet = 34;
+	const uint32_t decorationInputAttachmentIndex = 43;
+	for (int i = 0; i < mslStage_Count; ++i)
+	{
+		const mslb::Shader* shader = shaders[i];
+		if (!shader)
+			continue;
 
-	auto& uniforms = *pipelines[pipeline]->uniforms();
-	if (uniform >= uniforms.size())
-		return nullptr;
+		uint32_t id = (*shader->uniformIds())[uniformIndex];
 
-	return uniforms[uniform]->name()->c_str();
-}
+		const mslb::ShaderData* thisShaderData = shaderData[shader->shader()];
+		uint32_t* spirV = const_cast<uint32_t*>(reinterpret_cast<const uint32_t*>(
+			thisShaderData->data()->data()));
+		uint32_t spirVSize = thisShaderData->data()->size()/sizeof(uint32_t);
+		for (uint32_t j = firstInstruction; j < spirVSize;)
+		{
+			uint32_t op = spirV[j] & opCodeMask;
+			uint32_t wordCount = spirV[j] >> wordCountShift;
 
-mslType mslModule_uniformType(const mslModule* module, uint32_t pipeline, uint32_t uniform)
-{
-	if (!module)
-		return mslType_Float;
+			// Once we reach the functions, done with all decorations.
+			if (op == opFunction)
+				break;
 
-	auto& pipelines = *module->module->pipelines();
-	if (pipeline >= pipelines.size())
-		return mslType_Float;
+			if (op == opDecorate && spirV[j + 1] == id)
+			{
+				switch (spirV[j + 2])
+				{
+					case decorationBinding:
+					case decorationInputAttachmentIndex:
+						spirV[j + 3] = binding;
+						break;
+					case decorationDescriptorSet:
+						spirV[j + 3] = descriptorSet;
+						break;
+				}
+			}
 
-	auto& uniforms = *pipelines[pipeline]->uniforms();
-	if (uniform >= uniforms.size())
-		return mslType_Float;
+			j += wordCount;
+		}
+	}
 
-	return static_cast<mslType>(uniforms[uniform]->type());
-}
-
-uint32_t mslModule_uniformBlockIndex(const mslModule* module, uint32_t pipeline,
-	uint32_t uniform)
-{
-	if (!module)
-		return MSL_UNKNOWN;
-
-	auto& pipelines = *module->module->pipelines();
-	if (pipeline >= pipelines.size())
-		return MSL_UNKNOWN;
-
-	auto& uniforms = *pipelines[pipeline]->uniforms();
-	if (uniform >= uniforms.size())
-		return MSL_UNKNOWN;
-
-	return uniforms[uniform]->blockIndex();
-}
-
-uint32_t mslModule_uniformBufferOffset(const mslModule* module, uint32_t pipeline, uint32_t uniform)
-{
-	if (!module)
-		return MSL_UNKNOWN;
-
-	auto& pipelines = *module->module->pipelines();
-	if (pipeline >= pipelines.size())
-		return MSL_UNKNOWN;
-
-	auto& uniforms = *pipelines[pipeline]->uniforms();
-	if (uniform >= uniforms.size())
-		return MSL_UNKNOWN;
-
-	return uniforms[uniform]->bufferOffset();
-}
-
-uint32_t mslModule_uniformElements(const mslModule* module, uint32_t pipeline, uint32_t uniform)
-{
-	if (!module)
-		return 0;
-
-	auto& pipelines = *module->module->pipelines();
-	if (pipeline >= pipelines.size())
-		return 0;
-
-	auto& uniforms = *pipelines[pipeline]->uniforms();
-	if (uniform >= uniforms.size())
-		return 0;
-
-	return uniforms[uniform]->elements();
-}
-
-uint32_t mslModule_uniformBlockCount(const mslModule* module, uint32_t pipeline)
-{
-	if (!module)
-		return 0;
-
-	auto& pipelines = *module->module->pipelines();
-	if (pipeline >= pipelines.size())
-		return 0;
-
-	return pipelines[pipeline]->uniformBlocks()->size();
-}
-
-const char* mslModule_uniformBlockName(const mslModule* module, uint32_t pipeline, uint32_t block)
-{
-	if (!module)
-		return nullptr;
-
-	auto& pipelines = *module->module->pipelines();
-	if (pipeline >= pipelines.size())
-		return nullptr;
-
-	auto& uniformBlocks = *pipelines[pipeline]->uniformBlocks();
-	if (block >= uniformBlocks.size())
-		return nullptr;
-
-	return uniformBlocks[block]->name()->c_str();
-}
-
-uint32_t mslModule_uniformBlockSize(const mslModule* module, uint32_t pipeline, uint32_t block)
-{
-	if (!module)
-		return MSL_UNKNOWN;
-
-	auto& pipelines = *module->module->pipelines();
-	if (pipeline >= pipelines.size())
-		return MSL_UNKNOWN;
-
-	auto& uniformBlocks = *pipelines[pipeline]->uniformBlocks();
-	if (block >= uniformBlocks.size())
-		return MSL_UNKNOWN;
-
-	return uniformBlocks[block]->size();
-}
-
-uint32_t mslModule_attributeCount(const mslModule* module, uint32_t pipeline)
-{
-	if (!module)
-		return 0;
-
-	auto& pipelines = *module->module->pipelines();
-	if (pipeline >= pipelines.size())
-		return 0;
-
-	return pipelines[pipeline]->attributes()->size();
-}
-
-const char* mslModule_attributeName(const mslModule* module, uint32_t pipeline, uint32_t attribute)
-{
-	if (!module)
-		return nullptr;
-
-	auto& pipelines = *module->module->pipelines();
-	if (pipeline >= pipelines.size())
-		return nullptr;
-
-	auto& attributes = *pipelines[pipeline]->attributes();
-	if (attribute >= attributes.size())
-		return nullptr;
-
-	return attributes[attribute]->name()->c_str();
-}
-
-mslType mslModule_attributeType(const mslModule* module, uint32_t pipeline, uint32_t attribute)
-{
-	if (!module)
-		return mslType_Float;
-
-	auto& pipelines = *module->module->pipelines();
-	if (pipeline >= pipelines.size())
-		return mslType_Float;
-
-	auto& attributes = *pipelines[pipeline]->attributes();
-	if (attribute >= attributes.size())
-		return mslType_Float;
-
-	return static_cast<mslType>(attributes[attribute]->type());
+	return true;
 }
 
 uint32_t mslModule_shaderCount(const mslModule* module)

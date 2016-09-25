@@ -18,6 +18,7 @@
 
 #include <MSL/Config.h>
 #include <MSL/Client/ModuleC.h>
+#include <MSL/Client/TypesCpp.h>
 #include <fstream>
 #include <memory>
 
@@ -57,169 +58,6 @@ public:
 	 * @brief The type of the allocator.
 	 */
 	using AllocatorType = Allocator;
-
-	/**
-	* @brief Enum for the type of a uniform or attribute.
-	*/
-	enum class Type
-	{
-		// Scalars and vectors
-		Float,  ///< float
-		Vec2,   ///< vec2
-		Vec3,   ///< vec3
-		Vec4,   ///< vec4
-		Double, ///< double
-		DVec2,  ///< dvec2
-		DVec3,  ///< dvec3
-		DVec4,  ///< dvec4
-		Int,    ///< int
-		IVec2,  ///< ivec2
-		IVec3,  ///< ivec3
-		IVec4,  ///< ivec4
-		UInt,   ///< unsigned int
-		UVec2,  ///< uvec2
-		UVec3,  ///< uvec3
-		UVec4,  ///< uvec4
-		Bool,   ///< bool
-		BVec2,  ///< bvec2
-		BVec3,  ///< bvec3
-		BVec4,  ///< bvec4
-
-		// Matrices
-		Mat2,    ///< mat2, mat2x2
-		Mat3,    ///< mat3, mat3x3
-		Mat4,    ///< mat4, mat4x4
-		Mat2x3,  ///< mat2x3
-		Mat2x4,  ///< mat2x4
-		Mat3x2,  ///< mat3x2
-		Mat3x4,  ///< mat3x4
-		Mat4x2,  ///< mat4x2
-		Mat4x3,  ///< mat4x3
-		DMat2,   ///< dmat2, dmat2x2
-		DMat3,   ///< dmat3, dmat3x3
-		DMat4,   ///< dmat4, dmat4x4
-		DMat2x3, ///< dmat2x3
-		DMat2x4, ///< dmat2x4
-		DMat3x2, ///< dmat3x2
-		DMat3x4, ///< dmat3x4
-		DMat4x2, ///< dmat4x2
-		DMat4x3, ///< dmat4x3
-
-		// Samplers
-		Sampler1D,            ///< sampler1D
-		Sampler2D,            ///< sampler2D
-		Sampler3D,            ///< sampler3D
-		SamplerCube,          ///< samplerCube
-		Sampler1DShadow,      ///< sampler1DShadow
-		Sampler2DShadow,      ///< sampler2DShadow
-		Sampler1DArray,       ///< sampler1DArray
-		Sampler2DArray,       ///< sampler2DArray
-		Sampler1DArrayShadow, ///< sampler1DArrayShadow
-		Sampler2DArrayShadow, ///< sampler2DArrayShadow
-		Sampler2DMS,          ///< sampler2DMS
-		Sampler2DMSArray,     ///< sampler2DMSArray
-		SamplerCubeShadow,    ///< samplerCubeShadow
-		SamplerBuffer,        ///< samplerBuffer
-		Sampler2DRect,        ///< sampler2DRect
-		Sampler2DRectShadow,  ///< sampler2DRectShadow
-		ISampler1D,           ///< isampler1D
-		ISampler2D,           ///< isampler2D
-		ISampler3D,           ///< isampler3D
-		ISamplerCube,         ///< isamplerCube
-		ISampler1DArray,      ///< isampler1DArray
-		ISampler2DArray,      ///< isampler2DArray
-		ISampler2DMS,         ///< isampler2DMS
-		ISampler2DMSArray,    ///< isampler2DMSArray
-		ISampler2DRect,       ///< isampler2DRect
-		USampler1D,           ///< usampler1D
-		USampler2D,           ///< usampler2D
-		USampler3D,           ///< usampler3D
-		USamplerCube,         ///< usamplerCube
-		USampler1DArray,      ///< usampler1DArray
-		USampler2DArray,      ///< usampler2DArray
-		USampler2DMS,         ///< usampler2DMS
-		USampler2DMSArray,    ///< usampler2DMSArray
-		USampler2DRect,       ///< usampler2DRect
-
-		// Images
-		Image1D,         ///< image1D
-		Image2D,         ///< image2D
-		Image3D,         ///< image3D
-		ImageCube,       ///< imageCube
-		Image1DArray,    ///< image1DArray
-		Image2DArray,    ///< image2DArray
-		Image2DMS,       ///< image2DMS
-		Image2DMSArray,  ///< image2DMSArray
-		ImageBuffer,     ///< imageBuffer
-		Image2DRect,     ///< image2DRect
-		IImage1D,        ///< iimage1D
-		IImage2D,        ///< iimage2D
-		IImage3D,        ///< iimage3D
-		IImageCube,      ///< iimageCube
-		IImage1DArray,   ///< iimage1DArray
-		IImage2DArray,   ///< iimage2DArray
-		IImage2DMS,      ///< iimage2DMS
-		IImage2DMSArray, ///< iimage2DMSArray
-		IImage2DRect,    ///< iimage2DRect
-		UImage1D,        ///< uimage1D
-		UImage2D,        ///< uimage2D
-		UImage3D,        ///< uimage3D
-		UImageCube,      ///< uimageCube
-		UImage1DArray,   ///< uimage1DArray
-		UImage2DArray,   ///< uimage2DArray
-		UImage2DMS,      ///< uimage2DMS
-		UImage2DMSArray, ///< uimage2DMSArray
-		UImage2DRect,    ///< uimage2DRect
-
-		// Subpass inputs.
-		SubpassInput,    ///< subpassInput
-		SubpassInputMS,  ///< subpassInputMS
-		ISubpassInput,   ///< isubpassInput
-		ISubpassInputMS, ///< isubpassInputMS
-		USubpassInput,   ///< usubpassInput
-		USubpassInputMS, ///< usubpassInputMS
-
-		// Other.
-		Struct, ///< User-defined structure.
-	};
-
-	/**
-	 * @brief Constant for the number of types.
-	 */
-	static const unsigned int typeCount = static_cast<unsigned int>(Type::Struct) + 1;
-
-	/**
-	* @brief Enum for a stage within a shader pipeline.
-	*/
-	enum class Stage
-	{
-		Vertex,                 ///< Vertex stage.
-		TessellationControl,    ///< Tessellation control stage.
-		TessellationEvaluation, ///< Tessellation evaluation stage.
-		Geometry,               ///< Geometry stage.
-		Fragment,               ///< Fragment stage.
-		Compute                 ///< Compute stage.
-	};
-
-	/**
-	 * @brief Constant for the number of stages.
-	 */
-	static const unsigned int stageCount = static_cast<unsigned int>(Stage::Compute) + 1;
-
-	/**
-	 * @brief Constant for the file version.
-	 */
-	static const uint32_t currentVersion = MSL_MODULE_VERSION;
-
-	/**
-	 * @brief Constant for no shader being set.
-	 */
-	static const uint32_t noShader = MSL_NO_SHADER;
-
-	/**
-	 * @brief Constant for no known value.
-	 */
-	static const uint32_t unknown = MSL_UNKNOWN;
 
 	/**
 	 * @brief Constructs this with the allocator.
@@ -313,124 +151,130 @@ public:
 	uint32_t targetVersion() const;
 
 	/**
+	 * @brief Gets whether or not the bindings are adjustable in the shader module.
+	 * @return True if bindings are adjustable.
+	 */
+	bool adjustableBindings() const;
+
+	/**
 	 * @brief Gets the number of pipelines within the shader module.
 	 * @return The number of pipelines.
 	 */
 	uint32_t pipelineCount() const;
 
 	/**
-	 * @brief Gets the name of a pipeline within the shader module.
-	 * @param pipeline The index of the pipeline.
-	 * @return The name of the pipeline.
+	 * @brief Gets the info for a pipeline within the shader module.
+	 * @param[out] outPipeline The structure to hold the pipeline info.
+	 * @param pipelineIndex The index of the pipeline.
+	 * @return False if the parameters are incorrect.
 	 */
-	const char* pipelineName(uint32_t pipeline) const;
+	bool pipeline(Pipeline& outPipeline, uint32_t pipelineIndex) const;
 
 	/**
-	 * @brief Gets the shader index of a pipeline stage.
-	 * @param pipeline The index of the pipeline.
-	 * @param stage The stage to get the shader from.
-	 * @return The index of the shader for the stage.
+	 * @brief Gets the info for a struct within a pipeline.
+	 * @param[out] outStruct The structure to hold the struct info.
+	 * @param pipelineIndex The index of the pipeline.
+	 * @param structIndex The index of the struct within the pipeline.
+	 * @return False if the parameters are incorrect.
 	 */
-	uint32_t pipelineShader(uint32_t pipeline, Stage stage) const;
+	bool pipelineStruct(Struct& outStruct, uint32_t pipelineIndex, uint32_t structIndex) const;
 
 	/**
-	 * @brief Gets the number of uniforms within a pipeline.
-	 * @param pipeline The index of the pipeline.
-	 * @return The number of uniforms for the pipeline.
+	 * @brief Gets the info for a struct member within a pipeline.
+	 * @param[out] outStructMember The structure to hold the struct member info.
+	 * @param pipelineIndex The index of the pipeline.
+	 * @param structIndex The index of the struct within the pipeline.
+	 * @param structMemberIndex The index of the struct member within the struct.
+	 * @return False if the parameters are incorrect.
 	 */
-	uint32_t uniformCount(uint32_t pipeline) const;
+	bool structMember(StructMember& outStructMember, uint32_t pipelineIndex, uint32_t structIndex,
+		uint32_t structMemberIndex) const;
 
 	/**
-	 * @brief Gets the name of a uniform within a pipeline.
-	 * @param pipeline The index of the pipeline.
-	 * @param uniform The index of the uniform.
-	 * @return The name of the uniform.
+	 * @brief Gets the array info for a struct member within a pipeline.
+	 * @param[out] outArrayInfo The structure to hold the struct member array info.
+	 * @param pipelineIndex The index of the pipeline.
+	 * @param structIndex The index of the struct within the pipeline.
+	 * @param structMemberIndex The index of the struct member within the struct.
+	 * @param arrayElement The array element to get the info for.
+	 * @return False if the parameters are incorrect.
 	 */
-	const char* uniformName(uint32_t pipeline, uint32_t uniform) const;
+	bool structMemberArrayInfo(ArrayInfo& outArrayInfo, uint32_t pipelineIndex,
+		uint32_t structIndex, uint32_t structMemberIndex, uint32_t arrayElement) const;
 
 	/**
-	 * @brief Gets the type of a uniform within a pipeline.
-	 * @param pipeline The index of the pipeline.
-	 * @param uniform The index of the uniform.
-	 * @return The type of the uniform.
+	 * @brief Gets the info for a sampler state within a pipeline.
+	 * @param[out] outSamplerState The structure to hold the sampler state info.
+	 * @param pipelineIndex The index of the pipeline.
+	 * @param samplerStateIndex The index of the sampler state within the pipeline.
+	 * @return False if the parameters are incorrect.
 	 */
-	Type uniformType(uint32_t pipeline, uint32_t uniform) const;
+	bool samplerState(SamplerState& outSamplerState, uint32_t pipelineIndex,
+		uint32_t samplerStateIndex) const;
 
 	/**
-	 * @brief Gets the block index of a uniform within a pipeline.
-	 * @param pipeline The index of the pipeline.
-	 * @param uniform The index of the uniform.
-	 * @return The block index of the uniform, or MSL_UNKNOWN if not part of a block.
+	 * @brief Gets the info for a uniform within a pipeline.
+	 * @param[out] outUniform The structure to hold the uniform info.
+	 * @param pipelineIndex The index of the pipeline.
+	 * @param uniformIndex The index of the uniform within the pipeline.
+	 * @return False if the parameters are incorrect.
 	 */
-	uint32_t uniformBlockIndex(uint32_t pipeline, uint32_t uniform) const;
+	bool uniform(Uniform& outUniform, uint32_t pipelineIndex, uint32_t uniformIndex) const;
 
 	/**
-	 * @brief Gets the buffer offset of a uniform within a pipeline.
-	 * @remark This is based on the original GLSL code, and may not be the same when cross-compiled
-	 * to other targets that use different alignment. The offsets should be queried at runtime for
-	 * targets that have different alignment rules.
-	 * @param pipeline The index of the pipeline.
-	 * @param uniform The index of the uniform.
-	 * @return The byte offset within the buffer, or MSL_UNKNOWN if unknown.
+	 * @brief Gets the array info for a uniform within a pipeline.
+	 * @param[out] outArrayInfo The structure to hold the uniform array info.
+	 * @param pipelineIndex The index of the pipeline.
+	 * @param uniformIndex The index of the uniform within the pipeline.
+	 * @param arrayElement The array element to get the info for.
+	 * @return False if the parameters are incorrect.
 	 */
-	uint32_t uniformBufferOffset(uint32_t pipeline, uint32_t uniform) const;
+	bool uniformArrayInfo(ArrayInfo& outArrayInfo, uint32_t pipelineIndex, uint32_t uniformIndex,
+		uint32_t arrayElement) const;
 
 	/**
-	 * @brief Gets the number of array elements for a uniform within a pipeline.
-	 * @param pipeline The index of the pipeline.
-	 * @param uniform The index of the uniform.
-	 * @return The number of array elements. This will be a minimum of 1 if the uniform is valid.
+	 * @brief Gets the info for a vertex attribute within a pipeline.
+	 * @param[out] outAttribute The structure to hold the attribute info.
+	 * @param pipelineIndex The index of the pipeline.
+	 * @param attributeIndex The index of the attribute within the pipeline.
+	 * @return False if the parameters are incorrect.
 	 */
-	uint32_t uniformElements(uint32_t pipeline, uint32_t uniform) const;
+	bool attribute(Attribute& outAttribute, uint32_t pipelineIndex, uint32_t attributeIndex) const;
 
 	/**
-	 * @brief Gets the number of uniform blocks within a pipeline.
-	 * @param pipeline The index of the pipeline.
-	 * @return The number of uniform blocks for the pipeline.
+	 * @brief Gets the array info for a vertex attribute within a pipeline.
+	 * @param[out] outArrayInfo The structure to hold the uniform array info.
+	 * @param pipelineIndex The index of the pipeline.
+	 * @param attributeIndex The index of the attribute within the pipeline.
+	 * @param arrayElement The array element to get the info for.
+	 * @return False if the parameters are incorrect.
 	 */
-	uint32_t uniformBlockCount(uint32_t pipeline) const;
+	bool attributeArrayInfo(ArrayInfo& outArrayInfo, uint32_t pipelineIndex,
+		uint32_t attributeIndex, uint32_t arrayElement) const;
 
 	/**
-	 * @brief Gets the name of a uniform block within a pipeline.
-	 * @param pipeline The index of the pipeline.
-	 * @param block The index of the uniform block.
-	 * @return The name of the uniform block.
+	 * @brief Gets the render state for a pipeline within the module.
+	 * @param[out] outRenderState The structure to hold the rneder state info.
+	 * @param pipelineIndex The index of the pipeline.
+	 * @return False if the parameters are incorrect.
 	 */
-	const char* uniformBlockName(uint32_t pipeline, uint32_t block) const;
+	bool renderState(RenderState& outRenderState, uint32_t pipelineIndex) const;
 
 	/**
-	 * @brief Gets the size of a uniform block within a pipeline.
-	 * @remark This is based on the original GLSL code, and may not be the same when cross-compiled
-	 * to other targets that use different alignment. The size should be queried at runtime for
-	 * targets that have different alignment rules.
-	 * @param pipeline The index of the pipeline.
-	 * @param block The index of the uniform block.
-	 * @return The size in bytes of the uniform block, or MSL_UNKNOWN if unknown.
+	 * @brief Sets the descriptor set and binding for a uniform within a pipeline.
+	 *
+	 * This is only valid when the bindings are adjustable, which itself is only available for SPIR-V
+	 * shaders. This will adjust the descriptor set and binding indices within the SPIR-V for each stage
+	 * within the pipeline, as well as update the indices requested with mslModule_uniform().
+	 *
+	 * @param pipelineIndex The index of the pipeline.
+	 * @param uniformIndex The index of the uniform within the pipeline.
+	 * @param descriptorSet The new descriptor set to use.
+	 * @param binding The new binding index set to use.
+	 * @return False if the parameters are incorrect or the bindings aren't adjustable.
 	 */
-	uint32_t uniformBlockSize(uint32_t pipeline, uint32_t block) const;
-
-	/**
-	 * @brief Gets the number of vertex attributes within a pipeline.
-	 * @param pipeline The index of the pipeline.
-	 * @return The number of vertex attributes for the pipeline.
-	 */
-	uint32_t attributeCount(uint32_t pipeline) const;
-
-	/**
-	 * @brief Gets the name of a vertex attribute within a pipeline.
-	 * @param pipeline The index of the pipeline.
-	 * @param attribute The index of the vertex attribute.
-	 * @return The name of the vertex attribute.
-	 */
-	const char* attributeName(uint32_t pipeline, uint32_t attribute) const;
-
-	/**
-	 * @brief Gets the type of a vertex attribute within a pipeline.
-	 * @param pipeline The index of the pipeline.
-	 * @param attribute The index of the vertex attribute.
-	 * @return The type of the vertex attribute.
-	 */
-	Type attributeType(uint32_t pipeline, uint32_t attribute) const;
+	bool setUniformBinding(uint32_t pipelineIndex, uint32_t uniformIndex, uint32_t descriptorSet,
+		uint32_t binding);
 
 	/**
 	 * @brief Gets number of shaders within the module.
@@ -479,8 +323,51 @@ private:
  */
 using Module = BasicModule<std::allocator<uint8_t>>;
 
-static_assert(Module::typeCount == mslType_Count, "Type enum mismatch.");
-static_assert(Module::stageCount == mslStage_Count, "Stage enum mismatch.");
+static_assert(typeCount == mslType_Count, "Type enum mismatch.");
+static_assert(stageCount == mslStage_Count, "Stage enum mismatch.");
+static_assert(Bool::True == static_cast<Bool>(mslBool_True), "Bool enum mismatch.");
+static_assert(PolygonMode::Point == static_cast<PolygonMode>(mslPolygonMode_Point),
+	"PolygonMode enum mismatch.");
+static_assert(CullMode::FrontAndBack == static_cast<CullMode>(mslCullMode_FrontAndBack),
+	"CullMode enum mismatch.");
+static_assert(FrontFace::Clockwise == static_cast<FrontFace>(mslFrontFace_Clockwise),
+	"FrontFace enum mismatch.");
+static_assert(StencilOp::DecrementAndWrap == static_cast<StencilOp>(mslStencilOp_DecrementAndWrap),
+	"StencilOp enum mismatch.");
+static_assert(CompareOp::Always == static_cast<CompareOp>(mslCompareOp_Always),
+	"CompareOp enum mismatch.");
+static_assert(BlendFactor::OneMinusSrc1Alpha ==
+	static_cast<BlendFactor>(mslBlendFactor_OneMinusSrc1Alpha),
+	"BlendFactor enum mismatch.");
+static_assert(BlendOp::Max == static_cast<BlendOp>(mslBlendOp_Max), "BlendOp enum mismatch.");
+static_assert(LogicOp::Set == static_cast<LogicOp>(mslLogicOp_Set), "LogicOp enum mismatch.");
+static_assert(Filter::Linear == static_cast<Filter>(mslFilter_Linear), "Filter enum mismatch.");
+static_assert(MipFilter::Anisotropic == static_cast<MipFilter>(mslMipFilter_Anisotropic),
+	"MipFilter enum mismatch.");
+static_assert(AddressMode::MirrorOnce == static_cast<AddressMode>(mslAddressMode_MirrorOnce),
+	"AddressMode enum mismatch.");
+static_assert(BorderColor::OpaqueIntOne == static_cast<BorderColor>(mslBorderColor_OpaqueIntOne),
+	"BorderColor enum mismatch.");
+
+static_assert(sizeof(RasterizationState) == sizeof(mslRasterizationState),
+	"RasterizationState struct mismatch.");
+static_assert(sizeof(MultisampleState) == sizeof(mslMultisampleState),
+	"MultisampleState struct mismatch.");
+static_assert(sizeof(StencilOpState) == sizeof(mslStencilOpState),
+	"StencilOpState struct mismatch.");
+static_assert(sizeof(DepthStencilState) == sizeof(mslDepthStencilState),
+	"DepthStencilState struct mismatch.");
+static_assert(sizeof(BlendAttachmentState) == sizeof(mslBlendAttachmentState),
+	"BlendAttachmentState struct mismatch.");
+static_assert(sizeof(BlendState) == sizeof(mslBlendState), "BlendState struct mismatch.");
+static_assert(sizeof(RenderState) == sizeof(mslRenderState), "RenderState struct mismatch.");
+static_assert(sizeof(SamplerState) == sizeof(mslSamplerState), "SamplerState struct mismatch.");
+static_assert(sizeof(ArrayInfo) == sizeof(mslArrayInfo), "ArrayInfo struct mismatch.");
+static_assert(sizeof(StructMember) == sizeof(mslStructMember), "StructMember struct mismatch.");
+static_assert(sizeof(Struct) == sizeof(mslStruct), "Struct struct mismatch.");
+static_assert(sizeof(Uniform) == sizeof(mslUniform), "Uniform struct mismatch.");
+static_assert(sizeof(Attribute) == sizeof(mslAttribute), "Attribute struct mismatch.");
+static_assert(sizeof(Pipeline) == sizeof(mslPipeline), "Pipeline struct mismatch.");
 
 template <typename Allocator>
 BasicModule<Allocator>::BasicModule(AllocatorType alloc)
@@ -584,93 +471,101 @@ uint32_t BasicModule<Allocator>::targetVersion() const
 }
 
 template <typename Allocator>
+bool BasicModule<Allocator>::adjustableBindings() const
+{
+	return mslModule_adjustableBindings(m_module);
+}
+
+template <typename Allocator>
 uint32_t BasicModule<Allocator>::pipelineCount() const
 {
 	return mslModule_pipelineCount(m_module);
 }
 
 template <typename Allocator>
-const char* BasicModule<Allocator>::pipelineName(uint32_t pipeline) const
+bool BasicModule<Allocator>::pipeline(Pipeline& outPipeline, uint32_t pipelineIndex) const
 {
-	return mslModule_pipelineName(m_module, pipeline);
+	return mslModule_pipeline(reinterpret_cast<mslPipeline*>(&outPipeline), m_module,
+		pipelineIndex);
 }
 
 template <typename Allocator>
-uint32_t BasicModule<Allocator>::pipelineShader(uint32_t pipeline, Stage stage) const
+bool BasicModule<Allocator>::pipelineStruct(Struct& outStruct, uint32_t pipelineIndex,
+	uint32_t structIndex) const
 {
-	return mslModule_pipelineShader(m_module, pipeline, static_cast<mslStage>(stage));
+	return mslModule_struct(reinterpret_cast<mslStruct*>(&outStruct), m_module, pipelineIndex,
+		structIndex);
 }
 
 template <typename Allocator>
-uint32_t BasicModule<Allocator>::uniformCount(uint32_t pipeline) const
+bool BasicModule<Allocator>::structMember(StructMember& outStructMember, uint32_t pipelineIndex,
+	uint32_t structIndex, uint32_t structMemberIndex) const
 {
-	return mslModule_uniformCount(m_module, pipeline);
+	return mslModule_structMember(reinterpret_cast<mslStructMember*>(&outStructMember), m_module,
+		pipelineIndex, structIndex, structMemberIndex);
 }
 
 template <typename Allocator>
-const char* BasicModule<Allocator>::uniformName(uint32_t pipeline, uint32_t uniform) const
+bool BasicModule<Allocator>::structMemberArrayInfo(ArrayInfo& outArrayInfo, uint32_t pipelineIndex,
+	uint32_t structIndex, uint32_t structMemberIndex, uint32_t arrayElement) const
 {
-	return mslModule_uniformName(m_module, pipeline, uniform);
+	return mslModule_structMemberArrayInfo(reinterpret_cast<mslArrayInfo*>(&outArrayInfo), m_module,
+		pipelineIndex, structIndex, structMemberIndex, arrayElement);
 }
 
 template <typename Allocator>
-auto BasicModule<Allocator>::uniformType(uint32_t pipeline, uint32_t uniform) const -> Type
+bool BasicModule<Allocator>::samplerState(SamplerState& outSamplerState, uint32_t pipelineIndex,
+	uint32_t samplerStateIndex) const
 {
-	return static_cast<Type>(mslModule_uniformType(m_module, pipeline, uniform));
+	return mslModule_samplerState(reinterpret_cast<mslSamplerState*>(&outSamplerState), m_module,
+		pipelineIndex, samplerStateIndex);
 }
 
 template <typename Allocator>
-uint32_t BasicModule<Allocator>::uniformBlockIndex(uint32_t pipeline, uint32_t uniform) const
+bool BasicModule<Allocator>::uniform(Uniform& outUniform, uint32_t pipelineIndex,
+	uint32_t uniformIndex) const
 {
-	return mslModule_uniformBlockIndex(m_module, pipeline, uniform);
+	return mslModule_uniform(reinterpret_cast<mslUniform*>(&outUniform), m_module, pipelineIndex,
+		uniformIndex);
 }
 
 template <typename Allocator>
-uint32_t BasicModule<Allocator>::uniformBufferOffset(uint32_t pipeline, uint32_t uniform) const
+bool BasicModule<Allocator>::uniformArrayInfo(ArrayInfo& outArrayInfo, uint32_t pipelineIndex,
+	uint32_t uniformIndex, uint32_t arrayElement) const
 {
-	return mslModule_uniformBufferOffset(m_module, pipeline, uniform);
+	return mslModule_uniformArrayInfo(reinterpret_cast<mslArrayInfo*>(&outArrayInfo), m_module,
+		pipelineIndex, uniformIndex, arrayElement);
 }
 
 template <typename Allocator>
-uint32_t BasicModule<Allocator>::uniformElements(uint32_t pipeline, uint32_t uniform) const
+bool BasicModule<Allocator>::attribute(Attribute& outAttribute, uint32_t pipelineIndex,
+	uint32_t attributeIndex) const
 {
-	return mslModule_uniformElements(m_module, pipeline, uniform);
+	return mslModule_attribute(reinterpret_cast<mslAttribute*>(&outAttribute), m_module,
+		pipelineIndex, attributeIndex);
 }
 
 template <typename Allocator>
-uint32_t BasicModule<Allocator>::uniformBlockCount(uint32_t pipeline) const
+bool BasicModule<Allocator>::attributeArrayInfo(ArrayInfo& outArrayInfo, uint32_t pipelineIndex,
+	uint32_t attributeIndex, uint32_t arrayElement) const
 {
-	return mslModule_uniformBlockCount(m_module, pipeline);
+	return mslModule_attributeArrayInfo(reinterpret_cast<mslArrayInfo*>(&outArrayInfo), m_module,
+		pipelineIndex, attributeIndex, arrayElement);
 }
 
 template <typename Allocator>
-const char* BasicModule<Allocator>::uniformBlockName(uint32_t pipeline, uint32_t block) const
+bool BasicModule<Allocator>::renderState(RenderState& outRenderState, uint32_t pipelineIndex) const
 {
-	return mslModule_uniformBlockName(m_module, pipeline, block);
+	return mslModule_renderState(reinterpret_cast<mslRenderState*>(&outRenderState), m_module,
+		pipelineIndex);
 }
 
 template <typename Allocator>
-uint32_t BasicModule<Allocator>::uniformBlockSize(uint32_t pipeline, uint32_t block) const
+bool BasicModule<Allocator>::setUniformBinding(uint32_t pipelineIndex, uint32_t uniformIndex,
+	uint32_t descriptorSet, uint32_t binding)
 {
-	return mslModule_uniformBlockSize(m_module, pipeline, block);
-}
-
-template <typename Allocator>
-uint32_t BasicModule<Allocator>::attributeCount(uint32_t pipeline) const
-{
-	return mslModule_attributeCount(m_module, pipeline);
-}
-
-template <typename Allocator>
-const char* BasicModule<Allocator>::attributeName(uint32_t pipeline, uint32_t attribute) const
-{
-	return mslModule_attributeName(m_module, pipeline, attribute);
-}
-
-template <typename Allocator>
-auto BasicModule<Allocator>::attributeType(uint32_t pipeline, uint32_t attribute) const -> Type
-{
-	return static_cast<Type>(mslModule_attributeType(m_module, pipeline, attribute));
+	return mslModule_setUniformBinding(m_module, pipelineIndex, uniformIndex, descriptorSet,
+		binding);
 }
 
 template <typename Allocator>

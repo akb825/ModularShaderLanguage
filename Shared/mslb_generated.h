@@ -337,22 +337,22 @@ inline const char **EnumNamesBlendOp() {
 inline const char *EnumNameBlendOp(BlendOp e) { return EnumNamesBlendOp()[static_cast<int>(e) - static_cast<int>(BlendOp::Unset)]; }
 
 enum class ColorMask : int8_t {
-  ColorMaskUnset = -1,
-  ColorMaskNone = 0,
-  ColorMaskRed = 1,
-  ColorMaskGreen = 2,
-  ColorMaskBlue = 4,
-  ColorMaskAlpha = 8,
-  MIN = ColorMaskUnset,
-  MAX = ColorMaskAlpha
+  Unset = -1,
+  None = 0,
+  Red = 1,
+  Green = 2,
+  Blue = 4,
+  Alpha = 8,
+  MIN = Unset,
+  MAX = Alpha
 };
 
 inline const char **EnumNamesColorMask() {
-  static const char *names[] = { "ColorMaskUnset", "ColorMaskNone", "ColorMaskRed", "ColorMaskGreen", "", "ColorMaskBlue", "", "", "", "ColorMaskAlpha", nullptr };
+  static const char *names[] = { "Unset", "None", "Red", "Green", "", "Blue", "", "", "", "Alpha", nullptr };
   return names;
 }
 
-inline const char *EnumNameColorMask(ColorMask e) { return EnumNamesColorMask()[static_cast<int>(e) - static_cast<int>(ColorMask::ColorMaskUnset)]; }
+inline const char *EnumNameColorMask(ColorMask e) { return EnumNamesColorMask()[static_cast<int>(e) - static_cast<int>(ColorMask::Unset)]; }
 
 enum class LogicOp : int8_t {
   Unset = -1,
@@ -1126,14 +1126,17 @@ inline flatbuffers::Offset<Shader> CreateShader(flatbuffers::FlatBufferBuilder &
 
 struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
-    VT_STRUCTS = 4,
-    VT_SAMPLERSTATES = 6,
-    VT_UNIFORMS = 8,
-    VT_ATTRIBUTES = 10,
-    VT_PUSHCONSTANTSTRUCT = 12,
-    VT_RENDERSTATE = 14,
-    VT_SHADERS = 16
+    VT_NAME = 4,
+    VT_STRUCTS = 6,
+    VT_SAMPLERSTATES = 8,
+    VT_UNIFORMS = 10,
+    VT_ATTRIBUTES = 12,
+    VT_PUSHCONSTANTSTRUCT = 14,
+    VT_RENDERSTATE = 16,
+    VT_SHADERS = 18
   };
+  const flatbuffers::String *name() const { return GetPointer<const flatbuffers::String *>(VT_NAME); }
+  flatbuffers::String *mutable_name() { return GetPointer<flatbuffers::String *>(VT_NAME); }
   const flatbuffers::Vector<flatbuffers::Offset<Struct>> *structs() const { return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Struct>> *>(VT_STRUCTS); }
   flatbuffers::Vector<flatbuffers::Offset<Struct>> *mutable_structs() { return GetPointer<flatbuffers::Vector<flatbuffers::Offset<Struct>> *>(VT_STRUCTS); }
   const flatbuffers::Vector<const SamplerState *> *samplerStates() const { return GetPointer<const flatbuffers::Vector<const SamplerState *> *>(VT_SAMPLERSTATES); }
@@ -1150,15 +1153,17 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   flatbuffers::Vector<flatbuffers::Offset<Shader>> *mutable_shaders() { return GetPointer<flatbuffers::Vector<flatbuffers::Offset<Shader>> *>(VT_SHADERS); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_STRUCTS) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
+           verifier.Verify(name()) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_STRUCTS) &&
            verifier.Verify(structs()) &&
            verifier.VerifyVectorOfTables(structs()) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_SAMPLERSTATES) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_SAMPLERSTATES) &&
            verifier.Verify(samplerStates()) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_UNIFORMS) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_UNIFORMS) &&
            verifier.Verify(uniforms()) &&
            verifier.VerifyVectorOfTables(uniforms()) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_ATTRIBUTES) &&
+           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_ATTRIBUTES) &&
            verifier.Verify(attributes()) &&
            verifier.VerifyVectorOfTables(attributes()) &&
            VerifyField<uint32_t>(verifier, VT_PUSHCONSTANTSTRUCT) &&
@@ -1174,6 +1179,7 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 struct PipelineBuilder {
   flatbuffers::FlatBufferBuilder &fbb_;
   flatbuffers::uoffset_t start_;
+  void add_name(flatbuffers::Offset<flatbuffers::String> name) { fbb_.AddOffset(Pipeline::VT_NAME, name); }
   void add_structs(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Struct>>> structs) { fbb_.AddOffset(Pipeline::VT_STRUCTS, structs); }
   void add_samplerStates(flatbuffers::Offset<flatbuffers::Vector<const SamplerState *>> samplerStates) { fbb_.AddOffset(Pipeline::VT_SAMPLERSTATES, samplerStates); }
   void add_uniforms(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Uniform>>> uniforms) { fbb_.AddOffset(Pipeline::VT_UNIFORMS, uniforms); }
@@ -1184,13 +1190,19 @@ struct PipelineBuilder {
   PipelineBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   PipelineBuilder &operator=(const PipelineBuilder &);
   flatbuffers::Offset<Pipeline> Finish() {
-    auto o = flatbuffers::Offset<Pipeline>(fbb_.EndTable(start_, 7));
+    auto o = flatbuffers::Offset<Pipeline>(fbb_.EndTable(start_, 8));
+    fbb_.Required(o, Pipeline::VT_NAME);  // name
+    fbb_.Required(o, Pipeline::VT_STRUCTS);  // structs
+    fbb_.Required(o, Pipeline::VT_SAMPLERSTATES);  // samplerStates
+    fbb_.Required(o, Pipeline::VT_UNIFORMS);  // uniforms
+    fbb_.Required(o, Pipeline::VT_ATTRIBUTES);  // attributes
     fbb_.Required(o, Pipeline::VT_SHADERS);  // shaders
     return o;
   }
 };
 
 inline flatbuffers::Offset<Pipeline> CreatePipeline(flatbuffers::FlatBufferBuilder &_fbb,
+   flatbuffers::Offset<flatbuffers::String> name = 0,
    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Struct>>> structs = 0,
    flatbuffers::Offset<flatbuffers::Vector<const SamplerState *>> samplerStates = 0,
    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Uniform>>> uniforms = 0,
@@ -1206,6 +1218,7 @@ inline flatbuffers::Offset<Pipeline> CreatePipeline(flatbuffers::FlatBufferBuild
   builder_.add_uniforms(uniforms);
   builder_.add_samplerStates(samplerStates);
   builder_.add_structs(structs);
+  builder_.add_name(name);
   return builder_.Finish();
 }
 

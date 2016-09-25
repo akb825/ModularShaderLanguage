@@ -18,8 +18,7 @@
 
 #include <MSL/Config.h>
 #include <MSL/Client/Export.h>
-#include <stdint.h>
-#include <stddef.h>
+#include <MSL/Client/TypesC.h>
 
 /**
  * @file
@@ -56,223 +55,6 @@
 extern "C"
 {
 #endif
-
-/**
- * @brief Constant for the current module file version.
- */
-#define MSL_MODULE_VERSION 0
-
-/**
- * @brief Constant for no shader being set for a pipeline stage.
- */
-#define MSL_NO_SHADER (uint32_t)-1
-
-/**
- * @brief Constant for an unknown value.
- */
-#define MSL_UNKNOWN (uint32_t)-1
-
-/**
- * @brief Typedef for a custom allocator function.
- *
- * If this function fails to allocate memory, it should set errno, either directly or indirectly.
- *
- * @param userData The user data for the allocator.
- * @param size The size to allocate.
- * @return The allocated memory, or NULL if the allocation failed.
- */
-typedef void* (*mslAllocateFunction)(void* userData, size_t size);
-
-/**
- * @brief Typedef for a custom free function.
- * @param userData The user data for the allocator.
- * @param ptr The pointer to free.
- */
-typedef void (*mslFreeFunction)(void* userData, void* ptr);
-
-/**
- * @brief Structure that holds the allocator info.
- */
-typedef struct mslAllocator
-{
-	/**
-	 * @brief The allocator function.
-	 *
-	 * This cannot be NULL.
-	 */
-	mslAllocateFunction allocateFunc;
-
-	/**
-	 * @brief The free function.
-	 *
-	 * If NULL, the memory won't be freed. This is useful for cases such memory arenas.
-	 */
-	mslFreeFunction freeFunc;
-
-	/**
-	 * @brief The user data to pass to the allocate and free functions.
-	 */
-	void* userData;
-} mslAllocator;
-
-/**
- * @brief Typedef for a custom function for reading data from a stream.
- * @param userData The user data to read from.
- * @param buffer The buffer to read into.
- * @param size The number of bytes to read.
- * @return The number of read bytes, or 0 if an error occurred.
- */
-typedef size_t (*mslReadFunction)(void* userData, void* buffer, size_t size);
-
-/**
- * @brief Type for a shader module.
- *
- * This will contain all of the data for the shader module. It is designed so that only a single
- * allocation will be made for the data buffer and any metadata for accessing the data members.
- */
-typedef struct mslModule mslModule;
-
-/**
- * @brief Enum for the type of a uniform or attribute.
- */
-typedef enum mslType
-{
-	// Scalars and vectors
-	mslType_Float,  ///< float
-	mslType_Vec2,   ///< vec2
-	mslType_Vec3,   ///< vec3
-	mslType_Vec4,   ///< vec4
-	mslType_Double, ///< double
-	mslType_DVec2,  ///< dvec2
-	mslType_DVec3,  ///< dvec3
-	mslType_DVec4,  ///< dvec4
-	mslType_Int,    ///< int
-	mslType_IVec2,  ///< ivec2
-	mslType_IVec3,  ///< ivec3
-	mslType_IVec4,  ///< ivec4
-	mslType_UInt,   ///< unsigned int
-	mslType_UVec2,  ///< uvec2
-	mslType_UVec3,  ///< uvec3
-	mslType_UVec4,  ///< uvec4
-	mslType_Bool,   ///< bool
-	mslType_BVec2,  ///< bvec2
-	mslType_BVec3,  ///< bvec3
-	mslType_BVec4,  ///< bvec4
-
-	// Matrices
-	mslType_Mat2,    ///< mat2, mat2x2
-	mslType_Mat3,    ///< mat3, mat3x3
-	mslType_Mat4,    ///< mat4, mat4x4
-	mslType_Mat2x3,  ///< mat2x3
-	mslType_Mat2x4,  ///< mat2x4
-	mslType_Mat3x2,  ///< mat3x2
-	mslType_Mat3x4,  ///< mat3x4
-	mslType_Mat4x2,  ///< mat4x2
-	mslType_Mat4x3,  ///< mat4x3
-	mslType_DMat2,   ///< dmat2, dmat2x2
-	mslType_DMat3,   ///< dmat3, dmat3x3
-	mslType_DMat4,   ///< dmat4, dmat4x4
-	mslType_DMat2x3, ///< dmat2x3
-	mslType_DMat2x4, ///< dmat2x4
-	mslType_DMat3x2, ///< dmat3x2
-	mslType_DMat3x4, ///< dmat3x4
-	mslType_DMat4x2, ///< dmat4x2
-	mslType_DMat4x3, ///< dmat4x3
-
-	// Samplers
-	mslType_Sampler1D,            ///< sampler1D
-	mslType_Sampler2D,            ///< sampler2D
-	mslType_Sampler3D,            ///< sampler3D
-	mslType_SamplerCube,          ///< samplerCube
-	mslType_Sampler1DShadow,      ///< sampler1DShadow
-	mslType_Sampler2DShadow,      ///< sampler2DShadow
-	mslType_Sampler1DArray,       ///< sampler1DArray
-	mslType_Sampler2DArray,       ///< sampler2DArray
-	mslType_Sampler1DArrayShadow, ///< sampler1DArrayShadow
-	mslType_Sampler2DArrayShadow, ///< sampler2DArrayShadow
-	mslType_Sampler2DMS,          ///< sampler2DMS
-	mslType_Sampler2DMSArray,     ///< sampler2DMSArray
-	mslType_SamplerCubeShadow,    ///< samplerCubeShadow
-	mslType_SamplerBuffer,        ///< samplerBuffer
-	mslType_Sampler2DRect,        ///< sampler2DRect
-	mslType_Sampler2DRectShadow,  ///< sampler2DRectShadow
-	mslType_ISampler1D,           ///< isampler1D
-	mslType_ISampler2D,           ///< isampler2D
-	mslType_ISampler3D,           ///< isampler3D
-	mslType_ISamplerCube,         ///< isamplerCube
-	mslType_ISampler1DArray,      ///< isampler1DArray
-	mslType_ISampler2DArray,      ///< isampler2DArray
-	mslType_ISampler2DMS,         ///< isampler2DMS
-	mslType_ISampler2DMSArray,    ///< isampler2DMSArray
-	mslType_ISampler2DRect,       ///< isampler2DRect
-	mslType_USampler1D,           ///< usampler1D
-	mslType_USampler2D,           ///< usampler2D
-	mslType_USampler3D,           ///< usampler3D
-	mslType_USamplerCube,         ///< usamplerCube
-	mslType_USampler1DArray,      ///< usampler1DArray
-	mslType_USampler2DArray,      ///< usampler2DArray
-	mslType_USampler2DMS,         ///< usampler2DMS
-	mslType_USampler2DMSArray,    ///< usampler2DMSArray
-	mslType_USampler2DRect,       ///< usampler2DRect
-
-	// Images
-	mslType_Image1D,         ///< image1D
-	mslType_Image2D,         ///< image2D
-	mslType_Image3D,         ///< image3D
-	mslType_ImageCube,       ///< imageCube
-	mslType_Image1DArray,    ///< image1DArray
-	mslType_Image2DArray,    ///< image2DArray
-	mslType_Image2DMS,       ///< image2DMS
-	mslType_Image2DMSArray,  ///< image2DMSArray
-	mslType_ImageBuffer,     ///< imageBuffer
-	mslType_Image2DRect,     ///< image2DRect
-	mslType_IImage1D,        ///< iimage1D
-	mslType_IImage2D,        ///< iimage2D
-	mslType_IImage3D,        ///< iimage3D
-	mslType_IImageCube,      ///< iimageCube
-	mslType_IImage1DArray,   ///< iimage1DArray
-	mslType_IImage2DArray,   ///< iimage2DArray
-	mslType_IImage2DMS,      ///< iimage2DMS
-	mslType_IImage2DMSArray, ///< iimage2DMSArray
-	mslType_IImage2DRect,    ///< iimage2DRect
-	mslType_UImage1D,        ///< uimage1D
-	mslType_UImage2D,        ///< uimage2D
-	mslType_UImage3D,        ///< uimage3D
-	mslType_UImageCube,      ///< uimageCube
-	mslType_UImage1DArray,   ///< uimage1DArray
-	mslType_UImage2DArray,   ///< uimage2DArray
-	mslType_UImage2DMS,      ///< uimage2DMS
-	mslType_UImage2DMSArray, ///< uimage2DMSArray
-	mslType_UImage2DRect,    ///< uimage2DRect
-
-	// Subpass inputs.
-	mslType_SubpassInput,    ///< subpassInput
-	mslType_SubpassInputMS,  ///< subpassInputMS
-	mslType_ISubpassInput,   ///< isubpassInput
-	mslType_ISubpassInputMS, ///< isubpassInputMS
-	mslType_USubpassInput,   ///< usubpassInput
-	mslType_USubpassInputMS, ///< usubpassInputMS
-
-	// Other.
-	mslType_Struct, ///< User-defined structure.
-
-	// Count
-	mslType_Count ///< Number of types.
-} mslType;
-
-/**
- * @brief Enum for a stage within a shader pipeline.
- */
-typedef enum mslStage
-{
-	mslStage_Vertex,                 ///< Vertex stage.
-	mslStage_TessellationControl,    ///< Tessellation control stage.
-	mslStage_TessellationEvaluation, ///< Tessellation evaluation stage.
-	mslStage_Geometry,               ///< Geometry stage.
-	mslStage_Fragment,               ///< Fragment stage.
-	mslStage_Compute,                ///< Compute stage.
-	mslStage_Count                   ///< Number of stages.
-} mslStage;
 
 /**
  * @brief Gets the size that will be allocated for a module.
@@ -340,6 +122,13 @@ MSL_CLIENT_EXPORT uint32_t mslModule_targetId(const mslModule* module);
 MSL_CLIENT_EXPORT uint32_t mslModule_targetVersion(const mslModule* module);
 
 /**
+ * @brief Gets whether or not the bindings are adjustable in the shader module.
+ * @param module The shader module.
+ * @return True if bindings are adjustable.
+ */
+MSL_CLIENT_EXPORT bool mslModule_adjustableBindings(const mslModule* module);
+
+/**
  * @brief Gets the number of pipelines within the shader module.
  * @param module The shader module.
  * @return The number of pipelines.
@@ -347,142 +136,137 @@ MSL_CLIENT_EXPORT uint32_t mslModule_targetVersion(const mslModule* module);
 MSL_CLIENT_EXPORT uint32_t mslModule_pipelineCount(const mslModule* module);
 
 /**
- * @brief Gets the name of a pipeline within the shader module.
+ * @brief Gets the info for a pipeline within the shader module.
+ * @param[out] outPipeline The structure to hold the pipeline info.
  * @param module The shader module.
- * @param pipeline The index of the pipeline.
- * @return The name of the pipeline.
+ * @param pipelineIndex The index of the pipeline.
+ * @return False if the parameters are incorrect.
  */
-MSL_CLIENT_EXPORT const char* mslModule_pipelineName(const mslModule* module, uint32_t pipeline);
+MSL_CLIENT_EXPORT bool mslModule_pipeline(mslPipeline* outPipeline, const mslModule* module,
+	uint32_t pipelineIndex);
 
 /**
- * @brief Gets the shader index of a pipeline stage.
+ * @brief Gets the info for a struct within a pipeline.
+ * @param[out] outStruct The structure to hold the struct info.
  * @param module The shader module.
- * @param pipeline The index of the pipeline.
- * @param stage The stage to get the shader from.
- * @return The index of the shader for the stage.
+ * @param pipelineIndex The index of the pipeline.
+ * @param structIndex The index of the struct within the pipeline.
+ * @return False if the parameters are incorrect.
  */
-MSL_CLIENT_EXPORT uint32_t mslModule_pipelineShader(const mslModule* module, uint32_t pipeline,
-	mslStage stage);
+MSL_CLIENT_EXPORT bool mslModule_struct(mslStruct* outStruct, const mslModule* module,
+	uint32_t pipelineIndex, uint32_t structIndex);
 
 /**
- * @brief Gets the number of uniforms within a pipeline.
+ * @brief Gets the info for a struct member within a pipeline.
+ * @param[out] outStructMember The structure to hold the struct member info.
  * @param module The shader module.
- * @param pipeline The index of the pipeline.
- * @return The number of uniforms for the pipeline.
+ * @param pipelineIndex The index of the pipeline.
+ * @param structIndex The index of the struct within the pipeline.
+ * @param structMemberIndex The index of the struct member within the struct.
+ * @return False if the parameters are incorrect.
  */
-MSL_CLIENT_EXPORT uint32_t mslModule_uniformCount(const mslModule* module, uint32_t pipeline);
+MSL_CLIENT_EXPORT bool mslModule_structMember(mslStructMember* outStructMember,
+	const mslModule* module, uint32_t pipelineIndex, uint32_t structIndex,
+	uint32_t structMemberIndex);
 
 /**
- * @brief Gets the name of a uniform within a pipeline.
+ * @brief Gets the array info for a struct member within a pipeline.
+ * @param[out] outArrayInfo The structure to hold the struct member array info.
  * @param module The shader module.
- * @param pipeline The index of the pipeline.
- * @param uniform The index of the uniform.
- * @return The name of the uniform.
+ * @param pipelineIndex The index of the pipeline.
+ * @param structIndex The index of the struct within the pipeline.
+ * @param structMemberIndex The index of the struct member within the struct.
+ * @param arrayElement The array element to get the info for.
+ * @return False if the parameters are incorrect.
  */
-MSL_CLIENT_EXPORT const char* mslModule_uniformName(const mslModule* module, uint32_t pipeline,
-	uint32_t uniform);
+MSL_CLIENT_EXPORT bool mslModule_structMemberArrayInfo(mslArrayInfo* outArrayInfo,
+	const mslModule* module, uint32_t pipelineIndex, uint32_t structIndex,
+	uint32_t structMemberIndex, uint32_t arrayElement);
 
 /**
- * @brief Gets the type of a uniform within a pipeline.
+ * @brief Gets the info for a sampler state within a pipeline.
+ * @param[out] outSamplerState The structure to hold the sampler state info.
  * @param module The shader module.
- * @param pipeline The index of the pipeline.
- * @param uniform The index of the uniform.
- * @return The type of the uniform.
+ * @param pipelineIndex The index of the pipeline.
+ * @param samplerStateIndex The index of the sampler state within the pipeline.
+ * @return False if the parameters are incorrect.
  */
-MSL_CLIENT_EXPORT mslType mslModule_uniformType(const mslModule* module, uint32_t pipeline,
-	uint32_t uniform);
+MSL_CLIENT_EXPORT bool mslModule_samplerState(mslSamplerState* outSamplerState,
+	const mslModule* module, uint32_t pipelineIndex, uint32_t samplerStateIndex);
 
 /**
- * @brief Gets the block index of a uniform within a pipeline.
+ * @brief Gets the info for a uniform within a pipeline.
+ * @param[out] outUniform The structure to hold the uniform info.
  * @param module The shader module.
- * @param pipeline The index of the pipeline.
- * @param uniform The index of the uniform.
- * @return The block index of the uniform, or MSL_UNKNOWN if not part of a block.
+ * @param pipelineIndex The index of the pipeline.
+ * @param uniformIndex The index of the uniform within the pipeline.
+ * @return False if the parameters are incorrect.
  */
-MSL_CLIENT_EXPORT uint32_t mslModule_uniformBlockIndex(const mslModule* module, uint32_t pipeline,
-	uint32_t uniform);
+MSL_CLIENT_EXPORT bool mslModule_uniform(mslUniform* outUniform,
+	const mslModule* module, uint32_t pipelineIndex, uint32_t uniformIndex);
 
 /**
- * @brief Gets the buffer offset of a uniform within a pipeline.
- * @remark This is based on the original GLSL code, and may not be the same when cross-compiled
- * to other targets that use different alignment. The offsets should be queried at runtime for
- * targets that have different alignment rules.
+ * @brief Gets the array info for a uniform within a pipeline.
+ * @param[out] outArrayInfo The structure to hold the uniform array info.
  * @param module The shader module.
- * @param pipeline The index of the pipeline.
- * @param uniform The index of the uniform.
- * @return The byte offset within the buffer, or MSL_UNKNOWN if unknown.
+ * @param pipelineIndex The index of the pipeline.
+ * @param uniformIndex The index of the uniform within the pipeline.
+ * @param arrayElement The array element to get the info for.
+ * @return False if the parameters are incorrect.
  */
-MSL_CLIENT_EXPORT uint32_t mslModule_uniformBufferOffset(const mslModule* module, uint32_t pipeline,
-	uint32_t uniform);
+MSL_CLIENT_EXPORT bool mslModule_uniformArrayInfo(mslArrayInfo* outArrayInfo,
+	const mslModule* module, uint32_t pipelineIndex, uint32_t uniformIndex, uint32_t arrayElement);
 
 /**
- * @brief Gets the number of array elements for a uniform within a pipeline.
+ * @brief Gets the info for a vertex attribute within a pipeline.
+ * @param[out] outAttribute The structure to hold the attribute info.
  * @param module The shader module.
- * @param pipeline The index of the pipeline.
- * @param uniform The index of the uniform.
- * @return The number of array elements. This will be a minimum of 1 if the uniform is valid.
+ * @param pipelineIndex The index of the pipeline.
+ * @param attributeIndex The index of the attribute within the pipeline.
+ * @return False if the parameters are incorrect.
  */
-MSL_CLIENT_EXPORT uint32_t mslModule_uniformElements(const mslModule* module, uint32_t pipeline,
-	uint32_t uniform);
+MSL_CLIENT_EXPORT bool mslModule_attribute(mslAttribute* outAttribute,
+	const mslModule* module, uint32_t pipelineIndex, uint32_t attributeIndex);
 
 /**
- * @brief Gets the number of uniform blocks within a pipeline.
+ * @brief Gets the array info for a vertex attribute within a pipeline.
+ * @param[out] outArrayInfo The structure to hold the uniform array info.
  * @param module The shader module.
- * @param pipeline The index of the pipeline.
- * @return The number of uniform blocks for the pipeline.
+ * @param pipelineIndex The index of the pipeline.
+ * @param attributeIndex The index of the attribute within the pipeline.
+ * @param arrayElement The array element to get the info for.
+ * @return False if the parameters are incorrect.
  */
-MSL_CLIENT_EXPORT uint32_t mslModule_uniformBlockCount(const mslModule* module, uint32_t pipeline);
+MSL_CLIENT_EXPORT bool mslModule_attributeArrayInfo(mslArrayInfo* outArrayInfo,
+	const mslModule* module, uint32_t pipelineIndex, uint32_t attributeIndex,
+	uint32_t arrayElement);
 
 /**
- * @brief Gets the name of a uniform block within a pipeline.
+ * @brief Gets the render state for a pipeline within the module.
+ * @param[out] outRenderState The structure to hold the rneder state info.
  * @param module The shader module.
- * @param pipeline The index of the pipeline.
- * @param block The index of the uniform block.
- * @return The name of the uniform block.
+ * @param pipelineIndex The index of the pipeline.
+ * @return False if the parameters are incorrect.
  */
-MSL_CLIENT_EXPORT const char* mslModule_uniformBlockName(const mslModule* module, uint32_t pipeline,
-	uint32_t block);
+MSL_CLIENT_EXPORT bool mslModule_renderState(mslRenderState* outRenderState,
+	const mslModule* module, uint32_t pipelineIndex);
 
 /**
- * @brief Gets the size of a uniform block within a pipeline.
- * @remark This is based on the original GLSL code, and may not be the same when cross-compiled
- * to other targets that use different alignment. The size should be queried at runtime for
- * targets that have different alignment rules.
+ * @brief Sets the descriptor set and binding for a uniform within a pipeline.
+ *
+ * This is only valid when the bindings are adjustable, which itself is only available for SPIR-V
+ * shaders. This will adjust the descriptor set and binding indices within the SPIR-V for each stage
+ * within the pipeline, as well as update the indices requested with mslModule_uniform().
+ *
  * @param module The shader module.
- * @param pipeline The index of the pipeline.
- * @param block The index of the uniform block.
- * @return The size in bytes of the uniform block, or MSL_UNKNOWN if unknown.
+ * @param pipelineIndex The index of the pipeline.
+ * @param uniformIndex The index of the uniform within the pipeline.
+ * @param descriptorSet The new descriptor set to use.
+ * @param binding The new binding index set to use.
+ * @return False if the parameters are incorrect or the bindings aren't adjustable.
  */
-MSL_CLIENT_EXPORT uint32_t mslModule_uniformBlockSize(const mslModule* module, uint32_t pipeline,
-	uint32_t block);
-
-/**
- * @brief Gets the number of vertex attributes within a pipeline.
- * @param module The shader module.
- * @param pipeline The index of the pipeline.
- * @return The number of vertex attributes for the pipeline.
- */
-MSL_CLIENT_EXPORT uint32_t mslModule_attributeCount(const mslModule* module, uint32_t pipeline);
-
-/**
- * @brief Gets the name of a vertex attribute within a pipeline.
- * @param module The shader module.
- * @param pipeline The index of the pipeline.
- * @param attribute The index of the vertex attribute.
- * @return The name of the vertex attribute.
- */
-MSL_CLIENT_EXPORT const char* mslModule_attributeName(const mslModule* module, uint32_t pipeline,
-	uint32_t attribute);
-
-/**
- * @brief Gets the type of a vertex attribute within a pipeline.
- * @param module The shader module.
- * @param pipeline The index of the pipeline.
- * @param attribute The index of the vertex attribute.
- * @return The type of the vertex attribute.
- */
-MSL_CLIENT_EXPORT mslType mslModule_attributeType(const mslModule* module, uint32_t pipeline,
-	uint32_t attribute);
+MSL_CLIENT_EXPORT bool mslModule_setUniformBinding(mslModule* module, uint32_t pipelineIndex,
+	uint32_t uniformIndex, uint32_t descriptorSet, uint32_t binding);
 
 /**
  * @brief Gets number of shaders within the module.
@@ -494,18 +278,18 @@ MSL_CLIENT_EXPORT uint32_t mslModule_shaderCount(const mslModule* module);
 /**
  * @brief Gets the size of a shader within the module.
  * @param module The shader module.
- * @param shader The index of the shader.
+ * @param shaderIndex The index of the shader.
  * @return The size of the shader in bytes.
  */
-MSL_CLIENT_EXPORT uint32_t mslModule_shaderSize(const mslModule* module, uint32_t shader);
+MSL_CLIENT_EXPORT uint32_t mslModule_shaderSize(const mslModule* module, uint32_t shaderIndex);
 
 /**
  * @brief Gets the data of a shader within the module.
  * @param module The shader module.
- * @param shader The index of the shader.
+ * @param shaderIndex The index of the shader.
  * @return The data for the shader.
  */
-MSL_CLIENT_EXPORT const void* mslModule_shaderData(const mslModule* module, uint32_t shader);
+MSL_CLIENT_EXPORT const void* mslModule_shaderData(const mslModule* module, uint32_t shaderIndex);
 
 /**
  * @brief Gets the size of the shared data within the module.
