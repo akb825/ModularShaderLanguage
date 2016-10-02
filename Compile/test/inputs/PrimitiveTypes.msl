@@ -1,0 +1,138 @@
+precision highp float;
+precision highp int;
+
+// Scalars and vectors
+lowp uniform float Float;
+mediump uniform vec2 Vec2;
+highp uniform vec3 Vec3;
+uniform vec4 Vec4;
+uniform double Double;
+uniform dvec2 DVec2;
+uniform dvec3 DVec3;
+uniform dvec4 DVec4;
+lowp uniform int Int;
+mediump uniform ivec2 IVec2;
+highp uniform ivec3 IVec3;
+uniform ivec4 IVec4;
+uniform uint UInt;
+uniform uvec2 UVec2;
+uniform uvec3 UVec3;
+uniform uvec4 UVec4;
+uniform bool Bool;
+uniform bvec2 BVec2;
+uniform bvec3 BVec3;
+uniform bvec4 BVec4;
+
+// Matrices
+uniform mat2 Mat2;
+uniform mat3 Mat3;
+uniform mat4 Mat4;
+uniform mat2x3 Mat2x3;
+uniform mat2x4 Mat2x4;
+uniform mat3x2 Mat3x2;
+uniform mat3x4 Mat3x4;
+uniform mat4x2 Mat4x2;
+uniform mat4x3 Mat4x3;
+uniform dmat2 DMat2;
+uniform dmat3 DMat3;
+uniform dmat4 DMat4;
+uniform dmat2x3 DMat2x3;
+uniform dmat2x4 DMat2x4;
+uniform dmat3x2 DMat3x2;
+uniform dmat3x4 DMat3x4;
+uniform dmat4x2 DMat4x2;
+uniform dmat4x3 DMat4x3;
+
+// Samplers
+uniform sampler1D Sampler1D;
+uniform sampler2D Sampler2D;
+uniform sampler3D Sampler3D;
+uniform samplerCube SamplerCube;
+uniform sampler1DShadow Sampler1DShadow;
+uniform sampler2DShadow Sampler2DShadow;
+uniform sampler1DArray Sampler1DArray;
+uniform sampler2DArray Sampler2DArray;
+uniform sampler1DArrayShadow Sampler1DArrayShadow;
+uniform sampler2DArrayShadow Sampler2DArrayShadow;
+uniform sampler2DMS Sampler2DMS;
+uniform sampler2DMSArray Sampler2DMSArray;
+uniform samplerCubeShadow SamplerCubeShadow;
+uniform samplerBuffer SamplerBuffer;
+uniform sampler2DRect Sampler2DRect;
+uniform sampler2DRectShadow Sampler2DRectShadow;
+uniform isampler1D ISampler1D;
+uniform isampler2D ISampler2D;
+uniform isampler3D ISampler3D;
+uniform isamplerCube ISamplerCube;
+uniform isampler1DArray ISampler1DArray;
+uniform isampler2DArray ISampler2DArray;
+uniform isampler2DMS ISampler2DMS;
+uniform isampler2DMSArray ISampler2DMSArray;
+uniform isampler2DRect ISampler2DRect;
+uniform usampler1D USampler1D;
+uniform usampler2D USampler2D;
+uniform usampler3D USampler3D;
+uniform usamplerCube USamplerCube;
+uniform usampler1DArray USampler1DArray;
+uniform usampler2DArray USampler2DArray;
+uniform usampler2DMS USampler2DMS;
+uniform usampler2DMSArray USampler2DMSArray;
+uniform usampler2DRect USampler2DRect;
+
+// Images
+layout(rgba8) uniform image1D Image1D;
+layout(rgba8) uniform image2D Image2D;
+layout(rgba8) uniform image3D Image3D;
+layout(rgba8) uniform imageCube ImageCube;
+layout(rgba8) uniform image1DArray Image1DArray;
+layout(rgba8) uniform image2DArray Image2DArray;
+layout(rgba8) uniform image2DMS Image2DMS;
+layout(rgba8) uniform image2DMSArray Image2DMSArray;
+layout(rgba8) uniform imageBuffer ImageBuffer;
+layout(rgba8) uniform image2DRect Image2DRect;
+layout(rgba8i) uniform iimage1D IImage1D;
+layout(rgba8i) uniform iimage2D IImage2D;
+layout(rgba8i) uniform iimage3D IImage3D;
+layout(rgba8i) uniform iimageCube IImageCube;
+layout(rgba8i) uniform iimage1DArray IImage1DArray;
+layout(rgba8i) uniform iimage2DArray IImage2DArray;
+layout(rgba8i) uniform iimage2DMS IImage2DMS;
+layout(rgba8i) uniform iimage2DMSArray IImage2DMSArray;
+layout(rgba8i) uniform iimage2DRect IImage2DRect;
+layout(rgba8ui) uniform uimage1D UImage1D;
+layout(rgba8ui) uniform uimage2D UImage2D;
+layout(rgba8ui) uniform uimage3D UImage3D;
+layout(rgba8ui) uniform uimageCube UImageCube;
+layout(rgba8ui) uniform uimage1DArray UImage1DArray;
+layout(rgba8ui) uniform uimage2DArray UImage2DArray;
+layout(rgba8ui) uniform uimage2DMS UImage2DMS;
+layout(rgba8ui) uniform uimage2DMSArray UImage2DMSArray;
+layout(rgba8ui) uniform uimage2DRect UImage2DRect;
+
+// Subpass inputs.
+[[fragment]] layout(input_attachment_index = 0) uniform subpassInput SubpassInput;
+[[fragment]] layout(input_attachment_index = 1) uniform subpassInputMS SubpassInputMS;
+[[fragment]] layout(input_attachment_index = 2) uniform isubpassInput ISubpassInput;
+[[fragment]] layout(input_attachment_index = 3) uniform isubpassInputMS ISubpassInputMS;
+[[fragment]] layout(input_attachment_index = 4) uniform usubpassInput USubpassInput;
+[[fragment]] layout(input_attachment_index = 5) uniform usubpassInputMS USubpassInputMS;
+
+[[vertex]]
+void vertShader()
+{
+	gl_Position = vec4(0.0);
+}
+
+[[fragment]] out vec4 color;
+
+[[fragment]]
+void fragShader()
+{
+	color = vec4(1.0);
+}
+
+pipeline Test
+{
+	vertex = vertShader;
+	fragment = fragShader;
+}

@@ -306,10 +306,10 @@ void readMatrix(IntermediateData& data, const std::vector<std::uint32_t>& spirv,
 					data.types[id] = Type::Mat2;
 					break;
 				case 3:
-					data.types[id] = Type::Mat2x3;
+					data.types[id] = Type::Mat3x2;
 					break;
 				case 4:
-					data.types[id] = Type::Mat2x4;
+					data.types[id] = Type::Mat4x2;
 					break;
 				default:
 					assert(false);
@@ -319,13 +319,13 @@ void readMatrix(IntermediateData& data, const std::vector<std::uint32_t>& spirv,
 			switch (length)
 			{
 				case 2:
-					data.types[id] = Type::Mat3x2;
+					data.types[id] = Type::Mat2x3;
 					break;
 				case 3:
 					data.types[id] = Type::Mat3;
 					break;
 				case 4:
-					data.types[id] = Type::Mat3x4;
+					data.types[id] = Type::Mat4x3;
 					break;
 				default:
 					assert(false);
@@ -335,10 +335,10 @@ void readMatrix(IntermediateData& data, const std::vector<std::uint32_t>& spirv,
 			switch (length)
 			{
 				case 2:
-					data.types[id] = Type::Mat4x2;
+					data.types[id] = Type::Mat2x4;
 					break;
 				case 3:
-					data.types[id] = Type::Mat4x3;
+					data.types[id] = Type::Mat3x4;
 					break;
 				case 4:
 					data.types[id] = Type::Mat4;
@@ -354,10 +354,10 @@ void readMatrix(IntermediateData& data, const std::vector<std::uint32_t>& spirv,
 					data.types[id] = Type::DMat2;
 					break;
 				case 3:
-					data.types[id] = Type::DMat2x3;
+					data.types[id] = Type::DMat3x2;
 					break;
 				case 4:
-					data.types[id] = Type::DMat2x4;
+					data.types[id] = Type::DMat4x2;
 					break;
 				default:
 					assert(false);
@@ -367,13 +367,13 @@ void readMatrix(IntermediateData& data, const std::vector<std::uint32_t>& spirv,
 			switch (length)
 			{
 				case 2:
-					data.types[id] = Type::DMat3x2;
+					data.types[id] = Type::DMat2x3;
 					break;
 				case 3:
 					data.types[id] = Type::DMat3;
 					break;
 				case 4:
-					data.types[id] = Type::DMat3x4;
+					data.types[id] = Type::DMat4x3;
 					break;
 				default:
 					assert(false);
@@ -383,10 +383,10 @@ void readMatrix(IntermediateData& data, const std::vector<std::uint32_t>& spirv,
 			switch (length)
 			{
 				case 2:
-					data.types[id] = Type::DMat4x2;
+					data.types[id] = Type::DMat2x4;
 					break;
 				case 3:
-					data.types[id] = Type::DMat4x3;
+					data.types[id] = Type::DMat3x4;
 					break;
 				case 4:
 					data.types[id] = Type::DMat4;
@@ -422,7 +422,7 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 			switch (foundType->second)
 			{
 				case Type::Float:
-					if (sampled)
+					if (sampled != 2)
 					{
 						if (depth == 1)
 						{
@@ -448,7 +448,7 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 					}
 					break;
 				case Type::Int:
-					if (sampled)
+					if (sampled != 2)
 					{
 						if (array)
 							data.types[id] = Type::ISampler1DArray;
@@ -464,7 +464,7 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 					}
 					break;
 				case Type::UInt:
-					if (sampled)
+					if (sampled != 2)
 					{
 						if (array)
 							data.types[id] = Type::USampler1DArray;
@@ -491,7 +491,7 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 			switch (foundType->second)
 			{
 				case Type::Float:
-					if (sampled)
+					if (sampled != 2)
 					{
 						if (depth == 1)
 						{
@@ -538,7 +538,7 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 					}
 					break;
 				case Type::Int:
-					if (sampled)
+					if (sampled != 2)
 					{
 						if (ms)
 						{
@@ -574,7 +574,7 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 					}
 					break;
 				case Type::UInt:
-					if (sampled)
+					if (sampled != 2)
 					{
 						if (ms)
 						{
@@ -624,19 +624,19 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 			switch (foundType->second)
 			{
 				case Type::Float:
-					if (sampled)
+					if (sampled != 2)
 						data.types[id] = Type::Sampler3D;
 					else
 						data.types[id] = Type::Image3D;
 					break;
 				case Type::Int:
-					if (sampled)
+					if (sampled != 2)
 						data.types[id] = Type::ISampler3D;
 					else
 						data.types[id] = Type::IImage3D;
 					break;
 				case Type::UInt:
-					if (sampled)
+					if (sampled != 2)
 						data.types[id] = Type::USampler3D;
 					else
 						data.types[id] = Type::UImage3D;
@@ -656,7 +656,7 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 			switch (foundType->second)
 			{
 				case Type::Float:
-					if (sampled)
+					if (sampled != 2)
 					{
 						if (depth == 1)
 							data.types[id] = Type::SamplerCubeShadow;
@@ -667,13 +667,13 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 						data.types[id] = Type::ImageCube;
 					break;
 				case Type::Int:
-					if (sampled)
+					if (sampled != 2)
 						data.types[id] = Type::ISamplerCube;
 					else
 						data.types[id] = Type::IImageCube;
 					break;
 				case Type::UInt:
-					if (sampled)
+					if (sampled != 2)
 						data.types[id] = Type::USamplerCube;
 					else
 						data.types[id] = Type::UImageCube;
@@ -693,7 +693,7 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 			switch (foundType->second)
 			{
 				case Type::Float:
-					if (sampled)
+					if (sampled != 2)
 					{
 						if (depth == 1)
 							data.types[id] = Type::Sampler2DRectShadow;
@@ -704,13 +704,13 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 						data.types[id] = Type::Image2DRect;
 					break;
 				case Type::Int:
-					if (sampled)
+					if (sampled != 2)
 						data.types[id] = Type::ISampler2DRect;
 					else
 						data.types[id] = Type::IImage2DRect;
 					break;
 				case Type::UInt:
-					if (sampled)
+					if (sampled != 2)
 						data.types[id] = Type::USampler2DRect;
 					else
 						data.types[id] = Type::UImage2DRect;
@@ -725,7 +725,7 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 		{
 			assert(!ms);
 			assert(!array);
-			if (sampled)
+			if (sampled != 2)
 				data.types[id] = Type::SamplerBuffer;
 			else
 				data.types[id] = Type::ImageBuffer;
@@ -734,7 +734,7 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 		case spv::DimSubpassData:
 		{
 			assert(!array);
-			assert(!sampled);
+			assert(sampled == 2);
 			auto foundType = data.types.find(typeId);
 			assert(foundType != data.types.end());
 			switch (foundType->second)
@@ -1728,6 +1728,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 	this->column = column;
 	this->spirv = &spirv;
 
+	assert(spirv.size() > firstInstruction);
 	assert(spirv[0] == spv::MagicNumber);
 	assert(spirv[1] == spv::Version);
 	std::vector<char> tempBuffer;
@@ -2051,7 +2052,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 						std::uint32_t structIndex;
 						Type type = getType(arrayElements, structIndex, *this, data,
 							foundPointer->second);
-						if (isImage(type) || isSampledImage(type))
+						if (isImage(type) || isSampledImage(type) || isSubpassInput(type))
 							data.imageVars[id] = foundPointer->second;
 						break;
 					}

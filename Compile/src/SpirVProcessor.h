@@ -17,6 +17,7 @@
 #pragma once
 
 #include <MSL/Config.h>
+#include <MSL/Compile/Export.h>
 #include <MSL/Compile/Types.h>
 #include <cstdint>
 #include <string>
@@ -30,7 +31,7 @@ using namespace compile;
 
 class Output;
 
-class SpirVProcessor
+class MSL_COMPILE_EXPORT SpirVProcessor
 {
 public:
 	enum class Strip
