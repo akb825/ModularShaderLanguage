@@ -690,6 +690,7 @@ bool mslModule_structMember(mslStructMember* outStructMember, const mslModule* m
 	outStructMember->structIndex = member->structIndex();
 	auto arrayElements = member->arrayElements();
 	outStructMember->arrayElementCount = arrayElements ? arrayElements->size() : 0;
+	outStructMember->rowMajor = member->rowMajor();
 	return true;
 }
 

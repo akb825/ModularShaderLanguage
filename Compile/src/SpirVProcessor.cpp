@@ -96,6 +96,15 @@ struct SpirArrayInfo
 	unsigned int length;
 };
 
+struct MemberInfo
+{
+	std::uint32_t offset = unknown;
+	std::uint32_t matrixStride = unknown;
+	bool rowMajor = false;
+	std::uint32_t location = unknown;
+	std::uint32_t component = unknown;
+};
+
 struct IntermediateData
 {
 	// Names
@@ -105,8 +114,7 @@ struct IntermediateData
 	// Type info
 	std::unordered_map<std::uint32_t, std::vector<std::uint32_t>> structTypes;
 	std::unordered_map<std::uint32_t, Type> types;
-	std::unordered_map<std::uint32_t, std::vector<std::uint32_t>> memberOffsets;
-	std::unordered_map<std::uint32_t, std::vector<std::uint32_t>> matrixStrides;
+	std::unordered_map<std::uint32_t, std::vector<MemberInfo>> members;
 	std::unordered_map<std::uint32_t, std::uint32_t> intConstants;
 	std::unordered_map<std::uint32_t, SpirArrayInfo> arrayTypes;
 	std::unordered_map<std::uint32_t, std::uint32_t> arrayStrides;
@@ -118,8 +126,6 @@ struct IntermediateData
 	std::unordered_map<std::uint32_t, std::uint32_t> bindings;
 	std::unordered_map<std::uint32_t, std::uint32_t> locations;
 	std::unordered_map<std::uint32_t, std::uint32_t> components;
-	std::unordered_map<std::uint32_t, std::vector<std::uint32_t>> memberLocations;
-	std::unordered_map<std::uint32_t, std::vector<std::uint32_t>> memberComponents;
 
 	// Variable declarations
 	// Make these ordered (except for pointers) so they will be consistent across runs.
@@ -308,6 +314,7 @@ void readMatrix(IntermediateData& data, const std::vector<std::uint32_t>& spirv,
 				default:
 					assert(false);
 			}
+			break;
 		case Type::Vec3:
 			switch (length)
 			{
@@ -323,6 +330,7 @@ void readMatrix(IntermediateData& data, const std::vector<std::uint32_t>& spirv,
 				default:
 					assert(false);
 			}
+			break;
 		case Type::Vec4:
 			switch (length)
 			{
@@ -338,6 +346,7 @@ void readMatrix(IntermediateData& data, const std::vector<std::uint32_t>& spirv,
 				default:
 					assert(false);
 			}
+			break;
 		case Type::DVec2:
 			switch (length)
 			{
@@ -353,6 +362,7 @@ void readMatrix(IntermediateData& data, const std::vector<std::uint32_t>& spirv,
 				default:
 					assert(false);
 			}
+			break;
 		case Type::DVec3:
 			switch (length)
 			{
@@ -368,6 +378,7 @@ void readMatrix(IntermediateData& data, const std::vector<std::uint32_t>& spirv,
 				default:
 					assert(false);
 			}
+			break;
 		case Type::DVec4:
 			switch (length)
 			{
@@ -383,6 +394,7 @@ void readMatrix(IntermediateData& data, const std::vector<std::uint32_t>& spirv,
 				default:
 					assert(false);
 			}
+			break;
 		default:
 			assert(false);
 			break;
@@ -749,6 +761,7 @@ void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, 
 					assert(false);
 					break;
 			}
+			break;
 		}
 		default:
 			assert(false);
@@ -781,6 +794,66 @@ bool isMatrix(Type type)
 			return true;
 		default:
 			return false;
+	}
+}
+
+unsigned int getRowCount(Type type)
+{
+	switch (type)
+	{
+		case Type::Mat2:
+		case Type::Mat3x2:
+		case Type::Mat4x2:
+		case Type::DMat2:
+		case Type::DMat3x2:
+		case Type::DMat4x2:
+			return 2;
+		case Type::Mat3:
+		case Type::Mat2x3:
+		case Type::Mat4x3:
+		case Type::DMat3:
+		case Type::DMat2x3:
+		case Type::DMat4x3:
+			return 3;
+		case Type::Mat4:
+		case Type::Mat2x4:
+		case Type::Mat3x4:
+		case Type::DMat4:
+		case Type::DMat2x4:
+		case Type::DMat3x4:
+			return 4;
+		default:
+			return 0;
+	}
+}
+
+unsigned int getColumnCount(Type type)
+{
+	switch (type)
+	{
+		case Type::Mat2:
+		case Type::Mat2x3:
+		case Type::Mat2x4:
+		case Type::DMat2:
+		case Type::DMat2x3:
+		case Type::DMat2x4:
+			return 2;
+		case Type::Mat3:
+		case Type::Mat3x2:
+		case Type::Mat3x4:
+		case Type::DMat3:
+		case Type::DMat3x2:
+		case Type::DMat3x4:
+			return 3;
+		case Type::Mat4:
+		case Type::Mat4x2:
+		case Type::Mat4x3:
+		case Type::DMat4:
+		case Type::DMat4x2:
+		case Type::DMat4x3:
+			return 4;
+		default:
+			return 0;
 	}
 }
 
@@ -822,6 +895,44 @@ bool isSampledImage(Type type)
 		case Type::USampler2DMS:
 		case Type::USampler2DMSArray:
 		case Type::USampler2DRect:
+			return true;
+		default:
+			return false;
+	}
+}
+
+bool isImage(Type type)
+{
+	switch (type)
+	{
+		case Type::Image1D:
+		case Type::Image2D:
+		case Type::Image3D:
+		case Type::ImageCube:
+		case Type::Image1DArray:
+		case Type::Image2DArray:
+		case Type::Image2DMS:
+		case Type::Image2DMSArray:
+		case Type::ImageBuffer:
+		case Type::Image2DRect:
+		case Type::IImage1D:
+		case Type::IImage2D:
+		case Type::IImage3D:
+		case Type::IImageCube:
+		case Type::IImage1DArray:
+		case Type::IImage2DArray:
+		case Type::IImage2DMS:
+		case Type::IImage2DMSArray:
+		case Type::IImage2DRect:
+		case Type::UImage1D:
+		case Type::UImage2D:
+		case Type::UImage3D:
+		case Type::UImageCube:
+		case Type::UImage1DArray:
+		case Type::UImage2DArray:
+		case Type::UImage2DMS:
+		case Type::UImage2DMSArray:
+		case Type::UImage2DRect:
 			return true;
 		default:
 			return false;
@@ -872,8 +983,10 @@ Type getType(std::vector<ArrayInfo>& arrayElements, std::uint32_t& structIndex,
 		arrayElements.back().length = foundArray->second.length;
 
 		auto foundArrayStride = data.arrayStrides.find(typeId);
-		assert(foundArrayStride != data.arrayStrides.end());
-		arrayElements.back().stride = foundArrayStride->second;
+		if (foundArrayStride == data.arrayStrides.end())
+			arrayElements.back().stride = unknown;
+		else
+			arrayElements.back().stride = foundArrayStride->second;
 
 		typeId = foundArray->second.type;
 		foundArray = data.arrayTypes.find(typeId);
@@ -908,11 +1021,9 @@ Type getType(std::vector<ArrayInfo>& arrayElements, std::uint32_t& structIndex,
 	assert(foundMemberNames != data.memberNames.end());
 	assert(foundMemberNames->second.size() == foundStruct->second.size());
 
-	auto foundMemberOffsets = data.memberOffsets.find(typeId);
-	assert(foundMemberOffsets != data.memberOffsets.end());
-	assert(foundMemberOffsets->second.size() == foundStruct->second.size());
-
-	auto foundMatrixStrides = data.matrixStrides.find(typeId);
+	auto foundMembers = data.members.find(typeId);
+	assert(foundMembers == data.members.end() ||
+		foundMembers->second.size() <= foundStruct->second.size());
 
 	newStruct.size = 0;
 	newStruct.members.resize(foundStruct->second.size());
@@ -921,7 +1032,10 @@ Type getType(std::vector<ArrayInfo>& arrayElements, std::uint32_t& structIndex,
 		std::uint32_t memberTypeId = foundStruct->second[i];
 		StructMember& member = newStruct.members[i];
 		member.name = foundMemberNames->second[i];
-		member.offset = foundMemberOffsets->second[i];
+		if (foundMembers == data.members.end() || i >= foundMembers->second.size())
+			member.offset = unknown;
+		else
+			member.offset = foundMembers->second[i].offset;
 		member.type = getType(member.arrayElements, member.structIndex, processor, data,
 			memberTypeId);
 
@@ -936,17 +1050,23 @@ Type getType(std::vector<ArrayInfo>& arrayElements, std::uint32_t& structIndex,
 			else
 			{
 				auto foundArrayStride = data.arrayStrides.find(memberTypeId);
-				assert(foundArrayStride != data.arrayStrides.end());
-				member.size = foundArrayStride->second*foundArray->second.length;
+				if (foundArrayStride == data.arrayStrides.end())
+					member.size = unknown;
+				else
+					member.size = foundArrayStride->second*foundArray->second.length;
 			}
 		}
 		else if (isMatrix(member.type))
 		{
 			// Matrices have their own strides stored with the struct.
-			assert(foundMatrixStrides != data.matrixStrides.end());
-			assert(i < foundMatrixStrides->second.size());
-			assert(foundMatrixStrides->second[i] != unknown);
-			member.size = foundMatrixStrides->second[i];
+			if (foundMembers != data.members.end() && i < foundMembers->second.size())
+			{
+				member.rowMajor = foundMembers->second[i].rowMajor;
+				if (member.rowMajor)
+					member.size = foundMembers->second[i].matrixStride*getRowCount(member.type);
+				else
+					member.size = foundMembers->second[i].matrixStride*getColumnCount(member.type);
+			}
 		}
 		else
 			member.size = getTypeSize(processor, member.type, member.structIndex);
@@ -959,12 +1079,14 @@ Type getType(std::vector<ArrayInfo>& arrayElements, std::uint32_t& structIndex,
 	{
 		const StructMember& lastMember = newStruct.members.back();
 		newStruct.size = lastMember.offset;
-		if (lastMember.size != unknown)
-			newStruct.size += lastMember.size;
+		if (newStruct.size != unknown)
+		{
+			if (lastMember.size != unknown)
+				newStruct.size += lastMember.size;
 
-		// Must be a multiple of vec4.
-		const unsigned int minAlignment = sizeof(float)*4;
-		newStruct.size = ((newStruct.size + minAlignment - 1)/minAlignment)*minAlignment;
+			const unsigned int minAlignment = sizeof(float)*4;
+			newStruct.size = ((newStruct.size + minAlignment - 1)/minAlignment)*minAlignment;
+		}
 	}
 
 	assert(processor.structs.size() == processor.structIds.size());
@@ -983,10 +1105,7 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 	for (const std::pair<std::uint32_t, std::uint32_t>& uniformIndices : data.uniformVars)
 	{
 		processor.uniformIds[i] = uniformIndices.first;
-
-		auto foundPointer = data.pointers.find(uniformIndices.first);
-		assert(foundPointer != data.pointers.end());
-		std::uint32_t typeId = foundPointer->second;
+		std::uint32_t typeId = uniformIndices.second;
 
 		Uniform& uniform = processor.uniforms[i];
 		uniform.type = getType(uniform.arrayElements, uniform.structIndex, processor, data, typeId);
@@ -999,7 +1118,7 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 			uniform.name = foundName->second;
 		}
 
-		if (data.blocks.find(uniformIndices.first) != data.blocks.end())
+		if (data.blocks.find(typeId) != data.blocks.end())
 			uniform.uniformType = UniformType::Block;
 		else
 		{
@@ -1027,10 +1146,7 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 	for (const std::pair<std::uint32_t, std::uint32_t>& imageIndices : data.imageVars)
 	{
 		processor.uniformIds[i] = imageIndices.first;
-
-		auto foundPointer = data.pointers.find(imageIndices.first);
-		assert(foundPointer != data.pointers.end());
-		std::uint32_t typeId = foundPointer->second;
+		std::uint32_t typeId = imageIndices.second;
 
 		Uniform& uniform = processor.uniforms[i];
 
@@ -1078,10 +1194,7 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 	for (const std::pair<std::uint32_t, std::uint32_t>& inputOutputIndices : inputOutputVars)
 	{
 		inputOutputIds[i] = inputOutputIndices.first;
-
-		auto foundPointer = data.pointers.find(inputOutputIndices.first);
-		assert(foundPointer != data.pointers.end());
-		std::uint32_t typeId = foundPointer->second;
+		std::uint32_t typeId = inputOutputIndices.second;
 
 		SpirVProcessor::InputOutput& inputOutput = inputOutputs[i];
 
@@ -1094,7 +1207,7 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 		inputOutput.patch = data.patchVars.find(inputOutputIndices.first) != data.patchVars.end();
 		if (inputOutput.type == Type::Struct)
 		{
-			if (data.blocks.find(processor.structIds[inputOutput.structIndex]) == data.blocks.end())
+			if (data.blocks.find(typeId) == data.blocks.end())
 			{
 				output.addMessage(Output::Level::Error, processor.fileName, processor.line,
 					processor.column, false,
@@ -1140,21 +1253,15 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 
 			inputOutput.memberLocations.resize(structType.members.size(),
 				std::make_pair(unknown, 0));
-			auto foundLocations = data.memberLocations.find(
-				processor.structIds[inputOutput.structIndex]);
-			if (foundLocations != data.memberLocations.end())
+			auto foundMembers = data.members.find(processor.structIds[inputOutput.structIndex]);
+			if (foundMembers != data.members.end())
 			{
-				auto foundComponents = data.memberComponents.find(
-					processor.structIds[inputOutput.structIndex]);
-				assert(foundLocations->second.size() <= inputOutput.memberLocations.size());
-				for (std::size_t j = 0; j < foundLocations->second.size(); ++j)
+				assert(foundMembers->second.size() <= inputOutput.memberLocations.size());
+				for (std::size_t j = 0; j < foundMembers->second.size(); ++j)
 				{
-					inputOutput.memberLocations[j].first = foundLocations->second[j];
-					if (foundComponents != data.memberComponents.end() &&
-						j < foundComponents->second.size())
-					{
-						inputOutput.memberLocations[j].second = foundComponents->second[j];
-					}
+					inputOutput.memberLocations[j].first = foundMembers->second[j].location;
+					if (foundMembers->second[j].component != unknown)
+						inputOutput.memberLocations[j].second = foundMembers->second[j].component;
 				}
 			}
 
@@ -1709,37 +1816,53 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 					case spv::DecorationOffset:
 					{
 						assert(wordCount == 5);
-						std::vector<std::uint32_t>& thisMemberOffsets = data.memberOffsets[id];
-						if (thisMemberOffsets.size() <= member)
-							thisMemberOffsets.resize(member + 1, unknown);
-						thisMemberOffsets[member] = spirv[i + 4];
+						std::vector<MemberInfo>& memberInfo = data.members[id];
+						if (memberInfo.size() <= member)
+							memberInfo.resize(member + 1);
+						memberInfo[member].offset = spirv[i + 4];
 						break;
 					}
 					case spv::DecorationMatrixStride:
 					{
 						assert(wordCount == 5);
-						std::vector<std::uint32_t>& thisMemberStrides = data.matrixStrides[id];
-						if (thisMemberStrides.size() <= member)
-							thisMemberStrides.resize(member + 1, unknown);
-						thisMemberStrides[member] = spirv[i + 4];
+						std::vector<MemberInfo>& memberInfo = data.members[id];
+						if (memberInfo.size() <= member)
+							memberInfo.resize(member + 1);
+						memberInfo[member].matrixStride = spirv[i + 4];
 						break;
 					}
 					case spv::DecorationLocation:
 					{
 						assert(wordCount == 5);
-						std::vector<std::uint32_t>& thisMemberLocations = data.memberLocations[id];
-						if (thisMemberLocations.size() <= member)
-							thisMemberLocations.resize(member + 1, unknown);
-						thisMemberLocations[member] = spirv[i + 4];
+						std::vector<MemberInfo>& memberInfo = data.members[id];
+						if (memberInfo.size() <= member)
+							memberInfo.resize(member + 1);
+						memberInfo[member].location = spirv[i + 4];
 						break;
 					}
 					case spv::DecorationComponent:
 					{
 						assert(wordCount == 5);
-						std::vector<std::uint32_t>& thisMemberComponents = data.memberComponents[id];
-						if (thisMemberComponents.size() <= member)
-							thisMemberComponents.resize(member + 1, unknown);
-						thisMemberComponents[member] = spirv[i + 4];
+						std::vector<MemberInfo>& memberInfo = data.members[id];
+						if (memberInfo.size() <= member)
+							memberInfo.resize(member + 1);
+						memberInfo[member].component = spirv[i + 4];
+						break;
+					}
+					case spv::DecorationRowMajor:
+					{
+						std::vector<MemberInfo>& memberInfo = data.members[id];
+						if (memberInfo.size() <= member)
+							memberInfo.resize(member + 1);
+						memberInfo[member].rowMajor = true;
+						break;
+					}
+					case spv::DecorationColMajor:
+					{
+						std::vector<MemberInfo>& memberInfo = data.members[id];
+						if (memberInfo.size() <= member)
+							memberInfo.resize(member + 1);
+						memberInfo[member].rowMajor = false;
 						break;
 					}
 				}
@@ -1848,6 +1971,16 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 			case spv::OpTypeImage:
 				readImage(data, spirv, i, wordCount);
 				break;
+			case spv::OpTypeSampledImage:
+			{
+				assert(wordCount >= 3);
+				std::uint32_t id = spirv[i + 1];
+				std::uint32_t typeId = spirv[i + 2];
+				auto foundType = data.types.find(typeId);
+				assert(foundType != data.types.end());
+				data.types[id] = foundType->second;
+				break;
+			}
 			case spv::OpTypePointer:
 			{
 				assert(wordCount == 4);
@@ -1859,11 +1992,14 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 					case spv::StorageClassOutput:
 					case spv::StorageClassUniform:
 					case spv::StorageClassImage:
+					case spv::StorageClassUniformConstant:
 					case spv::StorageClassPushConstant:
-						assert(data.types.find(type) != data.types.end() ||
+						if (data.types.find(type) != data.types.end() ||
 							data.arrayTypes.find(type) != data.arrayTypes.end() ||
-							data.structTypes.find(type) != data.structTypes.end());
-						data.pointers[id] = type;
+							data.structTypes.find(type) != data.structTypes.end())
+						{
+							data.pointers[id] = type;
+						}
 						break;
 					default:
 						break;
@@ -1907,6 +2043,18 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 						data.imageVars[id] = foundPointer->second;
 						break;
 					}
+					case spv::StorageClassUniformConstant:
+					{
+						auto foundPointer = data.pointers.find(pointerType);
+						assert(foundPointer != data.pointers.end());
+						std::vector<ArrayInfo> arrayElements;
+						std::uint32_t structIndex;
+						Type type = getType(arrayElements, structIndex, *this, data,
+							foundPointer->second);
+						if (isImage(type) || isSampledImage(type))
+							data.imageVars[id] = foundPointer->second;
+						break;
+					}
 					case spv::StorageClassPushConstant:
 					{
 						auto foundPointer = data.pointers.find(pointerType);
@@ -1918,6 +2066,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 					default:
 						break;
 				}
+				break;
 			}
 
 			// Don't care once we reach the function section.

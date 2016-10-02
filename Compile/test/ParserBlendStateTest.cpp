@@ -36,7 +36,7 @@ TEST(ParserBlendStateTest, LogicalOpEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::True, pipelines[0].renderState.blendState.logicalOpEnable);
+		EXPECT_EQ(Bool::True, pipelines[0].renderState.blendState.logicalOpEnable);
 	}
 
 	{
@@ -49,7 +49,7 @@ TEST(ParserBlendStateTest, LogicalOpEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::False, pipelines[0].renderState.blendState.logicalOpEnable);
+		EXPECT_EQ(Bool::False, pipelines[0].renderState.blendState.logicalOpEnable);
 	}
 
 	{
@@ -81,7 +81,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::LogicOp::Clear, pipelines[0].renderState.blendState.logicalOp);
+		EXPECT_EQ(LogicOp::Clear, pipelines[0].renderState.blendState.logicalOp);
 	}
 
 	{
@@ -94,7 +94,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::LogicOp::And, pipelines[0].renderState.blendState.logicalOp);
+		EXPECT_EQ(LogicOp::And, pipelines[0].renderState.blendState.logicalOp);
 	}
 
 	{
@@ -107,7 +107,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::LogicOp::AndReverse, pipelines[0].renderState.blendState.logicalOp);
+		EXPECT_EQ(LogicOp::AndReverse, pipelines[0].renderState.blendState.logicalOp);
 	}
 
 	{
@@ -120,7 +120,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::LogicOp::Copy, pipelines[0].renderState.blendState.logicalOp);
+		EXPECT_EQ(LogicOp::Copy, pipelines[0].renderState.blendState.logicalOp);
 	}
 
 	{
@@ -133,7 +133,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::LogicOp::AndInverted, pipelines[0].renderState.blendState.logicalOp);
+		EXPECT_EQ(LogicOp::AndInverted, pipelines[0].renderState.blendState.logicalOp);
 	}
 
 	{
@@ -146,7 +146,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::LogicOp::NoOp, pipelines[0].renderState.blendState.logicalOp);
+		EXPECT_EQ(LogicOp::NoOp, pipelines[0].renderState.blendState.logicalOp);
 	}
 
 	{
@@ -159,7 +159,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::LogicOp::Xor, pipelines[0].renderState.blendState.logicalOp);
+		EXPECT_EQ(LogicOp::Xor, pipelines[0].renderState.blendState.logicalOp);
 	}
 
 	{
@@ -172,7 +172,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::LogicOp::Or, pipelines[0].renderState.blendState.logicalOp);
+		EXPECT_EQ(LogicOp::Or, pipelines[0].renderState.blendState.logicalOp);
 	}
 
 	{
@@ -185,7 +185,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::LogicOp::Nor, pipelines[0].renderState.blendState.logicalOp);
+		EXPECT_EQ(LogicOp::Nor, pipelines[0].renderState.blendState.logicalOp);
 	}
 
 	{
@@ -198,7 +198,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::LogicOp::Equivalent, pipelines[0].renderState.blendState.logicalOp);
+		EXPECT_EQ(LogicOp::Equivalent, pipelines[0].renderState.blendState.logicalOp);
 	}
 
 	{
@@ -211,7 +211,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::LogicOp::Invert, pipelines[0].renderState.blendState.logicalOp);
+		EXPECT_EQ(LogicOp::Invert, pipelines[0].renderState.blendState.logicalOp);
 	}
 
 	{
@@ -224,7 +224,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::LogicOp::OrReverse, pipelines[0].renderState.blendState.logicalOp);
+		EXPECT_EQ(LogicOp::OrReverse, pipelines[0].renderState.blendState.logicalOp);
 	}
 
 	{
@@ -237,7 +237,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::LogicOp::CopyInverted, pipelines[0].renderState.blendState.logicalOp);
+		EXPECT_EQ(LogicOp::CopyInverted, pipelines[0].renderState.blendState.logicalOp);
 	}
 
 	{
@@ -250,7 +250,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::LogicOp::OrInverted, pipelines[0].renderState.blendState.logicalOp);
+		EXPECT_EQ(LogicOp::OrInverted, pipelines[0].renderState.blendState.logicalOp);
 	}
 
 	{
@@ -263,7 +263,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::LogicOp::Nand, pipelines[0].renderState.blendState.logicalOp);
+		EXPECT_EQ(LogicOp::Nand, pipelines[0].renderState.blendState.logicalOp);
 	}
 
 	{
@@ -276,7 +276,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::LogicOp::Set, pipelines[0].renderState.blendState.logicalOp);
+		EXPECT_EQ(LogicOp::Set, pipelines[0].renderState.blendState.logicalOp);
 	}
 
 	{
@@ -308,8 +308,7 @@ TEST(ParserBlendStateTest, SeparateAttachmentBlendingEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::True,
-			pipelines[0].renderState.blendState.separateAttachmentBlendingEnable);
+		EXPECT_EQ(Bool::True, pipelines[0].renderState.blendState.separateAttachmentBlendingEnable);
 	}
 
 	{
@@ -322,7 +321,7 @@ TEST(ParserBlendStateTest, SeparateAttachmentBlendingEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::False,
+		EXPECT_EQ(Bool::False,
 			pipelines[0].renderState.blendState.separateAttachmentBlendingEnable);
 	}
 
@@ -355,7 +354,7 @@ TEST(ParserBlendStateTest, BlendEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::True,
+		EXPECT_EQ(Bool::True,
 			pipelines[0].renderState.blendState.blendAttachments[0].blendEnable);
 	}
 
@@ -369,7 +368,7 @@ TEST(ParserBlendStateTest, BlendEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::False,
+		EXPECT_EQ(Bool::False,
 			pipelines[0].renderState.blendState.blendAttachments[0].blendEnable);
 	}
 
@@ -402,9 +401,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Zero,
+		EXPECT_EQ(BlendFactor::Zero,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -418,9 +417,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::One,
+		EXPECT_EQ(BlendFactor::One,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -434,9 +433,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::SrcColor,
+		EXPECT_EQ(BlendFactor::SrcColor,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -450,9 +449,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::OneMinusSrcColor,
+		EXPECT_EQ(BlendFactor::OneMinusSrcColor,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -466,9 +465,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::DstColor,
+		EXPECT_EQ(BlendFactor::DstColor,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -482,9 +481,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::OneMinusDstColor,
+		EXPECT_EQ(BlendFactor::OneMinusDstColor,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -498,9 +497,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::SrcAlpha,
+		EXPECT_EQ(BlendFactor::SrcAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -514,9 +513,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::OneMinusSrcAlpha,
+		EXPECT_EQ(BlendFactor::OneMinusSrcAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -530,9 +529,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::DstAlpha,
+		EXPECT_EQ(BlendFactor::DstAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -546,9 +545,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::OneMinusDstAlpha,
+		EXPECT_EQ(BlendFactor::OneMinusDstAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -562,9 +561,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::ConstColor,
+		EXPECT_EQ(BlendFactor::ConstColor,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -578,9 +577,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::OneMinusConstColor,
+		EXPECT_EQ(BlendFactor::OneMinusConstColor,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -594,9 +593,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::ConstAlpha,
+		EXPECT_EQ(BlendFactor::ConstAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -610,9 +609,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::OneMinusConstAlpha,
+		EXPECT_EQ(BlendFactor::OneMinusConstAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -626,9 +625,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::SrcAlphaSaturate,
+		EXPECT_EQ(BlendFactor::SrcAlphaSaturate,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -642,9 +641,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Src1Color,
+		EXPECT_EQ(BlendFactor::Src1Color,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -658,9 +657,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::OneMinusSrc1Color,
+		EXPECT_EQ(BlendFactor::OneMinusSrc1Color,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -674,9 +673,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Src1Alpha,
+		EXPECT_EQ(BlendFactor::Src1Alpha,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -690,9 +689,9 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::OneMinusSrc1Alpha,
+		EXPECT_EQ(BlendFactor::OneMinusSrc1Alpha,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -725,9 +724,9 @@ TEST(ParserBlendStateTest, DstColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Zero,
+		EXPECT_EQ(BlendFactor::Zero,
 			pipelines[0].renderState.blendState.blendAttachments[0].dstColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].dstAlphaBlendFactor);
 	}
 
@@ -741,9 +740,9 @@ TEST(ParserBlendStateTest, DstColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::OneMinusDstColor,
+		EXPECT_EQ(BlendFactor::OneMinusDstColor,
 			pipelines[0].renderState.blendState.blendAttachments[0].dstColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].dstAlphaBlendFactor);
 	}
 
@@ -776,9 +775,9 @@ TEST(ParseBlendStateTest, ColorBlendOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendOp::Add,
+		EXPECT_EQ(BlendOp::Add,
 			pipelines[0].renderState.blendState.blendAttachments[0].colorBlendOp);
-		EXPECT_EQ(Parser::BlendOp::Unset,
+		EXPECT_EQ(BlendOp::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].alphaBlendOp);
 	}
 
@@ -792,9 +791,9 @@ TEST(ParseBlendStateTest, ColorBlendOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendOp::Subtract,
+		EXPECT_EQ(BlendOp::Subtract,
 			pipelines[0].renderState.blendState.blendAttachments[0].colorBlendOp);
-		EXPECT_EQ(Parser::BlendOp::Unset,
+		EXPECT_EQ(BlendOp::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].alphaBlendOp);
 	}
 
@@ -808,9 +807,9 @@ TEST(ParseBlendStateTest, ColorBlendOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendOp::ReverseSubtract,
+		EXPECT_EQ(BlendOp::ReverseSubtract,
 			pipelines[0].renderState.blendState.blendAttachments[0].colorBlendOp);
-		EXPECT_EQ(Parser::BlendOp::Unset,
+		EXPECT_EQ(BlendOp::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].alphaBlendOp);
 	}
 
@@ -824,9 +823,9 @@ TEST(ParseBlendStateTest, ColorBlendOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendOp::Min,
+		EXPECT_EQ(BlendOp::Min,
 			pipelines[0].renderState.blendState.blendAttachments[0].colorBlendOp);
-		EXPECT_EQ(Parser::BlendOp::Unset,
+		EXPECT_EQ(BlendOp::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].alphaBlendOp);
 	}
 
@@ -840,9 +839,9 @@ TEST(ParseBlendStateTest, ColorBlendOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendOp::Max,
+		EXPECT_EQ(BlendOp::Max,
 			pipelines[0].renderState.blendState.blendAttachments[0].colorBlendOp);
-		EXPECT_EQ(Parser::BlendOp::Unset,
+		EXPECT_EQ(BlendOp::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].alphaBlendOp);
 	}
 
@@ -875,9 +874,9 @@ TEST(ParserBlendStateTest, SrcAlphaBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Zero,
+		EXPECT_EQ(BlendFactor::Zero,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -891,9 +890,9 @@ TEST(ParserBlendStateTest, SrcAlphaBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::OneMinusSrcAlpha,
+		EXPECT_EQ(BlendFactor::OneMinusSrcAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -926,9 +925,9 @@ TEST(ParserBlendStateTest, DstAlphaBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].dstColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Zero,
+		EXPECT_EQ(BlendFactor::Zero,
 			pipelines[0].renderState.blendState.blendAttachments[0].dstAlphaBlendFactor);
 	}
 
@@ -942,9 +941,9 @@ TEST(ParserBlendStateTest, DstAlphaBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].dstColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::OneMinusDstAlpha,
+		EXPECT_EQ(BlendFactor::OneMinusDstAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[0].dstAlphaBlendFactor);
 	}
 
@@ -977,9 +976,9 @@ TEST(ParseBlendStateTest, AlphaBlendOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendOp::Unset,
+		EXPECT_EQ(BlendOp::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].colorBlendOp);
-		EXPECT_EQ(Parser::BlendOp::Add,
+		EXPECT_EQ(BlendOp::Add,
 			pipelines[0].renderState.blendState.blendAttachments[0].alphaBlendOp);
 	}
 
@@ -993,9 +992,9 @@ TEST(ParseBlendStateTest, AlphaBlendOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendOp::Unset,
+		EXPECT_EQ(BlendOp::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[0].colorBlendOp);
-		EXPECT_EQ(Parser::BlendOp::ReverseSubtract,
+		EXPECT_EQ(BlendOp::ReverseSubtract,
 			pipelines[0].renderState.blendState.blendAttachments[0].alphaBlendOp);
 	}
 
@@ -1028,9 +1027,9 @@ TEST(ParserBlendStateTest, SrcBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Zero,
+		EXPECT_EQ(BlendFactor::Zero,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Zero,
+		EXPECT_EQ(BlendFactor::Zero,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -1044,9 +1043,9 @@ TEST(ParserBlendStateTest, SrcBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::OneMinusSrcAlpha,
+		EXPECT_EQ(BlendFactor::OneMinusSrcAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::OneMinusSrcAlpha,
+		EXPECT_EQ(BlendFactor::OneMinusSrcAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
 	}
 
@@ -1079,9 +1078,9 @@ TEST(ParserBlendStateTest, DstBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Zero,
+		EXPECT_EQ(BlendFactor::Zero,
 			pipelines[0].renderState.blendState.blendAttachments[0].dstColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Zero,
+		EXPECT_EQ(BlendFactor::Zero,
 			pipelines[0].renderState.blendState.blendAttachments[0].dstAlphaBlendFactor);
 	}
 
@@ -1095,9 +1094,9 @@ TEST(ParserBlendStateTest, DstBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::OneMinusSrcAlpha,
+		EXPECT_EQ(BlendFactor::OneMinusSrcAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[0].dstColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::OneMinusSrcAlpha,
+		EXPECT_EQ(BlendFactor::OneMinusSrcAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[0].dstAlphaBlendFactor);
 	}
 
@@ -1130,9 +1129,9 @@ TEST(ParseBlendStateTest, BlendOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendOp::Add,
+		EXPECT_EQ(BlendOp::Add,
 			pipelines[0].renderState.blendState.blendAttachments[0].colorBlendOp);
-		EXPECT_EQ(Parser::BlendOp::Add,
+		EXPECT_EQ(BlendOp::Add,
 			pipelines[0].renderState.blendState.blendAttachments[0].alphaBlendOp);
 	}
 
@@ -1146,9 +1145,9 @@ TEST(ParseBlendStateTest, BlendOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendOp::ReverseSubtract,
+		EXPECT_EQ(BlendOp::ReverseSubtract,
 			pipelines[0].renderState.blendState.blendAttachments[0].colorBlendOp);
-		EXPECT_EQ(Parser::BlendOp::ReverseSubtract,
+		EXPECT_EQ(BlendOp::ReverseSubtract,
 			pipelines[0].renderState.blendState.blendAttachments[0].alphaBlendOp);
 	}
 
@@ -1181,7 +1180,7 @@ TEST(ParseBlendStateTest, ColorWriteMask)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::ColorMaskNone,
+		EXPECT_EQ(ColorMaskNone,
 			pipelines[0].renderState.blendState.blendAttachments[0].colorWriteMask);
 	}
 
@@ -1195,7 +1194,7 @@ TEST(ParseBlendStateTest, ColorWriteMask)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::ColorMaskRed,
+		EXPECT_EQ(ColorMaskRed,
 			pipelines[0].renderState.blendState.blendAttachments[0].colorWriteMask);
 	}
 
@@ -1209,7 +1208,7 @@ TEST(ParseBlendStateTest, ColorWriteMask)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::ColorMaskGreen,
+		EXPECT_EQ(ColorMaskGreen,
 			pipelines[0].renderState.blendState.blendAttachments[0].colorWriteMask);
 	}
 
@@ -1223,7 +1222,7 @@ TEST(ParseBlendStateTest, ColorWriteMask)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::ColorMaskBlue,
+		EXPECT_EQ(ColorMaskBlue,
 			pipelines[0].renderState.blendState.blendAttachments[0].colorWriteMask);
 	}
 
@@ -1237,7 +1236,7 @@ TEST(ParseBlendStateTest, ColorWriteMask)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::ColorMaskAlpha,
+		EXPECT_EQ(ColorMaskAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[0].colorWriteMask);
 	}
 
@@ -1251,8 +1250,8 @@ TEST(ParseBlendStateTest, ColorWriteMask)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::ColorMaskRed | Parser::ColorMaskGreen | Parser::ColorMaskBlue |
-			Parser::ColorMaskAlpha,
+		EXPECT_EQ(ColorMaskRed | ColorMaskGreen | ColorMaskBlue |
+			ColorMaskAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[0].colorWriteMask);
 	}
 
@@ -1285,7 +1284,7 @@ TEST(ParserBlendStateTest, AttachmentBlendEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::True,
+		EXPECT_EQ(Bool::True,
 			pipelines[0].renderState.blendState.blendAttachments[3].blendEnable);
 	}
 
@@ -1299,7 +1298,7 @@ TEST(ParserBlendStateTest, AttachmentBlendEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::False,
+		EXPECT_EQ(Bool::False,
 			pipelines[0].renderState.blendState.blendAttachments[3].blendEnable);
 	}
 
@@ -1332,9 +1331,9 @@ TEST(ParserBlendStateTest, AttachmentSrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Zero,
+		EXPECT_EQ(BlendFactor::Zero,
 			pipelines[0].renderState.blendState.blendAttachments[3].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[3].srcAlphaBlendFactor);
 	}
 
@@ -1348,9 +1347,9 @@ TEST(ParserBlendStateTest, AttachmentSrcColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::OneMinusSrcAlpha,
+		EXPECT_EQ(BlendFactor::OneMinusSrcAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[3].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[3].srcAlphaBlendFactor);
 	}
 
@@ -1383,9 +1382,9 @@ TEST(ParserBlendStateTest, AttachmentDstColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Zero,
+		EXPECT_EQ(BlendFactor::Zero,
 			pipelines[0].renderState.blendState.blendAttachments[3].dstColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[3].dstAlphaBlendFactor);
 	}
 
@@ -1399,9 +1398,9 @@ TEST(ParserBlendStateTest, AttachmentDstColorBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::OneMinusDstColor,
+		EXPECT_EQ(BlendFactor::OneMinusDstColor,
 			pipelines[0].renderState.blendState.blendAttachments[3].dstColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[3].dstAlphaBlendFactor);
 	}
 
@@ -1434,9 +1433,9 @@ TEST(ParseBlendStateTest, AttachmentColorBlendOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendOp::Add,
+		EXPECT_EQ(BlendOp::Add,
 			pipelines[0].renderState.blendState.blendAttachments[3].colorBlendOp);
-		EXPECT_EQ(Parser::BlendOp::Unset,
+		EXPECT_EQ(BlendOp::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[3].alphaBlendOp);
 	}
 
@@ -1450,9 +1449,9 @@ TEST(ParseBlendStateTest, AttachmentColorBlendOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendOp::ReverseSubtract,
+		EXPECT_EQ(BlendOp::ReverseSubtract,
 			pipelines[0].renderState.blendState.blendAttachments[3].colorBlendOp);
-		EXPECT_EQ(Parser::BlendOp::Unset,
+		EXPECT_EQ(BlendOp::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[3].alphaBlendOp);
 	}
 
@@ -1485,9 +1484,9 @@ TEST(ParserBlendStateTest, AttachmentSrcAlphaBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[3].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Zero,
+		EXPECT_EQ(BlendFactor::Zero,
 			pipelines[0].renderState.blendState.blendAttachments[3].srcAlphaBlendFactor);
 	}
 
@@ -1501,9 +1500,9 @@ TEST(ParserBlendStateTest, AttachmentSrcAlphaBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[3].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::OneMinusSrcAlpha,
+		EXPECT_EQ(BlendFactor::OneMinusSrcAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[3].srcAlphaBlendFactor);
 	}
 
@@ -1536,9 +1535,9 @@ TEST(ParserBlendStateTest, AttachmentDstAlphaBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[3].dstColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Zero,
+		EXPECT_EQ(BlendFactor::Zero,
 			pipelines[0].renderState.blendState.blendAttachments[3].dstAlphaBlendFactor);
 	}
 
@@ -1552,9 +1551,9 @@ TEST(ParserBlendStateTest, AttachmentDstAlphaBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Unset,
+		EXPECT_EQ(BlendFactor::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[3].dstColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::OneMinusDstAlpha,
+		EXPECT_EQ(BlendFactor::OneMinusDstAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[3].dstAlphaBlendFactor);
 	}
 
@@ -1587,9 +1586,9 @@ TEST(ParseBlendStateTest, AttachmentAlphaBlendOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendOp::Unset,
+		EXPECT_EQ(BlendOp::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[3].colorBlendOp);
-		EXPECT_EQ(Parser::BlendOp::Add,
+		EXPECT_EQ(BlendOp::Add,
 			pipelines[0].renderState.blendState.blendAttachments[3].alphaBlendOp);
 	}
 
@@ -1603,9 +1602,9 @@ TEST(ParseBlendStateTest, AttachmentAlphaBlendOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendOp::Unset,
+		EXPECT_EQ(BlendOp::Unset,
 			pipelines[0].renderState.blendState.blendAttachments[3].colorBlendOp);
-		EXPECT_EQ(Parser::BlendOp::ReverseSubtract,
+		EXPECT_EQ(BlendOp::ReverseSubtract,
 			pipelines[0].renderState.blendState.blendAttachments[3].alphaBlendOp);
 	}
 
@@ -1638,9 +1637,9 @@ TEST(ParserBlendStateTest, AttachmentSrcBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Zero,
+		EXPECT_EQ(BlendFactor::Zero,
 			pipelines[0].renderState.blendState.blendAttachments[3].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Zero,
+		EXPECT_EQ(BlendFactor::Zero,
 			pipelines[0].renderState.blendState.blendAttachments[3].srcAlphaBlendFactor);
 	}
 
@@ -1654,9 +1653,9 @@ TEST(ParserBlendStateTest, AttachmentSrcBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::OneMinusSrcAlpha,
+		EXPECT_EQ(BlendFactor::OneMinusSrcAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[3].srcColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::OneMinusSrcAlpha,
+		EXPECT_EQ(BlendFactor::OneMinusSrcAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[3].srcAlphaBlendFactor);
 	}
 
@@ -1689,9 +1688,9 @@ TEST(ParserBlendStateTest, AttachmentDstBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::Zero,
+		EXPECT_EQ(BlendFactor::Zero,
 			pipelines[0].renderState.blendState.blendAttachments[3].dstColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::Zero,
+		EXPECT_EQ(BlendFactor::Zero,
 			pipelines[0].renderState.blendState.blendAttachments[3].dstAlphaBlendFactor);
 	}
 
@@ -1705,9 +1704,9 @@ TEST(ParserBlendStateTest, AttachmentDstBlendFactor)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendFactor::OneMinusSrcAlpha,
+		EXPECT_EQ(BlendFactor::OneMinusSrcAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[3].dstColorBlendFactor);
-		EXPECT_EQ(Parser::BlendFactor::OneMinusSrcAlpha,
+		EXPECT_EQ(BlendFactor::OneMinusSrcAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[3].dstAlphaBlendFactor);
 	}
 
@@ -1740,9 +1739,9 @@ TEST(ParseBlendStateTest, AttachmentBlendOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendOp::Add,
+		EXPECT_EQ(BlendOp::Add,
 			pipelines[0].renderState.blendState.blendAttachments[3].colorBlendOp);
-		EXPECT_EQ(Parser::BlendOp::Add,
+		EXPECT_EQ(BlendOp::Add,
 			pipelines[0].renderState.blendState.blendAttachments[3].alphaBlendOp);
 	}
 
@@ -1756,9 +1755,9 @@ TEST(ParseBlendStateTest, AttachmentBlendOp)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::BlendOp::ReverseSubtract,
+		EXPECT_EQ(BlendOp::ReverseSubtract,
 			pipelines[0].renderState.blendState.blendAttachments[3].colorBlendOp);
-		EXPECT_EQ(Parser::BlendOp::ReverseSubtract,
+		EXPECT_EQ(BlendOp::ReverseSubtract,
 			pipelines[0].renderState.blendState.blendAttachments[3].alphaBlendOp);
 	}
 
@@ -1791,7 +1790,7 @@ TEST(ParseBlendStateTest, AttachmentColorWriteMask)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::ColorMaskNone,
+		EXPECT_EQ(ColorMaskNone,
 			pipelines[0].renderState.blendState.blendAttachments[3].colorWriteMask);
 	}
 
@@ -1805,8 +1804,8 @@ TEST(ParseBlendStateTest, AttachmentColorWriteMask)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::ColorMaskRed | Parser::ColorMaskGreen | Parser::ColorMaskBlue |
-			Parser::ColorMaskAlpha,
+		EXPECT_EQ(ColorMaskRed | ColorMaskGreen | ColorMaskBlue |
+			ColorMaskAlpha,
 			pipelines[0].renderState.blendState.blendAttachments[3].colorWriteMask);
 	}
 

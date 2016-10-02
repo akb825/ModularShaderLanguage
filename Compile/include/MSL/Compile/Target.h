@@ -412,9 +412,9 @@ protected:
 	 *     original entry point name.
 	 * @return False if the compilation failed.
 	 */
-	virtual bool crossCompile(std::vector<std::uint8_t>& data, Output& output, const std::string& fileName, std::size_t line,
-		std::size_t column, compile::Stage stage, const std::vector<std::uint32_t>& spirv,
-		const std::string& entryPoint) = 0;
+	virtual bool crossCompile(std::vector<std::uint8_t>& data, Output& output,
+		const std::string& fileName, std::size_t line, std::size_t column, compile::Stage stage,
+		const std::vector<std::uint32_t>& spirv, const std::string& entryPoint) = 0;
 
 	/**
 	 * @brief Gets the shared data for the compiled shader.

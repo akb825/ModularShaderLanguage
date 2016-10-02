@@ -130,7 +130,8 @@ bool CompiledResult::save(std::ostream& stream) const
 				structMembers[k] = mslb::CreateStructMember(builder,
 					builder.CreateString(member.name), member.offset, member.size,
 					static_cast<mslb::Type>(member.type), member.structIndex,
-					arrayElements.empty() ? 0 : builder.CreateVectorOfStructs(arrayElements));
+					arrayElements.empty() ? 0 : builder.CreateVectorOfStructs(arrayElements),
+					member.rowMajor);
 			}
 
 			structs[j] = mslb::CreateStruct(builder, builder.CreateString(pipelineStruct.name),

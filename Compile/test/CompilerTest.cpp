@@ -54,12 +54,12 @@ TEST_F(CompilerTest, CompleteShader)
 	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
 	Compiler::Stages stages;
 	bool compiledStage = false;
-	for (unsigned int i = 0; i < Parser::stageCount; ++i)
+	for (unsigned int i = 0; i < stageCount; ++i)
 	{
 		if (pipeline.entryPoints[i].empty())
 			continue;
 
-		auto stage = static_cast<Parser::Stage>(i);
+		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
@@ -72,13 +72,12 @@ TEST_F(CompilerTest, CompleteShader)
 	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
 
 	bool assembledStage = false;
-	for (unsigned int i = 0; i < Parser::stageCount; ++i)
+	for (unsigned int i = 0; i < stageCount; ++i)
 	{
 		if (!stages.shaders[i])
 			continue;
 
-		EXPECT_FALSE(Compiler::assemble(output, program, static_cast<Parser::Stage>(i),
-			pipeline).empty());
+		EXPECT_FALSE(Compiler::assemble(output, program, static_cast<Stage>(i), pipeline).empty());
 		assembledStage = true;
 	}
 	EXPECT_TRUE(assembledStage);
@@ -101,7 +100,7 @@ TEST_F(CompilerTest, CompileError)
 	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
 	Compiler::Stages stages;
 
-	auto stage = Parser::Stage::Fragment;
+	auto stage = Stage::Fragment;
 	std::vector<Parser::LineMapping> lineMappings;
 	std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 	EXPECT_FALSE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
@@ -131,7 +130,7 @@ TEST_F(CompilerTest, CompileWarning)
 	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
 	Compiler::Stages stages;
 
-	auto stage = Parser::Stage::Fragment;
+	auto stage = Stage::Fragment;
 	std::vector<Parser::LineMapping> lineMappings;
 	std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 	EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
@@ -161,12 +160,12 @@ TEST_F(CompilerTest, LinkerError)
 	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
 	Compiler::Stages stages;
 	bool compiledStage = false;
-	for (unsigned int i = 0; i < Parser::stageCount; ++i)
+	for (unsigned int i = 0; i < stageCount; ++i)
 	{
 		if (pipeline.entryPoints[i].empty())
 			continue;
 
-		auto stage = static_cast<Parser::Stage>(i);
+		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,

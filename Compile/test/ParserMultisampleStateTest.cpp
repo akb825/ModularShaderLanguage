@@ -36,8 +36,7 @@ TEST(ParserMultisampleStateTest, SampledShadingEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::True,
-			pipelines[0].renderState.multisampleState.sampleShadingEnable);
+		EXPECT_EQ(Bool::True, pipelines[0].renderState.multisampleState.sampleShadingEnable);
 	}
 
 	{
@@ -50,8 +49,7 @@ TEST(ParserMultisampleStateTest, SampledShadingEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::False,
-			pipelines[0].renderState.multisampleState.sampleShadingEnable);
+		EXPECT_EQ(Bool::False, pipelines[0].renderState.multisampleState.sampleShadingEnable);
 	}
 
 	{
@@ -191,8 +189,7 @@ TEST(ParserMultisampleStateTest, AlphaToCoverageEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::True,
-			pipelines[0].renderState.multisampleState.alphaToCoverageEnable);
+		EXPECT_EQ(Bool::True, pipelines[0].renderState.multisampleState.alphaToCoverageEnable);
 	}
 
 	{
@@ -205,8 +202,7 @@ TEST(ParserMultisampleStateTest, AlphaToCoverageEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::False,
-			pipelines[0].renderState.multisampleState.alphaToCoverageEnable);
+		EXPECT_EQ(Bool::False, pipelines[0].renderState.multisampleState.alphaToCoverageEnable);
 	}
 
 	{
@@ -238,8 +234,7 @@ TEST(ParserMultisampleStateTest, AlphaToOneEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::True,
-			pipelines[0].renderState.multisampleState.alphaToOneEnable);
+		EXPECT_EQ(Bool::True, pipelines[0].renderState.multisampleState.alphaToOneEnable);
 	}
 
 	{
@@ -252,8 +247,7 @@ TEST(ParserMultisampleStateTest, AlphaToOneEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::False,
-			pipelines[0].renderState.multisampleState.alphaToOneEnable);
+		EXPECT_EQ(Bool::False, pipelines[0].renderState.multisampleState.alphaToOneEnable);
 	}
 
 	{

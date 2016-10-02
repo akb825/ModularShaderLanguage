@@ -823,7 +823,8 @@ struct StructMember FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_SIZE = 8,
     VT_TYPE = 10,
     VT_STRUCTINDEX = 12,
-    VT_ARRAYELEMENTS = 14
+    VT_ARRAYELEMENTS = 14,
+    VT_ROWMAJOR = 16
   };
   const flatbuffers::String *name() const { return GetPointer<const flatbuffers::String *>(VT_NAME); }
   flatbuffers::String *mutable_name() { return GetPointer<flatbuffers::String *>(VT_NAME); }
@@ -837,6 +838,8 @@ struct StructMember FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_structIndex(uint32_t _structIndex) { return SetField(VT_STRUCTINDEX, _structIndex); }
   const flatbuffers::Vector<const ArrayInfo *> *arrayElements() const { return GetPointer<const flatbuffers::Vector<const ArrayInfo *> *>(VT_ARRAYELEMENTS); }
   flatbuffers::Vector<const ArrayInfo *> *mutable_arrayElements() { return GetPointer<flatbuffers::Vector<const ArrayInfo *> *>(VT_ARRAYELEMENTS); }
+  bool rowMajor() const { return GetField<uint8_t>(VT_ROWMAJOR, 0) != 0; }
+  bool mutate_rowMajor(bool _rowMajor) { return SetField(VT_ROWMAJOR, static_cast<uint8_t>(_rowMajor)); }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
@@ -847,6 +850,7 @@ struct StructMember FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<uint32_t>(verifier, VT_STRUCTINDEX) &&
            VerifyField<flatbuffers::uoffset_t>(verifier, VT_ARRAYELEMENTS) &&
            verifier.Verify(arrayElements()) &&
+           VerifyField<uint8_t>(verifier, VT_ROWMAJOR) &&
            verifier.EndTable();
   }
 };
@@ -860,10 +864,11 @@ struct StructMemberBuilder {
   void add_type(Type type) { fbb_.AddElement<uint8_t>(StructMember::VT_TYPE, static_cast<uint8_t>(type), 0); }
   void add_structIndex(uint32_t structIndex) { fbb_.AddElement<uint32_t>(StructMember::VT_STRUCTINDEX, structIndex, 0); }
   void add_arrayElements(flatbuffers::Offset<flatbuffers::Vector<const ArrayInfo *>> arrayElements) { fbb_.AddOffset(StructMember::VT_ARRAYELEMENTS, arrayElements); }
+  void add_rowMajor(bool rowMajor) { fbb_.AddElement<uint8_t>(StructMember::VT_ROWMAJOR, static_cast<uint8_t>(rowMajor), 0); }
   StructMemberBuilder(flatbuffers::FlatBufferBuilder &_fbb) : fbb_(_fbb) { start_ = fbb_.StartTable(); }
   StructMemberBuilder &operator=(const StructMemberBuilder &);
   flatbuffers::Offset<StructMember> Finish() {
-    auto o = flatbuffers::Offset<StructMember>(fbb_.EndTable(start_, 6));
+    auto o = flatbuffers::Offset<StructMember>(fbb_.EndTable(start_, 7));
     fbb_.Required(o, StructMember::VT_NAME);  // name
     return o;
   }
@@ -875,13 +880,15 @@ inline flatbuffers::Offset<StructMember> CreateStructMember(flatbuffers::FlatBuf
    uint32_t size = 0,
    Type type = Type::Float,
    uint32_t structIndex = 0,
-   flatbuffers::Offset<flatbuffers::Vector<const ArrayInfo *>> arrayElements = 0) {
+   flatbuffers::Offset<flatbuffers::Vector<const ArrayInfo *>> arrayElements = 0,
+   bool rowMajor = false) {
   StructMemberBuilder builder_(_fbb);
   builder_.add_arrayElements(arrayElements);
   builder_.add_structIndex(structIndex);
   builder_.add_size(size);
   builder_.add_offset(offset);
   builder_.add_name(name);
+  builder_.add_rowMajor(rowMajor);
   builder_.add_type(type);
   return builder_.Finish();
 }

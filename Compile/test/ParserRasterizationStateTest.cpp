@@ -36,7 +36,7 @@ TEST(ParserRasterizationStateTest, DepthClampEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::True, pipelines[0].renderState.rasterizationState.depthClampEnable);
+		EXPECT_EQ(Bool::True, pipelines[0].renderState.rasterizationState.depthClampEnable);
 	}
 
 	{
@@ -49,7 +49,7 @@ TEST(ParserRasterizationStateTest, DepthClampEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::False, pipelines[0].renderState.rasterizationState.depthClampEnable);
+		EXPECT_EQ(Bool::False, pipelines[0].renderState.rasterizationState.depthClampEnable);
 	}
 
 	{
@@ -62,7 +62,7 @@ TEST(ParserRasterizationStateTest, DepthClampEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::True, pipelines[0].renderState.rasterizationState.depthClampEnable);
+		EXPECT_EQ(Bool::True, pipelines[0].renderState.rasterizationState.depthClampEnable);
 	}
 
 	{
@@ -75,8 +75,7 @@ TEST(ParserRasterizationStateTest, DepthClampEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::False,
-		pipelines[0].renderState.rasterizationState.depthClampEnable);
+		EXPECT_EQ(Bool::False, pipelines[0].renderState.rasterizationState.depthClampEnable);
 	}
 
 	{
@@ -108,8 +107,7 @@ TEST(ParserRasterizationStateTest, RasterizerDiscardEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::True,
-			pipelines[0].renderState.rasterizationState.rasterizerDiscardEnable);
+		EXPECT_EQ(Bool::True, pipelines[0].renderState.rasterizationState.rasterizerDiscardEnable);
 	}
 
 	{
@@ -122,8 +120,7 @@ TEST(ParserRasterizationStateTest, RasterizerDiscardEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::False,
-			pipelines[0].renderState.rasterizationState.rasterizerDiscardEnable);
+		EXPECT_EQ(Bool::False, pipelines[0].renderState.rasterizationState.rasterizerDiscardEnable);
 	}
 
 	{
@@ -155,8 +152,7 @@ TEST(ParserRasterizationStateTest, PolygonMode)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::PolygonMode::Fill,
-			pipelines[0].renderState.rasterizationState.polygonMode);
+		EXPECT_EQ(PolygonMode::Fill, pipelines[0].renderState.rasterizationState.polygonMode);
 	}
 
 	{
@@ -169,8 +165,7 @@ TEST(ParserRasterizationStateTest, PolygonMode)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::PolygonMode::Line,
-			pipelines[0].renderState.rasterizationState.polygonMode);
+		EXPECT_EQ(PolygonMode::Line, pipelines[0].renderState.rasterizationState.polygonMode);
 	}
 
 	{
@@ -183,8 +178,7 @@ TEST(ParserRasterizationStateTest, PolygonMode)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::PolygonMode::Point,
-			pipelines[0].renderState.rasterizationState.polygonMode);
+		EXPECT_EQ(PolygonMode::Point, pipelines[0].renderState.rasterizationState.polygonMode);
 	}
 
 	{
@@ -216,8 +210,7 @@ TEST(ParserRasterizationStateTest, CullMode)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::CullMode::None,
-			pipelines[0].renderState.rasterizationState.cullMode);
+		EXPECT_EQ(CullMode::None, pipelines[0].renderState.rasterizationState.cullMode);
 	}
 
 	{
@@ -230,8 +223,7 @@ TEST(ParserRasterizationStateTest, CullMode)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::CullMode::Front,
-			pipelines[0].renderState.rasterizationState.cullMode);
+		EXPECT_EQ(CullMode::Front, pipelines[0].renderState.rasterizationState.cullMode);
 	}
 
 	{
@@ -244,8 +236,7 @@ TEST(ParserRasterizationStateTest, CullMode)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::CullMode::Back,
-			pipelines[0].renderState.rasterizationState.cullMode);
+		EXPECT_EQ(CullMode::Back, pipelines[0].renderState.rasterizationState.cullMode);
 	}
 
 	{
@@ -258,8 +249,7 @@ TEST(ParserRasterizationStateTest, CullMode)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::CullMode::FrontAndBack,
-			pipelines[0].renderState.rasterizationState.cullMode);
+		EXPECT_EQ(CullMode::FrontAndBack, pipelines[0].renderState.rasterizationState.cullMode);
 	}
 
 	{
@@ -291,7 +281,7 @@ TEST(ParserRasterizationStateTest, FrontFace)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::FrontFace::CounterClockwise,
+		EXPECT_EQ(FrontFace::CounterClockwise,
 			pipelines[0].renderState.rasterizationState.frontFace);
 	}
 
@@ -305,8 +295,7 @@ TEST(ParserRasterizationStateTest, FrontFace)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::FrontFace::Clockwise,
-			pipelines[0].renderState.rasterizationState.frontFace);
+		EXPECT_EQ(FrontFace::Clockwise, pipelines[0].renderState.rasterizationState.frontFace);
 	}
 
 	{
@@ -338,8 +327,7 @@ TEST(ParserRasterizationStateTest, DepthBiasEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::True,
-			pipelines[0].renderState.rasterizationState.depthBiasEnable);
+		EXPECT_EQ(Bool::True, pipelines[0].renderState.rasterizationState.depthBiasEnable);
 	}
 
 	{
@@ -352,8 +340,7 @@ TEST(ParserRasterizationStateTest, DepthBiasEnable)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(Parser::Bool::False,
-			pipelines[0].renderState.rasterizationState.depthBiasEnable);
+		EXPECT_EQ(Bool::False, pipelines[0].renderState.rasterizationState.depthBiasEnable);
 	}
 
 	{

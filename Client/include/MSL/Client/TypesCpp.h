@@ -839,6 +839,11 @@ struct StructMember
 	 * member isn't an array.
 	 */
 	uint32_t arrayElementCount;
+
+	/**
+	 * @brief True if type is a matrix type and is row major.
+	 */
+	bool rowMajor;
 };
 
 /**

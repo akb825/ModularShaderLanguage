@@ -736,13 +736,6 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 		glslang::TProgram program;
 		if (!Compiler::link(program, output, pipeline, stages))
 			return false;
-		// Add the reflection info.
-		if (!program.buildReflection())
-		{
-			output.addMessage(Output::Level::Error, fileName, 0, 0, false,
-				"internal error: failed to build reflection");
-			return false;
-		}
 
 		// Compile the stages to SPIR-V.
 		std::array<Compiler::SpirV, stageCount> spirv;

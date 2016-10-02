@@ -36,7 +36,7 @@ TEST(ParserSamplerTest, MinFilter)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::Filter::Nearest, samplers[0].minFilter);
+		EXPECT_EQ(Filter::Nearest, samplers[0].state.minFilter);
 	}
 
 	{
@@ -49,7 +49,7 @@ TEST(ParserSamplerTest, MinFilter)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::Filter::Linear, samplers[0].minFilter);
+		EXPECT_EQ(Filter::Linear, samplers[0].state.minFilter);
 	}
 
 	{
@@ -81,7 +81,7 @@ TEST(ParserSamplerTest, MagFilter)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::Filter::Nearest, samplers[0].magFilter);
+		EXPECT_EQ(Filter::Nearest, samplers[0].state.magFilter);
 	}
 
 	{
@@ -94,7 +94,7 @@ TEST(ParserSamplerTest, MagFilter)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::Filter::Linear, samplers[0].magFilter);
+		EXPECT_EQ(Filter::Linear, samplers[0].state.magFilter);
 	}
 
 	{
@@ -126,7 +126,7 @@ TEST(ParserSamplerTest, MipFilter)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::MipFilter::None, samplers[0].mipFilter);
+		EXPECT_EQ(MipFilter::None, samplers[0].state.mipFilter);
 	}
 
 	{
@@ -139,7 +139,7 @@ TEST(ParserSamplerTest, MipFilter)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::MipFilter::Nearest, samplers[0].mipFilter);
+		EXPECT_EQ(MipFilter::Nearest, samplers[0].state.mipFilter);
 	}
 
 	{
@@ -152,7 +152,7 @@ TEST(ParserSamplerTest, MipFilter)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::MipFilter::Linear, samplers[0].mipFilter);
+		EXPECT_EQ(MipFilter::Linear, samplers[0].state.mipFilter);
 	}
 
 	{
@@ -165,7 +165,7 @@ TEST(ParserSamplerTest, MipFilter)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::MipFilter::Anisotropic, samplers[0].mipFilter);
+		EXPECT_EQ(MipFilter::Anisotropic, samplers[0].state.mipFilter);
 	}
 
 	{
@@ -197,7 +197,7 @@ TEST(ParserSamplerTest, AddressModeU)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::AddressMode::Repeat, samplers[0].addressModeU);
+		EXPECT_EQ(AddressMode::Repeat, samplers[0].state.addressModeU);
 	}
 
 	{
@@ -210,7 +210,7 @@ TEST(ParserSamplerTest, AddressModeU)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::AddressMode::MirroredRepeat, samplers[0].addressModeU);
+		EXPECT_EQ(AddressMode::MirroredRepeat, samplers[0].state.addressModeU);
 	}
 
 	{
@@ -223,7 +223,7 @@ TEST(ParserSamplerTest, AddressModeU)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::AddressMode::ClampToEdge, samplers[0].addressModeU);
+		EXPECT_EQ(AddressMode::ClampToEdge, samplers[0].state.addressModeU);
 	}
 
 	{
@@ -236,7 +236,7 @@ TEST(ParserSamplerTest, AddressModeU)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::AddressMode::ClampToBorder, samplers[0].addressModeU);
+		EXPECT_EQ(AddressMode::ClampToBorder, samplers[0].state.addressModeU);
 	}
 
 	{
@@ -249,7 +249,7 @@ TEST(ParserSamplerTest, AddressModeU)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::AddressMode::MirrorOnce, samplers[0].addressModeU);
+		EXPECT_EQ(AddressMode::MirrorOnce, samplers[0].state.addressModeU);
 	}
 
 	{
@@ -281,7 +281,7 @@ TEST(ParserSamplerTest, AddressModeV)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::AddressMode::Repeat, samplers[0].addressModeV);
+		EXPECT_EQ(AddressMode::Repeat, samplers[0].state.addressModeV);
 	}
 
 	{
@@ -294,7 +294,7 @@ TEST(ParserSamplerTest, AddressModeV)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::AddressMode::ClampToEdge, samplers[0].addressModeV);
+		EXPECT_EQ(AddressMode::ClampToEdge, samplers[0].state.addressModeV);
 	}
 
 	{
@@ -326,7 +326,7 @@ TEST(ParserSamplerTest, AddressModeW)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::AddressMode::Repeat, samplers[0].addressModeW);
+		EXPECT_EQ(AddressMode::Repeat, samplers[0].state.addressModeW);
 	}
 
 	{
@@ -339,7 +339,7 @@ TEST(ParserSamplerTest, AddressModeW)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::AddressMode::ClampToEdge, samplers[0].addressModeW);
+		EXPECT_EQ(AddressMode::ClampToEdge, samplers[0].state.addressModeW);
 	}
 
 	{
@@ -371,7 +371,7 @@ TEST(ParserSamplerTest, MipLodBias)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(-3.0f, samplers[0].mipLodBias);
+		EXPECT_EQ(-3.0f, samplers[0].state.mipLodBias);
 	}
 
 	{
@@ -384,7 +384,7 @@ TEST(ParserSamplerTest, MipLodBias)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(1.3e4, samplers[0].mipLodBias);
+		EXPECT_EQ(1.3e4, samplers[0].state.mipLodBias);
 	}
 
 	{
@@ -416,7 +416,7 @@ TEST(ParserSamplerTest, MaxAnisotropy)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(-3.0f, samplers[0].maxAnisotropy);
+		EXPECT_EQ(-3.0f, samplers[0].state.maxAnisotropy);
 	}
 
 	{
@@ -429,7 +429,7 @@ TEST(ParserSamplerTest, MaxAnisotropy)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(1.3e4, samplers[0].maxAnisotropy);
+		EXPECT_EQ(1.3e4, samplers[0].state.maxAnisotropy);
 	}
 
 	{
@@ -461,7 +461,7 @@ TEST(ParserSamplerTest, MinLod)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(-3.0f, samplers[0].minLod);
+		EXPECT_EQ(-3.0f, samplers[0].state.minLod);
 	}
 
 	{
@@ -474,7 +474,7 @@ TEST(ParserSamplerTest, MinLod)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(1.3e4, samplers[0].minLod);
+		EXPECT_EQ(1.3e4, samplers[0].state.minLod);
 	}
 
 	{
@@ -506,7 +506,7 @@ TEST(ParserSamplerTest, MaxLod)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(-3.0f, samplers[0].maxLod);
+		EXPECT_EQ(-3.0f, samplers[0].state.maxLod);
 	}
 
 	{
@@ -519,7 +519,7 @@ TEST(ParserSamplerTest, MaxLod)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(1.3e4, samplers[0].maxLod);
+		EXPECT_EQ(1.3e4, samplers[0].state.maxLod);
 	}
 
 	{
@@ -551,7 +551,7 @@ TEST(ParserSamplerTest, BorderColor)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::BorderColor::TransparentBlack, samplers[0].borderColor);
+		EXPECT_EQ(BorderColor::TransparentBlack, samplers[0].state.borderColor);
 	}
 
 	{
@@ -564,7 +564,7 @@ TEST(ParserSamplerTest, BorderColor)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::BorderColor::TransparentIntZero, samplers[0].borderColor);
+		EXPECT_EQ(BorderColor::TransparentIntZero, samplers[0].state.borderColor);
 	}
 
 	{
@@ -577,7 +577,7 @@ TEST(ParserSamplerTest, BorderColor)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::BorderColor::OpaqueBlack, samplers[0].borderColor);
+		EXPECT_EQ(BorderColor::OpaqueBlack, samplers[0].state.borderColor);
 	}
 
 	{
@@ -590,7 +590,7 @@ TEST(ParserSamplerTest, BorderColor)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::BorderColor::OpaqueIntZero, samplers[0].borderColor);
+		EXPECT_EQ(BorderColor::OpaqueIntZero, samplers[0].state.borderColor);
 	}
 
 	{
@@ -603,7 +603,7 @@ TEST(ParserSamplerTest, BorderColor)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::BorderColor::OpaqueWhite, samplers[0].borderColor);
+		EXPECT_EQ(BorderColor::OpaqueWhite, samplers[0].state.borderColor);
 	}
 
 	{
@@ -616,7 +616,7 @@ TEST(ParserSamplerTest, BorderColor)
 
 		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
 		ASSERT_EQ(1U, samplers.size());
-		EXPECT_EQ(Parser::BorderColor::OpaqueIntOne, samplers[0].borderColor);
+		EXPECT_EQ(BorderColor::OpaqueIntOne, samplers[0].state.borderColor);
 	}
 
 	{

@@ -776,6 +776,11 @@ table StructMember
 	 * Info about each element in the array. This will be empty if this member isn't an array.
 	 */
 	arrayElements : [ArrayInfo];
+
+	/*
+	 * True if type is a matrix type and is row major.
+	 */
+	rowMajor : bool;
 }
 
 /*

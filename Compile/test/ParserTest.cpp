@@ -45,17 +45,17 @@ TEST(ParserTest, StageFilters)
 	Parser::Pipeline pipeline = {};
 	std::vector<Parser::LineMapping> lineMappings;
 	EXPECT_EQ(readFile(outputDir/"StageFilters.vert"),
-		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Vertex) + '\n');
+		parser.createShaderString(lineMappings, pipeline, Stage::Vertex) + '\n');
 	EXPECT_EQ(readFile(outputDir/"StageFilters.tessc"),
-		parser.createShaderString(lineMappings, pipeline, Parser::Stage::TessellationControl) + '\n');
+		parser.createShaderString(lineMappings, pipeline, Stage::TessellationControl) + '\n');
 	EXPECT_EQ(readFile(outputDir/"StageFilters.tesse"),
-		parser.createShaderString(lineMappings, pipeline, Parser::Stage::TessellationEvaluation) + '\n');
+		parser.createShaderString(lineMappings, pipeline, Stage::TessellationEvaluation) + '\n');
 	EXPECT_EQ(readFile(outputDir/"StageFilters.geom"),
-		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Geometry) + '\n');
+		parser.createShaderString(lineMappings, pipeline, Stage::Geometry) + '\n');
 	EXPECT_EQ(readFile(outputDir/"StageFilters.frag"),
-		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Fragment) + '\n');
+		parser.createShaderString(lineMappings, pipeline, Stage::Fragment) + '\n');
 	EXPECT_EQ(readFile(outputDir/"StageFilters.comp"),
-		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Compute) + '\n');
+		parser.createShaderString(lineMappings, pipeline, Stage::Compute) + '\n');
 }
 
 TEST(ParserTest, InvalidStageName)
@@ -269,7 +269,7 @@ TEST(ParserTest, Pipeline)
 
 	std::vector<Parser::LineMapping> lineMappings;
 	EXPECT_EQ(readFile(outputDir/"Pipeline.frag"),
-		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Fragment) + '\n');
+		parser.createShaderString(lineMappings, pipeline, Stage::Fragment) + '\n');
 }
 
 TEST(ParserTest, UnnamedPipeline)
@@ -618,7 +618,7 @@ TEST(ParserTest, RemoveUniformBlocks)
 	std::vector<Parser::LineMapping> lineMappings;
 	Parser::Pipeline pipeline;
 	EXPECT_EQ(readFile(outputDir/"RemoveUniformBlocks.vert"),
-		parser.createShaderString(lineMappings, pipeline, Parser::Stage::Vertex) + '\n');
+		parser.createShaderString(lineMappings, pipeline, Stage::Vertex) + '\n');
 }
 
 TEST(ParserTest, LineNumbers)
@@ -668,7 +668,7 @@ TEST(ParserTest, LineNumbers)
 
 	std::vector<Parser::LineMapping> lineMappings;
 	Parser::Pipeline pipeline;
-	parser.createShaderString(lineMappings, pipeline, Parser::Stage::Vertex);
+	parser.createShaderString(lineMappings, pipeline, Stage::Vertex);
 	EXPECT_EQ(expectedMappings, lineMappings);
 }
 
@@ -712,7 +712,7 @@ TEST(ParserTest, LineNumbersRemoveUniformBlocks)
 
 	std::vector<Parser::LineMapping> lineMappings;
 	Parser::Pipeline pipeline;
-	parser.createShaderString(lineMappings, pipeline, Parser::Stage::Vertex);
+	parser.createShaderString(lineMappings, pipeline, Stage::Vertex);
 	EXPECT_EQ(expectedMappings, lineMappings);
 }
 

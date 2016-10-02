@@ -848,6 +848,11 @@ struct StructMember
 	 * This will be empty if this member isn't an array.
 	 */
 	std::vector<ArrayInfo> arrayElements;
+
+	/**
+	 * @brief True if type is a matrix type and is row major.
+	 */
+	bool rowMajor;
 };
 
 /**
