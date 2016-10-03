@@ -1079,11 +1079,9 @@ Type getType(std::vector<ArrayInfo>& arrayElements, std::uint32_t& structIndex,
 	{
 		const StructMember& lastMember = newStruct.members.back();
 		newStruct.size = lastMember.offset;
-		if (newStruct.size != unknown)
+		if (newStruct.size != unknown && lastMember.size != unknown)
 		{
-			if (lastMember.size != unknown)
-				newStruct.size += lastMember.size;
-
+			newStruct.size += lastMember.size;
 			const unsigned int minAlignment = sizeof(float)*4;
 			newStruct.size = ((newStruct.size + minAlignment - 1)/minAlignment)*minAlignment;
 		}
@@ -1096,6 +1094,18 @@ Type getType(std::vector<ArrayInfo>& arrayElements, std::uint32_t& structIndex,
 	return Type::Struct;
 }
 
+std::uint32_t getUnderlyingTypeId(const IntermediateData& data, std::uint32_t typeId)
+{
+	auto foundArray = data.arrayTypes.find(typeId);
+	while (foundArray != data.arrayTypes.end())
+	{
+		typeId = foundArray->second.type;
+		foundArray = data.arrayTypes.find(typeId);
+	}
+
+	return typeId;
+}
+
 void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 {
 	std::size_t totalUniforms = data.uniformVars.size() + data.imageVars.size();
@@ -1106,6 +1116,7 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 	{
 		processor.uniformIds[i] = uniformIndices.first;
 		std::uint32_t typeId = uniformIndices.second;
+		std::uint32_t underlyingTypeId = getUnderlyingTypeId(data, typeId);
 
 		Uniform& uniform = processor.uniforms[i];
 		uniform.type = getType(uniform.arrayElements, uniform.structIndex, processor, data, typeId);
@@ -1118,11 +1129,11 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 			uniform.name = foundName->second;
 		}
 
-		if (data.blocks.find(typeId) != data.blocks.end())
+		if (data.blocks.find(underlyingTypeId) != data.blocks.end())
 			uniform.uniformType = UniformType::Block;
 		else
 		{
-			assert(data.uniformBuffers.find(uniformIndices.first) != data.uniformBuffers.end());
+			assert(data.uniformBuffers.find(underlyingTypeId) != data.uniformBuffers.end());
 			uniform.uniformType = UniformType::BlockBuffer;
 		}
 
@@ -1195,6 +1206,7 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 	{
 		inputOutputIds[i] = inputOutputIndices.first;
 		std::uint32_t typeId = inputOutputIndices.second;
+		std::uint32_t underlyingTypeId = getUnderlyingTypeId(data, typeId);
 
 		SpirVProcessor::InputOutput& inputOutput = inputOutputs[i];
 
@@ -1207,7 +1219,7 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 		inputOutput.patch = data.patchVars.find(inputOutputIndices.first) != data.patchVars.end();
 		if (inputOutput.type == Type::Struct)
 		{
-			if (data.blocks.find(typeId) == data.blocks.end())
+			if (data.blocks.find(underlyingTypeId) == data.blocks.end())
 			{
 				output.addMessage(Output::Level::Error, processor.fileName, processor.line,
 					processor.column, false,

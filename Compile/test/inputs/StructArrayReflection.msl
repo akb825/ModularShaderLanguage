@@ -1,0 +1,52 @@
+struct TestStruct
+{
+	float floatVar;
+	vec3[2] vec3Array;
+	mat4x3 mat4x3Var;
+};
+
+layout(row_major, set = 1, binding = 0) uniform TestBlock
+{
+	vec2[3][2] vec2Array2D;
+	TestStruct structMember;
+	TestStruct[3] structArray;
+	dvec3 dvec3Var;
+} blockArray[3];
+
+struct TestBufferStruct
+{
+	float floatVar;
+	vec3[2] vec3Array;
+	mat4x3 mat4x3Var;
+};
+
+layout(set = 2, binding = 1) buffer TestBuffer
+{
+	vec2[3][2] vec2Array2D;
+	TestBufferStruct structMember;
+	TestBufferStruct[3] structArray;
+	dvec3 dvec3Var;
+	float[][3] dynamicArray;
+};
+
+layout(set = 3, binding = 2) uniform sampler2D samplerArray[4];
+
+[[vertex]]
+void vertShader()
+{
+	gl_Position = vec4(0.0);
+}
+
+[[fragment]] out vec4 color;
+
+[[fragment]]
+void fragShader()
+{
+	color = vec4(1.0);
+}
+
+pipeline Test
+{
+	vertex = vertShader;
+	fragment = fragShader;
+}
