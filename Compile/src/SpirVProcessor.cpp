@@ -1692,7 +1692,7 @@ bool inputOutputArraysEqual(const std::vector<ArrayInfo>& outputArray, bool remo
 
 void addDummyDescriptorSet(std::vector<std::uint32_t>& spirv, std::uint32_t id)
 {
-	spirv.push_back((5 << spv::WordCountShift) | spv::OpDecorate);
+	spirv.push_back((4 << spv::WordCountShift) | spv::OpDecorate);
 	spirv.push_back(id);
 	spirv.push_back(spv::DecorationDescriptorSet);
 	spirv.push_back(unknown);
@@ -1700,7 +1700,7 @@ void addDummyDescriptorSet(std::vector<std::uint32_t>& spirv, std::uint32_t id)
 
 void addDummyBinding(std::vector<std::uint32_t>& spirv, std::uint32_t id)
 {
-	spirv.push_back((5 << spv::WordCountShift) | spv::OpDecorate);
+	spirv.push_back((4 << spv::WordCountShift) | spv::OpDecorate);
 	spirv.push_back(id);
 	spirv.push_back(spv::DecorationBinding);
 	spirv.push_back(unknown);
@@ -1708,10 +1708,46 @@ void addDummyBinding(std::vector<std::uint32_t>& spirv, std::uint32_t id)
 
 void addDummyInputAttachmentIndex(std::vector<std::uint32_t>& spirv, std::uint32_t id)
 {
-	spirv.push_back((5 << spv::WordCountShift) | spv::OpDecorate);
+	spirv.push_back((4 << spv::WordCountShift) | spv::OpDecorate);
 	spirv.push_back(id);
 	spirv.push_back(spv::DecorationInputAttachmentIndex);
 	spirv.push_back(unknown);
+}
+
+void addLocation(std::vector<std::uint32_t>& spirv, std::uint32_t id, std::uint32_t index)
+{
+	spirv.push_back((4 << spv::WordCountShift) | spv::OpDecorate);
+	spirv.push_back(id);
+	spirv.push_back(spv::DecorationLocation);
+	spirv.push_back(index);
+}
+
+void addComponent(std::vector<std::uint32_t>& spirv, std::uint32_t id, std::uint32_t index)
+{
+	spirv.push_back((4 << spv::WordCountShift) | spv::OpDecorate);
+	spirv.push_back(id);
+	spirv.push_back(spv::DecorationComponent);
+	spirv.push_back(index);
+}
+
+void addMemberLocation(std::vector<std::uint32_t>& spirv, std::uint32_t id,
+	std::uint32_t memberIndex, std::uint32_t index)
+{
+	spirv.push_back((5 << spv::WordCountShift) | spv::OpMemberDecorate);
+	spirv.push_back(id);
+	spirv.push_back(memberIndex);
+	spirv.push_back(spv::DecorationLocation);
+	spirv.push_back(index);
+}
+
+void addMemberComponent(std::vector<std::uint32_t>& spirv, std::uint32_t id,
+	std::uint32_t memberIndex, std::uint32_t index)
+{
+	spirv.push_back((5 << spv::WordCountShift) | spv::OpMemberDecorate);
+	spirv.push_back(id);
+	spirv.push_back(memberIndex);
+	spirv.push_back(spv::DecorationComponent);
+	spirv.push_back(index);
 }
 
 } // namespace
@@ -2336,9 +2372,6 @@ bool SpirVProcessor::linkInputs(Output& output, const SpirVProcessor& prevStage)
 
 std::vector<std::uint32_t> SpirVProcessor::process(Strip strip, bool dummyBindings) const
 {
-	if (strip == Strip::None && !dummyBindings)
-		return *spirv;
-
 	std::unordered_set<std::uint32_t> keepNames;
 	if (strip == Strip::AllButReflection)
 	{
@@ -2355,6 +2388,9 @@ std::vector<std::uint32_t> SpirVProcessor::process(Strip strip, bool dummyBindin
 	std::vector<std::uint32_t> result;
 	result.insert(result.end(), spirv->begin(), spirv->begin() + firstInstruction);
 
+	std::unordered_map<std::uint32_t, std::uint32_t> locations;
+	std::unordered_map<std::uint32_t, std::vector<std::uint32_t>> memberLocations;
+
 	bool encounteredFunction = false;
 	for (std::size_t i = firstInstruction; i < spirv->size();)
 	{
@@ -2370,10 +2406,7 @@ std::vector<std::uint32_t> SpirVProcessor::process(Strip strip, bool dummyBindin
 			case spv::OpString:
 			case spv::OpLine:
 				if (strip == Strip::None)
-				{
-					result.insert(result.begin(), spirv->begin() + i,
-						spirv->begin() + i + wordCount);
-				}
+					result.insert(result.end(), spirv->begin() + i, spirv->begin() + i + wordCount);
 				break;
 
 			// Strip names.
@@ -2385,14 +2418,107 @@ std::vector<std::uint32_t> SpirVProcessor::process(Strip strip, bool dummyBindin
 				if (strip == Strip::None || (strip == Strip::AllButReflection &&
 					keepNames.find(id) != keepNames.end()))
 				{
-					result.insert(result.begin(), spirv->begin() + i,
-						spirv->begin() + i + wordCount);
+					result.insert(result.end(), spirv->begin() + i, spirv->begin() + i + wordCount);
 				}
 				break;
 			}
 
-			// Add dummy bindings.
+			// Keep track of existing input/output locations.
+			case spv::OpDecorate:
+			{
+				assert(wordCount >= 3);
+				std::uint32_t id = (*spirv)[i + 1];
+				switch ((*spirv)[i + 2])
+				{
+					case spv::DecorationLocation:
+						assert(wordCount == 4);
+						locations[id] = (*spirv)[i + 3];
+						break;
+				}
+				result.insert(result.end(), spirv->begin() + i, spirv->begin() + i + wordCount);
+				break;
+			}
+			case spv::OpMemberDecorate:
+			{
+				assert(wordCount >= 4);
+				std::uint32_t id = (*spirv)[i + 1];
+				std::uint32_t member = (*spirv)[i + 2];
+				switch ((*spirv)[i + 3])
+				{
+					case spv::DecorationLocation:
+					{
+						assert(wordCount == 5);
+						std::vector<std::uint32_t>& memberLocation = memberLocations[id];
+						if (memberLocation.size() <= member)
+							memberLocation.resize(member + 1);
+						memberLocation[member] = (*spirv)[i + 4];
+						break;
+					}
+				}
+				result.insert(result.end(), spirv->begin() + i, spirv->begin() + i + wordCount);
+				break;
+			}
+
 			case spv::OpFunction:
+				// Add input locations.
+				for (std::size_t j = 0; j < inputs.size(); ++j)
+				{
+					if (inputs[j].type == Type::Struct)
+					{
+						auto foundMember = memberLocations.find(inputIds[j]);
+						for (std::uint32_t k = 0; k < inputs[j].memberLocations.size(); ++k)
+						{
+							if (foundMember == memberLocations.end() ||
+								k >= foundMember->second.size() ||
+								foundMember->second[k] == unknown)
+							{
+								addMemberLocation(result, inputIds[j], k,
+									inputs[j].memberLocations[k].first);
+								addMemberComponent(result, inputIds[j], k,
+									inputs[j].memberLocations[k].second);
+							}
+						}
+					}
+					else
+					{
+						if (locations.find(inputIds[j]) == locations.end())
+						{
+							addLocation(result, inputIds[j], inputs[j].location);
+							addComponent(result, inputIds[j], inputs[j].component);
+						}
+					}
+				}
+
+				// Add output locations.
+				for (std::size_t j = 0; j < outputs.size(); ++j)
+				{
+					if (outputs[j].type == Type::Struct)
+					{
+						auto foundMember = memberLocations.find(outputIds[j]);
+						for (std::uint32_t k = 0; k < outputs[j].memberLocations.size(); ++k)
+						{
+							if (foundMember == memberLocations.end() ||
+								k >= foundMember->second.size() ||
+								foundMember->second[k] == unknown)
+							{
+								addMemberLocation(result, outputIds[j], k,
+									outputs[j].memberLocations[k].first);
+								addMemberComponent(result, outputIds[j], k,
+									outputs[j].memberLocations[k].second);
+							}
+						}
+					}
+					else
+					{
+						if (locations.find(outputIds[j]) == locations.end())
+						{
+							addLocation(result, outputIds[j], outputs[j].location);
+							addComponent(result, outputIds[j], outputs[j].component);
+						}
+					}
+				}
+
+				// Add dummy bindings.
 				if (dummyBindings && !encounteredFunction)
 				{
 					encounteredFunction = true;
@@ -2412,10 +2538,11 @@ std::vector<std::uint32_t> SpirVProcessor::process(Strip strip, bool dummyBindin
 				// fall through
 			default:
 				// Pass through all other instructions.
-				result.insert(result.begin(), spirv->begin() + i,
-					spirv->begin() + i + wordCount);
+				result.insert(result.end(), spirv->begin() + i, spirv->begin() + i + wordCount);
 				break;
 		}
+
+		i += wordCount;
 	}
 
 	return result;
