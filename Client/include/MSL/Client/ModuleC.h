@@ -229,17 +229,15 @@ MSL_CLIENT_EXPORT bool mslModule_attribute(mslAttribute* outAttribute,
 	const mslModule* module, uint32_t pipelineIndex, uint32_t attributeIndex);
 
 /**
- * @brief Gets the array info for a vertex attribute within a pipeline.
- * @param[out] outArrayInfo The structure to hold the uniform array info.
+ * @brief Gets the array size for a vertex attribute within a pipeline.
  * @param module The shader module.
  * @param pipelineIndex The index of the pipeline.
  * @param attributeIndex The index of the attribute within the pipeline.
  * @param arrayElement The array element to get the info for.
- * @return False if the parameters are incorrect.
+ * @return The size of the array, or unkown if the parameters are incorrect.
  */
-MSL_CLIENT_EXPORT bool mslModule_attributeArrayInfo(mslArrayInfo* outArrayInfo,
-	const mslModule* module, uint32_t pipelineIndex, uint32_t attributeIndex,
-	uint32_t arrayElement);
+MSL_CLIENT_EXPORT uint32_t mslModule_attributeArraySize(const mslModule* module,
+	uint32_t pipelineIndex, uint32_t attributeIndex, uint32_t arrayElement);
 
 /**
  * @brief Gets the render state for a pipeline within the module.

@@ -46,7 +46,7 @@ public:
 		std::string name;
 		Type type;
 		std::uint32_t structIndex;
-		std::vector<ArrayInfo> arrayElements;
+		std::vector<std::uint32_t> arrayElements;
 		std::vector<std::pair<std::uint32_t, std::uint32_t>> memberLocations;
 		bool patch;
 		std::uint32_t location;

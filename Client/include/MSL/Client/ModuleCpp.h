@@ -242,15 +242,14 @@ public:
 	bool attribute(Attribute& outAttribute, uint32_t pipelineIndex, uint32_t attributeIndex) const;
 
 	/**
-	 * @brief Gets the array info for a vertex attribute within a pipeline.
-	 * @param[out] outArrayInfo The structure to hold the uniform array info.
+	 * @brief Gets the array size for a vertex attribute within a pipeline.
 	 * @param pipelineIndex The index of the pipeline.
 	 * @param attributeIndex The index of the attribute within the pipeline.
 	 * @param arrayElement The array element to get the info for.
-	 * @return False if the parameters are incorrect.
+	 * @return The size of the array, or unkown if the parameters are incorrect.
 	 */
-	bool attributeArrayInfo(ArrayInfo& outArrayInfo, uint32_t pipelineIndex,
-		uint32_t attributeIndex, uint32_t arrayElement) const;
+	uint32_t attributeArraySize(uint32_t pipelineIndex, uint32_t attributeIndex,
+		uint32_t arrayElement) const;
 
 	/**
 	 * @brief Gets the render state for a pipeline within the module.
@@ -546,11 +545,10 @@ bool BasicModule<Allocator>::attribute(Attribute& outAttribute, uint32_t pipelin
 }
 
 template <typename Allocator>
-bool BasicModule<Allocator>::attributeArrayInfo(ArrayInfo& outArrayInfo, uint32_t pipelineIndex,
-	uint32_t attributeIndex, uint32_t arrayElement) const
+uint32_t BasicModule<Allocator>::attributeArraySize(uint32_t pipelineIndex, uint32_t attributeIndex,
+	uint32_t arrayElement) const
 {
-	return mslModule_attributeArrayInfo(reinterpret_cast<mslArrayInfo*>(&outArrayInfo), m_module,
-		pipelineIndex, attributeIndex, arrayElement);
+	return mslModule_attributeArraySize(m_module, pipelineIndex, attributeIndex, arrayElement);
 }
 
 template <typename Allocator>

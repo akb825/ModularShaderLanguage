@@ -1,0 +1,39 @@
+[[vertex]] layout(location = 0) out float floatVal;
+[[vertex]] layout(location = 0, component = 2) out vec2 vec2Val;
+[[vertex]] layout(location = 1) out ivec3 ivec3Val;
+[[vertex]] layout(location = 1, component = 3) out int intVal;
+[[vertex]] layout(location = 2) out OutBlock
+{
+	dvec3 dvec3Val;
+	mat4 mat4Val;
+};
+
+[[fragment]] in InBlock
+{
+	mat4 mat4Val;
+	dvec3 dvec3Val;
+};
+[[fragment]] flat in int intVal;
+[[fragment]] flat in ivec3 ivec3Val;
+[[fragment]] in vec2 vec2Val;
+[[fragment]] in float floatVal;
+
+[[vertex]]
+void vertShader()
+{
+	gl_Position = vec4(0.0);
+}
+
+[[fragment]] out vec4 color;
+
+[[fragment]]
+void fragShader()
+{
+	color = vec4(1.0);
+}
+
+pipeline Test
+{
+	vertex = vertShader;
+	fragment = fragShader;
+}

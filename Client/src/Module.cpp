@@ -796,8 +796,8 @@ bool mslModule_uniformArrayInfo(mslArrayInfo* outArrayInfo, const mslModule* mod
 	return true;
 }
 
-bool mslModule_attribute(mslAttribute* outAttribute, const mslModule* module, uint32_t pipelineIndex,
-	uint32_t attributeIndex)
+bool mslModule_attribute(mslAttribute* outAttribute, const mslModule* module,
+	uint32_t pipelineIndex, uint32_t attributeIndex)
 {
 	if (!outAttribute || !module)
 		return false;
@@ -819,26 +819,23 @@ bool mslModule_attribute(mslAttribute* outAttribute, const mslModule* module, ui
 	return true;
 }
 
-bool mslModule_attributeArrayInfo(mslArrayInfo* outArrayInfo, const mslModule* module,
-	uint32_t pipelineIndex, uint32_t attributeIndex, uint32_t arrayElement)
+uint32_t mslModule_attributeArraySize(const mslModule* module, uint32_t pipelineIndex,
+	uint32_t attributeIndex, uint32_t arrayElement)
 {
-	if (!outArrayInfo || !module)
-		return false;
+	if (!module)
+		return MSL_UNKNOWN;
 
 	auto& pipelines = *module->module->pipelines();
 	if (pipelineIndex >= pipelines.size())
-		return false;
+		return MSL_UNKNOWN;
 	auto& attributes = *pipelines[pipelineIndex]->attributes();
 	if (attributeIndex >= attributes.size())
-		return false;
+		return MSL_UNKNOWN;
 	auto arrayElements = attributes[attributeIndex]->arrayElements();
 	if (!arrayElements || arrayElement >= arrayElements->size())
-		return false;
+		return MSL_UNKNOWN;
 
-	const mslb::ArrayInfo* arrayInfo = (*arrayElements)[arrayElement];
-	outArrayInfo->length = arrayInfo->length();
-	outArrayInfo->stride = arrayInfo->stride();
-	return true;
+	return (*arrayElements)[arrayElement];
 }
 
 bool mslModule_renderState(mslRenderState* outRenderState, const mslModule* module,
@@ -1005,7 +1002,7 @@ bool mslModule_setUniformBinding(mslModule* module, uint32_t pipelineIndex, uint
 		const mslb::ShaderData* thisShaderData = shaderData[shader->shader()];
 		uint32_t* spirV = const_cast<uint32_t*>(reinterpret_cast<const uint32_t*>(
 			thisShaderData->data()->data()));
-		uint32_t spirVSize = thisShaderData->data()->size()/sizeof(uint32_t);
+		uint32_t spirVSize = static_cast<uint32_t>(thisShaderData->data()->size()/sizeof(uint32_t));
 		for (uint32_t j = firstInstruction; j < spirVSize;)
 		{
 			uint32_t op = spirV[j] & opCodeMask;

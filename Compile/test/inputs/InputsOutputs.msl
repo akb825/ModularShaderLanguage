@@ -1,0 +1,99 @@
+[[vertex]] out vec2 vec2Val;
+[[vertex]] out vec3[2] vec3Val;
+[[vertex]] out vec4 vec4Val;
+[[vertex]] out double doubleVal;
+[[vertex]] out dvec3 dvec3Val;
+[[vertex]] out dvec4 dvec4Val;
+[[vertex]] out int intVal;
+[[vertex]] out ivec2 ivec2Val;
+[[vertex]] out ivec4 ivec4Val;
+[[vertex]] out uint[3] uintVal;
+[[vertex]] out uvec2 uvec2Val;
+[[vertex]] out uvec3 uvec3Val;
+[[vertex]] out mat2 mat2Val;
+[[vertex]] out mat4 mat4Val;
+[[vertex]] out mat2x3[4] mat2x3Val;
+[[vertex]] out mat3x2 mat3x2Val;
+[[vertex]] out mat4x3 mat4x3Val;
+[[vertex]] out dmat3 dmat3Val;
+[[vertex]] out dmat4 dmat4Val;
+[[vertex]] out dmat2x4 dmat2x4Val;
+[[vertex]] out dmat3x4 dmat3x4Val;
+[[vertex]] out dmat4x2 dmat4x2Val;
+
+[[vertex]] out OutBlock
+{
+	float floatVal;
+	dvec2 dvec2Val;
+	ivec3 ivec3Val;
+	uvec4 uvec4Val;
+	mat3 mat3Val;
+	mat2x4 mat2x4Val;
+	mat3x4 mat3x4Val;
+	mat4x2 mat4x2Val;
+	dmat2 dmat2Val;
+	dmat2x3 dmat2x3Val;
+	dmat3x2[5][2] dmat3x2Val;
+	dmat4x3 dmat4x3Val;
+	float paddingVal;
+};
+
+[[fragment]] in vec2 vec2Val;
+[[fragment]] in vec3[2] vec3Val;
+[[fragment]] in vec4 vec4Val;
+[[fragment]] flat in double doubleVal;
+[[fragment]] flat in dvec3 dvec3Val;
+[[fragment]] flat in dvec4 dvec4Val;
+[[fragment]] flat in int intVal;
+[[fragment]] flat in ivec2 ivec2Val;
+[[fragment]] flat in ivec4 ivec4Val;
+[[fragment]] flat in uint[3] uintVal;
+[[fragment]] flat in uvec2 uvec2Val;
+[[fragment]] flat in uvec3 uvec3Val;
+[[fragment]] in mat2 mat2Val;
+[[fragment]] in mat4 mat4Val;
+[[fragment]] in mat2x3[4] mat2x3Val;
+[[fragment]] in mat3x2 mat3x2Val;
+[[fragment]] in mat4x3 mat4x3Val;
+[[fragment]] flat in dmat3 dmat3Val;
+[[fragment]] flat in dmat4 dmat4Val;
+[[fragment]] flat in dmat2x4 dmat2x4Val;
+[[fragment]] flat in dmat3x4 dmat3x4Val;
+[[fragment]] flat in dmat4x2 dmat4x2Val;
+
+[[fragment]] in InBlock
+{
+	float floatVal;
+	flat dvec2 dvec2Val;
+	flat ivec3 ivec3Val;
+	flat uvec4 uvec4Val;
+	mat3 mat3Val;
+	mat2x4 mat2x4Val;
+	mat3x4 mat3x4Val;
+	mat4x2 mat4x2Val;
+	flat dmat2 dmat2Val;
+	flat dmat2x3 dmat2x3Val;
+	flat dmat3x2[5][2] dmat3x2Val;
+	flat dmat4x3 dmat4x3Val;
+	float paddingVal;
+};
+
+[[vertex]]
+void vertShader()
+{
+	gl_Position = vec4(0.0);
+}
+
+[[fragment]] out vec4 color;
+
+[[fragment]]
+void fragShader()
+{
+	color = vec4(1.0);
+}
+
+pipeline Test
+{
+	vertex = vertShader;
+	fragment = fragShader;
+}

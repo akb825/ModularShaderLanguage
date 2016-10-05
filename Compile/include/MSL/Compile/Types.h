@@ -951,11 +951,11 @@ struct Attribute
 	Type type;
 
 	/**
-	 * @brief Info about each element in the array.
+	 * @brief The length of each array.
 	 *
 	 * This will be empty if this attribute isn't an array.
 	 */
-	std::vector<ArrayInfo> arrayElements;
+	std::vector<std::uint32_t> arrayElements;
 
 	/**
 	 * @brief The location of the attribute.

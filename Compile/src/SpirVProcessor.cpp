@@ -978,6 +978,7 @@ Type getType(std::vector<ArrayInfo>& arrayElements, std::uint32_t& structIndex,
 	structIndex = unknown;
 
 	// Resolve arrays first.
+	arrayElements.clear();
 	auto foundArray = data.arrayTypes.find(typeId);
 	while (foundArray != data.arrayTypes.end())
 	{
@@ -1108,6 +1109,15 @@ std::uint32_t getUnderlyingTypeId(const IntermediateData& data, std::uint32_t ty
 	return typeId;
 }
 
+std::vector<std::uint32_t> makeArrayLengths(const std::vector<ArrayInfo>& arrayElements)
+{
+	std::vector<std::uint32_t> lengths;
+	lengths.resize(arrayElements.size());
+	for (std::size_t i = 0; i < arrayElements.size(); ++i)
+		lengths[i] = arrayElements[i].length;
+	return lengths;
+}
+
 void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 {
 	std::size_t totalUniforms = data.uniformVars.size() + data.imageVars.size();
@@ -1203,6 +1213,7 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 
 	inputOutputs.reserve(inputOutputVars.size());
 	inputOutputIds.reserve(inputOutputVars.size());
+	std::vector<ArrayInfo> arrayElements;
 	for (const std::pair<std::uint32_t, std::uint32_t>& inputOutputIndices : inputOutputVars)
 	{
 		inputOutputs.emplace_back();
@@ -1217,8 +1228,8 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 		assert(foundName != data.names.end());
 		inputOutput.name = foundName->second;
 
-		inputOutput.type = getType(inputOutput.arrayElements, inputOutput.structIndex, processor,
-			data, typeId);
+		inputOutput.type = getType(arrayElements, inputOutput.structIndex, processor, data, typeId);
+		inputOutput.arrayElements = makeArrayLengths(arrayElements);
 		inputOutput.patch = data.patchVars.find(inputOutputIndices.first) != data.patchVars.end();
 		if (inputOutput.type == Type::Struct)
 		{
@@ -1272,7 +1283,7 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 			if (foundMembers != data.members.end())
 			{
 				// Ignore structs with builtin variables.
-				if (foundMembers != data.members.end() || foundMembers->second[0].builtin)
+				if (foundMembers != data.members.end() && foundMembers->second[0].builtin)
 				{
 					inputOutputs.pop_back();
 					inputOutputIds.pop_back();
@@ -1360,7 +1371,7 @@ bool addComponents(std::vector<std::uint8_t>& locations, std::size_t curLocation
 }
 
 bool fillLocation(std::vector<std::uint8_t>& locations, std::size_t& curLocation,
-	std::uint32_t component, Type type, const std::vector<ArrayInfo>& arrayElements,
+	std::uint32_t component, Type type, const std::vector<std::uint32_t>& arrayElements,
 	bool removeFirstArray)
 {
 	assert(component < 4);
@@ -1369,10 +1380,10 @@ bool fillLocation(std::vector<std::uint8_t>& locations, std::size_t& curLocation
 	std::uint32_t elementCount = 1;
 	for (std::size_t i = removeFirstArray; i < arrayElements.size(); ++i)
 	{
-		assert(arrayElements[i].length != 0);
-		if (arrayElements[i].length == unknown)
+		assert(arrayElements[i] != 0);
+		if (arrayElements[i] == unknown)
 			return false;
-		elementCount *= arrayElements[i].length;
+		elementCount *= arrayElements[i];
 	}
 
 	// Treat matrices the same as arrays.
@@ -1458,6 +1469,7 @@ bool fillLocation(std::vector<std::uint8_t>& locations, std::size_t& curLocation
 	{
 		case Type::Float:
 		case Type::Int:
+		case Type::UInt:
 		case Type::Bool:
 			for (std::uint32_t i = 0; i < elementCount; ++i, ++curLocation)
 			{
@@ -1468,6 +1480,7 @@ bool fillLocation(std::vector<std::uint8_t>& locations, std::size_t& curLocation
 
 		case Type::Vec2:
 		case Type::IVec2:
+		case Type::UVec2:
 		case Type::BVec2:
 			if (component > 2)
 				return false;
@@ -1480,6 +1493,7 @@ bool fillLocation(std::vector<std::uint8_t>& locations, std::size_t& curLocation
 
 		case Type::Vec3:
 		case Type::IVec3:
+		case Type::UVec3:
 		case Type::BVec3:
 			if (component > 1)
 				return false;
@@ -1493,6 +1507,7 @@ bool fillLocation(std::vector<std::uint8_t>& locations, std::size_t& curLocation
 
 		case Type::Vec4:
 		case Type::IVec4:
+		case Type::UVec4:
 		case Type::BVec4:
 			if (component != 0)
 				return false;
@@ -1593,7 +1608,7 @@ bool assignInputsOutputs(Output& output, const SpirVProcessor& processor,
 				}
 
 				if (!fillLocation(locations, curLocation, component, ioStruct.members[i].type,
-					ioStruct.members[i].arrayElements, removeFirstArray))
+					makeArrayLengths(ioStruct.members[i].arrayElements), removeFirstArray))
 				{
 					output.addMessage(Output::Level::Error, processor.fileName, processor.line,
 						processor.column, false,
@@ -1687,8 +1702,8 @@ bool findLinkedMember(Output& output, std::uint32_t& outputIndex, std::uint32_t&
 	return true;
 }
 
-bool inputOutputArraysEqual(const std::vector<ArrayInfo>& outputArray, bool removeFirstOutput,
-	const std::vector<ArrayInfo>& inputArray, bool removeFirstInput)
+bool inputOutputArraysEqual(const std::vector<std::uint32_t>& outputArray, bool removeFirstOutput,
+	const std::vector<std::uint32_t>& inputArray, bool removeFirstInput)
 {
 	if (removeFirstOutput && outputArray.empty())
 		return false;
@@ -1700,7 +1715,7 @@ bool inputOutputArraysEqual(const std::vector<ArrayInfo>& outputArray, bool remo
 
 	for (std::size_t i = removeFirstOutput; i < outputArray.size(); ++i)
 	{
-		if (outputArray[i].length != inputArray[i - removeFirstOutput + removeFirstInput].length)
+		if (outputArray[i] != inputArray[i - removeFirstOutput + removeFirstInput])
 			return false;
 	}
 
@@ -1918,7 +1933,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 					}
 					case spv::DecorationBuiltIn:
 					{
-						memberInfo[member].builtin = false;
+						memberInfo[member].builtin = true;
 						break;
 					}
 				}
@@ -2321,8 +2336,9 @@ bool SpirVProcessor::linkInputs(Output& output, const SpirVProcessor& prevStage)
 					prevStage.structs[prevStage.outputs[otherOutIndex].structIndex];
 				if (inputStruct.members[i].type != outputStruct.members[otherMemberIndex].type ||
 					input.patch != prevStage.outputs[otherOutIndex].patch ||
-					!inputOutputArraysEqual(outputStruct.members[otherMemberIndex].arrayElements,
-						false, inputStruct.members[i].arrayElements, false))
+					!inputOutputArraysEqual(
+						makeArrayLengths(outputStruct.members[otherMemberIndex].arrayElements),
+						false, makeArrayLengths(inputStruct.members[i].arrayElements), false))
 				{
 					output.addMessage(Output::Level::Error, fileName, line, column, false,
 						"linker error: type mismatch when linking input member " +

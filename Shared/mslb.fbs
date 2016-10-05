@@ -870,7 +870,7 @@ table Attribute
 	/*
 	 * Info about each element in the array. This will be empty if this member isn't an array.
 	 */
-	arrayElements : [ArrayInfo];
+	arrayElements : [uint];
 
 	/*
 	 * The location of the attribute.

@@ -99,6 +99,7 @@ bool CompiledResult::save(std::ostream& stream) const
 	std::vector<flatbuffers::Offset<mslb::Pipeline>> pipelines(m_pipelines.size());
 	std::vector<flatbuffers::Offset<mslb::Struct>> structs;
 	std::vector<mslb::ArrayInfo> arrayElements;
+	std::vector<uint32_t> arraySizes;
 	std::vector<flatbuffers::Offset<mslb::StructMember>> structMembers;
 	std::vector<mslb::SamplerState> samplerStates;
 	std::vector<flatbuffers::Offset<mslb::Uniform>> uniforms;
@@ -179,17 +180,14 @@ bool CompiledResult::save(std::ostream& stream) const
 		for (std::size_t j = 0; j < attributes.size(); ++j)
 		{
 			const Attribute& attribute = pipeline.second.attributes[j];
-			arrayElements.clear();
-			arrayElements.reserve(attribute.arrayElements.size());
+			arraySizes.clear();
+			arraySizes.reserve(attribute.arrayElements.size());
 			for (std::size_t k = 0; k < arrayElements.size(); ++k)
-			{
-				arrayElements.emplace_back(attribute.arrayElements[k].length,
-					attribute.arrayElements[k].stride);
-			}
+				arraySizes.push_back(attribute.arrayElements[k]);
 
 			attributes[j] = mslb::CreateAttribute(builder, builder.CreateString(attribute.name),
 				static_cast<mslb::Type>(attribute.type),
-				arrayElements.empty() ? 0 : builder.CreateVectorOfStructs(arrayElements),
+				arraySizes.empty() ? 0 : builder.CreateVector(arraySizes),
 				attribute.location, attribute.component);
 		}
 
