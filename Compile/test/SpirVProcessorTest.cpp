@@ -1987,4 +1987,389 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ(0U, fragmentProcessor.outputs[0].component);
 }
 
+TEST_F(SpirVProcessorTest, LinkDifferentType)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"LinkDifferentType.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			glslang::DefaultTBuiltInResource));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	glslang::TProgram program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
+	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
+
+	SpirVProcessor vertexProcessor;
+	EXPECT_TRUE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, vertexSpirv, Stage::Vertex));
+
+	SpirVProcessor fragmentProcessor;
+	EXPECT_TRUE(fragmentProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, fragmentSpirv, Stage::Fragment));
+
+	EXPECT_TRUE(vertexProcessor.assignOutputs(output));
+	EXPECT_FALSE(fragmentProcessor.linkInputs(output, vertexProcessor));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_EQ(18U, messages[0].line);
+	EXPECT_EQ(10U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("linker error: type mismatch when linking input value in stage fragment",
+		messages[0].message);
+}
+
+TEST_F(SpirVProcessorTest, LinkDifferentStructType)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"LinkDifferentStructType.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			glslang::DefaultTBuiltInResource));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	glslang::TProgram program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
+	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
+
+	SpirVProcessor vertexProcessor;
+	EXPECT_TRUE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, vertexSpirv, Stage::Vertex));
+
+	SpirVProcessor fragmentProcessor;
+	EXPECT_TRUE(fragmentProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, fragmentSpirv, Stage::Fragment));
+
+	EXPECT_TRUE(vertexProcessor.assignOutputs(output));
+	EXPECT_FALSE(fragmentProcessor.linkInputs(output, vertexProcessor));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_EQ(25U, messages[0].line);
+	EXPECT_EQ(10U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ(
+		"linker error: type mismatch when linking input member InValues.value in stage fragment",
+		messages[0].message);
+}
+
+TEST_F(SpirVProcessorTest, LinkNotPresent)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"LinkNotPresent.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			glslang::DefaultTBuiltInResource));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	glslang::TProgram program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
+	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
+
+	SpirVProcessor vertexProcessor;
+	EXPECT_TRUE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, vertexSpirv, Stage::Vertex));
+
+	SpirVProcessor fragmentProcessor;
+	EXPECT_TRUE(fragmentProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, fragmentSpirv, Stage::Fragment));
+
+	EXPECT_TRUE(vertexProcessor.assignOutputs(output));
+	EXPECT_FALSE(fragmentProcessor.linkInputs(output, vertexProcessor));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_EQ(18U, messages[0].line);
+	EXPECT_EQ(10U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("linker error: cannot find output with name otherValue in stage vertex",
+		messages[0].message);
+}
+
+TEST_F(SpirVProcessorTest, LinkStructNotPresent)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"LinkStructNotPresent.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			glslang::DefaultTBuiltInResource));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	glslang::TProgram program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
+	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
+
+	SpirVProcessor vertexProcessor;
+	EXPECT_TRUE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, vertexSpirv, Stage::Vertex));
+
+	SpirVProcessor fragmentProcessor;
+	EXPECT_TRUE(fragmentProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, fragmentSpirv, Stage::Fragment));
+
+	EXPECT_TRUE(vertexProcessor.assignOutputs(output));
+	EXPECT_FALSE(fragmentProcessor.linkInputs(output, vertexProcessor));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_EQ(25U, messages[0].line);
+	EXPECT_EQ(10U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("linker error: cannot find output interface block member with name otherValue in "
+		"stage vertex", messages[0].message);
+}
+
+TEST_F(SpirVProcessorTest, StructWithinOutputBlock)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"StructWithinOutputBlock.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			glslang::DefaultTBuiltInResource));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	glslang::TProgram program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
+	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
+
+	SpirVProcessor vertexProcessor;
+	EXPECT_FALSE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, vertexSpirv, Stage::Vertex));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_EQ(30U, messages[0].line);
+	EXPECT_EQ(10U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("linker error: output interface block member OutValues.value is a struct",
+		messages[0].message);
+}
+
+TEST_F(SpirVProcessorTest, MultipleLinkMembers)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"MultipleLinkMembers.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			glslang::DefaultTBuiltInResource));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	glslang::TProgram program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
+	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
+
+	SpirVProcessor vertexProcessor;
+	EXPECT_TRUE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, vertexSpirv, Stage::Vertex));
+
+	SpirVProcessor fragmentProcessor;
+	EXPECT_TRUE(fragmentProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, fragmentSpirv, Stage::Fragment));
+
+	EXPECT_TRUE(vertexProcessor.assignOutputs(output));
+	EXPECT_FALSE(fragmentProcessor.linkInputs(output, vertexProcessor));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_EQ(30U, messages[0].line);
+	EXPECT_EQ(10U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("linker error: multiple members from output interface blocks match the name value in "
+		"stage vertex", messages[0].message);
+}
+
+TEST_F(SpirVProcessorTest, MixedExplicitImplicitLocations)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"MixedExplicitImplicitLocations.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			glslang::DefaultTBuiltInResource));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	glslang::TProgram program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
+	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
+
+	SpirVProcessor vertexProcessor;
+	EXPECT_TRUE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, vertexSpirv, Stage::Vertex));
+
+	SpirVProcessor fragmentProcessor;
+	EXPECT_TRUE(fragmentProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, fragmentSpirv, Stage::Fragment));
+
+	EXPECT_FALSE(vertexProcessor.assignOutputs(output));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_EQ(18U, messages[0].line);
+	EXPECT_EQ(10U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("linker error: output declarations mix implicit and explicit locations in stage "
+		"vertex", messages[0].message);
+}
+
 } // namespace msl

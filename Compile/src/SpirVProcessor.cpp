@@ -1238,7 +1238,7 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 			{
 				output.addMessage(Output::Level::Error, processor.fileName, processor.line,
 					processor.column, false,
-					"linker error: " + ioName + " " + inputOutput.name + " for stage " +
+					"linker error: " + ioName + " " + inputOutput.name + " in stage " +
 					stageNames[static_cast<unsigned int>(processor.stage)] + " is a struct");
 			}
 
@@ -1650,8 +1650,8 @@ bool assignInputsOutputs(Output& output, const SpirVProcessor& processor,
 	{
 		output.addMessage(Output::Level::Error, processor.fileName, processor.line,
 			processor.column, false,
-			"linker error: " + ioName + " declarations mixe implicit and explicit locations " +
-			"for stage " + stageNames[static_cast<unsigned int>(processor.stage)]);
+			"linker error: " + ioName + " declarations mix implicit and explicit locations " +
+			"in stage " + stageNames[static_cast<unsigned int>(processor.stage)]);
 		return false;
 	}
 
@@ -1679,7 +1679,7 @@ bool findLinkedMember(Output& output, std::uint32_t& outputIndex, std::uint32_t&
 					output.addMessage(Output::Level::Error, processor.fileName, processor.line,
 						processor.column, false,
 						"linker error: multiple members from output interface blocks match the "
-						"name " + name + "in stage " +
+						"name " + name + " in stage " +
 						stageNames[static_cast<unsigned int>(processor.stage)]);
 					return false;
 				}
@@ -1695,7 +1695,7 @@ bool findLinkedMember(Output& output, std::uint32_t& outputIndex, std::uint32_t&
 		output.addMessage(Output::Level::Error, processor.fileName, processor.line,
 			processor.column, false,
 			"linker error: cannot find output interface block member with name " + name +
-			"in stage " + stageNames[static_cast<unsigned int>(processor.stage)]);
+			" in stage " + stageNames[static_cast<unsigned int>(processor.stage)]);
 		return false;
 	}
 

@@ -1,0 +1,34 @@
+[[vertex]] out OutValues1
+{
+	vec4 value;
+} out1;
+
+[[vertex]] out OutValues2
+{
+	vec4 value;
+} out2;
+
+[[fragment]] in InValues
+{
+	vec4 value;
+};
+
+[[vertex]]
+void vertShader()
+{
+	gl_Position = vec4(0.0);
+}
+
+[[fragment]] out vec4 color;
+
+[[fragment]]
+void fragShader()
+{
+	color = vec4(1.0);
+}
+
+pipeline Test
+{
+	vertex = vertShader;
+	fragment = fragShader;
+}
