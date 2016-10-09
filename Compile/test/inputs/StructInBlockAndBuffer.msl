@@ -1,0 +1,34 @@
+struct TestStruct
+{
+	vec4 value;
+};
+
+uniform Block
+{
+	TestStruct member;
+} uniformBlock;
+
+buffer Buffer
+{
+	TestStruct member;
+} uniformBuffer;
+
+[[vertex]]
+void vertShader()
+{
+	gl_Position = vec4(0.0);
+}
+
+[[fragment]] out vec4 color;
+
+[[fragment]]
+void fragShader()
+{
+	color = vec4(1.0);
+}
+
+pipeline Test
+{
+	vertex = vertShader;
+	fragment = fragShader;
+}

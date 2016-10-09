@@ -103,6 +103,126 @@ TEST(TargetSpirVTest, CompleteShader)
 	EXPECT_EQ(2U, result.getShaders().size());
 }
 
+TEST(TargetSpirVTest, CombineReflection)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"CombineReflection.msl");
+
+	TargetSpirV target;
+	target.addIncludePath(inputDir.string());
+
+	Output output;
+	CompiledResult result;
+	EXPECT_TRUE(target.compile(result, output, shaderName));
+	EXPECT_TRUE(target.finish(result, output));
+
+	EXPECT_EQ(0, output.getMessages().size());
+
+	auto unknown = msl::compile::unknown;
+	EXPECT_EQ(1U, result.getPipelines().size());
+	auto pipeline = result.getPipelines().find("Test");
+	ASSERT_NE(pipeline, result.getPipelines().end());
+	EXPECT_EQ(0U, pipeline->second.shaders[static_cast<int>(Stage::Vertex)].shader);
+	EXPECT_EQ(unknown,
+		pipeline->second.shaders[static_cast<int>(Stage::TessellationControl)].shader);
+	EXPECT_EQ(unknown,
+		pipeline->second.shaders[static_cast<int>(Stage::TessellationEvaluation)].shader);
+	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
+	EXPECT_EQ(1U, pipeline->second.shaders[static_cast<int>(Stage::Fragment)].shader);
+	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
+
+	ASSERT_EQ(5U, pipeline->second.structs.size());
+	EXPECT_EQ("VertexUniform", pipeline->second.structs[0].name);
+	EXPECT_EQ(8*sizeof(float), pipeline->second.structs[0].size);
+
+	ASSERT_EQ(2U, pipeline->second.structs[0].members.size());
+	EXPECT_EQ("member", pipeline->second.structs[0].members[0].name);
+	EXPECT_EQ(0, pipeline->second.structs[0].members[0].offset);
+	EXPECT_EQ(4*sizeof(float), pipeline->second.structs[0].members[0].size);
+	EXPECT_EQ(Type::Struct, pipeline->second.structs[0].members[0].type);
+	EXPECT_EQ(1U, pipeline->second.structs[0].members[0].structIndex);
+	EXPECT_TRUE(pipeline->second.structs[0].members[0].arrayElements.empty());
+
+	EXPECT_EQ("otherMember", pipeline->second.structs[0].members[1].name);
+	EXPECT_EQ(4*sizeof(float), pipeline->second.structs[0].members[1].offset);
+	EXPECT_EQ(4*sizeof(float), pipeline->second.structs[0].members[1].size);
+	EXPECT_EQ(Type::Struct, pipeline->second.structs[0].members[1].type);
+	EXPECT_EQ(2U, pipeline->second.structs[0].members[1].structIndex);
+	EXPECT_TRUE(pipeline->second.structs[0].members[1].arrayElements.empty());
+
+	EXPECT_EQ("TestStruct", pipeline->second.structs[1].name);
+	EXPECT_EQ(4*sizeof(float), pipeline->second.structs[1].size);
+
+	ASSERT_EQ(1U, pipeline->second.structs[1].members.size());
+	EXPECT_EQ("value", pipeline->second.structs[1].members[0].name);
+	EXPECT_EQ(0, pipeline->second.structs[1].members[0].offset);
+	EXPECT_EQ(4*sizeof(float), pipeline->second.structs[1].members[0].size);
+	EXPECT_EQ(Type::Vec4, pipeline->second.structs[1].members[0].type);
+	EXPECT_EQ(unknown, pipeline->second.structs[1].members[0].structIndex);
+	EXPECT_TRUE(pipeline->second.structs[1].members[0].arrayElements.empty());
+
+	EXPECT_EQ("VertexOnlyStruct", pipeline->second.structs[2].name);
+	EXPECT_EQ(4*sizeof(float), pipeline->second.structs[2].size);
+
+	ASSERT_EQ(1U, pipeline->second.structs[2].members.size());
+	EXPECT_EQ("value", pipeline->second.structs[2].members[0].name);
+	EXPECT_EQ(0, pipeline->second.structs[2].members[0].offset);
+	EXPECT_EQ(3*sizeof(float), pipeline->second.structs[2].members[0].size);
+	EXPECT_EQ(Type::Vec3, pipeline->second.structs[2].members[0].type);
+	EXPECT_EQ(unknown, pipeline->second.structs[2].members[0].structIndex);
+	EXPECT_TRUE(pipeline->second.structs[2].members[0].arrayElements.empty());
+
+	EXPECT_EQ("FragmentUniform", pipeline->second.structs[3].name);
+	EXPECT_EQ(8*sizeof(float), pipeline->second.structs[3].size);
+
+	ASSERT_EQ(2U, pipeline->second.structs[3].members.size());
+	EXPECT_EQ("member", pipeline->second.structs[3].members[0].name);
+	EXPECT_EQ(0, pipeline->second.structs[3].members[0].offset);
+	EXPECT_EQ(4*sizeof(float), pipeline->second.structs[3].members[0].size);
+	EXPECT_EQ(Type::Struct, pipeline->second.structs[3].members[0].type);
+	EXPECT_EQ(1U, pipeline->second.structs[3].members[0].structIndex);
+	EXPECT_TRUE(pipeline->second.structs[3].members[0].arrayElements.empty());
+
+	EXPECT_EQ("otherMember", pipeline->second.structs[3].members[1].name);
+	EXPECT_EQ(4*sizeof(float), pipeline->second.structs[3].members[1].offset);
+	EXPECT_EQ(4*sizeof(float), pipeline->second.structs[3].members[1].size);
+	EXPECT_EQ(Type::Struct, pipeline->second.structs[3].members[1].type);
+	EXPECT_EQ(4U, pipeline->second.structs[3].members[1].structIndex);
+	EXPECT_TRUE(pipeline->second.structs[3].members[1].arrayElements.empty());
+
+	EXPECT_EQ("FragmentOnlyStruct", pipeline->second.structs[4].name);
+	EXPECT_EQ(4*sizeof(float), pipeline->second.structs[4].size);
+
+	ASSERT_EQ(1U, pipeline->second.structs[4].members.size());
+	EXPECT_EQ("value", pipeline->second.structs[4].members[0].name);
+	EXPECT_EQ(0, pipeline->second.structs[4].members[0].offset);
+	EXPECT_EQ(2*sizeof(float), pipeline->second.structs[4].members[0].size);
+	EXPECT_EQ(Type::Vec2, pipeline->second.structs[4].members[0].type);
+	EXPECT_EQ(unknown, pipeline->second.structs[4].members[0].structIndex);
+	EXPECT_TRUE(pipeline->second.structs[4].members[0].arrayElements.empty());
+
+	ASSERT_EQ(2U, pipeline->second.uniforms.size());
+	EXPECT_EQ("VertexUniform", pipeline->second.uniforms[0].name);
+	EXPECT_EQ(UniformType::Block, pipeline->second.uniforms[0].uniformType);
+	EXPECT_EQ(Type::Struct, pipeline->second.uniforms[0].type);
+	EXPECT_EQ(0U, pipeline->second.uniforms[0].structIndex);
+	EXPECT_TRUE(pipeline->second.uniforms[0].arrayElements.empty());
+	EXPECT_EQ(0, pipeline->second.uniforms[0].descriptorSet);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[0].samplerIndex);
+
+	EXPECT_EQ("FragmentUniform", pipeline->second.uniforms[1].name);
+	EXPECT_EQ(UniformType::Block, pipeline->second.uniforms[1].uniformType);
+	EXPECT_EQ(Type::Struct, pipeline->second.uniforms[1].type);
+	EXPECT_EQ(3U, pipeline->second.uniforms[1].structIndex);
+	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
+	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[1].samplerIndex);
+
+	EXPECT_EQ(2U, result.getShaders().size());
+}
+
 TEST(TargetSpirVTest, VersionNumber)
 {
 	std::stringstream stream(
@@ -163,10 +283,10 @@ TEST(TargetSpirVTest, CompileWarning)
 	EXPECT_EQ("'switch' : last case/default label not followed by statements", messages[0].message);
 }
 
-TEST(TargetSpirVTest, LinkError)
+TEST(TargetSpirVTest, MissingEntryPoint)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = pathStr(inputDir/"LinkError.msl");
+	std::string shaderName = pathStr(inputDir/"MissingEntryPoint.msl");
 
 	TargetSpirV target;
 	target.addIncludePath(inputDir.string());
@@ -181,6 +301,28 @@ TEST(TargetSpirVTest, LinkError)
 	EXPECT_EQ(pathStr(inputDir/"LinkError.mslh"), messages[0].file);
 	EXPECT_EQ(5U, messages[0].line);
 	EXPECT_EQ("Linking fragment stage: Missing entry point: Each stage requires one entry point",
+		messages[0].message);
+}
+
+TEST(TargetSpirVTest, PushConstantMismatch)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"PushConstantMismatch.msl");
+
+	TargetSpirV target;
+	target.addIncludePath(inputDir.string());
+
+	Output output;
+	CompiledResult result;
+	EXPECT_FALSE(target.compile(result, output, shaderName));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_LE(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_EQ(18U, messages[0].line);
+	EXPECT_EQ(10U, messages[0].column);
+	EXPECT_EQ("linker error: struct Uniforms has different declarations between stages",
 		messages[0].message);
 }
 

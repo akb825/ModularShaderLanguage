@@ -1,0 +1,48 @@
+[[vertex]] struct VertexOnlyStruct
+{
+	vec3 value;
+};
+
+struct TestStruct
+{
+	vec4 value;
+};
+
+[[fragment]] struct FragmentOnlyStruct
+{
+	vec2 value;
+};
+
+[[vertex]]
+uniform VertexUniform
+{
+	TestStruct member;
+	VertexOnlyStruct otherMember;
+};
+
+[[fragment]]
+uniform FragmentUniform
+{
+	TestStruct member;
+	FragmentOnlyStruct otherMember;
+};
+
+[[vertex]]
+void vertShader()
+{
+	gl_Position = vec4(0.0);
+}
+
+[[fragment]] out vec4 color;
+
+[[fragment]]
+void fragShader()
+{
+	color = vec4(1.0);
+}
+
+pipeline Test
+{
+	vertex = vertShader;
+	fragment = fragShader;
+}
