@@ -455,7 +455,7 @@ static bool isValid(const void* data, size_t size)
 		for (int j = 0; j < mslStage_Count; ++j)
 		{
 			const mslb::Shader* shader = (*shaders)[i];
-			if (shader)
+			if (shader || shader->shader() == MSL_UNKNOWN)
 			{
 				if (shader->shader() >= shaderData->size())
 					return false;
@@ -994,7 +994,7 @@ bool mslModule_setUniformBinding(mslModule* module, uint32_t pipelineIndex, uint
 	for (int i = 0; i < mslStage_Count; ++i)
 	{
 		const mslb::Shader* shader = shaders[i];
-		if (!shader)
+		if (!shader || shader->shader() == MSL_UNKNOWN)
 			continue;
 
 		uint32_t id = (*shader->uniformIds())[uniformIndex];

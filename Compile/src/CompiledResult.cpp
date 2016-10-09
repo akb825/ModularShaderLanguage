@@ -106,7 +106,7 @@ bool CompiledResult::save(std::ostream& stream) const
 	std::vector<flatbuffers::Offset<mslb::Attribute>> attributes;
 	std::vector<mslb::BlendAttachmentState> blendAttachments;
 	blendAttachments.reserve(maxAttachments);
-	std::vector<flatbuffers::Offset<mslb::Shader>> shaders(maxAttachments);
+	std::vector<flatbuffers::Offset<mslb::Shader>> shaders(stageCount);
 
 	std::size_t i = 0;
 	for (const auto& pipeline : m_pipelines)
@@ -265,10 +265,12 @@ bool CompiledResult::save(std::ostream& stream) const
 			builder.CreateVectorOfStructs(blendAttachments),
 			builder.CreateVector(renderState.blendState.blendConstants.data(), 4));
 
-		for (unsigned int j = 0; j < maxAttachments; ++j)
+		for (unsigned int j = 0; j < stageCount; ++j)
 		{
 			const Shader& shader = pipeline.second.shaders[j];
-			if (shader.shader != unknown)
+			if (shader.shader == unknown)
+				shaders[j] = mslb::CreateShader(builder, unknown, 0);
+			else
 			{
 				assert(shader.shader < m_shaders.size());
 				shaders[j] = mslb::CreateShader(builder, static_cast<std::uint32_t>(shader.shader),

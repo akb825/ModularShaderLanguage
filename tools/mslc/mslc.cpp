@@ -108,37 +108,37 @@ static std::unique_ptr<msl::Target> createGlslTarget(const std::string& targetNa
 	if (config.count("header-line-vert"))
 	{
 		for (const std::string& str : config["header-line-vert"].as<std::vector<std::string>>())
-			target->addHeaderLine(msl::Target::Stage::Vertex, str);
+			target->addHeaderLine(msl::compile::Stage::Vertex, str);
 	}
 
 	if (config.count("header-line-tess-ctrl"))
 	{
 		for (const std::string& str : config["header-line-tess-ctrl"].as<std::vector<std::string>>())
-			target->addHeaderLine(msl::Target::Stage::TessellationControl, str);
+			target->addHeaderLine(msl::compile::Stage::TessellationControl, str);
 	}
 
 	if (config.count("header-line-tess-eval"))
 	{
 		for (const std::string& str : config["header-line-tess-eval"].as<std::vector<std::string>>())
-			target->addHeaderLine(msl::Target::Stage::TessellationEvaluation, str);
+			target->addHeaderLine(msl::compile::Stage::TessellationEvaluation, str);
 	}
 
 	if (config.count("header-line-geom"))
 	{
 		for (const std::string& str : config["header-line-geom"].as<std::vector<std::string>>())
-			target->addHeaderLine(msl::Target::Stage::Geometry, str);
+			target->addHeaderLine(msl::compile::Stage::Geometry, str);
 	}
 
 	if (config.count("header-line-frag"))
 	{
 		for (const std::string& str : config["header-line-frag"].as<std::vector<std::string>>())
-			target->addHeaderLine(msl::Target::Stage::Fragment, str);
+			target->addHeaderLine(msl::compile::Stage::Fragment, str);
 	}
 
 	if (config.count("header-line-comp"))
 	{
 		for (const std::string& str : config["header-line-comp"].as<std::vector<std::string>>())
-			target->addHeaderLine(msl::Target::Stage::Compute, str);
+			target->addHeaderLine(msl::compile::Stage::Compute, str);
 	}
 
 	if (config.count("extension"))
@@ -150,72 +150,72 @@ static std::unique_ptr<msl::Target> createGlslTarget(const std::string& targetNa
 	if (config.count("extension-vert"))
 	{
 		for (const std::string& str : config["extension-vert"].as<std::vector<std::string>>())
-			target->addRequiredExtension(msl::Target::Stage::Vertex, str);
+			target->addRequiredExtension(msl::compile::Stage::Vertex, str);
 	}
 
 	if (config.count("extension-tess-ctrl"))
 	{
 		for (const std::string& str : config["extension-tess-ctrl"].as<std::vector<std::string>>())
-			target->addRequiredExtension(msl::Target::Stage::TessellationControl, str);
+			target->addRequiredExtension(msl::compile::Stage::TessellationControl, str);
 	}
 
 	if (config.count("extension-tess-eval"))
 	{
 		for (const std::string& str : config["extension-tess-eval"].as<std::vector<std::string>>())
-			target->addRequiredExtension(msl::Target::Stage::TessellationEvaluation, str);
+			target->addRequiredExtension(msl::compile::Stage::TessellationEvaluation, str);
 	}
 
 	if (config.count("extension-geom"))
 	{
 		for (const std::string& str : config["extension-geom"].as<std::vector<std::string>>())
-			target->addRequiredExtension(msl::Target::Stage::Geometry, str);
+			target->addRequiredExtension(msl::compile::Stage::Geometry, str);
 	}
 
 	if (config.count("extension-frag"))
 	{
 		for (const std::string& str : config["extension-frag"].as<std::vector<std::string>>())
-			target->addRequiredExtension(msl::Target::Stage::Fragment, str);
+			target->addRequiredExtension(msl::compile::Stage::Fragment, str);
 	}
 
 	if (config.count("extension-comp"))
 	{
 		for (const std::string& str : config["extension-comp"].as<std::vector<std::string>>())
-			target->addRequiredExtension(msl::Target::Stage::Compute, str);
+			target->addRequiredExtension(msl::compile::Stage::Compute, str);
 	}
 
 	if (config.count("glsl-command-vert"))
 	{
-		target->setGlslToolCommand(msl::Target::Stage::Vertex,
+		target->setGlslToolCommand(msl::compile::Stage::Vertex,
 			config["glsl-command-vert"].as<std::string>());
 	}
 
 	if (config.count("glsl-command-tess-ctrl"))
 	{
-		target->setGlslToolCommand(msl::Target::Stage::TessellationControl,
+		target->setGlslToolCommand(msl::compile::Stage::TessellationControl,
 			config["glsl-command-tess-ctrl"].as<std::string>());
 	}
 
 	if (config.count("glsl-command-tess-eval"))
 	{
-		target->setGlslToolCommand(msl::Target::Stage::TessellationEvaluation,
+		target->setGlslToolCommand(msl::compile::Stage::TessellationEvaluation,
 			config["glsl-command-tess-eval"].as<std::string>());
 	}
 
 	if (config.count("glsl-command-geom"))
 	{
-		target->setGlslToolCommand(msl::Target::Stage::Geometry,
+		target->setGlslToolCommand(msl::compile::Stage::Geometry,
 			config["glsl-command-geom"].as<std::string>());
 	}
 
 	if (config.count("glsl-command-frag"))
 	{
-		target->setGlslToolCommand(msl::Target::Stage::Fragment,
+		target->setGlslToolCommand(msl::compile::Stage::Fragment,
 			config["glsl-command-frag"].as<std::string>());
 	}
 
 	if (config.count("glsl-command-comp"))
 	{
-		target->setGlslToolCommand(msl::Target::Stage::Compute,
+		target->setGlslToolCommand(msl::compile::Stage::Compute,
 			config["glsl-command-comp"].as<std::string>());
 	}
 
@@ -356,6 +356,9 @@ static bool setCommonTargetConfig(msl::Target& target, const variables_map& opti
 	if (config.count("remap-variables"))
 		target.setRemapVariables(config["remap-variables"].as<bool>());
 
+	if (config.count("adjustable-bindings"))
+		target.setAdjustableBindings(config["adjustable-bindings"].as<bool>());
+
 	target.setStripDebug(options.count("strip") > 0);
 	target.setOptimize(options.count("optimize") > 0);
 
@@ -451,6 +454,7 @@ int main(int argc, char** argv)
 			"SPIR-V. The string $input will be replaced by the input file path, while the string "
 			"$output will be replaced by the output file path.")
 		("remap-variables", value<bool>(), "remap variable ranges to improve compression of SPIR-V")
+		("adjustable-bindings", value<bool>(), "allow uniform bindings to be adjusted with SPIR-V")
 		("remap-depth-range", value<bool>(), "boolean for whether or not to remap the depth range "
 			"from [0, 1] to [-1, 1] in the  vertex shader output for GLSL or Metal targets. "
 			"Defaults to false.")
