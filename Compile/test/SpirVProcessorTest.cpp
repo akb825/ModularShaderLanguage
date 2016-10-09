@@ -1307,4 +1307,684 @@ TEST_F(SpirVProcessorTest, ExplicitInputsOutputs)
 	EXPECT_EQ(std::make_pair(2U, 0U), fragmentProcessor.inputs[0].memberLocations[1]);
 }
 
+TEST_F(SpirVProcessorTest, LinkAllStages)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"LinkAllStages.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			glslang::DefaultTBuiltInResource));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	glslang::TProgram program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
+	Compiler::SpirV tessControlSpirv = Compiler::assemble(output, program,
+		Stage::TessellationControl, pipeline);
+	Compiler::SpirV tessEvalSpirv = Compiler::assemble(output, program,
+		Stage::TessellationEvaluation, pipeline);
+	Compiler::SpirV geometrySpirv = Compiler::assemble(output, program, Stage::Geometry, pipeline);
+	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
+
+	SpirVProcessor vertexProcessor;
+	EXPECT_TRUE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, vertexSpirv, Stage::Vertex));
+
+	SpirVProcessor tessControlProcessor;
+	EXPECT_TRUE(tessControlProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, tessControlSpirv, Stage::TessellationControl));
+
+	SpirVProcessor tessEvalProcessor;
+	EXPECT_TRUE(tessEvalProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, tessEvalSpirv, Stage::TessellationEvaluation));
+
+	SpirVProcessor geometryProcessor;
+	EXPECT_TRUE(geometryProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, geometrySpirv, Stage::Geometry));
+
+	SpirVProcessor fragmentProcessor;
+	EXPECT_TRUE(fragmentProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, fragmentSpirv, Stage::Fragment));
+
+	EXPECT_TRUE(vertexProcessor.assignInputs(output));
+	EXPECT_TRUE(vertexProcessor.assignOutputs(output));
+	EXPECT_TRUE(tessControlProcessor.linkInputs(output, vertexProcessor));
+	EXPECT_TRUE(tessControlProcessor.assignOutputs(output));
+	EXPECT_TRUE(tessEvalProcessor.linkInputs(output, tessControlProcessor));
+	EXPECT_TRUE(tessEvalProcessor.assignOutputs(output));
+	EXPECT_TRUE(geometryProcessor.linkInputs(output, tessEvalProcessor));
+	EXPECT_TRUE(geometryProcessor.assignOutputs(output));
+	EXPECT_TRUE(fragmentProcessor.linkInputs(output, geometryProcessor));
+	EXPECT_TRUE(fragmentProcessor.assignOutputs(output));
+
+	EXPECT_TRUE(output.getMessages().empty());
+
+	std::uint32_t unknown = msl::compile::unknown;
+	ASSERT_EQ(4U, vertexProcessor.inputs.size());
+
+	EXPECT_EQ("position", vertexProcessor.inputs[0].name);
+	EXPECT_EQ(Type::Vec3, vertexProcessor.inputs[0].type);
+	EXPECT_EQ(unknown, vertexProcessor.inputs[0].structIndex);
+	EXPECT_TRUE(vertexProcessor.inputs[0].arrayElements.empty());
+	EXPECT_TRUE(vertexProcessor.inputs[0].memberLocations.empty());
+	EXPECT_FALSE(vertexProcessor.inputs[0].patch);
+	EXPECT_EQ(0U, vertexProcessor.inputs[0].location);
+	EXPECT_EQ(0U, vertexProcessor.inputs[0].component);
+
+	EXPECT_EQ("normal", vertexProcessor.inputs[1].name);
+	EXPECT_EQ(Type::Vec3, vertexProcessor.inputs[1].type);
+	EXPECT_EQ(unknown, vertexProcessor.inputs[1].structIndex);
+	EXPECT_TRUE(vertexProcessor.inputs[1].arrayElements.empty());
+	EXPECT_TRUE(vertexProcessor.inputs[1].memberLocations.empty());
+	EXPECT_FALSE(vertexProcessor.inputs[1].patch);
+	EXPECT_EQ(1U, vertexProcessor.inputs[1].location);
+	EXPECT_EQ(0U, vertexProcessor.inputs[1].component);
+
+	EXPECT_EQ("texCoords", vertexProcessor.inputs[2].name);
+	EXPECT_EQ(Type::Vec2, vertexProcessor.inputs[2].type);
+	EXPECT_EQ(unknown, vertexProcessor.inputs[2].structIndex);
+	EXPECT_EQ(std::vector<std::uint32_t>{3}, vertexProcessor.inputs[2].arrayElements);
+	EXPECT_TRUE(vertexProcessor.inputs[2].memberLocations.empty());
+	EXPECT_FALSE(vertexProcessor.inputs[2].patch);
+	EXPECT_EQ(2U, vertexProcessor.inputs[2].location);
+	EXPECT_EQ(0U, vertexProcessor.inputs[2].component);
+
+	EXPECT_EQ("colors", vertexProcessor.inputs[3].name);
+	EXPECT_EQ(Type::Vec4, vertexProcessor.inputs[3].type);
+	EXPECT_EQ(unknown, vertexProcessor.inputs[3].structIndex);
+	EXPECT_EQ(std::vector<std::uint32_t>{2}, vertexProcessor.inputs[3].arrayElements);
+	EXPECT_TRUE(vertexProcessor.inputs[3].memberLocations.empty());
+	EXPECT_FALSE(vertexProcessor.inputs[3].patch);
+	EXPECT_EQ(5U, vertexProcessor.inputs[3].location);
+	EXPECT_EQ(0U, vertexProcessor.inputs[3].component);
+
+	ASSERT_EQ(3U, vertexProcessor.outputs.size());
+
+	EXPECT_EQ("vertInfo", vertexProcessor.outputs[0].name);
+	EXPECT_EQ(Type::Struct, vertexProcessor.outputs[0].type);
+	EXPECT_EQ(1U, vertexProcessor.outputs[0].structIndex);
+	EXPECT_TRUE(vertexProcessor.outputs[0].arrayElements.empty());
+	ASSERT_EQ(4U, vertexProcessor.outputs[0].memberLocations.size());
+	EXPECT_FALSE(vertexProcessor.outputs[0].patch);
+	EXPECT_EQ(unknown, vertexProcessor.outputs[0].location);
+	EXPECT_EQ(unknown, vertexProcessor.outputs[0].component);
+
+	EXPECT_EQ("vertShadowPos", vertexProcessor.outputs[1].name);
+	EXPECT_EQ(Type::Vec4, vertexProcessor.outputs[1].type);
+	EXPECT_EQ(unknown, vertexProcessor.outputs[1].structIndex);
+	EXPECT_EQ(std::vector<std::uint32_t>{4}, vertexProcessor.outputs[1].arrayElements);
+	EXPECT_TRUE(vertexProcessor.outputs[1].memberLocations.empty());
+	EXPECT_FALSE(vertexProcessor.outputs[1].patch);
+	EXPECT_EQ(7U, vertexProcessor.outputs[1].location);
+	EXPECT_EQ(0U, vertexProcessor.outputs[1].component);
+
+	EXPECT_EQ("vertFogVal", vertexProcessor.outputs[2].name);
+	EXPECT_EQ(Type::Float, vertexProcessor.outputs[2].type);
+	EXPECT_EQ(unknown, vertexProcessor.outputs[2].structIndex);
+	EXPECT_TRUE(vertexProcessor.outputs[2].arrayElements.empty());
+	EXPECT_TRUE(vertexProcessor.outputs[2].memberLocations.empty());
+	EXPECT_FALSE(vertexProcessor.outputs[2].patch);
+	EXPECT_EQ(11U, vertexProcessor.outputs[2].location);
+	EXPECT_EQ(0U, vertexProcessor.outputs[2].component);
+
+	ASSERT_EQ(2U, vertexProcessor.structs.size());
+	EXPECT_EQ("VertInfo", vertexProcessor.structs[1].name);
+	ASSERT_EQ(4U, vertexProcessor.structs[1].members.size());
+
+	EXPECT_EQ("position", vertexProcessor.structs[1].members[0].name);
+	EXPECT_EQ(Type::Vec3, vertexProcessor.structs[1].members[0].type);
+	EXPECT_EQ(unknown, vertexProcessor.structs[1].members[0].structIndex);
+	EXPECT_TRUE(vertexProcessor.structs[1].members[0].arrayElements.empty());
+	EXPECT_FALSE(vertexProcessor.structs[1].members[0].rowMajor);
+	EXPECT_EQ(0U, vertexProcessor.outputs[0].memberLocations[0].first);
+	EXPECT_EQ(0U, vertexProcessor.outputs[0].memberLocations[0].second);
+
+	EXPECT_EQ("normal", vertexProcessor.structs[1].members[1].name);
+	EXPECT_EQ(Type::Vec3, vertexProcessor.structs[1].members[1].type);
+	EXPECT_EQ(unknown, vertexProcessor.structs[1].members[1].structIndex);
+	EXPECT_TRUE(vertexProcessor.structs[1].members[1].arrayElements.empty());
+	EXPECT_FALSE(vertexProcessor.structs[1].members[1].rowMajor);
+	EXPECT_EQ(1U, vertexProcessor.outputs[0].memberLocations[1].first);
+	EXPECT_EQ(0U, vertexProcessor.outputs[0].memberLocations[1].second);
+
+	EXPECT_EQ("texCoords", vertexProcessor.structs[1].members[2].name);
+	EXPECT_EQ(Type::Vec2, vertexProcessor.structs[1].members[2].type);
+	EXPECT_EQ(unknown, vertexProcessor.structs[1].members[2].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}),
+		vertexProcessor.structs[1].members[2].arrayElements);
+	EXPECT_FALSE(vertexProcessor.structs[1].members[2].rowMajor);
+	EXPECT_EQ(2U, vertexProcessor.outputs[0].memberLocations[2].first);
+	EXPECT_EQ(0U, vertexProcessor.outputs[0].memberLocations[2].second);
+
+	EXPECT_EQ("colors", vertexProcessor.structs[1].members[3].name);
+	EXPECT_EQ(Type::Vec4, vertexProcessor.structs[1].members[3].type);
+	EXPECT_EQ(unknown, vertexProcessor.structs[1].members[3].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{2, unknown}}),
+		vertexProcessor.structs[1].members[3].arrayElements);
+	EXPECT_FALSE(vertexProcessor.structs[1].members[3].rowMajor);
+	EXPECT_EQ(5U, vertexProcessor.outputs[0].memberLocations[3].first);
+	EXPECT_EQ(0U, vertexProcessor.outputs[0].memberLocations[3].second);
+
+	ASSERT_EQ(3U, tessControlProcessor.inputs.size());
+
+	EXPECT_EQ("inVertInfo", tessControlProcessor.inputs[0].name);
+	EXPECT_EQ(Type::Struct, tessControlProcessor.inputs[0].type);
+	EXPECT_EQ(0U, tessControlProcessor.inputs[0].structIndex);
+	EXPECT_EQ(std::vector<std::uint32_t>{32}, tessControlProcessor.inputs[0].arrayElements);
+	ASSERT_EQ(4U, tessControlProcessor.inputs[0].memberLocations.size());
+	EXPECT_FALSE(tessControlProcessor.inputs[0].patch);
+	EXPECT_EQ(unknown, tessControlProcessor.inputs[0].location);
+	EXPECT_EQ(unknown, tessControlProcessor.inputs[0].component);
+
+	EXPECT_EQ("vertShadowPos", tessControlProcessor.inputs[1].name);
+	EXPECT_EQ(Type::Vec4, tessControlProcessor.inputs[1].type);
+	EXPECT_EQ(unknown, tessControlProcessor.inputs[1].structIndex);
+	EXPECT_EQ((std::vector<std::uint32_t>{32, 4}),
+		tessControlProcessor.inputs[1].arrayElements);
+	EXPECT_TRUE(tessControlProcessor.inputs[1].memberLocations.empty());
+	EXPECT_FALSE(tessControlProcessor.inputs[1].patch);
+	EXPECT_EQ(7U, tessControlProcessor.inputs[1].location);
+	EXPECT_EQ(0U, tessControlProcessor.inputs[1].component);
+
+	EXPECT_EQ("vertFogVal", tessControlProcessor.inputs[2].name);
+	EXPECT_EQ(Type::Float, tessControlProcessor.inputs[2].type);
+	EXPECT_EQ(unknown, tessControlProcessor.inputs[2].structIndex);
+	EXPECT_EQ(std::vector<std::uint32_t>{32}, tessControlProcessor.inputs[2].arrayElements);
+	EXPECT_TRUE(tessControlProcessor.inputs[2].memberLocations.empty());
+	EXPECT_FALSE(tessControlProcessor.inputs[2].patch);
+	EXPECT_EQ(11U, tessControlProcessor.inputs[2].location);
+	EXPECT_EQ(0U, tessControlProcessor.inputs[2].component);
+
+	ASSERT_EQ(2U, tessControlProcessor.structs.size());
+	EXPECT_EQ("InVertInfo", tessControlProcessor.structs[0].name);
+	ASSERT_EQ(4U, tessControlProcessor.structs[0].members.size());
+
+	EXPECT_EQ("position", tessControlProcessor.structs[0].members[0].name);
+	EXPECT_EQ(Type::Vec3, tessControlProcessor.structs[0].members[0].type);
+	EXPECT_EQ(unknown, tessControlProcessor.structs[0].members[0].structIndex);
+	EXPECT_TRUE(tessControlProcessor.structs[0].members[0].arrayElements.empty());
+	EXPECT_FALSE(tessControlProcessor.structs[0].members[0].rowMajor);
+	EXPECT_EQ(0U, tessControlProcessor.inputs[0].memberLocations[0].first);
+	EXPECT_EQ(0U, tessControlProcessor.inputs[0].memberLocations[0].second);
+
+	EXPECT_EQ("normal", tessControlProcessor.structs[0].members[1].name);
+	EXPECT_EQ(Type::Vec3, tessControlProcessor.structs[0].members[1].type);
+	EXPECT_EQ(unknown, tessControlProcessor.structs[0].members[1].structIndex);
+	EXPECT_TRUE(tessControlProcessor.structs[0].members[1].arrayElements.empty());
+	EXPECT_FALSE(tessControlProcessor.structs[0].members[1].rowMajor);
+	EXPECT_EQ(1U, tessControlProcessor.inputs[0].memberLocations[1].first);
+	EXPECT_EQ(0U, tessControlProcessor.inputs[0].memberLocations[1].second);
+
+	EXPECT_EQ("texCoords", tessControlProcessor.structs[0].members[2].name);
+	EXPECT_EQ(Type::Vec2, tessControlProcessor.structs[0].members[2].type);
+	EXPECT_EQ(unknown, tessControlProcessor.structs[0].members[2].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}),
+		tessControlProcessor.structs[0].members[2].arrayElements);
+	EXPECT_FALSE(tessControlProcessor.structs[0].members[2].rowMajor);
+	EXPECT_EQ(2U, tessControlProcessor.inputs[0].memberLocations[2].first);
+	EXPECT_EQ(0U, tessControlProcessor.inputs[0].memberLocations[2].second);
+
+	EXPECT_EQ("colors", tessControlProcessor.structs[0].members[3].name);
+	EXPECT_EQ(Type::Vec4, tessControlProcessor.structs[0].members[3].type);
+	EXPECT_EQ(unknown, tessControlProcessor.structs[0].members[3].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{2, unknown}}),
+		tessControlProcessor.structs[0].members[3].arrayElements);
+	EXPECT_FALSE(tessControlProcessor.structs[0].members[3].rowMajor);
+	EXPECT_EQ(5U, tessControlProcessor.inputs[0].memberLocations[3].first);
+	EXPECT_EQ(0U, tessControlProcessor.inputs[0].memberLocations[3].second);
+
+	ASSERT_EQ(4U, tessControlProcessor.outputs.size());
+
+	EXPECT_EQ("outVertInfo", tessControlProcessor.outputs[0].name);
+	EXPECT_EQ(Type::Struct, tessControlProcessor.outputs[0].type);
+	EXPECT_EQ(1U, tessControlProcessor.outputs[0].structIndex);
+	EXPECT_EQ(std::vector<std::uint32_t>{4}, tessControlProcessor.outputs[0].arrayElements);
+	ASSERT_EQ(4U, tessControlProcessor.outputs[0].memberLocations.size());
+	EXPECT_FALSE(tessControlProcessor.outputs[0].patch);
+	EXPECT_EQ(unknown, tessControlProcessor.outputs[0].location);
+	EXPECT_EQ(unknown, tessControlProcessor.outputs[0].component);
+
+	EXPECT_EQ("basis", tessControlProcessor.outputs[1].name);
+	EXPECT_EQ(Type::Mat4, tessControlProcessor.outputs[1].type);
+	EXPECT_EQ(unknown, tessControlProcessor.outputs[1].structIndex);
+	EXPECT_TRUE(tessControlProcessor.outputs[1].arrayElements.empty());
+	EXPECT_TRUE(tessControlProcessor.outputs[1].memberLocations.empty());
+	EXPECT_TRUE(tessControlProcessor.outputs[1].patch);
+	EXPECT_EQ(7U, tessControlProcessor.outputs[1].location);
+	EXPECT_EQ(0U, tessControlProcessor.outputs[1].component);
+
+	EXPECT_EQ("tessControlShadowPos", tessControlProcessor.outputs[2].name);
+	EXPECT_EQ(Type::Vec4, tessControlProcessor.outputs[2].type);
+	EXPECT_EQ(unknown, tessControlProcessor.outputs[2].structIndex);
+	EXPECT_EQ((std::vector<std::uint32_t>{4, 4}),
+		tessControlProcessor.outputs[2].arrayElements);
+	EXPECT_TRUE(tessControlProcessor.outputs[2].memberLocations.empty());
+	EXPECT_FALSE(tessControlProcessor.outputs[2].patch);
+	EXPECT_EQ(11U, tessControlProcessor.outputs[2].location);
+	EXPECT_EQ(0U, tessControlProcessor.outputs[2].component);
+
+	EXPECT_EQ("tessControlFogVal", tessControlProcessor.outputs[3].name);
+	EXPECT_EQ(Type::Float, tessControlProcessor.outputs[3].type);
+	EXPECT_EQ(unknown, tessControlProcessor.outputs[3].structIndex);
+	EXPECT_EQ(std::vector<std::uint32_t>{4}, tessControlProcessor.outputs[3].arrayElements);
+	EXPECT_TRUE(tessControlProcessor.outputs[3].memberLocations.empty());
+	EXPECT_FALSE(tessControlProcessor.outputs[3].patch);
+	EXPECT_EQ(15U, tessControlProcessor.outputs[3].location);
+	EXPECT_EQ(0U, tessControlProcessor.outputs[3].component);
+
+	ASSERT_EQ(2U, tessControlProcessor.structs.size());
+	EXPECT_EQ("OutVertInfo", tessControlProcessor.structs[1].name);
+	ASSERT_EQ(4U, tessControlProcessor.structs[1].members.size());
+
+	EXPECT_EQ("position", tessControlProcessor.structs[1].members[0].name);
+	EXPECT_EQ(Type::Vec3, tessControlProcessor.structs[1].members[0].type);
+	EXPECT_EQ(unknown, tessControlProcessor.structs[1].members[0].structIndex);
+	EXPECT_TRUE(tessControlProcessor.structs[1].members[0].arrayElements.empty());
+	EXPECT_FALSE(tessControlProcessor.structs[1].members[0].rowMajor);
+	EXPECT_EQ(0U, tessControlProcessor.outputs[0].memberLocations[0].first);
+	EXPECT_EQ(0U, tessControlProcessor.outputs[0].memberLocations[0].second);
+
+	EXPECT_EQ("normal", tessControlProcessor.structs[1].members[1].name);
+	EXPECT_EQ(Type::Vec3, tessControlProcessor.structs[1].members[1].type);
+	EXPECT_EQ(unknown, tessControlProcessor.structs[1].members[1].structIndex);
+	EXPECT_TRUE(tessControlProcessor.structs[1].members[1].arrayElements.empty());
+	EXPECT_FALSE(tessControlProcessor.structs[1].members[1].rowMajor);
+	EXPECT_EQ(1U, tessControlProcessor.outputs[0].memberLocations[1].first);
+	EXPECT_EQ(0U, tessControlProcessor.outputs[0].memberLocations[1].second);
+
+	EXPECT_EQ("texCoords", tessControlProcessor.structs[1].members[2].name);
+	EXPECT_EQ(Type::Vec2, tessControlProcessor.structs[1].members[2].type);
+	EXPECT_EQ(unknown, tessControlProcessor.structs[1].members[2].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}),
+		tessControlProcessor.structs[1].members[2].arrayElements);
+	EXPECT_FALSE(tessControlProcessor.structs[1].members[2].rowMajor);
+	EXPECT_EQ(2U, tessControlProcessor.outputs[0].memberLocations[2].first);
+	EXPECT_EQ(0U, tessControlProcessor.outputs[0].memberLocations[2].second);
+
+	EXPECT_EQ("colors", tessControlProcessor.structs[1].members[3].name);
+	EXPECT_EQ(Type::Vec4, tessControlProcessor.structs[1].members[3].type);
+	EXPECT_EQ(unknown, tessControlProcessor.structs[1].members[3].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{2, unknown}}),
+		tessControlProcessor.structs[1].members[3].arrayElements);
+	EXPECT_FALSE(tessControlProcessor.structs[1].members[3].rowMajor);
+	EXPECT_EQ(5U, tessControlProcessor.outputs[0].memberLocations[3].first);
+	EXPECT_EQ(0U, tessControlProcessor.outputs[0].memberLocations[3].second);
+
+	ASSERT_EQ(4U, tessEvalProcessor.inputs.size());
+
+	EXPECT_EQ("inVertInfo", tessEvalProcessor.inputs[0].name);
+	EXPECT_EQ(Type::Struct, tessEvalProcessor.inputs[0].type);
+	EXPECT_EQ(0U, tessEvalProcessor.inputs[0].structIndex);
+	EXPECT_EQ(std::vector<std::uint32_t>{32}, tessEvalProcessor.inputs[0].arrayElements);
+	ASSERT_EQ(4U, tessEvalProcessor.inputs[0].memberLocations.size());
+	EXPECT_FALSE(tessEvalProcessor.inputs[0].patch);
+	EXPECT_EQ(unknown, tessEvalProcessor.inputs[0].location);
+	EXPECT_EQ(unknown, tessEvalProcessor.inputs[0].component);
+
+	EXPECT_EQ("basis", tessEvalProcessor.inputs[1].name);
+	EXPECT_EQ(Type::Mat4, tessEvalProcessor.inputs[1].type);
+	EXPECT_EQ(unknown, tessEvalProcessor.inputs[1].structIndex);
+	EXPECT_TRUE(tessEvalProcessor.inputs[1].arrayElements.empty());
+	EXPECT_TRUE(tessEvalProcessor.inputs[1].memberLocations.empty());
+	EXPECT_TRUE(tessEvalProcessor.inputs[1].patch);
+	EXPECT_EQ(7U, tessEvalProcessor.inputs[1].location);
+	EXPECT_EQ(0U, tessEvalProcessor.inputs[1].component);
+
+	EXPECT_EQ("tessControlShadowPos", tessEvalProcessor.inputs[2].name);
+	EXPECT_EQ(Type::Vec4, tessEvalProcessor.inputs[2].type);
+	EXPECT_EQ(unknown, tessEvalProcessor.inputs[2].structIndex);
+	EXPECT_EQ((std::vector<std::uint32_t>{32, 4}),
+		tessEvalProcessor.inputs[2].arrayElements);
+	EXPECT_TRUE(tessEvalProcessor.inputs[2].memberLocations.empty());
+	EXPECT_FALSE(tessEvalProcessor.inputs[2].patch);
+	EXPECT_EQ(11U, tessEvalProcessor.inputs[2].location);
+	EXPECT_EQ(0U, tessEvalProcessor.inputs[2].component);
+
+	EXPECT_EQ("tessControlFogVal", tessEvalProcessor.inputs[3].name);
+	EXPECT_EQ(Type::Float, tessEvalProcessor.inputs[3].type);
+	EXPECT_EQ(unknown, tessEvalProcessor.inputs[3].structIndex);
+	EXPECT_EQ(std::vector<std::uint32_t>{32}, tessEvalProcessor.inputs[3].arrayElements);
+	EXPECT_TRUE(tessEvalProcessor.inputs[3].memberLocations.empty());
+	EXPECT_FALSE(tessEvalProcessor.inputs[3].patch);
+	EXPECT_EQ(15U, tessEvalProcessor.inputs[3].location);
+	EXPECT_EQ(0U, tessEvalProcessor.inputs[3].component);
+
+	ASSERT_EQ(2U, tessEvalProcessor.structs.size());
+	EXPECT_EQ("InVertInfo", tessEvalProcessor.structs[0].name);
+	ASSERT_EQ(4U, tessEvalProcessor.structs[0].members.size());
+
+	EXPECT_EQ("position", tessEvalProcessor.structs[0].members[0].name);
+	EXPECT_EQ(Type::Vec3, tessEvalProcessor.structs[0].members[0].type);
+	EXPECT_EQ(unknown, tessEvalProcessor.structs[0].members[0].structIndex);
+	EXPECT_TRUE(tessEvalProcessor.structs[0].members[0].arrayElements.empty());
+	EXPECT_FALSE(tessEvalProcessor.structs[0].members[0].rowMajor);
+	EXPECT_EQ(0U, tessEvalProcessor.inputs[0].memberLocations[0].first);
+	EXPECT_EQ(0U, tessEvalProcessor.inputs[0].memberLocations[0].second);
+
+	EXPECT_EQ("normal", tessEvalProcessor.structs[0].members[1].name);
+	EXPECT_EQ(Type::Vec3, tessEvalProcessor.structs[0].members[1].type);
+	EXPECT_EQ(unknown, tessEvalProcessor.structs[0].members[1].structIndex);
+	EXPECT_TRUE(tessEvalProcessor.structs[0].members[1].arrayElements.empty());
+	EXPECT_FALSE(tessEvalProcessor.structs[0].members[1].rowMajor);
+	EXPECT_EQ(1U, tessEvalProcessor.inputs[0].memberLocations[1].first);
+	EXPECT_EQ(0U, tessEvalProcessor.inputs[0].memberLocations[1].second);
+
+	EXPECT_EQ("texCoords", tessEvalProcessor.structs[0].members[2].name);
+	EXPECT_EQ(Type::Vec2, tessEvalProcessor.structs[0].members[2].type);
+	EXPECT_EQ(unknown, tessEvalProcessor.structs[0].members[2].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}),
+		tessEvalProcessor.structs[0].members[2].arrayElements);
+	EXPECT_FALSE(tessEvalProcessor.structs[0].members[2].rowMajor);
+	EXPECT_EQ(2U, tessEvalProcessor.inputs[0].memberLocations[2].first);
+	EXPECT_EQ(0U, tessEvalProcessor.inputs[0].memberLocations[2].second);
+
+	EXPECT_EQ("colors", tessEvalProcessor.structs[0].members[3].name);
+	EXPECT_EQ(Type::Vec4, tessEvalProcessor.structs[0].members[3].type);
+	EXPECT_EQ(unknown, tessEvalProcessor.structs[0].members[3].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{2, unknown}}),
+		tessEvalProcessor.structs[0].members[3].arrayElements);
+	EXPECT_FALSE(tessEvalProcessor.structs[0].members[3].rowMajor);
+	EXPECT_EQ(5U, tessEvalProcessor.inputs[0].memberLocations[3].first);
+	EXPECT_EQ(0U, tessEvalProcessor.inputs[0].memberLocations[3].second);
+
+	ASSERT_EQ(3U, tessEvalProcessor.outputs.size());
+
+	EXPECT_EQ("", tessEvalProcessor.outputs[0].name);
+	EXPECT_EQ(Type::Struct, tessEvalProcessor.outputs[0].type);
+	EXPECT_EQ(1U, tessEvalProcessor.outputs[0].structIndex);
+	EXPECT_TRUE(tessEvalProcessor.outputs[0].arrayElements.empty());
+	ASSERT_EQ(4U, tessEvalProcessor.outputs[0].memberLocations.size());
+	EXPECT_FALSE(tessEvalProcessor.outputs[0].patch);
+	EXPECT_EQ(unknown, tessEvalProcessor.outputs[0].location);
+	EXPECT_EQ(unknown, tessEvalProcessor.outputs[0].component);
+
+	EXPECT_EQ("tessEvalShadowPos", tessEvalProcessor.outputs[1].name);
+	EXPECT_EQ(Type::Vec4, tessEvalProcessor.outputs[1].type);
+	EXPECT_EQ(unknown, tessEvalProcessor.outputs[1].structIndex);
+	EXPECT_EQ(std::vector<std::uint32_t>{4}, tessEvalProcessor.outputs[1].arrayElements);
+	EXPECT_TRUE(tessEvalProcessor.outputs[1].memberLocations.empty());
+	EXPECT_FALSE(tessEvalProcessor.outputs[1].patch);
+	EXPECT_EQ(7U, tessEvalProcessor.outputs[1].location);
+	EXPECT_EQ(0U, tessEvalProcessor.outputs[1].component);
+
+	EXPECT_EQ("tessEvalFogVal", tessEvalProcessor.outputs[2].name);
+	EXPECT_EQ(Type::Float, tessEvalProcessor.outputs[2].type);
+	EXPECT_EQ(unknown, tessEvalProcessor.outputs[2].structIndex);
+	EXPECT_TRUE(tessEvalProcessor.outputs[2].arrayElements.empty());
+	EXPECT_TRUE(tessEvalProcessor.outputs[2].memberLocations.empty());
+	EXPECT_FALSE(tessEvalProcessor.outputs[2].patch);
+	EXPECT_EQ(11U, tessEvalProcessor.outputs[2].location);
+	EXPECT_EQ(0U, tessEvalProcessor.outputs[2].component);
+
+	ASSERT_EQ(2U, tessEvalProcessor.structs.size());
+	EXPECT_EQ("OutVertInfo", tessEvalProcessor.structs[1].name);
+	ASSERT_EQ(4U, tessEvalProcessor.structs[1].members.size());
+
+	EXPECT_EQ("position", tessEvalProcessor.structs[1].members[0].name);
+	EXPECT_EQ(Type::Vec3, tessEvalProcessor.structs[1].members[0].type);
+	EXPECT_EQ(unknown, tessEvalProcessor.structs[1].members[0].structIndex);
+	EXPECT_TRUE(tessEvalProcessor.structs[1].members[0].arrayElements.empty());
+	EXPECT_FALSE(tessEvalProcessor.structs[1].members[0].rowMajor);
+	EXPECT_EQ(0U, tessEvalProcessor.outputs[0].memberLocations[0].first);
+	EXPECT_EQ(0U, tessEvalProcessor.outputs[0].memberLocations[0].second);
+
+	EXPECT_EQ("normal", tessEvalProcessor.structs[1].members[1].name);
+	EXPECT_EQ(Type::Vec3, tessEvalProcessor.structs[1].members[1].type);
+	EXPECT_EQ(unknown, tessEvalProcessor.structs[1].members[1].structIndex);
+	EXPECT_TRUE(tessEvalProcessor.structs[1].members[1].arrayElements.empty());
+	EXPECT_FALSE(tessEvalProcessor.structs[1].members[1].rowMajor);
+	EXPECT_EQ(1U, tessEvalProcessor.outputs[0].memberLocations[1].first);
+	EXPECT_EQ(0U, tessEvalProcessor.outputs[0].memberLocations[1].second);
+
+	EXPECT_EQ("texCoords", tessEvalProcessor.structs[1].members[2].name);
+	EXPECT_EQ(Type::Vec2, tessEvalProcessor.structs[1].members[2].type);
+	EXPECT_EQ(unknown, tessEvalProcessor.structs[1].members[2].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}),
+		tessEvalProcessor.structs[1].members[2].arrayElements);
+	EXPECT_FALSE(tessEvalProcessor.structs[1].members[2].rowMajor);
+	EXPECT_EQ(2U, tessEvalProcessor.outputs[0].memberLocations[2].first);
+	EXPECT_EQ(0U, tessEvalProcessor.outputs[0].memberLocations[2].second);
+
+	EXPECT_EQ("colors", tessEvalProcessor.structs[1].members[3].name);
+	EXPECT_EQ(Type::Vec4, tessEvalProcessor.structs[1].members[3].type);
+	EXPECT_EQ(unknown, tessEvalProcessor.structs[1].members[3].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{2, unknown}}),
+		tessEvalProcessor.structs[1].members[3].arrayElements);
+	EXPECT_FALSE(tessEvalProcessor.structs[1].members[3].rowMajor);
+	EXPECT_EQ(5U, tessEvalProcessor.outputs[0].memberLocations[3].first);
+	EXPECT_EQ(0U, tessEvalProcessor.outputs[0].memberLocations[3].second);
+
+	ASSERT_EQ(3U, geometryProcessor.inputs.size());
+
+	EXPECT_EQ("inVertInfo", geometryProcessor.inputs[0].name);
+	EXPECT_EQ(Type::Struct, geometryProcessor.inputs[0].type);
+	EXPECT_EQ(0U, geometryProcessor.inputs[0].structIndex);
+	EXPECT_EQ(std::vector<std::uint32_t>{3}, geometryProcessor.inputs[0].arrayElements);
+	ASSERT_EQ(4U, geometryProcessor.inputs[0].memberLocations.size());
+	EXPECT_FALSE(geometryProcessor.inputs[0].patch);
+	EXPECT_EQ(unknown, geometryProcessor.inputs[0].location);
+	EXPECT_EQ(unknown, geometryProcessor.inputs[0].component);
+
+	EXPECT_EQ("tessEvalShadowPos", geometryProcessor.inputs[1].name);
+	EXPECT_EQ(Type::Vec4, geometryProcessor.inputs[1].type);
+	EXPECT_EQ(unknown, geometryProcessor.inputs[1].structIndex);
+	EXPECT_EQ((std::vector<std::uint32_t>{3, 4}),
+		geometryProcessor.inputs[1].arrayElements);
+	EXPECT_TRUE(geometryProcessor.inputs[1].memberLocations.empty());
+	EXPECT_FALSE(geometryProcessor.inputs[1].patch);
+	EXPECT_EQ(7U, geometryProcessor.inputs[1].location);
+	EXPECT_EQ(0U, geometryProcessor.inputs[1].component);
+
+	EXPECT_EQ("tessEvalFogVal", geometryProcessor.inputs[2].name);
+	EXPECT_EQ(Type::Float, geometryProcessor.inputs[2].type);
+	EXPECT_EQ(unknown, geometryProcessor.inputs[2].structIndex);
+	EXPECT_EQ(std::vector<std::uint32_t>{3}, geometryProcessor.inputs[2].arrayElements);
+	EXPECT_TRUE(geometryProcessor.inputs[2].memberLocations.empty());
+	EXPECT_FALSE(geometryProcessor.inputs[2].patch);
+	EXPECT_EQ(11U, geometryProcessor.inputs[2].location);
+	EXPECT_EQ(0U, geometryProcessor.inputs[2].component);
+
+	ASSERT_EQ(2U, geometryProcessor.structs.size());
+	EXPECT_EQ("InVertInfo", geometryProcessor.structs[0].name);
+	ASSERT_EQ(4U, geometryProcessor.structs[0].members.size());
+
+	EXPECT_EQ("position", geometryProcessor.structs[0].members[0].name);
+	EXPECT_EQ(Type::Vec3, geometryProcessor.structs[0].members[0].type);
+	EXPECT_EQ(unknown, geometryProcessor.structs[0].members[0].structIndex);
+	EXPECT_TRUE(geometryProcessor.structs[0].members[0].arrayElements.empty());
+	EXPECT_FALSE(geometryProcessor.structs[0].members[0].rowMajor);
+	EXPECT_EQ(0U, geometryProcessor.inputs[0].memberLocations[0].first);
+	EXPECT_EQ(0U, geometryProcessor.inputs[0].memberLocations[0].second);
+
+	EXPECT_EQ("normal", geometryProcessor.structs[0].members[1].name);
+	EXPECT_EQ(Type::Vec3, geometryProcessor.structs[0].members[1].type);
+	EXPECT_EQ(unknown, geometryProcessor.structs[0].members[1].structIndex);
+	EXPECT_TRUE(geometryProcessor.structs[0].members[1].arrayElements.empty());
+	EXPECT_FALSE(geometryProcessor.structs[0].members[1].rowMajor);
+	EXPECT_EQ(1U, geometryProcessor.inputs[0].memberLocations[1].first);
+	EXPECT_EQ(0U, geometryProcessor.inputs[0].memberLocations[1].second);
+
+	EXPECT_EQ("texCoords", geometryProcessor.structs[0].members[2].name);
+	EXPECT_EQ(Type::Vec2, geometryProcessor.structs[0].members[2].type);
+	EXPECT_EQ(unknown, geometryProcessor.structs[0].members[2].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}),
+		geometryProcessor.structs[0].members[2].arrayElements);
+	EXPECT_FALSE(geometryProcessor.structs[0].members[2].rowMajor);
+	EXPECT_EQ(2U, geometryProcessor.inputs[0].memberLocations[2].first);
+	EXPECT_EQ(0U, geometryProcessor.inputs[0].memberLocations[2].second);
+
+	EXPECT_EQ("colors", geometryProcessor.structs[0].members[3].name);
+	EXPECT_EQ(Type::Vec4, geometryProcessor.structs[0].members[3].type);
+	EXPECT_EQ(unknown, geometryProcessor.structs[0].members[3].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{2, unknown}}),
+		geometryProcessor.structs[0].members[3].arrayElements);
+	EXPECT_FALSE(geometryProcessor.structs[0].members[3].rowMajor);
+	EXPECT_EQ(5U, geometryProcessor.inputs[0].memberLocations[3].first);
+	EXPECT_EQ(0U, geometryProcessor.inputs[0].memberLocations[3].second);
+
+	ASSERT_EQ(3U, geometryProcessor.outputs.size());
+
+	EXPECT_EQ("", geometryProcessor.outputs[0].name);
+	EXPECT_EQ(Type::Struct, geometryProcessor.outputs[0].type);
+	EXPECT_EQ(1U, geometryProcessor.outputs[0].structIndex);
+	EXPECT_TRUE(geometryProcessor.outputs[0].arrayElements.empty());
+	ASSERT_EQ(4U, geometryProcessor.outputs[0].memberLocations.size());
+	EXPECT_FALSE(geometryProcessor.outputs[0].patch);
+	EXPECT_EQ(unknown, geometryProcessor.outputs[0].location);
+	EXPECT_EQ(unknown, geometryProcessor.outputs[0].component);
+
+	EXPECT_EQ("geomShadowPos", geometryProcessor.outputs[1].name);
+	EXPECT_EQ(Type::Vec4, geometryProcessor.outputs[1].type);
+	EXPECT_EQ(unknown, geometryProcessor.outputs[1].structIndex);
+	EXPECT_EQ(std::vector<std::uint32_t>{4}, geometryProcessor.outputs[1].arrayElements);
+	EXPECT_TRUE(geometryProcessor.outputs[1].memberLocations.empty());
+	EXPECT_FALSE(geometryProcessor.outputs[1].patch);
+	EXPECT_EQ(7U, geometryProcessor.outputs[1].location);
+	EXPECT_EQ(0U, geometryProcessor.outputs[1].component);
+
+	EXPECT_EQ("geomFogVal", geometryProcessor.outputs[2].name);
+	EXPECT_EQ(Type::Float, geometryProcessor.outputs[2].type);
+	EXPECT_EQ(unknown, geometryProcessor.outputs[2].structIndex);
+	EXPECT_TRUE(geometryProcessor.outputs[2].arrayElements.empty());
+	EXPECT_TRUE(geometryProcessor.outputs[2].memberLocations.empty());
+	EXPECT_FALSE(geometryProcessor.outputs[2].patch);
+	EXPECT_EQ(11U, geometryProcessor.outputs[2].location);
+	EXPECT_EQ(0U, geometryProcessor.outputs[2].component);
+
+	ASSERT_EQ(2U, geometryProcessor.structs.size());
+	EXPECT_EQ("OutVertInfo", geometryProcessor.structs[1].name);
+	ASSERT_EQ(4U, geometryProcessor.structs[1].members.size());
+
+	EXPECT_EQ("position", geometryProcessor.structs[1].members[0].name);
+	EXPECT_EQ(Type::Vec3, geometryProcessor.structs[1].members[0].type);
+	EXPECT_EQ(unknown, geometryProcessor.structs[1].members[0].structIndex);
+	EXPECT_TRUE(geometryProcessor.structs[1].members[0].arrayElements.empty());
+	EXPECT_FALSE(geometryProcessor.structs[1].members[0].rowMajor);
+	EXPECT_EQ(0U, geometryProcessor.outputs[0].memberLocations[0].first);
+	EXPECT_EQ(0U, geometryProcessor.outputs[0].memberLocations[0].second);
+
+	EXPECT_EQ("normal", geometryProcessor.structs[1].members[1].name);
+	EXPECT_EQ(Type::Vec3, geometryProcessor.structs[1].members[1].type);
+	EXPECT_EQ(unknown, geometryProcessor.structs[1].members[1].structIndex);
+	EXPECT_TRUE(geometryProcessor.structs[1].members[1].arrayElements.empty());
+	EXPECT_FALSE(geometryProcessor.structs[1].members[1].rowMajor);
+	EXPECT_EQ(1U, geometryProcessor.outputs[0].memberLocations[1].first);
+	EXPECT_EQ(0U, geometryProcessor.outputs[0].memberLocations[1].second);
+
+	EXPECT_EQ("texCoords", geometryProcessor.structs[1].members[2].name);
+	EXPECT_EQ(Type::Vec2, geometryProcessor.structs[1].members[2].type);
+	EXPECT_EQ(unknown, geometryProcessor.structs[1].members[2].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}),
+		geometryProcessor.structs[1].members[2].arrayElements);
+	EXPECT_FALSE(geometryProcessor.structs[1].members[2].rowMajor);
+	EXPECT_EQ(2U, geometryProcessor.outputs[0].memberLocations[2].first);
+	EXPECT_EQ(0U, geometryProcessor.outputs[0].memberLocations[2].second);
+
+	EXPECT_EQ("colors", geometryProcessor.structs[1].members[3].name);
+	EXPECT_EQ(Type::Vec4, geometryProcessor.structs[1].members[3].type);
+	EXPECT_EQ(unknown, geometryProcessor.structs[1].members[3].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{2, unknown}}),
+		geometryProcessor.structs[1].members[3].arrayElements);
+	EXPECT_FALSE(geometryProcessor.structs[1].members[3].rowMajor);
+	EXPECT_EQ(5U, geometryProcessor.outputs[0].memberLocations[3].first);
+	EXPECT_EQ(0U, geometryProcessor.outputs[0].memberLocations[3].second);
+
+	ASSERT_EQ(3U, fragmentProcessor.inputs.size());
+
+	EXPECT_EQ("", fragmentProcessor.inputs[0].name);
+	EXPECT_EQ(Type::Struct, fragmentProcessor.inputs[0].type);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[0].structIndex);
+	EXPECT_TRUE(fragmentProcessor.inputs[0].arrayElements.empty());
+	ASSERT_EQ(4U, fragmentProcessor.inputs[0].memberLocations.size());
+	EXPECT_FALSE(fragmentProcessor.inputs[0].patch);
+	EXPECT_EQ(unknown, fragmentProcessor.inputs[0].location);
+	EXPECT_EQ(unknown, fragmentProcessor.inputs[0].component);
+
+	EXPECT_EQ("geomShadowPos", fragmentProcessor.inputs[1].name);
+	EXPECT_EQ(Type::Vec4, fragmentProcessor.inputs[1].type);
+	EXPECT_EQ(unknown, fragmentProcessor.inputs[1].structIndex);
+	EXPECT_EQ(std::vector<std::uint32_t>{4}, fragmentProcessor.inputs[1].arrayElements);
+	EXPECT_TRUE(fragmentProcessor.inputs[1].memberLocations.empty());
+	EXPECT_FALSE(fragmentProcessor.inputs[1].patch);
+	EXPECT_EQ(7U, fragmentProcessor.inputs[1].location);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[1].component);
+
+	EXPECT_EQ("geomFogVal", fragmentProcessor.inputs[2].name);
+	EXPECT_EQ(Type::Float, fragmentProcessor.inputs[2].type);
+	EXPECT_EQ(unknown, fragmentProcessor.inputs[2].structIndex);
+	EXPECT_TRUE(fragmentProcessor.inputs[2].arrayElements.empty());
+	EXPECT_TRUE(fragmentProcessor.inputs[2].memberLocations.empty());
+	EXPECT_FALSE(fragmentProcessor.inputs[2].patch);
+	EXPECT_EQ(11U, fragmentProcessor.inputs[2].location);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[2].component);
+
+	ASSERT_EQ(1U, fragmentProcessor.structs.size());
+	EXPECT_EQ("VertInfo", fragmentProcessor.structs[0].name);
+	ASSERT_EQ(4U, fragmentProcessor.structs[0].members.size());
+
+	EXPECT_EQ("position", fragmentProcessor.structs[0].members[0].name);
+	EXPECT_EQ(Type::Vec3, fragmentProcessor.structs[0].members[0].type);
+	EXPECT_EQ(unknown, fragmentProcessor.structs[0].members[0].structIndex);
+	EXPECT_TRUE(fragmentProcessor.structs[0].members[0].arrayElements.empty());
+	EXPECT_FALSE(fragmentProcessor.structs[0].members[0].rowMajor);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[0].memberLocations[0].first);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[0].memberLocations[0].second);
+
+	EXPECT_EQ("normal", fragmentProcessor.structs[0].members[1].name);
+	EXPECT_EQ(Type::Vec3, fragmentProcessor.structs[0].members[1].type);
+	EXPECT_EQ(unknown, fragmentProcessor.structs[0].members[1].structIndex);
+	EXPECT_TRUE(fragmentProcessor.structs[0].members[1].arrayElements.empty());
+	EXPECT_FALSE(fragmentProcessor.structs[0].members[1].rowMajor);
+	EXPECT_EQ(1U, fragmentProcessor.inputs[0].memberLocations[1].first);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[0].memberLocations[1].second);
+
+	EXPECT_EQ("texCoords", fragmentProcessor.structs[0].members[2].name);
+	EXPECT_EQ(Type::Vec2, fragmentProcessor.structs[0].members[2].type);
+	EXPECT_EQ(unknown, fragmentProcessor.structs[0].members[2].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}),
+		fragmentProcessor.structs[0].members[2].arrayElements);
+	EXPECT_FALSE(fragmentProcessor.structs[0].members[2].rowMajor);
+	EXPECT_EQ(2U, fragmentProcessor.inputs[0].memberLocations[2].first);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[0].memberLocations[2].second);
+
+	EXPECT_EQ("colors", fragmentProcessor.structs[0].members[3].name);
+	EXPECT_EQ(Type::Vec4, fragmentProcessor.structs[0].members[3].type);
+	EXPECT_EQ(unknown, fragmentProcessor.structs[0].members[3].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{2, unknown}}),
+		fragmentProcessor.structs[0].members[3].arrayElements);
+	EXPECT_FALSE(fragmentProcessor.structs[0].members[3].rowMajor);
+	EXPECT_EQ(5U, fragmentProcessor.inputs[0].memberLocations[3].first);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[0].memberLocations[3].second);
+
+	ASSERT_EQ(1U, fragmentProcessor.outputs.size());
+	EXPECT_EQ("color", fragmentProcessor.outputs[0].name);
+	EXPECT_EQ(Type::Vec4, fragmentProcessor.outputs[0].type);
+	EXPECT_EQ(unknown, fragmentProcessor.outputs[0].structIndex);
+	EXPECT_TRUE(fragmentProcessor.outputs[0].arrayElements.empty());
+	EXPECT_TRUE(fragmentProcessor.outputs[0].memberLocations.empty());
+	EXPECT_FALSE(fragmentProcessor.outputs[0].patch);
+	EXPECT_EQ(0U, fragmentProcessor.outputs[0].location);
+	EXPECT_EQ(0U, fragmentProcessor.outputs[0].component);
+}
+
 } // namespace msl

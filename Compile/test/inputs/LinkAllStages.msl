@@ -1,0 +1,141 @@
+[[vertex]] in vec3 position;
+[[vertex]] in vec3 normal;
+[[vertex]] in vec2[3] texCoords;
+[[vertex]] in vec4[2] colors;
+
+[[vertex]] out VertInfo
+{
+	vec3 position;
+	vec3 normal;
+	vec2[3] texCoords;
+	vec4[2] colors;
+} vertInfo;
+
+[[vertex]] out vec4[4] vertShadowPos;
+[[vertex]] out float vertFogVal;
+
+[[tessellation_control]] in InVertInfo
+{
+	vec3 position;
+	vec3 normal;
+	vec2[3] texCoords;
+	vec4[2] colors;
+} inVertInfo[];
+
+[[tessellation_control]] in vec4[][4] vertShadowPos;
+[[tessellation_control]] in float[] vertFogVal;
+
+[[tessellation_control]] out OutVertInfo
+{
+	vec3 position;
+	vec3 normal;
+	vec2[3] texCoords;
+	vec4[2] colors;
+} outVertInfo[];
+
+[[tessellation_control]] out patch mat4 basis;
+
+[[tessellation_control]] out vec4[][4] tessControlShadowPos;
+[[tessellation_control]] out float[] tessControlFogVal;
+
+[[tessellation_control]] layout(vertices = 4) out;
+
+[[tessellation_evaluation]] in InVertInfo
+{
+	vec3 position;
+	vec3 normal;
+	vec2[3] texCoords;
+	vec4[2] colors;
+} inVertInfo[];
+
+[[tessellation_evaluation]] in patch mat4 basis;
+
+[[tessellation_evaluation]] in vec4[][4] tessControlShadowPos;
+[[tessellation_evaluation]] in float[] tessControlFogVal;
+
+[[tessellation_evaluation]] out OutVertInfo
+{
+	vec3 position;
+	vec3 normal;
+	vec2[3] texCoords;
+	vec4[2] colors;
+};
+
+[[tessellation_evaluation]] out vec4[4] tessEvalShadowPos;
+[[tessellation_evaluation]] out float tessEvalFogVal;
+
+[[tessellation_evaluation]] layout(quads) in;
+
+[[geometry]] in InVertInfo
+{
+	vec3 position;
+	vec3 normal;
+	vec2[3] texCoords;
+	vec4[2] colors;
+} inVertInfo[];
+
+[[geometry]] in vec4[][4] tessEvalShadowPos;
+[[geometry]] in float[] tessEvalFogVal;
+
+[[geometry]] out OutVertInfo
+{
+	vec3 position;
+	vec3 normal;
+	vec2[3] texCoords;
+	vec4[2] colors;
+};
+
+[[geometry]] out vec4[4] geomShadowPos;
+[[geometry]] out float geomFogVal;
+
+[[geometry]] layout(triangles) in;
+[[geometry]] layout(triangle_strip, max_vertices = 9) out;
+
+[[fragment]] in VertInfo
+{
+	vec3 position;
+	vec3 normal;
+	vec2[3] texCoords;
+	vec4[2] colors;
+};
+
+[[fragment]] in vec4[4] geomShadowPos;
+[[fragment]] in float geomFogVal;
+
+[[fragment]] out vec4 color;
+
+[[vertex]]
+void vertShader()
+{
+	gl_Position = vec4(0.0);
+}
+
+[[tessellation_control]]
+void tessControlShader()
+{
+}
+
+[[tessellation_evaluation]]
+void tessEvalShader()
+{
+}
+
+[[geometry]]
+void geomShader()
+{
+}
+
+[[fragment]]
+void fragShader()
+{
+	color = vec4(1.0);
+}
+
+pipeline Test
+{
+	vertex = vertShader;
+	tessellation_control = tessControlShader;
+	tessellation_evaluation = tessEvalShader;
+	geometry = geomShader;
+	fragment = fragShader;
+}

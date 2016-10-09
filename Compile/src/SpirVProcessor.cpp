@@ -142,7 +142,8 @@ struct IntermediateData
 
 bool inputIsArray(Stage stage)
 {
-	return stage == Stage::TessellationControl || stage == Stage::TessellationEvaluation;
+	return stage == Stage::TessellationControl || stage == Stage::TessellationEvaluation ||
+		stage == Stage::Geometry;
 }
 
 bool outputIsArray(Stage stage)
@@ -1608,7 +1609,7 @@ bool assignInputsOutputs(Output& output, const SpirVProcessor& processor,
 				}
 
 				if (!fillLocation(locations, curLocation, component, ioStruct.members[i].type,
-					makeArrayLengths(ioStruct.members[i].arrayElements), removeFirstArray))
+					makeArrayLengths(ioStruct.members[i].arrayElements), false))
 				{
 					output.addMessage(Output::Level::Error, processor.fileName, processor.line,
 						processor.column, false,
