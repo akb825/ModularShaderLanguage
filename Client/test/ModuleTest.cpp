@@ -25,45 +25,109 @@ namespace msl
 
 static void testContents(Module& module)
 {
-	auto version = Module::currentVersion;
-	EXPECT_EQ(version, module.version());
+	EXPECT_EQ(moduleVersion, module.version());
 	EXPECT_EQ(MSL_CREATE_ID('S', 'P', 'R', 'V'), module.targetId());
 	EXPECT_EQ(1U, module.targetVersion());
 
-	auto noShader = Module::noShader;
-	auto unknown = Module::unknown;
 	ASSERT_EQ(1U, module.pipelineCount());
-	EXPECT_STREQ("Test", module.pipelineName(0));
-	EXPECT_EQ(0U, module.pipelineShader(0, Module::Stage::Vertex));
-	EXPECT_EQ(noShader, module.pipelineShader(0, Module::Stage::TessellationControl));
-	EXPECT_EQ(noShader, module.pipelineShader(0, Module::Stage::TessellationEvaluation));
-	EXPECT_EQ(noShader, module.pipelineShader(0, Module::Stage::Geometry));
-	EXPECT_EQ(1U, module.pipelineShader(0, Module::Stage::Fragment));
-	EXPECT_EQ(noShader, module.pipelineShader(0, Module::Stage::Compute));
+	Pipeline pipeline;
+	EXPECT_TRUE(module.pipeline(pipeline, 0));
+	EXPECT_STREQ("Test", pipeline.name);
+	EXPECT_EQ(0U, pipeline.shaders[static_cast<int>(Stage::Vertex)]);
+	EXPECT_EQ(unknown, pipeline.shaders[static_cast<int>(Stage::TessellationControl)]);
+	EXPECT_EQ(unknown, pipeline.shaders[static_cast<int>(Stage::TessellationEvaluation)]);
+	EXPECT_EQ(unknown, pipeline.shaders[static_cast<int>(Stage::Geometry)]);
+	EXPECT_EQ(1U, pipeline.shaders[static_cast<int>(Stage::Fragment)]);
+	EXPECT_EQ(unknown, pipeline.shaders[static_cast<int>(Stage::Compute)]);
 
-	ASSERT_EQ(2U, module.uniformCount(0));
-	EXPECT_STREQ("Transform.transform", module.uniformName(0, 0));
-	EXPECT_EQ(Module::Type::Mat4, module.uniformType(0, 0));
-	EXPECT_EQ(0U, module.uniformBlockIndex(0, 0));
-	EXPECT_EQ(0U, module.uniformBufferOffset(0, 0));
-	EXPECT_EQ(1U, module.uniformElements(0, 0));
+	Struct pipelineStruct;
+	ASSERT_EQ(2U, pipeline.structCount);
+	EXPECT_TRUE(module.pipelineStruct(pipelineStruct, 0, 0));
+	EXPECT_STREQ("Transform", pipelineStruct.name);
+	EXPECT_EQ(16*sizeof(float), pipelineStruct.size);
 
-	EXPECT_STREQ("tex", module.uniformName(0, 1));
-	EXPECT_EQ(Module::Type::Sampler2D, module.uniformType(0, 1));
-	EXPECT_EQ(unknown, module.uniformBlockIndex(0, 1));
-	EXPECT_EQ(unknown, module.uniformBufferOffset(0, 1));
-	EXPECT_EQ(1U, module.uniformElements(0, 1));
+	StructMember structMember;
+	ASSERT_EQ(1U, pipelineStruct.memberCount);
+	EXPECT_TRUE(module.structMember(structMember, 0, 0, 0));
+	EXPECT_STREQ("transform", structMember.name);
+	EXPECT_EQ(0U, structMember.offset);
+	EXPECT_EQ(16*sizeof(float), structMember.size);
+	EXPECT_EQ(Type::Mat4, structMember.type);
+	EXPECT_EQ(unknown, structMember.structIndex);
+	EXPECT_EQ(0U, structMember.arrayElementCount);
+	EXPECT_FALSE(structMember.rowMajor);
 
-	ASSERT_EQ(1U, module.uniformBlockCount(0));
-	EXPECT_STREQ("Transform", module.uniformBlockName(0, 0));
-	EXPECT_EQ(sizeof(float)*16, module.uniformBlockSize(0, 0));
+	EXPECT_TRUE(module.pipelineStruct(pipelineStruct, 0, 1));
+	EXPECT_STREQ("Uniforms", pipelineStruct.name);
+	EXPECT_EQ(4*sizeof(float), pipelineStruct.size);
 
-	ASSERT_EQ(2U, module.attributeCount(0));
-	EXPECT_STREQ("position", module.attributeName(0, 0));
-	EXPECT_EQ(Module::Type::Vec3, module.attributeType(0, 0));
+	ASSERT_EQ(1U, pipelineStruct.memberCount);
+	EXPECT_TRUE(module.structMember(structMember, 0, 1, 0));
+	EXPECT_STREQ("texCoords", structMember.name);
+	EXPECT_EQ(0U, structMember.offset);
+	EXPECT_EQ(4*sizeof(float), structMember.size);
+	EXPECT_EQ(Type::Vec2, structMember.type);
+	EXPECT_EQ(unknown, structMember.structIndex);
+	ASSERT_EQ(1U, structMember.arrayElementCount);
+	EXPECT_FALSE(structMember.rowMajor);
 
-	EXPECT_STREQ("color", module.attributeName(0, 1));
-	EXPECT_EQ(Module::Type::Vec4, module.attributeType(0, 1));
+	ArrayInfo arrayInfo;
+	EXPECT_TRUE(module.structMemberArrayInfo(arrayInfo, 0, 1, 0, 0));
+	EXPECT_EQ(2U, arrayInfo.length);
+	EXPECT_EQ(2*sizeof(float), arrayInfo.stride);
+
+	Uniform uniform;
+	ASSERT_EQ(2U, pipeline.uniformCount);
+	EXPECT_TRUE(module.uniform(uniform, 0, 0));
+	EXPECT_STREQ("Transform", uniform.name);
+	EXPECT_EQ(UniformType::Block, uniform.uniformType);
+	EXPECT_EQ(Type::Struct, uniform.type);
+	EXPECT_EQ(0U, uniform.structIndex);
+	EXPECT_EQ(0U, uniform.arrayElementCount);
+	EXPECT_EQ(0U, uniform.descriptorSet);
+	EXPECT_EQ(unknown, uniform.binding);
+	EXPECT_EQ(unknown, uniform.samplerIndex);
+
+	EXPECT_TRUE(module.uniform(uniform, 0, 1));
+	EXPECT_STREQ("tex", uniform.name);
+	EXPECT_EQ(UniformType::SampledImage, uniform.uniformType);
+	EXPECT_EQ(Type::Sampler2D, uniform.type);
+	EXPECT_EQ(unknown, uniform.structIndex);
+	EXPECT_EQ(0U, uniform.arrayElementCount);
+	EXPECT_EQ(0U, uniform.descriptorSet);
+	EXPECT_EQ(unknown, uniform.binding);
+	EXPECT_EQ(0U, uniform.samplerIndex);
+
+	Attribute attribute;
+	ASSERT_EQ(2U, pipeline.attributeCount);
+	EXPECT_TRUE(module.attribute(attribute, 0, 0));
+	EXPECT_STREQ("position", attribute.name);
+	EXPECT_EQ(Type::Vec3, attribute.type);
+	EXPECT_EQ(0U, attribute.arrayElementCount);
+	EXPECT_EQ(0U, attribute.location);
+	EXPECT_EQ(0U, attribute.component);
+
+	EXPECT_TRUE(module.attribute(attribute, 0, 1));
+	EXPECT_STREQ("color", attribute.name);
+	EXPECT_EQ(Type::Vec4, attribute.type);
+	EXPECT_EQ(0U, attribute.arrayElementCount);
+	EXPECT_EQ(1U, attribute.location);
+	EXPECT_EQ(0U, attribute.component);
+
+	SamplerState samplerState;
+	ASSERT_EQ(1U, pipeline.samplerStateCount);
+	EXPECT_TRUE(module.samplerState(samplerState, 0, 0));
+	EXPECT_EQ(Filter::Linear, samplerState.minFilter);
+	EXPECT_EQ(Filter::Linear, samplerState.magFilter);
+	EXPECT_EQ(MipFilter::Anisotropic, samplerState.mipFilter);
+	EXPECT_EQ(AddressMode::Repeat, samplerState.addressModeU);
+	EXPECT_EQ(AddressMode::ClampToEdge, samplerState.addressModeV);
+	EXPECT_EQ(AddressMode::Unset, samplerState.addressModeW);
+	EXPECT_EQ(unknownFloat, samplerState.mipLodBias);
+	EXPECT_EQ(unknownFloat, samplerState.maxAnisotropy);
+	EXPECT_EQ(unknownFloat, samplerState.minLod);
+	EXPECT_EQ(unknownFloat, samplerState.maxLod);
+	EXPECT_EQ(BorderColor::Unset, samplerState.borderColor);
 
 	ASSERT_EQ(2U, module.shaderCount());
 	EXPECT_LT(0U, module.shaderSize(0));
@@ -83,37 +147,104 @@ static void testContents(const mslModule* module)
 	EXPECT_EQ(1U, mslModule_targetVersion(module));
 
 	ASSERT_EQ(1U, mslModule_pipelineCount(module));
-	EXPECT_STREQ("Test", mslModule_pipelineName(module, 0));
-	EXPECT_EQ(0U, mslModule_pipelineShader(module, 0, mslStage_Vertex));
-	EXPECT_EQ(MSL_NO_SHADER, mslModule_pipelineShader(module, 0, mslStage_TessellationControl));
-	EXPECT_EQ(MSL_NO_SHADER, mslModule_pipelineShader(module, 0, mslStage_TessellationEvaluation));
-	EXPECT_EQ(MSL_NO_SHADER, mslModule_pipelineShader(module, 0, mslStage_Geometry));
-	EXPECT_EQ(1U, mslModule_pipelineShader(module, 0, mslStage_Fragment));
-	EXPECT_EQ(MSL_NO_SHADER, mslModule_pipelineShader(module, 0, mslStage_Compute));
+	mslPipeline pipeline;
+	EXPECT_TRUE(mslModule_pipeline(&pipeline, module, 0));
+	EXPECT_STREQ("Test", pipeline.name);
+	EXPECT_EQ(0U, pipeline.shaders[mslStage_Vertex]);
+	EXPECT_EQ(MSL_UNKNOWN, pipeline.shaders[mslStage_TessellationControl]);
+	EXPECT_EQ(MSL_UNKNOWN, pipeline.shaders[mslStage_TessellationEvaluation]);
+	EXPECT_EQ(MSL_UNKNOWN, pipeline.shaders[mslStage_Geometry]);
+	EXPECT_EQ(1U, pipeline.shaders[mslStage_Fragment]);
+	EXPECT_EQ(unknown, pipeline.shaders[mslStage_Compute]);
 
-	ASSERT_EQ(2U, mslModule_uniformCount(module, 0));
-	EXPECT_STREQ("Transform.transform", mslModule_uniformName(module, 0, 0));
-	EXPECT_EQ(mslType_Mat4, mslModule_uniformType(module, 0, 0));
-	EXPECT_EQ(0U, mslModule_uniformBlockIndex(module, 0, 0));
-	EXPECT_EQ(0U, mslModule_uniformBufferOffset(module, 0, 0));
-	EXPECT_EQ(1U, mslModule_uniformElements(module, 0, 0));
+	mslStruct pipelineStruct;
+	ASSERT_EQ(2U, pipeline.structCount);
+	EXPECT_TRUE(mslModule_struct(&pipelineStruct, module, 0, 0));
+	EXPECT_STREQ("Transform", pipelineStruct.name);
+	EXPECT_EQ(16*sizeof(float), pipelineStruct.size);
 
-	EXPECT_STREQ("tex", mslModule_uniformName(module, 0, 1));
-	EXPECT_EQ(mslType_Sampler2D, mslModule_uniformType(module, 0, 1));
-	EXPECT_EQ(MSL_UNKNOWN, mslModule_uniformBlockIndex(module, 0, 1));
-	EXPECT_EQ(MSL_UNKNOWN, mslModule_uniformBufferOffset(module, 0, 1));
-	EXPECT_EQ(1U, mslModule_uniformElements(module, 0, 1));
+	mslStructMember structMember;
+	ASSERT_EQ(1U, pipelineStruct.memberCount);
+	EXPECT_TRUE(mslModule_structMember(&structMember, module, 0, 0, 0));
+	EXPECT_STREQ("transform", structMember.name);
+	EXPECT_EQ(0U, structMember.offset);
+	EXPECT_EQ(16*sizeof(float), structMember.size);
+	EXPECT_EQ(mslType_Mat4, structMember.type);
+	EXPECT_EQ(MSL_UNKNOWN, structMember.structIndex);
+	EXPECT_EQ(0U, structMember.arrayElementCount);
+	EXPECT_FALSE(structMember.rowMajor);
 
-	ASSERT_EQ(1U, mslModule_uniformBlockCount(module, 0));
-	EXPECT_STREQ("Transform", mslModule_uniformBlockName(module, 0, 0));
-	EXPECT_EQ(sizeof(float)*16, mslModule_uniformBlockSize(module, 0, 0));
+	mslUniform uniform;
+	ASSERT_EQ(2U, pipeline.uniformCount);
+	EXPECT_TRUE(mslModule_uniform(&uniform, module, 0, 0));
+	EXPECT_STREQ("Transform", uniform.name);
+	EXPECT_EQ(mslUniformType_Block, uniform.uniformType);
+	EXPECT_EQ(mslType_Struct, uniform.type);
+	EXPECT_EQ(0U, uniform.structIndex);
+	EXPECT_EQ(0U, uniform.arrayElementCount);
+	EXPECT_EQ(0U, uniform.descriptorSet);
+	EXPECT_EQ(MSL_UNKNOWN, uniform.binding);
+	EXPECT_EQ(MSL_UNKNOWN, uniform.samplerIndex);
 
-	ASSERT_EQ(2U, mslModule_attributeCount(module, 0));
-	EXPECT_STREQ("position", mslModule_attributeName(module, 0, 0));
-	EXPECT_EQ(mslType_Vec3, mslModule_attributeType(module, 0, 0));
+	EXPECT_TRUE(mslModule_uniform(&uniform, module, 0, 1));
+	EXPECT_STREQ("tex", uniform.name);
+	EXPECT_EQ(mslUniformType_SampledImage, uniform.uniformType);
+	EXPECT_EQ(mslType_Sampler2D, uniform.type);
+	EXPECT_EQ(MSL_UNKNOWN, uniform.structIndex);
+	EXPECT_EQ(0U, uniform.arrayElementCount);
+	EXPECT_EQ(0U, uniform.descriptorSet);
+	EXPECT_EQ(MSL_UNKNOWN, uniform.binding);
+	EXPECT_EQ(0U, uniform.samplerIndex);
 
-	EXPECT_STREQ("color", mslModule_attributeName(module, 0, 1));
-	EXPECT_EQ(mslType_Vec4, mslModule_attributeType(module, 0, 1));
+	EXPECT_TRUE(mslModule_struct(&pipelineStruct, module, 0, 1));
+	EXPECT_STREQ("Uniforms", pipelineStruct.name);
+	EXPECT_EQ(4*sizeof(float), pipelineStruct.size);
+
+	ASSERT_EQ(1U, pipelineStruct.memberCount);
+	EXPECT_TRUE(mslModule_structMember(&structMember, module, 0, 1, 0));
+	EXPECT_STREQ("texCoords", structMember.name);
+	EXPECT_EQ(0U, structMember.offset);
+	EXPECT_EQ(4*sizeof(float), structMember.size);
+	EXPECT_EQ(mslType_Vec2, structMember.type);
+	EXPECT_EQ(MSL_UNKNOWN, structMember.structIndex);
+	ASSERT_EQ(1U, structMember.arrayElementCount);
+	EXPECT_FALSE(structMember.rowMajor);
+
+	mslArrayInfo arrayInfo;
+	EXPECT_TRUE(mslModule_structMemberArrayInfo(&arrayInfo, module, 0, 1, 0, 0));
+	EXPECT_EQ(2U, arrayInfo.length);
+	EXPECT_EQ(2*sizeof(float), arrayInfo.stride);
+
+	mslAttribute attribute;
+	ASSERT_EQ(2U, pipeline.attributeCount);
+	EXPECT_TRUE(mslModule_attribute(&attribute, module, 0, 0));
+	EXPECT_STREQ("position", attribute.name);
+	EXPECT_EQ(mslType_Vec3, attribute.type);
+	EXPECT_EQ(0U, attribute.arrayElementCount);
+	EXPECT_EQ(0U, attribute.location);
+	EXPECT_EQ(0U, attribute.component);
+
+	EXPECT_TRUE(mslModule_attribute(&attribute, module, 0, 1));
+	EXPECT_STREQ("color", attribute.name);
+	EXPECT_EQ(mslType_Vec4, attribute.type);
+	EXPECT_EQ(0U, attribute.arrayElementCount);
+	EXPECT_EQ(1U, attribute.location);
+	EXPECT_EQ(0U, attribute.component);
+
+	mslSamplerState samplerState;
+	ASSERT_EQ(1U, pipeline.samplerStateCount);
+	EXPECT_TRUE(mslModule_samplerState(&samplerState, module, 0, 0));
+	EXPECT_EQ(mslFilter_Linear, samplerState.minFilter);
+	EXPECT_EQ(mslFilter_Linear, samplerState.magFilter);
+	EXPECT_EQ(mslMipFilter_Anisotropic, samplerState.mipFilter);
+	EXPECT_EQ(mslAddressMode_Repeat, samplerState.addressModeU);
+	EXPECT_EQ(mslAddressMode_ClampToEdge, samplerState.addressModeV);
+	EXPECT_EQ(mslAddressMode_Unset, samplerState.addressModeW);
+	EXPECT_EQ(MSL_UNKNOWN_FLOAT, samplerState.mipLodBias);
+	EXPECT_EQ(MSL_UNKNOWN_FLOAT, samplerState.maxAnisotropy);
+	EXPECT_EQ(MSL_UNKNOWN_FLOAT, samplerState.minLod);
+	EXPECT_EQ(MSL_UNKNOWN_FLOAT, samplerState.maxLod);
+	EXPECT_EQ(mslBorderColor_Unset, samplerState.borderColor);
 
 	ASSERT_EQ(2U, mslModule_shaderCount(module));
 	EXPECT_LT(0U, mslModule_shaderSize(module, 0));

@@ -5,6 +5,15 @@ uniform Transform
 	mat4 transform;
 } block;
 
+sampler_state tex
+{
+	address_mode_u = repeat;
+	address_mode_v = clamp_to_edge;
+	min_filter = linear;
+	mag_filter = linear;
+	mip_filter = anisotropic;
+};
+
 [[vertex]] in vec3 position;
 [[vertex]] in vec4 color;
 

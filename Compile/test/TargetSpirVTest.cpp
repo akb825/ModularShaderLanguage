@@ -83,7 +83,7 @@ TEST(TargetSpirVTest, CompleteShader)
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
 	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
-	EXPECT_EQ(unknown, pipeline->second.uniforms[1].samplerIndex);
+	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
 	ASSERT_EQ(2U, pipeline->second.attributes.size());
 	EXPECT_EQ("position", pipeline->second.attributes[0].name);
@@ -99,6 +99,19 @@ TEST(TargetSpirVTest, CompleteShader)
 	EXPECT_EQ(0U, pipeline->second.attributes[1].component);
 
 	EXPECT_EQ(unknown, pipeline->second.pushConstantStruct);
+
+	ASSERT_EQ(1U, pipeline->second.samplerStates.size());
+	EXPECT_EQ(Filter::Linear, pipeline->second.samplerStates[0].minFilter);
+	EXPECT_EQ(Filter::Linear, pipeline->second.samplerStates[0].magFilter);
+	EXPECT_EQ(MipFilter::Anisotropic, pipeline->second.samplerStates[0].mipFilter);
+	EXPECT_EQ(AddressMode::Repeat, pipeline->second.samplerStates[0].addressModeU);
+	EXPECT_EQ(AddressMode::ClampToEdge, pipeline->second.samplerStates[0].addressModeV);
+	EXPECT_EQ(AddressMode::Unset, pipeline->second.samplerStates[0].addressModeW);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].mipLodBias);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].maxAnisotropy);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].minLod);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].maxLod);
+	EXPECT_EQ(BorderColor::Unset, pipeline->second.samplerStates[0].borderColor);
 
 	EXPECT_EQ(2U, result.getShaders().size());
 }
@@ -398,13 +411,13 @@ TEST(TargetSpirVTest, DuplicatePipeline)
 	ASSERT_LE(2U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
 	EXPECT_EQ(shaderName, messages[0].file);
-	EXPECT_EQ(37U, messages[0].line);
+	EXPECT_EQ(46U, messages[0].line);
 	EXPECT_EQ("pipeline already declared: Test", messages[0].message);
 
 	EXPECT_EQ(Output::Level::Error, messages[1].level);
 	EXPECT_TRUE(messages[1].continued);
 	EXPECT_EQ(shaderName, messages[1].file);
-	EXPECT_EQ(37U, messages[1].line);
+	EXPECT_EQ(46U, messages[1].line);
 	EXPECT_EQ("see previous declaration", messages[1].message);
 }
 

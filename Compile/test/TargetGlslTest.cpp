@@ -84,7 +84,7 @@ TEST(TargetGlslTest, Glsl450)
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
 	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
-	EXPECT_EQ(unknown, pipeline->second.uniforms[1].samplerIndex);
+	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
 	ASSERT_EQ(2U, pipeline->second.attributes.size());
 	EXPECT_EQ("position", pipeline->second.attributes[0].name);
@@ -100,6 +100,19 @@ TEST(TargetGlslTest, Glsl450)
 	EXPECT_EQ(0U, pipeline->second.attributes[1].component);
 
 	EXPECT_EQ(unknown, pipeline->second.pushConstantStruct);
+
+	ASSERT_EQ(1U, pipeline->second.samplerStates.size());
+	EXPECT_EQ(Filter::Linear, pipeline->second.samplerStates[0].minFilter);
+	EXPECT_EQ(Filter::Linear, pipeline->second.samplerStates[0].magFilter);
+	EXPECT_EQ(MipFilter::Anisotropic, pipeline->second.samplerStates[0].mipFilter);
+	EXPECT_EQ(AddressMode::Repeat, pipeline->second.samplerStates[0].addressModeU);
+	EXPECT_EQ(AddressMode::ClampToEdge, pipeline->second.samplerStates[0].addressModeV);
+	EXPECT_EQ(AddressMode::Unset, pipeline->second.samplerStates[0].addressModeW);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].mipLodBias);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].maxAnisotropy);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].minLod);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].maxLod);
+	EXPECT_EQ(BorderColor::Unset, pipeline->second.samplerStates[0].borderColor);
 
 	ASSERT_EQ(2U, result.getShaders().size());
 	std::string vertex = reinterpret_cast<const char*>(result.getShaders()[0].data());
@@ -178,7 +191,7 @@ TEST(TargetGlslTest, Glsl120)
 	EXPECT_TRUE(pipeline->second.uniforms[0].arrayElements.empty());
 	EXPECT_EQ(0, pipeline->second.uniforms[0].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
-	EXPECT_EQ(unknown, pipeline->second.uniforms[0].samplerIndex);
+	EXPECT_EQ(0U, pipeline->second.uniforms[0].samplerIndex);
 
 	ASSERT_EQ(2U, pipeline->second.attributes.size());
 	EXPECT_EQ("position", pipeline->second.attributes[0].name);
@@ -194,6 +207,19 @@ TEST(TargetGlslTest, Glsl120)
 	EXPECT_EQ(0U, pipeline->second.attributes[1].component);
 
 	EXPECT_EQ(0U, pipeline->second.pushConstantStruct);
+
+	ASSERT_EQ(1U, pipeline->second.samplerStates.size());
+	EXPECT_EQ(Filter::Linear, pipeline->second.samplerStates[0].minFilter);
+	EXPECT_EQ(Filter::Linear, pipeline->second.samplerStates[0].magFilter);
+	EXPECT_EQ(MipFilter::Anisotropic, pipeline->second.samplerStates[0].mipFilter);
+	EXPECT_EQ(AddressMode::Repeat, pipeline->second.samplerStates[0].addressModeU);
+	EXPECT_EQ(AddressMode::ClampToEdge, pipeline->second.samplerStates[0].addressModeV);
+	EXPECT_EQ(AddressMode::Unset, pipeline->second.samplerStates[0].addressModeW);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].mipLodBias);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].maxAnisotropy);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].minLod);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].maxLod);
+	EXPECT_EQ(BorderColor::Unset, pipeline->second.samplerStates[0].borderColor);
 
 	EXPECT_EQ(2U, result.getShaders().size());
 }
@@ -275,7 +301,7 @@ TEST(TargetGlslTest, GlslEs300)
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
 	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
-	EXPECT_EQ(unknown, pipeline->second.uniforms[1].samplerIndex);
+	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
 	ASSERT_EQ(2U, pipeline->second.attributes.size());
 	EXPECT_EQ("position", pipeline->second.attributes[0].name);
@@ -291,6 +317,19 @@ TEST(TargetGlslTest, GlslEs300)
 	EXPECT_EQ(0U, pipeline->second.attributes[1].component);
 
 	EXPECT_EQ(unknown, pipeline->second.pushConstantStruct);
+
+	ASSERT_EQ(1U, pipeline->second.samplerStates.size());
+	EXPECT_EQ(Filter::Linear, pipeline->second.samplerStates[0].minFilter);
+	EXPECT_EQ(Filter::Linear, pipeline->second.samplerStates[0].magFilter);
+	EXPECT_EQ(MipFilter::Anisotropic, pipeline->second.samplerStates[0].mipFilter);
+	EXPECT_EQ(AddressMode::Repeat, pipeline->second.samplerStates[0].addressModeU);
+	EXPECT_EQ(AddressMode::ClampToEdge, pipeline->second.samplerStates[0].addressModeV);
+	EXPECT_EQ(AddressMode::Unset, pipeline->second.samplerStates[0].addressModeW);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].mipLodBias);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].maxAnisotropy);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].minLod);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].maxLod);
+	EXPECT_EQ(BorderColor::Unset, pipeline->second.samplerStates[0].borderColor);
 
 	EXPECT_EQ(2U, result.getShaders().size());
 }
@@ -363,7 +402,7 @@ TEST(TargetGlslTest, GlslEs100)
 	EXPECT_TRUE(pipeline->second.uniforms[0].arrayElements.empty());
 	EXPECT_EQ(0, pipeline->second.uniforms[0].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
-	EXPECT_EQ(unknown, pipeline->second.uniforms[0].samplerIndex);
+	EXPECT_EQ(0U, pipeline->second.uniforms[0].samplerIndex);
 
 	ASSERT_EQ(2U, pipeline->second.attributes.size());
 	EXPECT_EQ("position", pipeline->second.attributes[0].name);
@@ -379,6 +418,19 @@ TEST(TargetGlslTest, GlslEs100)
 	EXPECT_EQ(0U, pipeline->second.attributes[1].component);
 
 	EXPECT_EQ(0U, pipeline->second.pushConstantStruct);
+
+	ASSERT_EQ(1U, pipeline->second.samplerStates.size());
+	EXPECT_EQ(Filter::Linear, pipeline->second.samplerStates[0].minFilter);
+	EXPECT_EQ(Filter::Linear, pipeline->second.samplerStates[0].magFilter);
+	EXPECT_EQ(MipFilter::Anisotropic, pipeline->second.samplerStates[0].mipFilter);
+	EXPECT_EQ(AddressMode::Repeat, pipeline->second.samplerStates[0].addressModeU);
+	EXPECT_EQ(AddressMode::ClampToEdge, pipeline->second.samplerStates[0].addressModeV);
+	EXPECT_EQ(AddressMode::Unset, pipeline->second.samplerStates[0].addressModeW);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].mipLodBias);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].maxAnisotropy);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].minLod);
+	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].maxLod);
+	EXPECT_EQ(BorderColor::Unset, pipeline->second.samplerStates[0].borderColor);
 
 	EXPECT_EQ(2U, result.getShaders().size());
 }

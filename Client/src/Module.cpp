@@ -255,7 +255,7 @@ static bool isValid(const void* data, size_t size)
 				return false;
 			for (uint32_t k = 0; k < members->size(); ++k)
 			{
-				const mslb::StructMember* member = (*members)[j];
+				const mslb::StructMember* member = (*members)[k];
 				if (!member)
 					return false;
 				if (!member->name())
@@ -444,7 +444,7 @@ static bool isValid(const void* data, size_t size)
 			if (!enumInRange(attachment->alphaBlendOp()))
 				return false;
 		}
-		auto blendConstants = blendState->blendAttachments();
+		auto blendConstants = blendState->blendConstants();
 		if (!blendConstants || blendConstants->size() != 4)
 			return false;
 
@@ -515,6 +515,7 @@ mslModule* mslModule_readStream(mslReadFunction readFunc, void* userData,
 		return nullptr;
 	}
 
+	module->module = const_cast<mslb::Module*>(mslb::GetModule(module->data));
 	fixupModule(module);
 	return module;
 }
@@ -546,6 +547,7 @@ mslModule* mslModule_readData(const void* data, size_t size, const mslAllocator*
 		return nullptr;
 	}
 
+	module->module = const_cast<mslb::Module*>(mslb::GetModule(module->data));
 	fixupModule(module);
 	return module;
 }

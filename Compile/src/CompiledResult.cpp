@@ -121,7 +121,7 @@ bool CompiledResult::save(std::ostream& stream) const
 				const StructMember& member = pipelineStruct.members[k];
 				arrayElements.clear();
 				arrayElements.reserve(member.arrayElements.size());
-				for (std::size_t l = 0; l < arrayElements.size(); ++l)
+				for (std::size_t l = 0; l < member.arrayElements.size(); ++l)
 				{
 					arrayElements.emplace_back(member.arrayElements[l].length,
 						member.arrayElements[l].stride);
@@ -142,7 +142,7 @@ bool CompiledResult::save(std::ostream& stream) const
 
 		samplerStates.clear();
 		samplerStates.reserve(pipeline.second.samplerStates.size());
-		for (std::size_t j = 0; j < samplerStates.size(); ++j)
+		for (std::size_t j = 0; j < pipeline.second.samplerStates.size(); ++j)
 		{
 			const SamplerState& samplerState = pipeline.second.samplerStates[j];
 			samplerStates.emplace_back(static_cast<mslb::Filter>(samplerState.minFilter),
@@ -161,7 +161,7 @@ bool CompiledResult::save(std::ostream& stream) const
 			const Uniform& uniform = pipeline.second.uniforms[j];
 			arrayElements.clear();
 			arrayElements.reserve(uniform.arrayElements.size());
-			for (std::size_t k = 0; k < arrayElements.size(); ++k)
+			for (std::size_t k = 0; k < uniform.arrayElements.size(); ++k)
 			{
 				arrayElements.emplace_back(uniform.arrayElements[k].length,
 					uniform.arrayElements[k].stride);
@@ -182,7 +182,7 @@ bool CompiledResult::save(std::ostream& stream) const
 			const Attribute& attribute = pipeline.second.attributes[j];
 			arraySizes.clear();
 			arraySizes.reserve(attribute.arrayElements.size());
-			for (std::size_t k = 0; k < arrayElements.size(); ++k)
+			for (std::size_t k = 0; k < attribute.arrayElements.size(); ++k)
 				arraySizes.push_back(attribute.arrayElements[k]);
 
 			attributes[j] = mslb::CreateAttribute(builder, builder.CreateString(attribute.name),

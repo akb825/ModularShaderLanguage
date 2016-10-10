@@ -31,6 +31,11 @@ namespace msl
 {
 
 /**
+ * @brief Constant for the current module file version.
+ */
+static const uint32_t moduleVersion = 0;
+
+/**
  * @brief Constant for no known value.
  */
 static const uint32_t unknown = static_cast<uint32_t>(-1);

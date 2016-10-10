@@ -894,7 +894,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			{
 				if (samplers[j].name == addedPipeline.uniforms[i].name)
 				{
-					addedPipeline.uniforms[j].samplerIndex = addSampler(addedPipeline,
+					addedPipeline.uniforms[i].samplerIndex = addSampler(addedPipeline,
 						samplers[j].state);
 					break;
 				}
