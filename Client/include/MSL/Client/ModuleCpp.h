@@ -242,13 +242,13 @@ public:
 	bool attribute(Attribute& outAttribute, uint32_t pipelineIndex, uint32_t attributeIndex) const;
 
 	/**
-	 * @brief Gets the array size for a vertex attribute within a pipeline.
+	 * @brief Gets the array length for a vertex attribute within a pipeline.
 	 * @param pipelineIndex The index of the pipeline.
 	 * @param attributeIndex The index of the attribute within the pipeline.
 	 * @param arrayElement The array element to get the info for.
-	 * @return The size of the array, or unkown if the parameters are incorrect.
+	 * @return The length of the array, or unkown if the parameters are incorrect.
 	 */
-	uint32_t attributeArraySize(uint32_t pipelineIndex, uint32_t attributeIndex,
+	uint32_t attributeArrayLength(uint32_t pipelineIndex, uint32_t attributeIndex,
 		uint32_t arrayElement) const;
 
 	/**
@@ -545,10 +545,10 @@ bool BasicModule<Allocator>::attribute(Attribute& outAttribute, uint32_t pipelin
 }
 
 template <typename Allocator>
-uint32_t BasicModule<Allocator>::attributeArraySize(uint32_t pipelineIndex, uint32_t attributeIndex,
-	uint32_t arrayElement) const
+uint32_t BasicModule<Allocator>::attributeArrayLength(uint32_t pipelineIndex,
+	uint32_t attributeIndex, uint32_t arrayElement) const
 {
-	return mslModule_attributeArraySize(m_module, pipelineIndex, attributeIndex, arrayElement);
+	return mslModule_attributeArrayLength(m_module, pipelineIndex, attributeIndex, arrayElement);
 }
 
 template <typename Allocator>

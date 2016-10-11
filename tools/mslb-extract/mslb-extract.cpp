@@ -144,8 +144,183 @@ static const char* typeNames[] =
 	// Other
 	"struct",
 };
-static_assert(sizeof(typeNames)/sizeof(*typeNames) == msl::Module::typeCount,
+static_assert(sizeof(typeNames)/sizeof(*typeNames) == msl::typeCount,
 	"typeNames out of sync with enum");
+
+static const char* uniformTypeNames[] =
+{
+	"push_constant",
+	"block",
+	"block_buffer",
+	"image",
+	"sampled_image",
+	"subpass_image"
+};
+static_assert(sizeof(uniformTypeNames)/sizeof(*uniformTypeNames) ==
+	static_cast<int>(msl::UniformType::SubpassInput) + 1, "uniformTypeNames out of sync with enum");
+
+static const char* boolNames[] =
+{
+	"false",
+	"true"
+};
+static_assert(sizeof(boolNames)/sizeof(*boolNames) == static_cast<int>(msl::Bool::True) + 1,
+	"boolNames out of sync with enum");
+
+static const char* polygonModeNames[] =
+{
+	"fill",
+	"line",
+	"point"
+};
+static_assert(sizeof(polygonModeNames)/sizeof(*polygonModeNames) ==
+	static_cast<int>(msl::PolygonMode::Point) + 1, "polygonModeNames out of sync with enum");
+
+static const char* cullModeNames[] =
+{
+	"none",
+	"front",
+	"back",
+	"front_and_back"
+};
+static_assert(sizeof(cullModeNames)/sizeof(*cullModeNames) ==
+	static_cast<int>(msl::CullMode::FrontAndBack) + 1, "cullModeNames out of sync with enum");
+
+static const char* frontFaceNames[] =
+{
+	"counter_clockwise",
+	"clockwise"
+};
+static_assert(sizeof(frontFaceNames)/sizeof(*frontFaceNames) ==
+	static_cast<int>(msl::FrontFace::Clockwise) + 1, "frontFaceNames out of sync with enum");
+
+static const char* stencilOpNames[] =
+{
+	"keep",
+	"zero",
+	"replace",
+	"increment_and_clamp",
+	"decrement_and_clamp",
+	"invert",
+	"increment_and_wrap",
+	"decrement_and_wrap"
+};
+static_assert(sizeof(stencilOpNames)/sizeof(*stencilOpNames) ==
+	static_cast<int>(msl::StencilOp::DecrementAndWrap) + 1, "stencilOpNames out of sync with enum");
+
+static const char* compareOpNames[] =
+{
+	"never",
+	"less",
+	"equal",
+	"less_or_equal",
+	"greater",
+	"not_equal",
+	"greater_or_equal",
+	"always"
+};
+static_assert(sizeof(compareOpNames)/sizeof(*compareOpNames) ==
+	static_cast<int>(msl::CompareOp::Always) + 1, "compareOpNames out of sync with enum");
+
+static const char* blendFactorNames[] =
+{
+	"zero",
+	"one",
+	"src_color",
+	"one_minus_src_color",
+	"dst_color",
+	"one_minus_dst_color",
+	"src_alpha",
+	"one_minus_src_alpha",
+	"dst_alpha",
+	"one_minus_dst_alpha",
+	"const_color",
+	"one_minus_const_color",
+	"const_alpha",
+	"one_minus_const_alpha",
+	"src_alpha_saturate",
+	"src1_color",
+	"one_minus_src1_color",
+	"src1_alpha",
+	"one_minus_src1_alpha"
+};
+static_assert(sizeof(blendFactorNames)/sizeof(*blendFactorNames) ==
+	static_cast<int>(msl::BlendFactor::OneMinusSrc1Alpha) + 1,
+	"blendFactorNames out of sync with enum");
+
+static const char* blendOpNames[] =
+{
+	"add",
+	"subtract",
+	"reverse_subtract",
+	"min",
+	"max"
+};
+static_assert(sizeof(blendOpNames)/sizeof(*blendOpNames) ==
+	static_cast<int>(msl::BlendOp::Max) + 1, "blendOpNames out of sync with enum");
+
+static const char* logicOpNames[] =
+{
+	"clear",
+	"and",
+	"and_reverse",
+	"copy",
+	"and_inverted",
+	"no_op",
+	"xor",
+	"or",
+	"nor",
+	"equivalent",
+	"invert",
+	"or_reverse",
+	"copy_inverted",
+	"or_inverted",
+	"nand",
+	"set"
+};
+static_assert(sizeof(logicOpNames)/sizeof(*logicOpNames) ==
+	static_cast<int>(msl::LogicOp::Set) + 1, "logicOpNames out of sync with enum");
+
+static const char* filterNames[] =
+{
+	"nearest",
+	"linear"
+};
+static_assert(sizeof(filterNames)/sizeof(*filterNames) ==
+	static_cast<int>(msl::Filter::Linear) + 1, "filterNames out of sync with enum");
+
+static const char* mipFilterNames[] =
+{
+	"none",
+	"nearest",
+	"linear",
+	"anisotropic"
+};
+static_assert(sizeof(mipFilterNames)/sizeof(*mipFilterNames) ==
+	static_cast<int>(msl::MipFilter::Anisotropic) + 1, "mipFilterNames out of sync with enum");
+
+static const char* addressModeNames[] =
+{
+	"repeat",
+	"mirrored_repeat",
+	"clamp_to_edge",
+	"clamp_to_border",
+	"mirror_once"
+};
+static_assert(sizeof(addressModeNames)/sizeof(*addressModeNames) ==
+	static_cast<int>(msl::AddressMode::MirrorOnce) + 1, "addressModeNames out of sync with enum");
+
+static const char* borderColorNames[] =
+{
+	"transparent_black",
+	"transparent_int_zero",
+	"opaque_black",
+	"opaque_int_zero",
+	"opaque_white",
+	"opaque_int_one"
+};
+static_assert(sizeof(borderColorNames)/sizeof(*borderColorNames) ==
+	static_cast<int>(msl::BorderColor::OpaqueIntOne) + 1, "borderColorNames out of sync with enum");
 
 static const char* stageExtensions[] =
 {
@@ -156,7 +331,7 @@ static const char* stageExtensions[] =
 	".frag",
 	".comp"
 };
-static_assert(sizeof(stageExtensions)/sizeof(*stageExtensions) == msl::Module::stageCount,
+static_assert(sizeof(stageExtensions)/sizeof(*stageExtensions) == msl::stageCount,
 	"stageExtensions out of sync with enum");
 
 static const char* stageNames[] =
@@ -168,7 +343,7 @@ static const char* stageNames[] =
 	"fragment",
 	"compute"
 };
-static_assert(sizeof(stageNames)/sizeof(*stageNames) == msl::Module::stageCount,
+static_assert(sizeof(stageNames)/sizeof(*stageNames) == msl::stageCount,
 	"stageNames out of sync with enum");
 
 static bool shadersAreText(const msl::Module& module)
@@ -194,6 +369,738 @@ static bool openFile(std::ofstream& stream, const std::string& fileName, bool bi
 	}
 
 	return true;
+}
+
+static void writeStructs(std::ostream& jsonFile, const msl::Module& module,
+	const msl::Pipeline& pipeline, uint32_t i)
+{
+	jsonFile << "\t\t\t\"structs\":\n\t\t\t[\n";
+	for (uint32_t j = 0; j < pipeline.structCount; ++j)
+	{
+		jsonFile << "\t\t\t\t{\n";
+		msl::Struct pipelineStruct;
+		module.pipelineStruct(pipelineStruct, i, j);
+
+		jsonFile << "\t\t\t\t\t\"name\": \"" << pipelineStruct.name << "\",\n";
+		if (pipelineStruct.size == msl::unknown)
+			jsonFile << "\t\t\t\t\t\"size\": null,\n";
+		else
+			jsonFile << "\t\t\t\t\t\"size\": " << pipelineStruct.size << ",\n";
+
+		jsonFile << "\t\t\t\t\t\"members\":\n\t\t\t\t\t[\n";
+
+		for (uint32_t k = 0; k < pipelineStruct.memberCount; ++k)
+		{
+			jsonFile << "\t\t\t\t\t\t{\n";
+			msl::StructMember structMember;
+			module.structMember(structMember, i, j, k);
+			jsonFile << "\t\t\t\t\t\t\t\"name\": \"" << structMember.name << "\",\n";
+
+			if (structMember.offset == msl::unknown)
+				jsonFile << "\t\t\t\t\t\t\t\"offset\": null,\n";
+			else
+				jsonFile << "\t\t\t\t\t\t\t\"offset\": " << structMember.offset << ",\n";
+
+			if (structMember.size == msl::unknown)
+				jsonFile << "\t\t\t\t\t\t\t\"size\": null,\n";
+			else
+				jsonFile << "\t\t\t\t\t\t\t\"size\": " << structMember.size << ",\n";
+
+			auto type = static_cast<unsigned int>(structMember.type);
+			if (type < msl::typeCount)
+				jsonFile << "\t\t\t\t\t\t\t\"type\": \"" << typeNames[type] << "\",\n";
+			else
+				jsonFile << "\t\t\t\t\t\t\t\"type\": \"invalid\",\n";
+
+			if (structMember.type == msl::Type::Struct)
+			{
+				jsonFile << "\t\t\t\t\t\t\t\"structIndex\": " << structMember.structIndex <<
+					",\n";
+			}
+
+			jsonFile << "\t\t\t\t\t\t\t\"arrayElements\":\n\t\t\t\t\t\t\t[\n";
+			for (uint32_t l = 0; l < structMember.arrayElementCount; ++l)
+			{
+				jsonFile << "\t\t\t\t\t\t\t\t{\n";
+				msl::ArrayInfo arrayInfo;
+				module.structMemberArrayInfo(arrayInfo, i, j, k, l);
+				jsonFile << "\t\t\t\t\t\t\t\t\t\"length\": " << arrayInfo.length << ",\n";
+
+				if (arrayInfo.stride == msl::unknown)
+					jsonFile << "\t\t\t\t\t\t\t\t\t\"stride\": null\n";
+				else
+					jsonFile << "\t\t\t\t\t\t\t\t\t\"stride\": " << arrayInfo.stride << "\n";
+
+				if (l == structMember.arrayElementCount - 1)
+					jsonFile << "\t\t\t\t\t\t\t\t}\n";
+				else
+					jsonFile << "\t\t\t\t\t\t\t\t},\n";
+			}
+			jsonFile << "\t\t\t\t\t\t\t],\n";
+
+			jsonFile << "\t\t\t\t\t\t\t\"rowMajor\": " <<
+				(structMember.rowMajor ? "true" : "false") << "\n";
+
+			if (k == pipelineStruct.memberCount - 1)
+				jsonFile << "\t\t\t\t\t\t}\n";
+			else
+				jsonFile << "\t\t\t\t\t\t},\n";
+		}
+		jsonFile << "\t\t\t\t\t]\n";
+
+		if (j == pipeline.structCount - 1)
+			jsonFile << "\t\t\t\t}\n";
+		else
+			jsonFile << "\t\t\t\t},\n";
+	}
+	jsonFile << "\t\t\t],\n";
+}
+
+static void writeSamplerStates(std::ostream& jsonFile, const msl::Module& module,
+	const msl::Pipeline& pipeline, uint32_t i)
+{
+	jsonFile << "\t\t\t\"samplerStates\":\n\t\t\t[\n";
+	for (uint32_t j = 0; j < pipeline.samplerStateCount; ++j)
+	{
+		jsonFile << "\t\t\t\t{\n";
+		msl::SamplerState samplerState;
+		module.samplerState(samplerState, i, j);
+
+		auto minFilter = static_cast<unsigned int>(samplerState.minFilter);
+		if (minFilter < sizeof(filterNames)/sizeof(*filterNames))
+			jsonFile << "\t\t\t\t\t\"minFilter\": \"" << filterNames[minFilter] << "\",\n";
+		else
+			jsonFile << "\t\t\t\t\t\"minFilter\": null,\n";
+
+		auto magFilter = static_cast<unsigned int>(samplerState.magFilter);
+		if (magFilter < sizeof(filterNames)/sizeof(*filterNames))
+			jsonFile << "\t\t\t\t\t\"magFilter\": \"" << filterNames[magFilter] << "\",\n";
+		else
+			jsonFile << "\t\t\t\t\t\"magFilter\": null,\n";
+
+		auto mipFilter = static_cast<unsigned int>(samplerState.mipFilter);
+		if (mipFilter < sizeof(mipFilterNames)/sizeof(*mipFilterNames))
+			jsonFile << "\t\t\t\t\t\"mipFilter\": \"" << mipFilterNames[mipFilter] << "\",\n";
+		else
+			jsonFile << "\t\t\t\t\t\"mipFilter\": null,\n";
+
+		auto addressModeU = static_cast<unsigned int>(samplerState.addressModeU);
+		if (addressModeU < sizeof(addressModeNames)/sizeof(*addressModeNames))
+		{
+			jsonFile << "\t\t\t\t\t\"addressModeU\": \"" << addressModeNames[addressModeU] <<
+				"\",\n";
+		}
+		else
+			jsonFile << "\t\t\t\t\t\"addressModeU\": null,\n";
+
+		auto addressModeV = static_cast<unsigned int>(samplerState.addressModeV);
+		if (addressModeV < sizeof(addressModeNames)/sizeof(*addressModeNames))
+		{
+			jsonFile << "\t\t\t\t\t\"addressModeV\": \"" << addressModeNames[addressModeV] <<
+				"\",\n";
+		}
+		else
+			jsonFile << "\t\t\t\t\t\"addressModeV\": null,\n";
+
+		auto addressModeW = static_cast<unsigned int>(samplerState.addressModeW);
+		if (addressModeW < sizeof(addressModeNames)/sizeof(*addressModeNames))
+		{
+			jsonFile << "\t\t\t\t\t\"addressModeW\": \"" << addressModeNames[addressModeW] <<
+				"\",\n";
+		}
+		else
+			jsonFile << "\t\t\t\t\t\"addressModeW\": null,\n";
+
+		if (samplerState.mipLodBias == msl::unknownFloat)
+			jsonFile << "\t\t\t\t\t\"mipLodBias\": null,\n";
+		else
+			jsonFile << "\t\t\t\t\t\"mipLodBias\": \"" << samplerState.mipLodBias << "\",\n";
+
+		if (samplerState.maxAnisotropy == msl::unknownFloat)
+			jsonFile << "\t\t\t\t\t\"maxAnisotropy\": null,\n";
+		else
+		{
+			jsonFile << "\t\t\t\t\t\"maxAnisotropy\": \"" << samplerState.maxAnisotropy <<
+				"\",\n";
+		}
+
+		if (samplerState.minLod == msl::unknownFloat)
+			jsonFile << "\t\t\t\t\t\"minLod\": null,\n";
+		else
+			jsonFile << "\t\t\t\t\t\"minLod\": \"" << samplerState.minLod << "\",\n";
+
+		if (samplerState.maxLod == msl::unknownFloat)
+			jsonFile << "\t\t\t\t\t\"maxLod\": null,\n";
+		else
+			jsonFile << "\t\t\t\t\t\"maxLod\": \"" << samplerState.maxLod << "\",\n";
+
+		auto borderColor = static_cast<unsigned int>(samplerState.borderColor);
+		if (borderColor < sizeof(borderColorNames)/sizeof(*borderColorNames))
+		{
+			jsonFile << "\t\t\t\t\t\"borderColor\": \"" << borderColorNames[borderColor] <<
+				"\"\n";
+		}
+		else
+			jsonFile << "\t\t\t\t\t\"borderColor\": null\n";
+
+		if (j == pipeline.samplerStateCount - 1)
+			jsonFile << "\t\t\t\t}\n";
+		else
+			jsonFile << "\t\t\t\t},\n";
+	}
+	jsonFile << "\t\t\t],\n";
+}
+
+static void writeUniforms(std::ostream& jsonFile, const msl::Module& module,
+	const msl::Pipeline& pipeline, uint32_t i)
+{
+	jsonFile << "\t\t\t\"uniforms\":\n\t\t\t[\n";
+	for (uint32_t j = 0; j < pipeline.uniformCount; ++j)
+	{
+		jsonFile << "\t\t\t\t{\n";
+		msl::Uniform uniform;
+		module.uniform(uniform, i, j);
+
+		jsonFile << "\t\t\t\t\t\"name\": \"" << uniform.name << "\",\n";
+
+		auto uniformType = static_cast<unsigned int>(uniform.uniformType);
+		if (uniformType < sizeof(uniformTypeNames)/sizeof(*uniformTypeNames))
+		{
+			jsonFile << "\t\t\t\t\t\"uniformType\": \"" << uniformTypeNames[uniformType] <<
+				"\",\n";
+		}
+		else
+			jsonFile << "\t\t\t\t\t\"uniformType\": \"invalid\",\n";
+
+		auto type = static_cast<unsigned int>(uniform.type);
+		if (type < msl::typeCount)
+			jsonFile << "\t\t\t\t\t\"type\": \"" << typeNames[type] << "\",\n";
+		else
+			jsonFile << "\t\t\t\t\t\"type\": \"invalid\",\n";
+
+		if (uniform.type == msl::Type::Struct)
+			jsonFile << "\t\t\t\t\t\"structIndex\": " << uniform.structIndex << ",\n";
+
+		jsonFile << "\t\t\t\t\t\"arrayElements\":\n\t\t\t\t\t[\n";
+		for (uint32_t k = 0; k < uniform.arrayElementCount; ++k)
+		{
+			jsonFile << "\t\t\t\t\t\t{\n";
+			msl::ArrayInfo arrayInfo;
+			module.uniformArrayInfo(arrayInfo, i, j, k);
+			jsonFile << "\t\t\t\t\t\t\t\"length\": " << arrayInfo.length << ",\n";
+
+			if (arrayInfo.stride == msl::unknown)
+				jsonFile << "\t\t\t\t\t\t\t\"stride\": null\n";
+			else
+				jsonFile << "\t\t\t\t\t\t\t\"stride\": " << arrayInfo.stride << "\n";
+
+			if (k == uniform.arrayElementCount - 1)
+				jsonFile << "\t\t\t\t\t\t\t\t}\n";
+			else
+				jsonFile << "\t\t\t\t\t\t\t\t},\n";
+		}
+		jsonFile << "\t\t\t\t\t],\n";
+
+		if (uniform.descriptorSet == msl::unknown)
+			jsonFile << "\t\t\t\t\t\"descriptorSet\": null,\n";
+		else
+			jsonFile << "\t\t\t\t\t\"descriptorSet\": " << uniform.descriptorSet << ",\n";
+
+		if (uniform.binding == msl::unknown)
+			jsonFile << "\t\t\t\t\t\"binding\": null,\n";
+		else
+			jsonFile << "\t\t\t\t\t\"binding\": " << uniform.binding << ",\n";
+
+		if (uniform.samplerIndex == msl::unknown)
+			jsonFile << "\t\t\t\t\t\"samplerIndex\": null\n";
+		else
+			jsonFile << "\t\t\t\t\t\"samplerIndex\": " << uniform.samplerIndex << "\n";
+
+		if (j == pipeline.uniformCount - 1)
+			jsonFile << "\t\t\t\t}\n";
+		else
+			jsonFile << "\t\t\t\t},\n";
+	}
+	jsonFile << "\t\t\t],\n";
+
+	jsonFile << "\t\t\t\"pushConstantStruct\": " << pipeline.pushConstantStruct << ",\n";
+}
+
+static void writeAttributes(std::ostream& jsonFile, const msl::Module& module,
+	const msl::Pipeline& pipeline, uint32_t i)
+{
+	jsonFile << "\t\t\t\"attributes\":\n\t\t\t[\n";
+	for (uint32_t j = 0; j < pipeline.attributeCount; ++j)
+	{
+		jsonFile << "\t\t\t\t{\n";
+		msl::Attribute attribute;
+		module.attribute(attribute, i, j);
+
+		jsonFile << "\t\t\t\t\t\"name\": \"" << attribute.name << "\",\n";
+
+		auto type = static_cast<unsigned int>(attribute.type);
+		if (type < msl::typeCount)
+			jsonFile << "\t\t\t\t\t\"type\": \"" << typeNames[type] << "\",\n";
+		else
+			jsonFile << "\t\t\t\t\t\"type\": \"invalid\",\n";
+
+		jsonFile << "\t\t\t\t\t\"arrayElements\":\n\t\t\t\t\t[\n";
+		for (uint32_t k = 0; k < attribute.arrayElementCount; ++k)
+		{
+			jsonFile << "\t\t\t\t\t\t{\n";
+
+			jsonFile << "\t\t\t\t\t\t\t\"length\": " << module.attributeArrayLength(i, j, k)
+				<< "\n";
+
+			if (k == attribute.arrayElementCount - 1)
+				jsonFile << "\t\t\t\t\t\t}\n";
+			else
+				jsonFile << "\t\t\t\t\t\t},\n";
+		}
+		jsonFile << "\t\t\t\t\t],\n";
+
+		jsonFile << "\t\t\t\t\t\"location\": " << attribute.location << ",\n";
+		jsonFile << "\t\t\t\t\t\"component\": " << attribute.component << "\n";
+
+		if (j == pipeline.attributeCount - 1)
+			jsonFile << "\t\t\t\t}\n";
+		else
+			jsonFile << "\t\t\t\t},\n";
+	}
+	jsonFile << "\t\t\t],\n";
+}
+
+static void writeRasterizationState(std::ostream& jsonFile,
+	const msl::RasterizationState& rasterizationState)
+{
+	jsonFile << "\t\t\t\t\"rasterizationState\":\n\t\t\t\t{\n";
+
+	auto depthClampEnable = static_cast<unsigned int>(rasterizationState.depthClampEnable);
+	if (depthClampEnable < sizeof(boolNames)/sizeof(*boolNames))
+		jsonFile << "\t\t\t\t\t\"depthClampEnable\": " << boolNames[depthClampEnable] << ",\n";
+	else
+		jsonFile << "\t\t\t\t\t\"depthClampEnable\": null,\n";
+
+	auto rasterizerDiscardEnable =
+		static_cast<unsigned int>(rasterizationState.rasterizerDiscardEnable);
+	if (rasterizerDiscardEnable < sizeof(boolNames)/sizeof(*boolNames))
+	{
+		jsonFile << "\t\t\t\t\t\"rasterizerDiscardEnable\": " <<
+			boolNames[rasterizerDiscardEnable] << ",\n";
+	}
+	else
+		jsonFile << "\t\t\t\t\t\"rasterizerDiscardEnable\": null,\n";
+
+	auto polygonMode = static_cast<unsigned int>(rasterizationState.polygonMode);
+	if (polygonMode < sizeof(polygonModeNames)/sizeof(*polygonModeNames))
+		jsonFile << "\t\t\t\t\t\"polygonMode\": \"" << polygonModeNames[polygonMode] << "\",\n";
+	else
+		jsonFile << "\t\t\t\t\t\"polygonMode\": null,\n";
+
+	auto cullMode = static_cast<unsigned int>(rasterizationState.cullMode);
+	if (cullMode < sizeof(cullModeNames)/sizeof(*cullModeNames))
+		jsonFile << "\t\t\t\t\t\"cullMode\": \"" << cullModeNames[cullMode] << "\",\n";
+	else
+		jsonFile << "\t\t\t\t\t\"cullMode\": null,\n";
+
+	auto frontFace = static_cast<unsigned int>(rasterizationState.frontFace);
+	if (frontFace < sizeof(frontFaceNames)/sizeof(*frontFaceNames))
+		jsonFile << "\t\t\t\t\t\"frontFace\": \"" << frontFaceNames[frontFace] << "\",\n";
+	else
+		jsonFile << "\t\t\t\t\t\"frontFace\": null,\n";
+
+	auto depthBiasEnable =
+		static_cast<unsigned int>(rasterizationState.depthBiasEnable);
+	if (depthBiasEnable < sizeof(boolNames)/sizeof(*boolNames))
+		jsonFile << "\t\t\t\t\t\"depthBiasEnable\": " << boolNames[depthBiasEnable] << ",\n";
+	else
+		jsonFile << "\t\t\t\t\t\"depthBiasEnable\": null,\n";
+
+	if (rasterizationState.depthBiasConstantFactor == msl::unknownFloat)
+		jsonFile << "\t\t\t\t\t\"depthBiasEnable\": null,\n";
+	else
+	{
+		jsonFile << "\t\t\t\t\t\"depthBiasConstantFactor\": " <<
+			rasterizationState.depthBiasConstantFactor << ",\n";
+	}
+
+	if (rasterizationState.depthBiasClamp == msl::unknownFloat)
+		jsonFile << "\t\t\t\t\t\"depthBiasClamp\": null,\n";
+	else
+	{
+		jsonFile << "\t\t\t\t\t\"depthBiasClamp\": " <<
+			rasterizationState.depthBiasClamp << ",\n";
+	}
+
+	if (rasterizationState.depthBiasSlopeFactor == msl::unknownFloat)
+		jsonFile << "\t\t\t\t\t\"depthBiasSlopeFactor\": null,\n";
+	else
+	{
+		jsonFile << "\t\t\t\t\t\"depthBiasSlopeFactor\": " <<
+			rasterizationState.depthBiasSlopeFactor << ",\n";
+	}
+
+	if (rasterizationState.lineWidth == msl::unknownFloat)
+		jsonFile << "\t\t\t\t\t\"lineWidth\": null\n";
+	else
+		jsonFile << "\t\t\t\t\t\"lineWidth\": " << rasterizationState.lineWidth << "\n";
+
+	jsonFile << "\t\t\t\t},\n";
+}
+
+static void writeMultisampleState(std::ostream& jsonFile,
+	const msl::MultisampleState& multisampleState)
+{
+	jsonFile << "\t\t\t\t\"multisampleState\":\n\t\t\t\t{\n";
+
+	auto sampleShadingEnable =
+		static_cast<unsigned int>(multisampleState.sampleShadingEnable);
+	if (sampleShadingEnable < sizeof(boolNames)/sizeof(*boolNames))
+	{
+		jsonFile << "\t\t\t\t\t\"sampleShadingEnable\": " << boolNames[sampleShadingEnable] <<
+			",\n";
+	}
+	else
+		jsonFile << "\t\t\t\t\t\"sampleShadingEnable\": null,\n";
+
+	if (multisampleState.minSampleShading == msl::unknownFloat)
+		jsonFile << "\t\t\t\t\t\"minSampleShading\": null,\n";
+	else
+	{
+		jsonFile << "\t\t\t\t\t\"minSampleShading\": " <<
+			multisampleState.minSampleShading << ",\n";
+	}
+
+	if (multisampleState.sampleMask == msl::unknown)
+		jsonFile << "\t\t\t\t\t\"sampleMask\": null,\n";
+	else
+		jsonFile << "\t\t\t\t\t\"sampleMask\": " << multisampleState.sampleMask << ",\n";
+
+	auto alphaToCoverageEnable =
+		static_cast<unsigned int>(multisampleState.alphaToCoverageEnable);
+	if (alphaToCoverageEnable < sizeof(boolNames)/sizeof(*boolNames))
+	{
+		jsonFile << "\t\t\t\t\t\"alphaToCoverageEnable\": " <<
+			boolNames[alphaToCoverageEnable] << ",\n";
+	}
+	else
+		jsonFile << "\t\t\t\t\t\"alphaToCoverageEnable\": null,\n";
+
+	auto alphaToOneEnable =
+		static_cast<unsigned int>(multisampleState.alphaToOneEnable);
+	if (alphaToOneEnable < sizeof(boolNames)/sizeof(*boolNames))
+		jsonFile << "\t\t\t\t\t\"alphaToOneEnable\": " << boolNames[alphaToOneEnable] << "\n";
+	else
+		jsonFile << "\t\t\t\t\t\"alphaToOneEnable\": null\n";
+
+	jsonFile << "\t\t\t\t},\n";
+}
+
+static void writeDepthStencilOpState(std::ostream& jsonFile,
+	const msl::StencilOpState& stencilOpState)
+{
+	auto failOp = static_cast<unsigned int>(stencilOpState.failOp);
+	if (failOp < sizeof(stencilOpNames)/sizeof(*stencilOpNames))
+		jsonFile << "\t\t\t\t\t\t\"failOp\": \"" << stencilOpNames[failOp] << "\",\n";
+	else
+		jsonFile << "\t\t\t\t\t\t\"failOp\": null,\n";
+
+	auto passOp = static_cast<unsigned int>(stencilOpState.passOp);
+	if (passOp < sizeof(stencilOpNames)/sizeof(*stencilOpNames))
+		jsonFile << "\t\t\t\t\t\t\"passOp\": \"" << stencilOpNames[passOp] << "\",\n";
+	else
+		jsonFile << "\t\t\t\t\t\t\"passOp\": null,\n";
+
+	auto depthFailOp = static_cast<unsigned int>(stencilOpState.depthFailOp);
+	if (depthFailOp < sizeof(stencilOpNames)/sizeof(*stencilOpNames))
+		jsonFile << "\t\t\t\t\t\t\"depthFailOp\": \"" << stencilOpNames[depthFailOp] << "\",\n";
+	else
+		jsonFile << "\t\t\t\t\t\t\"depthFailOp\": null,\n";
+
+	auto compareOp = static_cast<unsigned int>(stencilOpState.compareOp);
+	if (compareOp < sizeof(compareOpNames)/sizeof(*compareOpNames))
+		jsonFile << "\t\t\t\t\t\t\"compareOp\": \"" << compareOpNames[compareOp] << "\",\n";
+	else
+		jsonFile << "\t\t\t\t\t\t\"compareOp\": null,\n";
+
+	if (stencilOpState.compareMask == msl::unknown)
+		jsonFile << "\t\t\t\t\t\t\"compareMask\": null,\n";
+	else
+		jsonFile << "\t\t\t\t\t\t\"compareMask\": " << stencilOpState.compareMask << ",\n";
+
+	if (stencilOpState.writeMask == msl::unknown)
+		jsonFile << "\t\t\t\t\t\t\"writeMask\": null,\n";
+	else
+		jsonFile << "\t\t\t\t\t\t\"writeMask\": " << stencilOpState.writeMask << ",\n";
+
+	if (stencilOpState.reference == msl::unknown)
+		jsonFile << "\t\t\t\t\t\t\"reference\": null\n";
+	else
+		jsonFile << "\t\t\t\t\t\t\"reference\": " << stencilOpState.reference << "\n";
+}
+
+static void writeDepthStencilState(std::ostream& jsonFile,
+	const msl::DepthStencilState& depthStencilState)
+{
+	jsonFile << "\t\t\t\t\"depthStencilState\":\n\t\t\t\t{\n";
+
+	auto depthTestEnable =
+		static_cast<unsigned int>(depthStencilState.depthTestEnable);
+	if (depthTestEnable < sizeof(boolNames)/sizeof(*boolNames))
+	{
+		jsonFile << "\t\t\t\t\t\"depthTestEnable\": " << boolNames[depthTestEnable] <<
+			",\n";
+	}
+	else
+		jsonFile << "\t\t\t\t\t\"depthTestEnable\": null,\n";
+
+	auto depthWriteEnable =
+		static_cast<unsigned int>(depthStencilState.depthWriteEnable);
+	if (depthWriteEnable < sizeof(boolNames)/sizeof(*boolNames))
+	{
+		jsonFile << "\t\t\t\t\t\"depthWriteEnable\": " << boolNames[depthWriteEnable] <<
+			",\n";
+	}
+	else
+		jsonFile << "\t\t\t\t\t\"depthWriteEnable\": null,\n";
+
+	auto depthCompareOp =
+		static_cast<unsigned int>(depthStencilState.depthCompareOp);
+	if (depthCompareOp < sizeof(compareOpNames)/sizeof(*compareOpNames))
+		jsonFile << "\t\t\t\t\t\"depthCompareOp\": \"" << compareOpNames[depthCompareOp] << "\",\n";
+	else
+		jsonFile << "\t\t\t\t\t\"depthCompareOp\": null,\n";
+
+	auto depthBoundsTestEnable =
+		static_cast<unsigned int>(depthStencilState.depthBoundsTestEnable);
+	if (depthBoundsTestEnable < sizeof(boolNames)/sizeof(*boolNames))
+	{
+		jsonFile << "\t\t\t\t\t\"depthBoundsTestEnable\": " <<
+			boolNames[depthBoundsTestEnable] << ",\n";
+	}
+	else
+		jsonFile << "\t\t\t\t\t\"depthBoundsTestEnable\": null,\n";
+
+	auto stencilTestEnable =
+		static_cast<unsigned int>(depthStencilState.stencilTestEnable);
+	if (stencilTestEnable < sizeof(boolNames)/sizeof(*boolNames))
+	{
+		jsonFile << "\t\t\t\t\t\"stencilTestEnable\": " << boolNames[stencilTestEnable] <<
+			",\n";
+	}
+	else
+		jsonFile << "\t\t\t\t\t\"stencilTestEnable\": null,\n";
+
+	jsonFile << "\t\t\t\t\t\"frontStencil\":\n\t\t\t\t\t{\n";
+	writeDepthStencilOpState(jsonFile, depthStencilState.frontStencil);
+	jsonFile << "\t\t\t\t\t},\n";
+
+	jsonFile << "\t\t\t\t\t\"backStencil\":\n\t\t\t\t\t{\n";
+	writeDepthStencilOpState(jsonFile, depthStencilState.backStencil);
+	jsonFile << "\t\t\t\t\t},\n";
+
+	if (depthStencilState.minDepthBounds == msl::unknownFloat)
+		jsonFile << "\t\t\t\t\t\"minDepthBounds\": null,\n";
+	else
+	{
+		jsonFile << "\t\t\t\t\t\"minDepthBounds\": " <<
+			depthStencilState.minDepthBounds << ",\n";
+	}
+
+	if (depthStencilState.maxDepthBounds == msl::unknownFloat)
+		jsonFile << "\t\t\t\t\t\"maxDepthBounds\": null\n";
+	else
+	{
+		jsonFile << "\t\t\t\t\t\"maxDepthBounds\": " <<
+			depthStencilState.maxDepthBounds << "\n";
+	}
+
+	jsonFile << "\t\t\t\t},\n";
+}
+
+static void writeBlendState(std::ostream& jsonFile, const msl::BlendState& blendState)
+{
+	jsonFile << "\t\t\t\t\"blendState\":\n\t\t\t\t{\n";
+
+	auto logicalOpEnable =
+		static_cast<unsigned int>(blendState.logicalOpEnable);
+	if (logicalOpEnable < sizeof(boolNames)/sizeof(*boolNames))
+	{
+		jsonFile << "\t\t\t\t\t\"logicalOpEnable\": " << boolNames[logicalOpEnable] <<
+			",\n";
+	}
+	else
+		jsonFile << "\t\t\t\t\t\"logicalOpEnable\": null,\n";
+
+	auto logicalOp =
+		static_cast<unsigned int>(blendState.logicalOp);
+	if (logicalOp < sizeof(logicOpNames)/sizeof(*logicOpNames))
+		jsonFile << "\t\t\t\t\t\"logicalOp\": \"" << logicOpNames[logicalOp] << "\",\n";
+	else
+		jsonFile << "\t\t\t\t\t\"logicalOp\": null,\n";
+
+	auto separateAttachmentBlendingEnable =
+		static_cast<unsigned int>(blendState.separateAttachmentBlendingEnable);
+	if (separateAttachmentBlendingEnable < sizeof(boolNames)/sizeof(*boolNames))
+	{
+		jsonFile << "\t\t\t\t\t\"separateAttachmentBlendingEnable\": " <<
+			boolNames[separateAttachmentBlendingEnable] << ",\n";
+	}
+	else
+		jsonFile << "\t\t\t\t\t\"separateAttachmentBlendingEnable\": null,\n";
+
+	jsonFile << "\t\t\t\t\t\"blendAttachments\":\n\t\t\t\t\t[\n";
+
+	for (unsigned int i = 0; i < msl::maxAttachments; ++i)
+	{
+		jsonFile << "\t\t\t\t\t\t{\n";
+
+		auto blendEnable =
+			static_cast<unsigned int>(blendState.blendAttachments[i].blendEnable);
+		if (blendEnable < sizeof(boolNames)/sizeof(*boolNames))
+		{
+			jsonFile << "\t\t\t\t\t\t\t\"blendEnable\": " << boolNames[blendEnable] <<
+				",\n";
+		}
+		else
+			jsonFile << "\t\t\t\t\t\t\t\"blendEnable\": null,\n";
+
+		auto srcColorBlendFactor =
+			static_cast<unsigned int>(blendState.blendAttachments[i].srcColorBlendFactor);
+		if (srcColorBlendFactor < sizeof(blendFactorNames)/sizeof(*blendFactorNames))
+		{
+			jsonFile << "\t\t\t\t\t\t\t\"srcColorBlendFactor\": \"" <<
+				blendFactorNames[srcColorBlendFactor] << "\",\n";
+		}
+		else
+			jsonFile << "\t\t\t\t\t\t\t\"srcColorBlendFactor\": null,\n";
+
+		auto dstColorBlendFactor =
+			static_cast<unsigned int>(blendState.blendAttachments[i].dstColorBlendFactor);
+		if (dstColorBlendFactor < sizeof(blendFactorNames)/sizeof(*blendFactorNames))
+		{
+			jsonFile << "\t\t\t\t\t\t\t\"dstColorBlendFactor\": \"" <<
+				blendFactorNames[dstColorBlendFactor] << "\",\n";
+		}
+		else
+			jsonFile << "\t\t\t\t\t\t\t\"dstColorBlendFactor\": null,\n";
+
+		auto colorBlendOp =
+			static_cast<unsigned int>(blendState.blendAttachments[i].colorBlendOp);
+		if (colorBlendOp < sizeof(blendOpNames)/sizeof(*blendOpNames))
+		{
+			jsonFile << "\t\t\t\t\t\t\t\"colorBlendOp\": \"" <<
+				blendOpNames[colorBlendOp] << "\",\n";
+		}
+		else
+			jsonFile << "\t\t\t\t\t\t\t\"colorBlendOp\": null,\n";
+
+		auto srcAlphaBlendFactor =
+			static_cast<unsigned int>(blendState.blendAttachments[i].srcAlphaBlendFactor);
+		if (srcAlphaBlendFactor < sizeof(blendFactorNames)/sizeof(*blendFactorNames))
+		{
+			jsonFile << "\t\t\t\t\t\t\t\"srcAlphaBlendFactor\": \"" <<
+				blendFactorNames[srcAlphaBlendFactor] << "\",\n";
+		}
+		else
+			jsonFile << "\t\t\t\t\t\t\t\"srcAlphaBlendFactor\": null,\n";
+
+		auto dstAlphaBlendFactor =
+			static_cast<unsigned int>(blendState.blendAttachments[i].dstAlphaBlendFactor);
+		if (dstAlphaBlendFactor < sizeof(blendFactorNames)/sizeof(*blendFactorNames))
+		{
+			jsonFile << "\t\t\t\t\t\t\t\"dstAlphaBlendFactor\": \"" <<
+				blendFactorNames[dstAlphaBlendFactor] << "\",\n";
+		}
+		else
+			jsonFile << "\t\t\t\t\t\t\t\"dstAlphaBlendFactor\": null,\n";
+
+		auto alphaBlendOp =
+			static_cast<unsigned int>(blendState.blendAttachments[i].alphaBlendOp);
+		if (alphaBlendOp < sizeof(blendOpNames)/sizeof(*blendOpNames))
+		{
+			jsonFile << "\t\t\t\t\t\t\t\"alphaBlendOp\": \"" <<
+				blendOpNames[alphaBlendOp] << "\",\n";
+		}
+		else
+			jsonFile << "\t\t\t\t\t\t\t\"alphaBlendOp\": null,\n";
+
+		if (blendState.blendAttachments[i].colorWriteMask == msl::ColorMaskUnset)
+			jsonFile << "\t\t\t\t\t\t\t\"colorWriteMask\": null\n";
+		else
+		{
+			jsonFile << "\t\t\t\t\t\t\t\"colorWriteMask\": ";
+
+			if (blendState.blendAttachments[i].colorWriteMask == msl::ColorMaskNone)
+				jsonFile << 0;
+			else
+			{
+				jsonFile << "\"";
+				if (blendState.blendAttachments[i].colorWriteMask & msl::ColorMaskRed)
+					jsonFile << "R";
+				if (blendState.blendAttachments[i].colorWriteMask & msl::ColorMaskGreen)
+					jsonFile << "G";
+				if (blendState.blendAttachments[i].colorWriteMask & msl::ColorMaskBlue)
+					jsonFile << "B";
+				if (blendState.blendAttachments[i].colorWriteMask & msl::ColorMaskAlpha)
+					jsonFile << "A";
+				jsonFile << "\"";
+			}
+
+			jsonFile << "\n";
+		}
+
+		if (i == msl::maxAttachments - 1)
+			jsonFile << "\t\t\t\t\t\t}\n";
+		else
+			jsonFile << "\t\t\t\t\t\t},\n";
+	}
+
+	jsonFile << "\t\t\t\t\t],\n";
+
+	jsonFile << "\t\t\t\t\t\"blendConstants\": {\"r\": ";
+	if (blendState.blendConstants[0] == msl::unknownFloat)
+		jsonFile << "null";
+	else
+		jsonFile << blendState.blendConstants[0];
+	jsonFile << ", \"g\": ";
+	if (blendState.blendConstants[1] == msl::unknownFloat)
+		jsonFile << "null";
+	else
+		jsonFile << blendState.blendConstants[1];
+	jsonFile << ", \"b\": ";
+	if (blendState.blendConstants[2] == msl::unknownFloat)
+		jsonFile << "null";
+	else
+		jsonFile << blendState.blendConstants[2];
+	jsonFile << ", \"a\": ";
+	if (blendState.blendConstants[3] == msl::unknownFloat)
+		jsonFile << "null";
+	else
+		jsonFile << blendState.blendConstants[3];
+	jsonFile << "}\n";
+
+	jsonFile << "\t\t\t\t},\n";
+
+}
+
+static void writeRenderState(std::ostream& jsonFile, const msl::Module& module, uint32_t i)
+{
+	jsonFile << "\t\t\t\"renderState\":\n\t\t\t{\n";
+	msl::RenderState renderState;
+	module.renderState(renderState, i);
+
+	writeRasterizationState(jsonFile, renderState.rasterizationState);
+	writeMultisampleState(jsonFile, renderState.multisampleState);
+	writeDepthStencilState(jsonFile, renderState.depthStencilState);
+	writeBlendState(jsonFile, renderState.blendState);
+
+	if (renderState.patchControlPoints == msl::unknown)
+		jsonFile << "\t\t\t\t\"patchControlPoints\": null\n";
+	else
+		jsonFile << "\t\t\t\t\"patchControlPoints\": " << renderState.patchControlPoints << "\n";
+
+	jsonFile << "\t\t\t}\n";
 }
 
 int main(int argc, char** argv)
@@ -289,25 +1196,25 @@ int main(int argc, char** argv)
 	jsonFile << "\t\"targetVersion\": " << module.targetVersion() << ",\n";
 
 	// Pipelines
-	jsonFile << "\t\"pipelines\": \n\t[\n";
+	jsonFile << "\t\"pipelines\":\n\t[\n";
 	bool textShaders = shadersAreText(module);
 	uint32_t pipelineCount = module.pipelineCount();
 	for (uint32_t i = 0; i < pipelineCount; ++i)
 	{
 		jsonFile << "\t\t{\n";
 
-		const char* pipelineName = module.pipelineName(i);
-		jsonFile << "\t\t\t\"name\": \"" << pipelineName << "\",\n";
+		msl::Pipeline pipeline;
+		module.pipeline(pipeline, i);
+		jsonFile << "\t\t\t\"name\": \"" << pipeline.name << "\",\n";
 
 		// Stage shaders
-		for (unsigned int j = 0; j < msl::Module::stageCount; ++j)
+		for (unsigned int j = 0; j < msl::stageCount; ++j)
 		{
-			auto stage = static_cast<msl::Module::Stage>(j);
-			uint32_t shader = module.pipelineShader(i, stage);
-			if (shader == msl::Module::unknown)
+			uint32_t shader = pipeline.shaders[j];
+			if (shader == msl::unknown)
 				continue;
 
-			std::string shaderName = moduleName + "." + pipelineName + stageExtensions[j];
+			std::string shaderName = moduleName + "." + pipeline.name + stageExtensions[j];
 			jsonFile << "\t\t\t\"" << stageNames[j] << "\": \"" << shaderName << "\",\n";
 
 			std::string shaderFileName = (outputDir/shaderName).string();
@@ -322,69 +1229,11 @@ int main(int argc, char** argv)
 			shaderStream.write(reinterpret_cast<const char*>(module.shaderData(shader)), writeSize);
 		}
 
-		// Unfiroms
-		jsonFile << "\t\t\t\"uniforms\": \n\t\t\t[\n";
-		uint32_t uniformCount = module.uniformCount(i);
-		for (uint32_t j = 0; j < uniformCount; ++j)
-		{
-			jsonFile << "\t\t\t\t{\n";
-
-			jsonFile << "\t\t\t\t\t\"name\": \"" << module.uniformName(i, j) << "\",\n";
-			unsigned int type = static_cast<unsigned int>(module.uniformType(i, j));
-			if (type < msl::Module::typeCount)
-				jsonFile << "\t\t\t\t\t\"type\": \"" << typeNames[type] << "\",\n";
-			else
-				jsonFile << "\t\t\t\t\t\"type\": \"invalid\",\n";
-			jsonFile << "\t\t\t\t\t\"blockIndex\": " <<
-				static_cast<int>(module.uniformBlockIndex(i, j)) << ",\n";
-			jsonFile << "\t\t\t\t\t\"blockOffset\": " <<
-				static_cast<int>(module.uniformBufferOffset(i, j)) << ",\n";
-			jsonFile << "\t\t\t\t\t\"elements\": " << module.uniformElements(i, j) << "\n";
-
-			if (j == uniformCount - 1)
-				jsonFile << "\t\t\t\t}\n";
-			else
-				jsonFile << "\t\t\t\t},\n";
-		}
-		jsonFile << "\t\t\t],\n";
-
-		// Unfirom blocks
-		jsonFile << "\t\t\t\"uniformBlocks\": \n\t\t\t[\n";
-		uint32_t uniformBlockCount = module.uniformBlockCount(i);
-		for (uint32_t j = 0; j < uniformBlockCount; ++j)
-		{
-			jsonFile << "\t\t\t\t{\n";
-
-			jsonFile << "\t\t\t\t\t\"name\": \"" << module.uniformBlockName(i, j) << "\",\n";
-			jsonFile << "\t\t\t\t\t\"size\": " << module.uniformBlockSize(i, j) << "\n";
-
-			if (j == uniformBlockCount - 1)
-				jsonFile << "\t\t\t\t}\n";
-			else
-				jsonFile << "\t\t\t\t},\n";
-		}
-		jsonFile << "\t\t\t],\n";
-
-		// Attributes
-		jsonFile << "\t\t\t\"attributes\": \n\t\t\t[\n";
-		uint32_t attributesCount = module.attributeCount(i);
-		for (uint32_t j = 0; j < attributesCount; ++j)
-		{
-			jsonFile << "\t\t\t\t{\n";
-
-			jsonFile << "\t\t\t\t\t\"name\": \"" << module.attributeName(i, j) << "\",\n";
-			unsigned int type = static_cast<unsigned int>(module.attributeType(i, j));
-			if (type < msl::Module::typeCount)
-				jsonFile << "\t\t\t\t\t\"type\": \"" << typeNames[type] << "\"\n";
-			else
-				jsonFile << "\t\t\t\t\t\"type\": \"invalid\"\n";
-
-			if (j == attributesCount - 1)
-				jsonFile << "\t\t\t\t}\n";
-			else
-				jsonFile << "\t\t\t\t},\n";
-		}
-		jsonFile << "\t\t\t]\n";
+		writeStructs(jsonFile, module, pipeline, i);
+		writeSamplerStates(jsonFile, module, pipeline, i);
+		writeUniforms(jsonFile, module, pipeline, i);
+		writeAttributes(jsonFile, module, pipeline, i);
+		writeRenderState(jsonFile, module, i);
 
 		if (i == pipelineCount - 1)
 			jsonFile << "\t\t}\n";

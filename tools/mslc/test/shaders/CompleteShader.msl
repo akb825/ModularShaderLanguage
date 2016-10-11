@@ -49,4 +49,8 @@ pipeline Test
 {
 	vertex = vertShader;
 	fragment = fragShader;
+	blend_enable = true;
+	src_blend_factor = src_alpha;
+	dst_color_blend_factor = one_minus_src_alpha;
+	dst_alpha_blend_factor = zero;
 }

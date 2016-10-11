@@ -821,7 +821,7 @@ bool mslModule_attribute(mslAttribute* outAttribute, const mslModule* module,
 	return true;
 }
 
-uint32_t mslModule_attributeArraySize(const mslModule* module, uint32_t pipelineIndex,
+uint32_t mslModule_attributeArrayLength(const mslModule* module, uint32_t pipelineIndex,
 	uint32_t attributeIndex, uint32_t arrayElement)
 {
 	if (!module)

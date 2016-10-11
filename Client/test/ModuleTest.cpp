@@ -129,6 +129,18 @@ static void testContents(Module& module)
 	EXPECT_EQ(unknownFloat, samplerState.maxLod);
 	EXPECT_EQ(BorderColor::Unset, samplerState.borderColor);
 
+	RenderState renderState;
+	EXPECT_TRUE(module.renderState(renderState, 0));
+	EXPECT_EQ(msl::Bool::True, renderState.blendState.blendAttachments[0].blendEnable);
+	EXPECT_EQ(msl::BlendFactor::SrcAlpha,
+		renderState.blendState.blendAttachments[0].srcColorBlendFactor);
+	EXPECT_EQ(msl::BlendFactor::SrcAlpha,
+		renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
+	EXPECT_EQ(msl::BlendFactor::OneMinusSrcAlpha,
+		renderState.blendState.blendAttachments[0].dstColorBlendFactor);
+	EXPECT_EQ(msl::BlendFactor::Zero,
+		renderState.blendState.blendAttachments[0].dstAlphaBlendFactor);
+
 	ASSERT_EQ(2U, module.shaderCount());
 	EXPECT_LT(0U, module.shaderSize(0));
 	EXPECT_NE(nullptr, module.shaderData(0));
@@ -245,6 +257,18 @@ static void testContents(const mslModule* module)
 	EXPECT_EQ(MSL_UNKNOWN_FLOAT, samplerState.minLod);
 	EXPECT_EQ(MSL_UNKNOWN_FLOAT, samplerState.maxLod);
 	EXPECT_EQ(mslBorderColor_Unset, samplerState.borderColor);
+
+	mslRenderState renderState;
+	EXPECT_TRUE(mslModule_renderState(&renderState, module, 0));
+	EXPECT_EQ(mslBool_True, renderState.blendState.blendAttachments[0].blendEnable);
+	EXPECT_EQ(mslBlendFactor_SrcAlpha,
+		renderState.blendState.blendAttachments[0].srcColorBlendFactor);
+	EXPECT_EQ(mslBlendFactor_SrcAlpha,
+		renderState.blendState.blendAttachments[0].srcAlphaBlendFactor);
+	EXPECT_EQ(mslBlendFactor_OneMinusSrcAlpha,
+		renderState.blendState.blendAttachments[0].dstColorBlendFactor);
+	EXPECT_EQ(mslBlendFactor_Zero,
+		renderState.blendState.blendAttachments[0].dstAlphaBlendFactor);
 
 	ASSERT_EQ(2U, mslModule_shaderCount(module));
 	EXPECT_LT(0U, mslModule_shaderSize(module, 0));
