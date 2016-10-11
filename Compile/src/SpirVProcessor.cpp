@@ -1259,7 +1259,7 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 			// Don't allow arbitrary arrays of input/output blocks.
 			bool shouldBeArray = !inputOutput.patch && (&inputOutputs == &processor.inputs ?
 				inputIsArray(processor.stage) : outputIsArray(processor.stage));
-			if (inputOutput.arrayElements.size() != shouldBeArray)
+			if (!inputOutput.arrayElements.empty() != shouldBeArray)
 			{
 				if (shouldBeArray)
 				{
@@ -1321,7 +1321,7 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 			{
 				inputOutput.location = foundLocation->second;
 				auto foundComponent = data.components.find(inputOutputIndices.first);
-				if (foundComponent != data.locations.end())
+				if (foundComponent != data.components.end())
 					inputOutput.component = foundComponent->second;
 			}
 		}

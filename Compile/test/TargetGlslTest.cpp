@@ -539,10 +539,10 @@ TEST(TargetGlslTest, CompileWarning)
 	EXPECT_EQ("'switch' : last case/default label not followed by statements", messages[0].message);
 }
 
-TEST(TargetGlslTest, LinkError)
+TEST(TargetGlslTest, MissingEntryPoint)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = pathStr(inputDir/"LinkError.msl");
+	std::string shaderName = pathStr(inputDir/"MissingEntryPoint.msl");
 
 	TargetGlsl target(450, false);
 	target.addIncludePath(pathStr(inputDir));
@@ -554,7 +554,7 @@ TEST(TargetGlslTest, LinkError)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(pathStr(inputDir/"LinkError.mslh"), pathStr(messages[0].file));
+	EXPECT_EQ(pathStr(inputDir/"MissingEntryPoint.mslh"), pathStr(messages[0].file));
 	EXPECT_EQ(5U, messages[0].line);
 	EXPECT_EQ("Linking fragment stage: Missing entry point: Each stage requires one entry point",
 		messages[0].message);

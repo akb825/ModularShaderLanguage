@@ -251,7 +251,7 @@ TEST(TargetSpirVTest, VersionNumber)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(pathStr(exeDir/"test.msl"), messages[0].file);
+	EXPECT_EQ(pathStr(exeDir/"test.msl"), pathStr(messages[0].file));
 	EXPECT_EQ(2U, messages[0].line);
 	EXPECT_EQ("encountered #error directive: Version correctly set.", messages[0].message);
 }
@@ -262,7 +262,7 @@ TEST(TargetSpirVTest, CompileError)
 	std::string shaderName = pathStr(inputDir/"CompileError.msl");
 
 	TargetSpirV target;
-	target.addIncludePath(inputDir.string());
+	target.addIncludePath(pathStr(inputDir));
 
 	Output output;
 	CompiledResult result;
@@ -271,7 +271,7 @@ TEST(TargetSpirVTest, CompileError)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(pathStr(inputDir/"CompileError.mslh"), messages[0].file);
+	EXPECT_EQ(pathStr(inputDir/"CompileError.mslh"), pathStr(messages[0].file));
 	EXPECT_EQ(15U, messages[0].line);
 	EXPECT_EQ("'inputss' : undeclared identifier", messages[0].message);
 }
@@ -282,7 +282,7 @@ TEST(TargetSpirVTest, CompileWarning)
 	std::string shaderName = pathStr(inputDir/"CompileWarning.msl");
 
 	TargetSpirV target;
-	target.addIncludePath(inputDir.string());
+	target.addIncludePath(pathStr(inputDir));
 
 	Output output;
 	CompiledResult result;
@@ -291,7 +291,7 @@ TEST(TargetSpirVTest, CompileWarning)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Warning, messages[0].level);
-	EXPECT_EQ(pathStr(inputDir/"CompileWarning.mslh"), messages[0].file);
+	EXPECT_EQ(pathStr(inputDir/"CompileWarning.mslh"), pathStr(messages[0].file));
 	EXPECT_EQ(15U, messages[0].line);
 	EXPECT_EQ("'switch' : last case/default label not followed by statements", messages[0].message);
 }
@@ -302,7 +302,7 @@ TEST(TargetSpirVTest, MissingEntryPoint)
 	std::string shaderName = pathStr(inputDir/"MissingEntryPoint.msl");
 
 	TargetSpirV target;
-	target.addIncludePath(inputDir.string());
+	target.addIncludePath(pathStr(inputDir));
 
 	Output output;
 	CompiledResult result;
@@ -311,7 +311,7 @@ TEST(TargetSpirVTest, MissingEntryPoint)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(pathStr(inputDir/"LinkError.mslh"), messages[0].file);
+	EXPECT_EQ(pathStr(inputDir/"MissingEntryPoint.mslh"), pathStr(messages[0].file));
 	EXPECT_EQ(5U, messages[0].line);
 	EXPECT_EQ("Linking fragment stage: Missing entry point: Each stage requires one entry point",
 		messages[0].message);
@@ -323,7 +323,6 @@ TEST(TargetSpirVTest, PushConstantMismatch)
 	std::string shaderName = pathStr(inputDir/"PushConstantMismatch.msl");
 
 	TargetSpirV target;
-	target.addIncludePath(inputDir.string());
 
 	Output output;
 	CompiledResult result;
@@ -345,7 +344,6 @@ TEST(TargetSpirVTest, ResourcesNotFound)
 	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
 	TargetSpirV target;
-	target.addIncludePath(inputDir.string());
 	target.setResourcesFileName("asdf");
 
 	Output output;
@@ -364,7 +362,6 @@ TEST(TargetSpirVTest, Resources)
 	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
 	TargetSpirV target;
-	target.addIncludePath(inputDir.string());
 	target.setResourcesFileName(pathStr(inputDir/"Resources.conf"));
 
 	Output output;

@@ -29,7 +29,7 @@ namespace msl
 namespace compile
 {
 
-bool operator==(const ArrayInfo& p1, const ArrayInfo& p2)
+inline bool operator==(const ArrayInfo& p1, const ArrayInfo& p2)
 {
 	return p1.length == p2.length && p1.stride == p2.stride;
 }

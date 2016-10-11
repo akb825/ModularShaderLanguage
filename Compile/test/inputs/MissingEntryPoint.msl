@@ -31,5 +31,5 @@ void pixelShader()
 	color = inputs.color;
 }
 
-#include "LinkError.mslh"
+#include "MissingEntryPoint.mslh"
 
