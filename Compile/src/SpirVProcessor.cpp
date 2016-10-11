@@ -166,8 +166,7 @@ std::string readString(std::vector<char>& tempBuffer,
 	std::size_t offset)
 {
 	tempBuffer.clear();
-	std::size_t max = start + wordCount;
-	assert(max < spirv.size());
+	assert(start + wordCount < spirv.size());
 	for (std::size_t i = offset; i < wordCount; ++i)
 	{
 		std::uint32_t chars = spirv[start + i];
