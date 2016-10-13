@@ -332,9 +332,9 @@ public:
 	 * No duplicate shader results will be removed to ensure that each one can have the bindings
 	 * set separately.
 	 *
-	 * @param add True to use adjustable bindings.
+	 * @param adjustable True to use adjustable bindings.
 	 */
-	void setAdjustableBindings(bool add);
+	void setAdjustableBindings(bool adjustable);
 
 	/**
 	 * @brief Gets the file name to a text file describing the resource limits.

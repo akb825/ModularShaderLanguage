@@ -6,6 +6,7 @@ The core language of MSL is [GLSL 450](https://www.opengl.org/registry/doc/GLSLa
 * Filtering based on pipelines.
 * Changes to how uniforms are managed.
 * Declarations of full pipelines within a shader.
+* Declarations of render states and sampler states.
 
 # Preprocessing
 
@@ -184,6 +185,50 @@ In order to handle cases such as uniforms that use structs, some code re-orderin
 
 The ordering within each block will be consistent with the original source, so cases such as structs containing other structs will still work.
 
+## Sampler states
+
+Sampler states may be declared for samplers. For example:
+
+	uniform sampler2D tex;
+	sampler_state tex
+	{
+		address_mode_u = repeat;
+		address_mode_v = clamp_to_edge;
+		min_filter = linear;
+		mag_filter = linear;
+		mip_filter = anisotropic;
+	};
+
+The following sampler states are allowed to be set:
+
+* `min_filter`: set to the minification filter to use. Possible values are:
+	* `nearest`
+	* `linear`
+* `mag_filter`: set to the magnification filter to use. Possible values are the same as `min_filter`.
+* `mip_filter`: set to the mip filter to use. Possible values are:
+	* `nearest`
+	* `linear`
+	* `anisotropic`
+* `address_mode_u`: set to the how to treat the texture coordinates at the edge of the range \[0, 1\] for the U (or S) texture coordinate. Possible values are:
+	* `repeat`
+	* `mirrored_repeat`
+	* `clamp_to_edge`
+	* `clamp_to_border`
+	* `mirror_once`
+* `address_mode_v`: set to the how to treat the texture coordinates at the edge of the range \[0, 1\] for the V (or T) texture coordinate. Possible values are the same as `address_mode_u`.
+* `address_mode_w`: set to the how to treat the texture coordinates at the edge of the range \[0, 1\] for the W (or R) texture coordinate. Possible values are the same as `address_mode_u`.
+* `mip_lod_bias`: set to a floating point value for the bias to apply when calculating the mip-mapping LOD.
+* `max_anisotropy`: set to a floating point value for the maximum anisotropy factor to apply.
+* `min_lod`: set to a floating point value for the minimum mip level to use.
+* `max_lod`: set to a floating point value for the maximum mip level to use.
+* `border_color`: set to the color to use when the address mode is set to `clamp_to_border`. This can only be set to specific colors. The possible values are:
+	* `transparent_black`: all color channels and alpha are 0.
+	* `transparent_int_zero`: all color channels are set to the integer value 0.
+	* `opaque_black`: color channels are set to 0, alpha is set to 0.
+	* `opaque_int_zero`: color channels are set to 0, alpha is set to the int value 1.
+	* `opaque_white`: color channels and alpha are set to 1.
+	* `opaque_int_zero`: color channels are and alpha are set to the int value 1.
+
 # Pipelines
 
 Pipelines can be declared within the shader with the `pipeline` keyword. Each pipeline has a name, and declares the entry point functions for the following stages:
@@ -204,3 +249,152 @@ For example, the following pipeline declaration can be used for the previous exa
 		vertex = vertShader;
 		fragment = fragShader;
 	}
+
+## Render states
+
+Render states may be set on the pipeline. For example, you may enable alpha blending with the following pipeline declaration:
+
+	pipeline Test
+	{
+		vertex = vertShader;
+		fragment = fragShader;
+
+		blend_enable = true;
+		src_color_blend_factor = src_alpha;
+		dst_color_blend_factor = one_minus_src_alpha;
+		src_alpha_blend_factor = one;
+		dst_alpha_blend_factor = zero;
+	}
+
+The following render states are available to set:
+
+### Rasterization states
+
+* `depth_clamp_enable`: set to `true` to clamp the depth values in range rather than clipping.
+* `rasterizer_discard_enable`: set to `true` to discard all samplers in the rasterizer.
+* `polygon_mode`: set how to rasterize polygons. Possible values are:
+	* `fill`
+	* `line`
+	* `point`
+* `cull_mode`: set whether to cull front and back faces. Possible values are:
+	* `none`
+	* `front`
+	* `back`
+	* `front_and_back`
+* `front_face`: set which winding to use to determine the front face. Possible values are:
+	* `counter_clockwise`
+	* `clockwise`
+* `depth_bias_enable`: set to true to apply depth bias to the depth result.
+* `depth_bias_constant_factor`: set to a floating point value to add to the final depth value.
+* `depth_bias_clamp`: set the minimum (if negative) or maximum (if positive) value to clamp the depth bias to.
+* `depth_bias_slope_factor`: set to a floating point value to add to the depth result based on the polygon slope.
+* `line_width`: set to a floating point value for the number of pixels wide to draw line primitives.
+
+### Multisample states
+
+* `sample_shading_enable`: set to `true` to run the shader for multiple samples.
+* `min_sample_shading`: set to a floating point value for a hint of how many samples to use.
+* `sample_mask`: set to an integer bitmask for which samples to run the shader on.
+* `alpha_to_coverage_enable`: set to `true` to use the alpha value to determine how many samples to use.
+* `alpha_to_one_enable`: set to `true` to force the alpha value to one.
+
+### Depth-stencil states
+
+* `depth_test_enable`: set to `true` to enable the depth test.
+* `depth_write_enable`: set to `true` to write the depth value to the depth buffer.
+* `depth_compare_op`: set the compare operation to apply for the depth test. Possible values are:
+	* `never`
+	* `less`
+	* `equal`
+	* `less_or_equal`
+	* `greater`
+	* `not_equal`
+	* `greater_or_equal`
+	* `always`
+* `depth_bounds_test_enable`: set to `true` to limit the depth range.
+* `stencil_test_enable`: set to `true` to enable the stencil test.
+* `min_depth_bounds`: set to a floating point value for the minimum depth value when limiting the depth range.
+* `max_depth_bounds`: set to a floating point value for the maximum depth value when limiting the depth range.
+
+#### Stencil states
+
+The stencil render states can be prefixed with `front_` or `back_` to only apply to the front or back stencil. For example: `front_stencil_fail_op`.
+
+* `stencil_fail_op`: set to the stencil operation to apply when a fragment fails the stencil test. Possible values are:
+	* `keep`
+	* `zero`
+	* `replace`
+	* `increment_and_clamp`
+	* `increment_and_clamp`
+	* `invert`
+	* `increment_and_wrap`
+	* `decrement_and_wrap`
+* `stencil_pass_op`: set to the stencil operation to apply when a fragment passes the stencil test. Possible values are the same as `stencil_fail_op`.
+* `stencil_depth_fail_op`: set to the stencil operation to apply when a fragment fails the depth test. Possible values are the same as `stencil_fail_op`.
+* `stencil_compare_op`: set to the compare operation for the stencil value. Possible values are the same as `depth_compare_op`.
+* `stencil_compare_mask`: set to an integer bitmask to apply to the stencil value before the comparison. The value should be a maximum of 16 bits.
+* `stencil_write_mask`: set to an integer bitmask to apply to the stencil value before writing to the stencil buffer. The value should be a maximum of 16 bits.
+* `stencil_reference`: set to an integer bitmask to apply to use as the reference value. The value should be a maximum of 16 bits.
+
+### Blend states
+
+* `logical_op_enable`: set to `true` to apply a logical operation during alpha blending.
+* `logical_op`: set to the logical operation to apply. Possible values are:
+	* `clear`: clear the value to 0
+	* `and`: evaluate `a & b`
+	* `and_reverse`: evaluate `a & ~b`
+	* `copy`: copy `a` to `b`
+	* `and_inverted`: evaluate `~a & b`
+	* `no_op`: don't modify the value
+	* `xor`: evaluate `a ^ b`
+	* `or`: evaluate `a | b`
+	* `nor`: evaluate `~(a | b)`
+	* `equivalent`: evaluate `~(a ^ b)`
+	* `invert`: evaluate `~b`
+	* `or_reverse`: evaluate `a | ~b`
+	* `copy_inverted`: evaluate `~a`
+	* `or_inverted`: evaluate `~a | b`
+	* `nand`: evaluate `~(a & b)`
+	* `set`: set the value to all 1
+* `separate_attachment_blending_enable`: set to `true` to use separate blending states for each color attachment.
+* `blend_constants`: set to a `vec4` value for the constant color and alpha values to use for blend operations.
+
+#### Blend attachment states
+
+The blend attachment states may be prefixed with `attachment#_` to apply to a specific attachment. For example: `attachment3_blend_enable`. If the attachment index is omitted, the states will apply to blend attachment 0.
+
+* `blend_enable`: set to `true` to enable alpha blending.
+* `src_color_blend_factor`: set to the factor to use for the source color. Possible values are:
+	* `zero`
+	* `one`
+	* `src_color`
+	* `one_minus_src_color`
+	* `dst_color`
+	* `one_minus_dst_color`
+	* `src_alpha`
+	* `one_minus_src_alpha`
+	* `dst_alpha`
+	* `one_minus_dst_alpha`
+	* `src_alpha_saturate`
+	* `src1_color`
+	* `one_minus_src1_color`
+	* `src1_alpha`
+	* `one_minus_src1_alpha`
+* `dst_color_blend_factor`: set to the factor to use for the destination color. Possible values are the same as `src_color_blend_factor`.
+* `color_blend_op`: the operation to apply for color blending. Possible values are:
+	* `add`
+	* `subtract`
+	* `reverse_subtract`
+	* `min`
+	* `max`
+* `src_alpha_blend_factor`: set to the factor to use for the source alpha. Possible values are the same as `src_color_blend_factor`.
+* `dst_alpha_blend_factor`: set to the factor to use for the destination alpha. Possible values are the same as `src_color_blend_factor`.
+* `alpha_blend_op`: the operation to apply for alpha blending. Possible values are the same as `color_blend_op`.
+* `src_blend_factor`: set to the factor to use for both the source color and alpha. Possible values are the same as `src_color_blend_factor`.
+* `dst_blend_factor`: set to the factor to use for both the destination color and alpha. Possible values are the same as `src_color_blend_factor`.
+* `blend_op`: the operation to apply for both the color and alpha blending. Possible values are the same as `color_blend_op`.
+* `color_mask`: mask for the color channels to write to. This may be set to 0 to disable writing to the color buffer, or a combination of `R`, `G`, `B`, and `A` for writing to the red, green, blue, and alpha colors. For example: `RGB` to write to all channels except for alpha.
+
+### Other render states
+
+* `patch_control_points`: set to an integer value of the number of control points for tessellation patches.

@@ -40,7 +40,8 @@ For example:
 * **force-disable = _arg_**: force a feature to be disabled
 * **resources = _arg_**: a path to a file describing custom resource limits. This uses the same format as glslangValidator.
 * **spirv-command = _arg_**: external command to run on the intermediate SPIR-V. The string `$input` will be replaced by the input file path, while the string `$output` will be replaced by the output file path.
-* **remap-variables = _arg_**: remap variable ranges to improve compression of SPIR-V
+* **remap-variables = _arg_**: boolean value for whether or not to remap variable ranges to improve compression of SPIR-V
+* **adjustable-bindings = _arg_**: boolean value for whether or not to allow bindings to be adjusted from the client library for SPIR-V
 * **remap-depth-range = _arg_**: boolean for whether or not to remap the depth range from \[0, 1\] to \[-1, 1\] in the  vertex shader output for GLSL or Metal targets. Defaults to false.
 * **flip-vertex-y = _arg_**: boolean for whether or not to flip the vertex y coordinate for Metal targets. Defaults to true.
 * **flip-fragment-y = _arg_**: boolean for whether or not to flip the fragment y coordinate for Metal targets. Defaults to true.

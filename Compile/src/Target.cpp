@@ -553,9 +553,9 @@ bool Target::getAdjustableBindings() const
 	return m_adjustableBindings;
 }
 
-void Target::setAdjustableBindings(bool add)
+void Target::setAdjustableBindings(bool adjustable)
 {
-	m_adjustableBindings = add;
+	m_adjustableBindings = adjustable;
 }
 
 const std::string& Target::getResourcesFileName() const

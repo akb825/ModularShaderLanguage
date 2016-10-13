@@ -27,6 +27,7 @@ The following may also be optionally set on `msl::Target`:
 * Variables can be remapped with `msl::Target::setRemapVariables()`. This can make SPIR-V output compress better.
 * Optimizations can be applied with `msl::Target::setOptimize()`. These are simple optimizations such as dead code elimination and load-store reductions.
 * Debug symbols can be stripped with `msl::Target::setStripDebug()`. This will reduce the size for SPIR-V and remove local variable names when cross-compiling to other languages such as GLSL.
+* Bindings can be made adjustable with `msl::Target::setAdjustableBindings()`. This will allow the bindings to be set in SPIR-V from the client library when using Vulkan.
 * A resource configuration file can be set with `msl::Target::setResourcesFileName()`. This is the same format as used by [glslangValidator](https://www.khronos.org/opengles/sdk/tools/Reference-Compiler/).
 * An external tool can be used to process the SPIR-V with `msl::Target::setSpirVToolCommand()`. (e.g. a tool to apply more aggressive optimizations) The string `$input` will be replaced with the input file and `$output` wil be replaced with the output file.
 

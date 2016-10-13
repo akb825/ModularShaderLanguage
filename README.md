@@ -3,9 +3,10 @@
 The Modular Shader Language (MSL) is a pre-compiled shader language with multiple targets. It is effectively a wrapper around GLSL and relies on external tools to handle the main work of the compilation. The primary goals are:
 
 * Provide an environment more similar to other compiled languages, such as access to a preprocessor and compile-time errors that point to the file.
-* Allow targetting multiple platforms with different capabilities with the same source.
+* Allow targeting multiple platforms with different capabilities with the same source.
 * Relies on official and external tools as much as possible. This makes the language easier to extend and maintain and allows other third party tools, such as optimizers, to be used.
 * Allows all stages of the pipeline to be specified in the same source. This gives more flexibility in how you organize your source.
+* Allows for render states and sampler states to be declared in the shader. This gives more flexibility in client applications by allowing these to be set in the shader without hard-coding them in the application.
 * Pipeline is linked when compiling the shader modules, allowing for earlier checks and easier loading of shaders in the final application.
 
 # Language and compilation overview
@@ -17,7 +18,8 @@ The core of the language is GLSL 450 for Vulkan with the following changes:
 * Uses a C preprocessor to allow for advanced macros and \#includes.
 * Allows tagging of elements to only be included for specific pipeline stages of the shader.
 * Allows the removal of uniform blocks to use the same source on targets that don't support them.
-* Declaration of the full pipeline used with the entry points used at each stage. Multiple pipelines can be declared in the same shader. (e.g. different rendering techniques or passes)
+* Declaration of the full pipeline used with the entry points used at each stage and render states. Multiple pipelines can be declared in the same shader. (e.g. different rendering techniques or passes)
+* Declaration of sampler states.
 
 Not all language features will be available on all targets. The targets will pre-define macros to determine their capabilities, allowing for conditional compiling can be used to switch between implementations when differences arise.
 

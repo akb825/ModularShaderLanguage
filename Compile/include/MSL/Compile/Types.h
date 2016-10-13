@@ -440,7 +440,7 @@ enum class BorderColor
 	TransparentIntZero, ///< All color channels and alpha 0. (as integers)
 	OpaqueBlack,        ///< Color channels 0, alpha value 1.
 	OpaqueIntZero,      ///< Color channels 0, alpha value as the int value 1.
-	OpaqueWhite,        ///< All color channelsa and alpha 1.
+	OpaqueWhite,        ///< All color channels and alpha 1.
 	OpaqueIntOne        ///< All color channels and alpha as the int value 1.
 };
 
