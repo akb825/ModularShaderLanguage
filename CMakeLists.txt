@@ -72,4 +72,4 @@ endif()
 # Documentation. (populated by built libraries)
 add_subdirectory(doc)
 
-install_master_config()
+msl_install_master_config()

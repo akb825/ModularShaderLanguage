@@ -19,5 +19,5 @@ target_include_directories(msl_compile_test
 target_link_libraries(msl_compile_test
 	PRIVATE msl_compile ${GTEST_BOTH_LIBRARIES})
 
-set_folder(msl_compile_test tests)
+msl_set_folder(msl_compile_test tests)
 add_test(NAME MSLCompileTest COMMAND msl_compile_test)

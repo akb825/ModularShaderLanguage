@@ -5,7 +5,7 @@ endif()
 if (NOT MSL_SHARED)
 	set(Boost_USE_STATIC_LIBS ON)
 endif()
-find_package(Boost COMPONENTS filesystem)
+find_package(Boost COMPONENTS system filesystem)
 
 file(GLOB_RECURSE sources *.cpp *.h)
 add_executable(msl_client_test ${sources})
@@ -19,5 +19,5 @@ target_include_directories(msl_client_test PRIVATE ${GTEST_INCLUDE_DIRS} ${Boost
 target_link_libraries(msl_client_test
 	PRIVATE msl_client ${GTEST_BOTH_LIBRARIES} ${Boost_LIBRARIES})
 
-set_folder(msl_client_test tests)
+msl_set_folder(msl_client_test tests)
 add_test(NAME MSLClientTest COMMAND msl_client_test)

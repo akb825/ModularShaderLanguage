@@ -5,12 +5,12 @@ add_dependencies(msl_client mslb)
 
 target_include_directories(msl_client PRIVATE ${FLATBUFFERS_INCLUDE_DIRS} ${SHARED_DIR})
 
-set_folder(msl_client libs)
-setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
+msl_set_folder(msl_client libs)
+msl_setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
 	INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/MSL/Client
 	FILES ${sources})
 
-install_library(TARGET msl_client MODULE Client)
+msl_install_library(TARGET msl_client MODULE Client)
 set(MSL_DOC_PROJECTS ${MSL_DOC_PROJECTS} Client PARENT_SCOPE)
 
 add_subdirectory(test)

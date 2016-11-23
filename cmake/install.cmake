@@ -1,4 +1,4 @@
-function(install_library)
+function(msl_install_library)
 	set(options)
 	set(oneValueArgs TARGET MODULE)
 	set(multiValueArgs DEPENDENCIES)
@@ -90,7 +90,7 @@ function(install_library)
 	install(FILES ${configPath} ${versionPath} DESTINATION ${configPackageDir} COMPONENT dev)
 endfunction()
 
-function(install_master_config)
+function(msl_install_master_config)
 	include(CMakePackageConfigHelpers)
 	set(versionPath ${MSL_EXPORTS_DIR}/MSLVersion.cmake)
 	write_basic_package_version_file(${versionPath}

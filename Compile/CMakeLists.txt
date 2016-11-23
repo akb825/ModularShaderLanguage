@@ -1,7 +1,7 @@
 if (NOT MSL_SHARED)
 	set(Boost_USE_STATIC_LIBS ON)
 endif()
-find_package(Boost COMPONENTS wave)
+find_package(Boost COMPONENTS system thread filesystem wave)
 find_package(Threads)
 
 set(GLSLANG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/glslang)
@@ -58,13 +58,13 @@ target_include_directories(msl_compile
 target_link_libraries(msl_compile
 	PRIVATE ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
-set_folder(msl_compile libs)
-setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
+msl_set_folder(msl_compile libs)
+msl_setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
 	INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include/MSL/Compile
 	FILES ${sources})
-setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR} FILES ${externalSources})
+msl_setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR} FILES ${externalSources})
 
-install_library(TARGET msl_compile MODULE Compile)
+msl_install_library(TARGET msl_compile MODULE Compile)
 set(MSL_DOC_PROJECTS ${MSL_DOC_PROJECTS} Compile PARENT_SCOPE)
 
 add_subdirectory(test)
