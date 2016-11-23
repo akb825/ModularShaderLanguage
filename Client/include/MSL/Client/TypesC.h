@@ -1062,6 +1062,22 @@ typedef struct mslAllocator
 } mslAllocator;
 
 /**
+ * @brief Struct containing a size with a data pointer.
+ */
+typedef struct mslSizedData
+{
+	/**
+	 * @brief size The size of the data.
+	 */
+	uint32_t size;
+
+	/**
+	 * @brief The data pointer.
+	 */
+	void* data;
+} mslSizedData;
+
+/**
  * @brief Typedef for a custom function for reading data from a stream.
  * @param userData The user data to read from.
  * @param buffer The buffer to read into.

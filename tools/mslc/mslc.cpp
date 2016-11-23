@@ -356,6 +356,9 @@ static bool setCommonTargetConfig(msl::Target& target, const variables_map& opti
 	if (config.count("remap-variables"))
 		target.setRemapVariables(config["remap-variables"].as<bool>());
 
+	if (config.count("dummy-bindings"))
+		target.setDummyBindings(config["dummy-bindings"].as<bool>());
+
 	if (config.count("adjustable-bindings"))
 		target.setAdjustableBindings(config["adjustable-bindings"].as<bool>());
 
@@ -454,7 +457,9 @@ int main(int argc, char** argv)
 			"SPIR-V. The string $input will be replaced by the input file path, while the string "
 			"$output will be replaced by the output file path.")
 		("remap-variables", value<bool>(), "remap variable ranges to improve compression of SPIR-V")
-		("adjustable-bindings", value<bool>(), "allow uniform bindings to be adjusted with SPIR-V")
+		("dummy-bindings", value<bool>(), "add dummy bindings in SPIR-V to be changed later")
+		("adjustable-bindings", value<bool>(), "allow uniform bindings to be adjusted in-place "
+			"with SPIR-V; this also enables dummy-bindings")
 		("remap-depth-range", value<bool>(), "boolean for whether or not to remap the depth range "
 			"from [0, 1] to [-1, 1] in the  vertex shader output for GLSL or Metal targets. "
 			"Defaults to false.")

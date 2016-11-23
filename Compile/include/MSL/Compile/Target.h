@@ -320,8 +320,25 @@ public:
 	void setStripDebug(bool strip);
 
 	/**
-	 * @brief Gets whether or not to use adjustable descriptor sets and bindings.
+	 * @brief Gets whether or not to add dummy descriptor sets and bindings.
 	 * @return True to add dummy bindings.
+	 */
+	bool getDummyBindings() const;
+
+	/**
+	 * @brief Sets whether or not to add dummy descriptor sets and bindings.
+	 *
+	 * This can be done for SPIR-V to assign the bndings at runtime before sending them to Vulkan.
+	 * Unlike adjustable bindings, it is assumed a local copy of SPIR-V will be created to change
+	 * the bindings at runtime.
+	 *
+	 * @param dummy True to add dummy bindings.
+	 */
+	void setDummyBindings(bool dummy);
+
+	/**
+	 * @brief Gets whether or not to use adjustable descriptor sets and bindings.
+	 * @return True to use adjustable bindings.
 	 */
 	bool getAdjustableBindings() const;
 
@@ -329,8 +346,8 @@ public:
 	 * @brief Sets whether or not to use adjustable descriptor sets and bindings.
 	 *
 	 * This can be done for SPIR-V to assign the bndings at runtime before sending them to Vulkan.
-	 * No duplicate shader results will be removed to ensure that each one can have the bindings
-	 * set separately.
+	 * This will modify the loaded module in place. No duplicate shader results will be removed to
+	 * ensure that each one can have the bindings set separately.
 	 *
 	 * @param adjustable True to use adjustable bindings.
 	 */
@@ -444,6 +461,7 @@ private:
 	bool m_remapVariables;
 	bool m_optimize;
 	bool m_stripDebug;
+	bool m_dummyBindings;
 	bool m_adjustableBindings;
 	std::string m_resourcesFile;
 };

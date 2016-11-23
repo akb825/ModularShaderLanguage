@@ -437,6 +437,7 @@ Target::Target()
 	: m_remapVariables(false)
 	, m_optimize(false)
 	, m_stripDebug(false)
+	, m_dummyBindings(false)
 	, m_adjustableBindings(false)
 {
 	Compiler::initialize();
@@ -546,6 +547,16 @@ bool Target::getStripDebug() const
 void Target::setStripDebug(bool strip)
 {
 	m_stripDebug = strip;
+}
+
+bool Target::getDummyBindings() const
+{
+	return m_dummyBindings;
+}
+
+void Target::setDummyBindings(bool dummy)
+{
+	m_dummyBindings = dummy;
 }
 
 bool Target::getAdjustableBindings() const
@@ -802,7 +813,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			}
 
 			// Proces the SPIR-V.
-			spirv[i] = processors[i].process(strip, m_adjustableBindings);
+			spirv[i] = processors[i].process(strip, m_dummyBindings || m_adjustableBindings);
 			lastStage = &processors[i];
 		}
 

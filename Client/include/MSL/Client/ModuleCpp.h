@@ -262,9 +262,10 @@ public:
 	/**
 	 * @brief Sets the descriptor set and binding for a uniform within a pipeline.
 	 *
-	 * This is only valid when the bindings are adjustable, which itself is only available for SPIR-V
-	 * shaders. This will adjust the descriptor set and binding indices within the SPIR-V for each stage
-	 * within the pipeline, as well as update the indices requested with mslModule_uniform().
+	 * This is only valid when the bindings are adjustable, which itself is only available for
+	 * SPIR-V shaders. This will adjust the descriptor set and binding indices within the SPIR-V for
+	 * each stage within the pipeline, as well as update the indices requested with
+	 * uniform().
 	 *
 	 * @param pipelineIndex The index of the pipeline.
 	 * @param uniformIndex The index of the uniform within the pipeline.
@@ -274,6 +275,24 @@ public:
 	 */
 	bool setUniformBinding(uint32_t pipelineIndex, uint32_t uniformIndex, uint32_t descriptorSet,
 		uint32_t binding);
+
+	/**
+	 * @brief Sets the descriptor set and binding for a uniform within a copy of the shader data for
+	 * a pipeline.
+	 *
+	 * This is only valid for SPIR-V. This operates on a copy of the shader data, allowing for
+	 * multiple instances of the shader to have diferent bindings.
+	 *
+	 * @param pipelineIndex The index of the pipeline.
+	 * @param uniformIndex The index of the uniform within the pipeline.
+	 * @param descriptorSet The new descriptor set to use.
+	 * @param binding The new binding index set to use.
+	 * @param shaderData The data for the shader stages. This must match have come from the original
+	 *     shader data.
+	 * @return False if the parameters are incorrect or the bindings aren't adjustable.
+	 */
+	bool setUniformBinding(uint32_t pipelineIndex, uint32_t uniformIndex, uint32_t descriptorSet,
+		uint32_t binding, SizedData shaderData[mslStage_Count]);
 
 	/**
 	 * @brief Gets number of shaders within the module.
@@ -564,6 +583,14 @@ bool BasicModule<Allocator>::setUniformBinding(uint32_t pipelineIndex, uint32_t 
 {
 	return mslModule_setUniformBinding(m_module, pipelineIndex, uniformIndex, descriptorSet,
 		binding);
+}
+
+template <typename Allocator>
+bool BasicModule<Allocator>::setUniformBinding(uint32_t pipelineIndex, uint32_t uniformIndex,
+	uint32_t descriptorSet, uint32_t binding, SizedData shaderData[mslStage_Count])
+{
+	return mslModule_setUniformBindingCopy(m_module, pipelineIndex, uniformIndex, descriptorSet,
+		binding, reinterpret_cast<mslSizedData*>(shaderData));
 }
 
 template <typename Allocator>

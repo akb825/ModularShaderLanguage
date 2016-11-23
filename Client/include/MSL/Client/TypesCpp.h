@@ -1023,4 +1023,20 @@ struct Pipeline
 	std::array<uint32_t, stageCount> shaders;
 };
 
+/**
+ * @brief Struct containing a size with a data pointer.
+ */
+struct SizedData
+{
+	/**
+	 * @brief size The size of the data.
+	 */
+	uint32_t size;
+
+	/**
+	 * @brief The data pointer.
+	 */
+	void* data;
+};
+
 } // namespace msl

@@ -473,6 +473,56 @@ static bool isValid(const void* data, size_t size)
 	return true;
 }
 
+static void setUniformBinding(const flatbuffers::Vector<flatbuffers::Offset<mslb::Shader>>& shaders,
+	mslSizedData shaderData[mslStage_Count], uint32_t uniformIndex, uint32_t descriptorSet,
+	uint32_t binding)
+{
+	const unsigned int firstInstruction = 5;
+	const uint32_t opCodeMask = 0xFFFF;
+	const uint32_t wordCountShift = 16;
+	const uint32_t opFunction = 54;
+	const uint32_t opDecorate = 71;
+	const uint32_t decorationBinding = 33;
+	const uint32_t decorationDescriptorSet = 34;
+	const uint32_t decorationInputAttachmentIndex = 43;
+	for (int i = 0; i < mslStage_Count; ++i)
+	{
+		const mslb::Shader* shader = shaders[i];
+		if (!shader || shader->shader() == MSL_UNKNOWN)
+			continue;
+
+		uint32_t id = (*shader->uniformIds())[uniformIndex];
+
+		uint32_t* spirV = reinterpret_cast<uint32_t*>(shaderData[i].data);
+		uint32_t spirVSize = shaderData[i].size/sizeof(uint32_t);
+		for (uint32_t j = firstInstruction; j < spirVSize;)
+		{
+			uint32_t op = spirV[j] & opCodeMask;
+			uint32_t wordCount = spirV[j] >> wordCountShift;
+
+			// Once we reach the functions, done with all decorations.
+			if (op == opFunction)
+				break;
+
+			if (op == opDecorate && spirV[j + 1] == id)
+			{
+				switch (spirV[j + 2])
+				{
+					case decorationBinding:
+					case decorationInputAttachmentIndex:
+						spirV[j + 3] = binding;
+						break;
+					case decorationDescriptorSet:
+						spirV[j + 3] = descriptorSet;
+						break;
+				}
+			}
+
+			j += wordCount;
+		}
+	}
+}
+
 extern "C"
 {
 
@@ -983,55 +1033,54 @@ bool mslModule_setUniformBinding(mslModule* module, uint32_t pipelineIndex, uint
 	uniform->mutate_binding(binding);
 
 	// Modify the SPIR-V.
-	auto& shaders = *pipeline->shaders();
+	mslSizedData shaderDataArray[mslStage_Count] = {};
 	auto& shaderData = *module->module->shaders();
-	const unsigned int firstInstruction = 5;
-	const uint32_t opCodeMask = 0xFFFF;
-	const uint32_t wordCountShift = 16;
-	const uint32_t opFunction = 54;
-	const uint32_t opDecorate = 71;
-	const uint32_t decorationBinding = 33;
-	const uint32_t decorationDescriptorSet = 34;
-	const uint32_t decorationInputAttachmentIndex = 43;
 	for (int i = 0; i < mslStage_Count; ++i)
 	{
-		const mslb::Shader* shader = shaders[i];
-		if (!shader || shader->shader() == MSL_UNKNOWN)
-			continue;
-
-		uint32_t id = (*shader->uniformIds())[uniformIndex];
-
-		const mslb::ShaderData* thisShaderData = shaderData[shader->shader()];
-		uint32_t* spirV = const_cast<uint32_t*>(reinterpret_cast<const uint32_t*>(
-			thisShaderData->data()->data()));
-		uint32_t spirVSize = static_cast<uint32_t>(thisShaderData->data()->size()/sizeof(uint32_t));
-		for (uint32_t j = firstInstruction; j < spirVSize;)
+		if (shaderData[i] && shaderData[i]->data())
 		{
-			uint32_t op = spirV[j] & opCodeMask;
-			uint32_t wordCount = spirV[j] >> wordCountShift;
-
-			// Once we reach the functions, done with all decorations.
-			if (op == opFunction)
-				break;
-
-			if (op == opDecorate && spirV[j + 1] == id)
-			{
-				switch (spirV[j + 2])
-				{
-					case decorationBinding:
-					case decorationInputAttachmentIndex:
-						spirV[j + 3] = binding;
-						break;
-					case decorationDescriptorSet:
-						spirV[j + 3] = descriptorSet;
-						break;
-				}
-			}
-
-			j += wordCount;
+			shaderDataArray[i].data =
+				const_cast<uint8_t*>(shaderData[i]->data()->data());
+			shaderDataArray[i].size = shaderData[i]->data()->size();
 		}
 	}
+	setUniformBinding(*pipeline->shaders(), shaderDataArray, uniformIndex, descriptorSet, binding);
+	return true;
+}
 
+bool mslModule_setUniformBindingCopy(const mslModule* module, uint32_t pipelineIndex,
+	uint32_t uniformIndex, uint32_t descriptorSet, uint32_t binding,
+	mslSizedData shaderData[mslStage_Count])
+{
+	if (!module)
+		return false;
+
+	auto& pipelines = *module->module->pipelines();
+	if (pipelineIndex >= pipelines.size())
+		return false;
+
+	const mslb::Pipeline* pipeline = pipelines[pipelineIndex];
+	auto& uniforms = *pipeline->uniforms();
+	if (uniformIndex >= uniforms.size())
+		return false;
+
+	// Modify the SPIR-V.
+	mslSizedData shaderDataArray[mslStage_Count] = {};
+	const auto& expectedShaderData = *module->module->shaders();
+	for (int i = 0; i < mslStage_Count; ++i)
+	{
+		if (expectedShaderData[i] && expectedShaderData[i]->data())
+		{
+			if (shaderData[i].size != expectedShaderData[i]->data()->size())
+				return false;
+		}
+		else
+		{
+			if (shaderData[i].size > 0)
+				return false;
+		}
+	}
+	setUniformBinding(*pipeline->shaders(), shaderDataArray, uniformIndex, descriptorSet, binding);
 	return true;
 }
 
