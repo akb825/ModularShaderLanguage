@@ -494,7 +494,7 @@ static void setUniformBinding(const flatbuffers::Vector<flatbuffers::Offset<mslb
 		uint32_t id = (*shader->uniformIds())[uniformIndex];
 
 		uint32_t* spirV = reinterpret_cast<uint32_t*>(shaderData[i].data);
-		uint32_t spirVSize = shaderData[i].size/sizeof(uint32_t);
+		uint32_t spirVSize = static_cast<uint32_t>(shaderData[i].size/sizeof(uint32_t));
 		for (uint32_t j = firstInstruction; j < spirVSize;)
 		{
 			uint32_t op = spirV[j] & opCodeMask;
