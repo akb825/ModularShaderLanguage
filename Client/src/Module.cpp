@@ -56,6 +56,8 @@ static_assert(static_cast<int>(mslb::BorderColor::MAX) ==
 	static_cast<int>(mslBorderColor_OpaqueIntOne),
 	"BorderColor enum mismatch between flatbuffer and C.");
 
+static int invalidFormatErrno = EILSEQ;
+
 static bool enumInRange(mslb::Type value)
 {
 	return value >= mslb::Type::MIN && value <= mslb::Type::MAX;
@@ -526,6 +528,11 @@ static void setUniformBinding(const flatbuffers::Vector<flatbuffers::Offset<mslb
 extern "C"
 {
 
+void mslModule_setInvalidFormatErrno(int errorCode)
+{
+	invalidFormatErrno = errorCode;
+}
+
 size_t mslModule_sizeof(size_t dataSize)
 {
 	return sizeof(mslModule) + dataSize;
@@ -561,7 +568,7 @@ mslModule* mslModule_readStream(mslReadFunction readFunc, void* userData,
 	if (!isValid(module->data, size))
 	{
 		mslModule_destroy(module);
-		errno = EILSEQ;
+		errno = invalidFormatErrno;
 		return nullptr;
 	}
 
@@ -580,7 +587,7 @@ mslModule* mslModule_readData(const void* data, size_t size, const mslAllocator*
 
 	if (!isValid(data, size))
 	{
-		errno = EILSEQ;
+		errno = invalidFormatErrno;
 		return nullptr;
 	}
 
@@ -593,7 +600,7 @@ mslModule* mslModule_readData(const void* data, size_t size, const mslAllocator*
 	if (module->module->version() > MSL_MODULE_VERSION)
 	{
 		mslModule_destroy(module);
-		errno = EILSEQ;
+		errno = invalidFormatErrno;
 		return nullptr;
 	}
 

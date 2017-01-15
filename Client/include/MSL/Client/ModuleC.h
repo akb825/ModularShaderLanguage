@@ -48,13 +48,24 @@
  * - EACCESS: permission denied reading the file.
  * - EIO: IO error reading the file. This will also be set if the file isn't large enough to read
  *   the buffer size passed in.
- * - EILSEQ: invalid file format.
+ * - EILSEQ: invalid file format. Since this is a non-standard usage of this error code, it can be
+ *   changed by calling mslModule_setInvalidFormatErrno().
  */
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+
+/**
+ * @brief Sets the errno error code for an invalid file format.
+ *
+ * The default is to use EILSEQ. This is non-standard, so this provides applications to set a custom
+ * value instead.
+ *
+ * @param errorCode The error code to use.
+ */
+MSL_CLIENT_EXPORT void mslModule_setInvalidFormatErrno(int errorCode);
 
 /**
  * @brief Gets the size that will be allocated for a module.
