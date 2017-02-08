@@ -1,9 +1,8 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(MSL)
-	
+
 # Build options
 set(MSL_SHARED OFF CACHE BOOL "Build MSL using shared libraries.")
-set(MSL_PROFILING ON CACHE BOOL "Enable profiling of code.")
 
 # Options for disabling portions of the build.
 set(MSL_BUILD_TESTS ON CACHE BOOL "Build unit tests.")
@@ -14,11 +13,13 @@ set(MSL_BUILD_CLIENT ON CACHE BOOL "Build the client library.")
 set(MSL_BUILD_TOOLS ON CACHE BOOL "Build the tools.")
 
 # Misc options.
+set(MSL_OUTPUT_DIR ${CMAKE_BINARY_DIR}/output CACHE PATH
+	"Folder for placing the build output.")
 set(MSL_EXPORTS_DIR ${CMAKE_BINARY_DIR}/cmake CACHE PATH
 	"Folder for placing the cmake exports while building. Useful when embedding in other projects.")
 set(MSL_ROOT_FOLDER MSL CACHE STRING
 	"Root folder for the MSL projects. Usefull when embedding in other projects.")
-	
+
 if (MSL_BUILD_TESTS)
 	find_package(GTest QUIET)
 	if (NOT GTEST_FOUND)
@@ -44,6 +45,12 @@ if (MSL_SHARED)
 	set(MSL_LIB SHARED)
 else()
 	set(MSL_LIB STATIC)
+endif()
+
+if (MSL_OUTPUT_DIR)
+	set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${MSL_OUTPUT_DIR})
+	set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${MSL_OUTPUT_DIR})
+	set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${MSL_OUTPUT_DIR})
 endif()
 
 set(MSL_MAJOR_VERSION 0)

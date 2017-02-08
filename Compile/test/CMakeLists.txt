@@ -2,6 +2,8 @@ if (NOT GTEST_FOUND OR NOT MSL_BUILD_TESTS)
 	return()
 endif()
 
+find_package(Boost COMPONENTS system filesystem )
+
 file(GLOB_RECURSE sources *.cpp *.h)
 add_executable(msl_compile_test ${sources})
 
@@ -17,7 +19,7 @@ add_custom_command(TARGET msl_compile_test POST_BUILD
 target_include_directories(msl_compile_test
 	PRIVATE ${GTEST_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${GLSLANG_DIR} ${SPIRV_CROSS_DIR} ../src)
 target_link_libraries(msl_compile_test
-	PRIVATE msl_compile ${GTEST_BOTH_LIBRARIES})
+	PRIVATE msl_compile ${Boost_LIBRARIES} ${GTEST_BOTH_LIBRARIES})
 
 msl_set_folder(msl_compile_test tests)
 add_test(NAME MSLCompileTest COMMAND msl_compile_test)

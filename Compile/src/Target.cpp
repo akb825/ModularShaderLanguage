@@ -744,7 +744,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 		}
 
 		// Link the program.
-		glslang::TProgram program;
+		Compiler::Program program;
 		if (!Compiler::link(program, output, pipeline, stages))
 			return false;
 

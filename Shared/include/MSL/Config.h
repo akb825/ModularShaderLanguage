@@ -116,3 +116,7 @@
  * @param d The last character. This will be the least significant byte.
  */
 #define MSL_CREATE_ID(a, b, c, d) (((a) << 24) | ((b) << 16) | ((c) << 8) | (d))
+
+#if MSL_MSC
+#pragma warning(disable: 4251) // 'x' needs to have dll-interface to be used by clients of class 'y'
+#endif

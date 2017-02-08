@@ -31,9 +31,24 @@ using namespace compile;
 class MSL_COMPILE_EXPORT Compiler
 {
 public:
-	struct Stages
+	class MSL_COMPILE_EXPORT Stages
 	{
+	public:
+		Stages();
+		~Stages();
+
 		std::array<std::unique_ptr<glslang::TShader>, stageCount> shaders;
+	};
+
+	class MSL_COMPILE_EXPORT Program
+	{
+	public:
+		Program();
+		~Program();
+
+	private:
+		friend class Compiler;
+		std::unique_ptr<glslang::TProgram> program;
 	};
 
 	enum ProcessOptions
@@ -48,14 +63,16 @@ public:
 	static void initialize();
 	static void shutdown();
 
+	static const TBuiltInResource& getDefaultResources();
+
 	static bool compile(Stages& stages, Output& output, const std::string& baseFileName,
 		const std::string& glsl, const std::vector<Parser::LineMapping>& lineMappings,
 		Stage stage, const TBuiltInResource& resources);
 
-	static bool link(glslang::TProgram& program, Output& output, const Parser::Pipeline& pipeline,
+	static bool link(Program& program, Output& output, const Parser::Pipeline& pipeline,
 		const Stages& stages);
 
-	static SpirV assemble(Output& output, const glslang::TProgram& program, Stage stage,
+	static SpirV assemble(Output& output, const Program& program, Stage stage,
 		const Parser::Pipeline& pipeline);
 
 	static void process(SpirV& spirv, int processOptions);

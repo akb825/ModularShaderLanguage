@@ -19,7 +19,6 @@
 #include "Compiler.h"
 #include "Parser.h"
 #include "Preprocessor.h"
-#include "StandAlone/ResourceLimits.h"
 #include <gtest/gtest.h>
 
 namespace msl
@@ -63,12 +62,12 @@ TEST_F(CompilerTest, CompleteShader)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			glslang::DefaultTBuiltInResource));
+			Compiler::getDefaultResources()));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
-	glslang::TProgram program;
+	Compiler::Program program;
 	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
 
 	bool assembledStage = false;
@@ -104,7 +103,7 @@ TEST_F(CompilerTest, CompileError)
 	std::vector<Parser::LineMapping> lineMappings;
 	std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 	EXPECT_FALSE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-		glslang::DefaultTBuiltInResource));
+		Compiler::getDefaultResources()));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
@@ -134,7 +133,7 @@ TEST_F(CompilerTest, CompileWarning)
 	std::vector<Parser::LineMapping> lineMappings;
 	std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 	EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-		glslang::DefaultTBuiltInResource));
+		Compiler::getDefaultResources()));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
@@ -169,12 +168,12 @@ TEST_F(CompilerTest, MissingEntryPoint)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			glslang::DefaultTBuiltInResource));
+			Compiler::getDefaultResources()));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
-	glslang::TProgram program;
+	Compiler::Program program;
 	EXPECT_FALSE(Compiler::link(program, output, pipeline, stages));
 
 	const std::vector<Output::Message>& messages = output.getMessages();

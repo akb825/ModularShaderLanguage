@@ -1287,7 +1287,7 @@ bool Parser::parse(Output& output, int options)
 			elements.clear();
 	}
 	m_pipelines.clear();
-	
+
 	unsigned int parenCount = 0;
 	unsigned int braceCount = 0;
 	unsigned int squareCount = 0;

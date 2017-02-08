@@ -30,6 +30,7 @@
 #include "SPIRV/GlslangToSpv.h"
 #include "SPIRV/SPVRemapper.h"
 #include "OGLCompilersDLL/InitializeDll.h"
+#include "StandAlone/ResourceLimits.h"
 
 #if MSL_GCC || MSL_CLANG
 #pragma GCC diagnostic pop
@@ -226,6 +227,23 @@ static bool addToOutput(Output &output, const spv::SpvBuildLogger& logger,
 	return true;
 }
 
+Compiler::Stages::Stages()
+{
+}
+
+Compiler::Stages::~Stages()
+{
+}
+
+Compiler::Program::Program()
+	: program(new glslang::TProgram)
+{
+}
+
+Compiler::Program::~Program()
+{
+}
+
 void Compiler::initialize()
 {
 	if (initCounter++ == 0)
@@ -236,6 +254,11 @@ void Compiler::shutdown()
 {
 	if (--initCounter == 0)
 		glslang::FinalizeProcess();
+}
+
+const TBuiltInResource& Compiler::getDefaultResources()
+{
+	return glslang::DefaultTBuiltInResource;
 }
 
 bool Compiler::compile(Stages& stages, Output &output, const std::string& baseFileName,
@@ -255,26 +278,26 @@ bool Compiler::compile(Stages& stages, Output &output, const std::string& baseFi
 	return success;
 }
 
-bool Compiler::link(glslang::TProgram& program, Output& output, const Parser::Pipeline& pipeline,
+bool Compiler::link(Program& program, Output& output, const Parser::Pipeline& pipeline,
 	const Stages& stages)
 {
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
 		if (stages.shaders[i])
-			program.addShader(stages.shaders[i].get());
+			program.program->addShader(stages.shaders[i].get());
 	}
 
-	bool success = program.link(glslMessages);
+	bool success = program.program->link(glslMessages);
 	std::vector<Parser::LineMapping> dummyLineMappings;
-	addToOutput(output, pipeline.token->fileName, dummyLineMappings, program.getInfoLog(),
+	addToOutput(output, pipeline.token->fileName, dummyLineMappings, program.program->getInfoLog(),
 		pipeline.token->line);
 	return success;
 }
 
-Compiler::SpirV Compiler::assemble(Output& output, const glslang::TProgram& program,
+Compiler::SpirV Compiler::assemble(Output& output, const Program& program,
 	Stage stage, const Parser::Pipeline& pipeline)
 {
-	glslang::TIntermediate* intermediate = program.getIntermediate(
+	glslang::TIntermediate* intermediate = program.program->getIntermediate(
 		stageMap[static_cast<unsigned int>(stage)]);
 
 	if (!intermediate)

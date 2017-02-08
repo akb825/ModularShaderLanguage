@@ -74,12 +74,12 @@ TEST_F(SpirVProcessorTest, PrimitiveTypes)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			glslang::DefaultTBuiltInResource));
+			Compiler::getDefaultResources()));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
-	glslang::TProgram program;
+	Compiler::Program program;
 	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
 	Compiler::SpirV spirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
 
@@ -553,12 +553,12 @@ TEST_F(SpirVProcessorTest, StructArrayReflection)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			glslang::DefaultTBuiltInResource));
+			Compiler::getDefaultResources()));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
-	glslang::TProgram program;
+	Compiler::Program program;
 	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
 	Compiler::SpirV spirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
 
@@ -761,12 +761,12 @@ TEST_F(SpirVProcessorTest, InputsOutputs)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			glslang::DefaultTBuiltInResource));
+			Compiler::getDefaultResources()));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
-	glslang::TProgram program;
+	Compiler::Program program;
 	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
 	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
 	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
@@ -1150,12 +1150,12 @@ TEST_F(SpirVProcessorTest, ExplicitInputsOutputs)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			glslang::DefaultTBuiltInResource));
+			Compiler::getDefaultResources()));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
-	glslang::TProgram program;
+	Compiler::Program program;
 	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
 	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
 	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
@@ -1331,12 +1331,12 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			glslang::DefaultTBuiltInResource));
+			Compiler::getDefaultResources()));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
-	glslang::TProgram program;
+	Compiler::Program program;
 	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
 	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
 	Compiler::SpirV tessControlSpirv = Compiler::assemble(output, program,
@@ -2011,12 +2011,12 @@ TEST_F(SpirVProcessorTest, LinkDifferentType)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			glslang::DefaultTBuiltInResource));
+			Compiler::getDefaultResources()));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
-	glslang::TProgram program;
+	Compiler::Program program;
 	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
 	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
 	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
@@ -2067,12 +2067,12 @@ TEST_F(SpirVProcessorTest, LinkDifferentStructType)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			glslang::DefaultTBuiltInResource));
+			Compiler::getDefaultResources()));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
-	glslang::TProgram program;
+	Compiler::Program program;
 	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
 	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
 	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
@@ -2124,12 +2124,12 @@ TEST_F(SpirVProcessorTest, LinkNotPresent)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			glslang::DefaultTBuiltInResource));
+			Compiler::getDefaultResources()));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
-	glslang::TProgram program;
+	Compiler::Program program;
 	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
 	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
 	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
@@ -2180,12 +2180,12 @@ TEST_F(SpirVProcessorTest, LinkStructNotPresent)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			glslang::DefaultTBuiltInResource));
+			Compiler::getDefaultResources()));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
-	glslang::TProgram program;
+	Compiler::Program program;
 	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
 	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
 	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
@@ -2236,12 +2236,12 @@ TEST_F(SpirVProcessorTest, StructWithinOutputBlock)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			glslang::DefaultTBuiltInResource));
+			Compiler::getDefaultResources()));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
-	glslang::TProgram program;
+	Compiler::Program program;
 	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
 	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
 	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
@@ -2285,12 +2285,12 @@ TEST_F(SpirVProcessorTest, MultipleLinkMembers)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			glslang::DefaultTBuiltInResource));
+			Compiler::getDefaultResources()));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
-	glslang::TProgram program;
+	Compiler::Program program;
 	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
 	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
 	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
@@ -2341,12 +2341,12 @@ TEST_F(SpirVProcessorTest, MixedExplicitImplicitLocations)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			glslang::DefaultTBuiltInResource));
+			Compiler::getDefaultResources()));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
-	glslang::TProgram program;
+	Compiler::Program program;
 	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
 	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
 	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
@@ -2396,12 +2396,12 @@ TEST_F(SpirVProcessorTest, StructInBlockAndBuffer)
 		std::vector<Parser::LineMapping> lineMappings;
 		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			glslang::DefaultTBuiltInResource));
+			Compiler::getDefaultResources()));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
 
-	glslang::TProgram program;
+	Compiler::Program program;
 	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
 	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
 	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
