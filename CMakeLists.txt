@@ -13,8 +13,7 @@ set(MSL_BUILD_CLIENT ON CACHE BOOL "Build the client library.")
 set(MSL_BUILD_TOOLS ON CACHE BOOL "Build the tools.")
 
 # Misc options.
-set(MSL_OUTPUT_DIR ${CMAKE_BINARY_DIR}/output CACHE PATH
-	"Folder for placing the build output.")
+set(MSL_OUTPUT_DIR ${CMAKE_BINARY_DIR}/output CACHE PATH "Folder for placing the build output.")
 set(MSL_EXPORTS_DIR ${CMAKE_BINARY_DIR}/cmake CACHE PATH
 	"Folder for placing the cmake exports while building. Useful when embedding in other projects.")
 set(MSL_ROOT_FOLDER MSL CACHE STRING

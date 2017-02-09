@@ -35,7 +35,7 @@ Multiple shader files may be compiled into a module. Examples for combining modu
 
 # Dependencies
 
-The following software is required to build DeepSea:
+The following software is required to build MSL:
 
 * [cmake](https://cmake.org/) 3.0.2 or later
 * [boost](http://www.boost.org/) (required unless only building client library without tests)
