@@ -64,10 +64,10 @@ function(msl_install_library)
 	install(FILES ${exportPath} DESTINATION include/MSL/${ARGS_MODULE} COMPONENT dev)
 
 	include(CMakePackageConfigHelpers)
-	set(versionPath ${MSL_EXPORTS_DIR}/${moduleName}Version.cmake)
+	set(versionPath ${MSL_EXPORTS_DIR}/${moduleName}ConfigVersion.cmake)
 	write_basic_package_version_file(${versionPath}
 		VERSION ${MSL_VERSION}
-		COMPATIBILITY AnyNewerVersion)
+		COMPATIBILITY SameMajorVersion)
 
 	export(EXPORT ${moduleName}Targets
 		FILE ${MSL_EXPORTS_DIR}/${moduleName}Targets.cmake)
@@ -92,10 +92,10 @@ endfunction()
 
 function(msl_install_master_config)
 	include(CMakePackageConfigHelpers)
-	set(versionPath ${MSL_EXPORTS_DIR}/MSLVersion.cmake)
+	set(versionPath ${MSL_EXPORTS_DIR}/MSLConfigVersion.cmake)
 	write_basic_package_version_file(${versionPath}
 		VERSION ${MSL_VERSION}
-		COMPATIBILITY AnyNewerVersion)
+		COMPATIBILITY SameMajorVersion)
 
 	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/cmake/MSLConfig.cmake
 		DESTINATION ${MSL_EXPORTS_DIR})
