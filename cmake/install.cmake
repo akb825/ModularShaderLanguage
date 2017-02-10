@@ -74,7 +74,7 @@ function(msl_install_library)
 
 	set(dependencies "include(CMakeFindDependencyMacro)")
 	foreach (dependency ${ARGS_DEPENDENCIES})
-		set(dependencies "${dependencies}\nfind_dependency(MSL${dependency} ${MSL_VERSION})")
+		set(dependencies "${dependencies}\nfind_dependency(MSL${dependency} ${MSL_VERSION} EXACT)")
 	endforeach()
 
 	set(configPath ${MSL_EXPORTS_DIR}/${moduleName}Config.cmake)
