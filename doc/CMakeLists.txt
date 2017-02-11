@@ -27,4 +27,6 @@ add_custom_target(doc ALL DEPENDS ${outputFile})
 
 msl_set_folder(doc "")
 
-install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html DESTINATION share/doc/MSL)
+if (MSL_INSTALL)
+	install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/html DESTINATION share/doc/MSL)
+endif()

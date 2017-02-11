@@ -55,6 +55,10 @@ function(msl_install_library)
 			"#define MSL_${moduleUpper}_EXPORT\n")
 	endif()
 
+	if (NOT MSL_INSTALL)
+		return()
+	endif()
+
 	install(TARGETS ${ARGS_TARGET} EXPORT ${moduleName}Targets
 		LIBRARY DESTINATION lib
 		ARCHIVE DESTINATION lib
@@ -91,6 +95,10 @@ function(msl_install_library)
 endfunction()
 
 function(msl_install_master_config)
+	if (NOT MSL_INSTALL)
+		return()
+	endif()
+
 	include(CMakePackageConfigHelpers)
 	set(versionPath ${MSL_EXPORTS_DIR}/MSLConfigVersion.cmake)
 	write_basic_package_version_file(${versionPath}

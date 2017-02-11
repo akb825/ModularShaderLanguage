@@ -11,4 +11,6 @@ target_link_libraries(mslb-extract PRIVATE msl_client ${Boost_LIBRARIES})
 
 msl_set_folder(mslb-extract tools)
 
-install(TARGETS mslb-extract RUNTIME DESTINATION bin COMPONENT tools)
+if (MSL_INSTALL)
+	install(TARGETS mslb-extract RUNTIME DESTINATION bin COMPONENT tools)
+endif()

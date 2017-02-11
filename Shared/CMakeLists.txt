@@ -12,4 +12,7 @@ else()
 endif()
 
 msl_set_folder(mslb libs)
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include COMPONENT dev)
+
+if (MSL_INSTALL)
+	install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/ DESTINATION include COMPONENT dev)
+endif()
