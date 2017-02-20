@@ -1355,6 +1355,7 @@ bool Parser::parse(Output& output, int options)
 			if (i >= tokens.size())
 				break;
 			lastToken = &tokens[i];
+			endMetaElement(tokenRange, i);
 		}
 		else if (elementStart && token.value == "sampler_state")
 		{
@@ -1364,6 +1365,7 @@ bool Parser::parse(Output& output, int options)
 			if (i >= tokens.size())
 				break;
 			lastToken = &tokens[i];
+			endMetaElement(tokenRange, i);
 		}
 		else if (token.value == "[")
 		{
@@ -1678,6 +1680,11 @@ void Parser::endElement(std::vector<Stage>& stages, TokenRange& tokenRange, std:
 	}
 
 	stages.clear();
+	endMetaElement(tokenRange, index);
+}
+
+void Parser::endMetaElement(TokenRange& tokenRange, std::size_t index)
+{
 	tokenRange.start = index + 1;
 	tokenRange.count = 0;
 }

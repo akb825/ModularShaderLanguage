@@ -1,12 +1,4 @@
 uniform sampler2D tex;
-
-uniform Transform
-{
-	mat4 transform;
-} block;
-
-uniform vec2[2] texCoords;
-
 sampler_state tex
 {
 	address_mode_u = repeat;
@@ -15,6 +7,13 @@ sampler_state tex
 	mag_filter = linear;
 	mip_filter = anisotropic;
 };
+
+uniform Transform
+{
+	mat4 transform;
+} block;
+
+uniform vec2[2] texCoords;
 
 [[vertex]] in vec3 position;
 [[vertex]] in vec4 color;

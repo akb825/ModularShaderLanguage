@@ -104,6 +104,7 @@ private:
 
 	Element getElementType(const TokenRange& tokenRange) const;
 	void endElement(std::vector<Stage>& stages, TokenRange& tokenRange, std::size_t index);
+	void endMetaElement(TokenRange& tokenRange, std::size_t index);
 	bool readPipeline(Output& output, const std::vector<Token>& tokens, std::size_t& i);
 	bool readSampler(Output& output, const std::vector<Token>& tokens, std::size_t& i);
 	void addElementString(std::string& str, std::vector<LineMapping>& lineMappings,
