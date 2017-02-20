@@ -218,7 +218,7 @@ static bool isValid(const void* data, size_t size)
 	if (module->version() > MSL_MODULE_VERSION)
 		return false;
 
-	bool isSpirV = module->targetId() != MSL_CREATE_ID('S', 'P', 'R', 'V');
+	bool isSpirV = module->targetId() == MSL_CREATE_ID('S', 'P', 'R', 'V');
 	if (module->adjustableBindings() && isSpirV)
 		return false;
 
