@@ -232,7 +232,10 @@ bool Preprocessor::preprocess(TokenList& tokenList, Output& output, std::istream
 		else
 			context.add_macro_definition("INSTANCE(x)=uniforms", true);
 		for (const std::string& includePath : m_includePaths)
+		{
 			context.add_include_path(includePath.c_str());
+			context.add_sysinclude_path(includePath.c_str());
+		}
 		for (const std::pair<std::string, std::string>& define : m_defines)
 			context.add_macro_definition(define.first + "=" + define.second, true);
 
