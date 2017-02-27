@@ -41,6 +41,21 @@ std::string GlslOutput::disassemble(Output& output, const Compiler::SpirV& spirv
 	for (const std::string& extension : options.requiredExtensions)
 		compiler.require_extension(extension);
 
+	if ((options.es && options.version < 300) || (!options.es && options.version < 130))
+	{
+		// Remove blocks from inputs and outputs on legacy targets.
+		for (std::uint32_t varId : compiler.get_active_interface_variables())
+		{
+			spv::StorageClass storageClass = compiler.get_storage_class(varId);
+			if (storageClass == spv::StorageClassInput || storageClass == spv::StorageClassOutput)
+			{
+				std::uint32_t typeId = compiler.get_type_from_variable(varId).self;
+				if (compiler.get_decoration(typeId, spv::DecorationBlock))
+					compiler.unset_decoration(typeId, spv::DecorationBlock);
+			}
+		}
+	}
+
 	try
 	{
 		return compiler.compile();

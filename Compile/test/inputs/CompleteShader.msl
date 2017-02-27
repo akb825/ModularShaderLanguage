@@ -22,7 +22,7 @@ sampler_state tex
 	vec4 color;
 } outputs;
 
-[[fragment]] in FragmentIn
+[[fragment]] in VertexOut
 {
 	vec4 color;
 } inputs;
