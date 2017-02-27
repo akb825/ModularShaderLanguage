@@ -1135,8 +1135,6 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 		uniform.type = getType(uniform.arrayElements, uniform.structIndex, processor, data, typeId);
 		assert(uniform.type == Type::Struct);
 
-		auto foundName = data.names.find(data.pushConstantPointer.first);
-		assert(foundName != data.names.end());
 		uniform.name = processor.structs[uniform.structIndex].name;
 		uniform.uniformType = UniformType::PushConstant;
 		uniform.descriptorSet = unknown;
