@@ -183,15 +183,24 @@ TEST(TargetGlslTest, Glsl120)
 	EXPECT_EQ(unknown, pipeline->second.structs[0].members[0].structIndex);
 	EXPECT_TRUE(pipeline->second.structs[0].members[0].arrayElements.empty());
 
-	ASSERT_EQ(1U, pipeline->second.uniforms.size());
-	EXPECT_EQ("tex", pipeline->second.uniforms[0].name);
-	EXPECT_EQ(UniformType::SampledImage, pipeline->second.uniforms[0].uniformType);
-	EXPECT_EQ(Type::Sampler2D, pipeline->second.uniforms[0].type);
-	EXPECT_EQ(unknown, pipeline->second.uniforms[0].structIndex);
+	ASSERT_EQ(2U, pipeline->second.uniforms.size());
+	EXPECT_EQ("Uniforms", pipeline->second.uniforms[0].name);
+	EXPECT_EQ(UniformType::PushConstant, pipeline->second.uniforms[0].uniformType);
+	EXPECT_EQ(Type::Struct, pipeline->second.uniforms[0].type);
+	EXPECT_EQ(0, pipeline->second.uniforms[0].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[0].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[0].descriptorSet);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[0].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
-	EXPECT_EQ(0U, pipeline->second.uniforms[0].samplerIndex);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[0].samplerIndex);
+
+	EXPECT_EQ("tex", pipeline->second.uniforms[1].name);
+	EXPECT_EQ(UniformType::SampledImage, pipeline->second.uniforms[1].uniformType);
+	EXPECT_EQ(Type::Sampler2D, pipeline->second.uniforms[1].type);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[1].structIndex);
+	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
+	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
+	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
 	ASSERT_EQ(2U, pipeline->second.attributes.size());
 	EXPECT_EQ("position", pipeline->second.attributes[0].name);
@@ -394,15 +403,24 @@ TEST(TargetGlslTest, GlslEs100)
 	EXPECT_EQ(unknown, pipeline->second.structs[0].members[0].structIndex);
 	EXPECT_TRUE(pipeline->second.structs[0].members[0].arrayElements.empty());
 
-	ASSERT_EQ(1U, pipeline->second.uniforms.size());
-	EXPECT_EQ("tex", pipeline->second.uniforms[0].name);
-	EXPECT_EQ(UniformType::SampledImage, pipeline->second.uniforms[0].uniformType);
-	EXPECT_EQ(Type::Sampler2D, pipeline->second.uniforms[0].type);
-	EXPECT_EQ(unknown, pipeline->second.uniforms[0].structIndex);
+	ASSERT_EQ(2U, pipeline->second.uniforms.size());
+	EXPECT_EQ("Uniforms", pipeline->second.uniforms[0].name);
+	EXPECT_EQ(UniformType::PushConstant, pipeline->second.uniforms[0].uniformType);
+	EXPECT_EQ(Type::Struct, pipeline->second.uniforms[0].type);
+	EXPECT_EQ(0, pipeline->second.uniforms[0].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[0].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[0].descriptorSet);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[0].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
-	EXPECT_EQ(0U, pipeline->second.uniforms[0].samplerIndex);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[0].samplerIndex);
+
+	EXPECT_EQ("tex", pipeline->second.uniforms[1].name);
+	EXPECT_EQ(UniformType::SampledImage, pipeline->second.uniforms[1].uniformType);
+	EXPECT_EQ(Type::Sampler2D, pipeline->second.uniforms[1].type);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[1].structIndex);
+	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
+	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
+	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
 	ASSERT_EQ(2U, pipeline->second.attributes.size());
 	EXPECT_EQ("position", pipeline->second.attributes[0].name);

@@ -1120,10 +1120,32 @@ std::vector<std::uint32_t> makeArrayLengths(const std::vector<ArrayInfo>& arrayE
 
 void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 {
-	std::size_t totalUniforms = data.uniformVars.size() + data.imageVars.size();
+	bool hasPushConstant = data.pushConstantPointer.first != unknown;
+	std::size_t totalUniforms = data.uniformVars.size() + data.imageVars.size() + hasPushConstant;
 	processor.uniforms.resize(totalUniforms);
 	processor.uniformIds.resize(totalUniforms);
 	std::size_t i = 0;
+
+	if (hasPushConstant)
+	{
+		processor.uniformIds[i] = data.pushConstantPointer.first;
+		std::uint32_t typeId = data.pushConstantPointer.second;
+
+		Uniform& uniform = processor.uniforms[i];
+		uniform.type = getType(uniform.arrayElements, uniform.structIndex, processor, data, typeId);
+		assert(uniform.type == Type::Struct);
+
+		auto foundName = data.names.find(data.pushConstantPointer.first);
+		assert(foundName != data.names.end());
+		uniform.name = processor.structs[uniform.structIndex].name;
+		uniform.uniformType = UniformType::PushConstant;
+		uniform.descriptorSet = unknown;
+		uniform.binding = unknown;
+		uniform.samplerIndex = unknown;
+
+		++i;
+	}
+
 	for (const std::pair<std::uint32_t, std::uint32_t>& uniformIndices : data.uniformVars)
 	{
 		processor.uniformIds[i] = uniformIndices.first;
