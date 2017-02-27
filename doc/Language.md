@@ -104,15 +104,13 @@ For example:
 	[[vertex]] in vec3 position;
 	[[vertex]] in vec4 color;
 
-	[[vertex]] out VertexOut
+	struct VertexOut
 	{
 		vec4 color;
-	} outputs;
+	};
 
-	[[fragment]] in VertexOut
-	{
-		vec4 color;
-	} inputs;
+	[[vertex]] out VertexOut outputs;
+	[[fragment]] in VertexOut inputs;
 
 	[[fragment]] out vec4 color;
 
@@ -141,7 +139,7 @@ For example:
 Input and output locations are automatically calculated to link the stages together. However, older versions of GLSL don't suppprt explicit locations. In order to ensure that shaders can link in older versions of GLSL, one of these two should be done:
 
 * Declare each input/output variable individually rather than in interface blocks.
-* Make sure the block names match between the input and output blocks. (as is done in the above example) The varying variables will be decorated by the block name, so if they don't match OpenGL won't be able to link the inputs and examples. In the example above, the `VertexOut` block has a member named `color`, so the varying will be named `VertexOut_color`.
+* Make sure the struct or interface block names match between the input and output blocks. (as is done in the above example) The varying variables will be decorated by the struct or interface block name, so if they don't match OpenGL won't be able to link the inputs and examples. In the example above, the `VertexOut` struct has a member named `color`, so the varying will be named `VertexOut_color`.
 
 # Uniforms
 

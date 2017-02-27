@@ -127,6 +127,7 @@ struct IntermediateData
 	std::unordered_map<std::uint32_t, std::uint32_t> bindings;
 	std::unordered_map<std::uint32_t, std::uint32_t> locations;
 	std::unordered_map<std::uint32_t, std::uint32_t> components;
+	std::unordered_set<std::uint32_t> inputOutputStructs;
 
 	// Variable declarations
 	// Make these ordered (except for pointers) so they will be consistent across runs.
@@ -1225,8 +1226,7 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 }
 
 bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& inputOutputs,
-	std::vector<std::uint32_t>& inputOutputIds,
-	SpirVProcessor& processor, const IntermediateData& data,
+	std::vector<std::uint32_t>& inputOutputIds, SpirVProcessor& processor, IntermediateData& data,
 	const std::map<std::uint32_t, std::uint32_t>& inputOutputVars)
 {
 	std::string ioName = &inputOutputs == &processor.inputs ? "input" : "output";
@@ -1253,24 +1253,27 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 		inputOutput.patch = data.patchVars.find(inputOutputIndices.first) != data.patchVars.end();
 		if (inputOutput.type == Type::Struct)
 		{
-			if (data.blocks.find(underlyingTypeId) == data.blocks.end())
+			const Struct& structType = processor.structs[inputOutput.structIndex];
+
+			// Make sure any struct is only used once.
+			if (data.inputOutputStructs.find(underlyingTypeId) != data.inputOutputStructs.end())
 			{
 				output.addMessage(Output::Level::Error, processor.fileName, processor.line,
-					processor.column, false,
-					"linker error: " + ioName + " " + inputOutput.name + " in stage " +
-					stageNames[static_cast<unsigned int>(processor.stage)] + " is a struct");
+					processor.column, false, "linker error: struct " + structType.name +
+					" is used for multiple inputs and outputs");
+				return false;
 			}
+			data.inputOutputStructs.insert(underlyingTypeId);
 
 			// Make sure there's no recursive structs.
-			const Struct& structType = processor.structs[inputOutput.structIndex];
 			for (const StructMember& member : structType.members)
 			{
 				if (member.type == Type::Struct)
 				{
 					output.addMessage(Output::Level::Error, processor.fileName, processor.line,
 						processor.column, false,
-						"linker error: " + ioName + " interface block member " + structType.name +
-						"." + member.name + " is a struct");
+						"linker error: " + ioName + " member " + structType.name + "." +
+						member.name + " is a struct");
 					return false;
 				}
 			}
@@ -1349,13 +1352,13 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 	return true;
 }
 
-bool addInputs(Output& output, SpirVProcessor& processor, const IntermediateData& data)
+bool addInputs(Output& output, SpirVProcessor& processor, IntermediateData& data)
 {
 	return addInputsOutputs(output, processor.inputs, processor.inputIds, processor, data,
 		data.inputVars);
 }
 
-bool addOutputs(Output& output, SpirVProcessor& processor, const IntermediateData& data)
+bool addOutputs(Output& output, SpirVProcessor& processor, IntermediateData& data)
 {
 	return addInputsOutputs(output, processor.outputs, processor.outputIds, processor, data,
 		data.outputVars);

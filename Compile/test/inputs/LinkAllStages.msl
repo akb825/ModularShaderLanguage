@@ -3,13 +3,15 @@
 [[vertex]] in vec2[3] texCoords;
 [[vertex]] in vec4[2] colors;
 
-[[vertex]] out VertInfo
+struct VertInfo
 {
 	vec3 position;
 	vec3 normal;
 	vec2[3] texCoords;
 	vec4[2] colors;
-} vertInfo;
+};
+
+[[vertex]] out VertInfo vertInfo;
 
 [[vertex]] out vec4[4] vertShadowPos;
 [[vertex]] out float vertFogVal;
@@ -91,13 +93,7 @@
 [[geometry]] layout(triangles) in;
 [[geometry]] layout(triangle_strip, max_vertices = 9) out;
 
-[[fragment]] in VertInfo
-{
-	vec3 position;
-	vec3 normal;
-	vec2[3] texCoords;
-	vec4[2] colors;
-};
+[[fragment]] in VertInfo inputs;
 
 [[fragment]] in vec4[4] geomShadowPos;
 [[fragment]] in float geomFogVal;

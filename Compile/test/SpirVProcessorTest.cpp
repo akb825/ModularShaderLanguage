@@ -1916,7 +1916,7 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 
 	ASSERT_EQ(3U, fragmentProcessor.inputs.size());
 
-	EXPECT_EQ("", fragmentProcessor.inputs[0].name);
+	EXPECT_EQ("inputs", fragmentProcessor.inputs[0].name);
 	EXPECT_EQ(Type::Struct, fragmentProcessor.inputs[0].type);
 	EXPECT_EQ(0U, fragmentProcessor.inputs[0].structIndex);
 	EXPECT_TRUE(fragmentProcessor.inputs[0].arrayElements.empty());
@@ -2217,6 +2217,104 @@ TEST_F(SpirVProcessorTest, LinkStructNotPresent)
 		"stage vertex", messages[0].message);
 }
 
+TEST_F(SpirVProcessorTest, LinkStructArray)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"LinkStructArray.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			Compiler::getDefaultResources()));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	Compiler::Program program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
+	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
+
+	SpirVProcessor vertexProcessor;
+	EXPECT_FALSE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, vertexSpirv, Stage::Vertex));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_EQ(24U, messages[0].line);
+	EXPECT_EQ(10U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("linker error: output interface block InOuts must not be an array",
+		messages[0].message);
+}
+
+TEST_F(SpirVProcessorTest, LinkStructUsedTwice)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"LinkStructUsedTwice.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			Compiler::getDefaultResources()));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	Compiler::Program program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
+	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
+
+	SpirVProcessor vertexProcessor;
+	EXPECT_FALSE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, vertexSpirv, Stage::Vertex));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_EQ(25U, messages[0].line);
+	EXPECT_EQ(10U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("linker error: struct InOuts is used for multiple inputs and outputs",
+		messages[0].message);
+}
+
 TEST_F(SpirVProcessorTest, StructWithinOutputBlock)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
@@ -2262,8 +2360,7 @@ TEST_F(SpirVProcessorTest, StructWithinOutputBlock)
 	EXPECT_EQ(30U, messages[0].line);
 	EXPECT_EQ(10U, messages[0].column);
 	EXPECT_FALSE(messages[0].continued);
-	EXPECT_EQ("linker error: output interface block member OutValues.value is a struct",
-		messages[0].message);
+	EXPECT_EQ("linker error: output member OutValues.value is a struct", messages[0].message);
 }
 
 TEST_F(SpirVProcessorTest, MultipleLinkMembers)

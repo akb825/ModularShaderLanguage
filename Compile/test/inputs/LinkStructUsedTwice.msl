@@ -1,0 +1,29 @@
+struct InOuts
+{
+	vec4 value;
+};
+
+[[vertex]] out InOuts output1;
+[[vertex]] out InOuts output2;
+
+[[fragment]] in InOuts inputs;
+
+[[vertex]]
+void vertShader()
+{
+	gl_Position = vec4(0.0);
+}
+
+[[fragment]] out vec4 color;
+
+[[fragment]]
+void fragShader()
+{
+	color = vec4(1.0);
+}
+
+pipeline Test
+{
+	vertex = vertShader;
+	fragment = fragShader;
+}
