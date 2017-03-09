@@ -695,7 +695,12 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 	if (m_remapVariables)
 		processOptions |= Compiler::RemapVariables;
 	if (m_optimize)
-		processOptions |= Compiler::Optimize;
+	{
+		// NOTE: Optimization may end up renaming interface variables.
+		if (!needsReflectionNames())
+			processOptions |= Compiler::Optimize;
+		processOptions |= Compiler::DeadCodeElimination;
+	}
 
 	SpirVProcessor::Strip strip;
 	if (m_stripDebug)

@@ -54,8 +54,9 @@ public:
 	enum ProcessOptions
 	{
 		RemapVariables = 0x1,
-		Optimize = 0x2,
-		StripDebug = 0x4
+		DeadCodeElimination = 0x2,
+		Optimize = 0x4,
+		StripDebug = 0x8
 	};
 
 	using SpirV = std::vector<std::uint32_t>;

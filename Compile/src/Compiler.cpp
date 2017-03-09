@@ -323,8 +323,10 @@ void Compiler::process(SpirV& spirv, int processOptions)
 	std::uint32_t options = 0;
 	if (processOptions & RemapVariables)
 		options |= spv::spirvbin_t::MAP_ALL;
+	if (processOptions & DeadCodeElimination)
+		options |= spv::spirvbin_t::DCE_ALL;
 	if (processOptions & Optimize)
-		options |= spv::spirvbin_t::DCE_ALL | spv::spirvbin_t::OPT_ALL;
+		options |= spv::spirvbin_t::OPT_ALL;
 	if (processOptions & StripDebug)
 		options |= spv::spirvbin_t::STRIP;
 
