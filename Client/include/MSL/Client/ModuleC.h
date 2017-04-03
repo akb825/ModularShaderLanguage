@@ -69,7 +69,7 @@ MSL_CLIENT_EXPORT void mslModule_setInvalidFormatErrno(int errorCode);
 
 /**
  * @brief Gets the size that will be allocated for a module.
- * @param dataSize THe size of the module data.
+ * @param dataSize The size of the module data.
  * @return The allocated size for the module data and metadata.
  */
 MSL_CLIENT_EXPORT size_t mslModule_sizeof(size_t dataSize);
