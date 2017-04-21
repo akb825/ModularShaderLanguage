@@ -24,18 +24,15 @@ namespace msl
 std::string MetalOutput::disassemble(Output& output, const Compiler::SpirV& spirv,
 	const Options& options, const std::string& fileName, std::size_t line, std::size_t column)
 {
-	spirv_cross::MSLConfiguration compilerOptions;
+	spirv_cross::CompilerMSL::Options compilerOptions;
 	compilerOptions.flip_vert_y = options.flipVertexY;
 	compilerOptions.flip_frag_y = options.flipFragmentY;
 
-	spirv_cross::CompilerGLSL::Options glslOptions;
-	glslOptions.vertex.fixup_clipspace = options.remapDepthRange;
-
 	spirv_cross::CompilerMSL compiler(spirv);
-	compiler.set_options(glslOptions);
+	compiler.set_options(compilerOptions);
 	try
 	{
-		return compiler.compile(compilerOptions);
+		return compiler.compile();
 	}
 	catch (const spirv_cross::CompilerError& e)
 	{
