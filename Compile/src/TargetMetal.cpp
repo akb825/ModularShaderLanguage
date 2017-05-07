@@ -179,8 +179,6 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 
 	ExecuteCommand compile(".metal");
 	compile.getInput().write(metal.data(), metal.size());
-	std::ofstream asdf("asdf.metal");
-	asdf.write(metal.data(), metal.size());
 	if (!compile.execute(output, "xcrun -sdk " + getSDK() + " metal $input " + versionStr + " -o $output"))
 		return false;
 
