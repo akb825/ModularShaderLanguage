@@ -31,7 +31,6 @@ TargetMetal::TargetMetal(std::uint32_t version, bool isIos)
 	, m_ios(isIos)
 	, m_remapDepthRange(false)
 	, m_flipVertexY(true)
-	, m_flipFragmentY(true)
 {
 }
 
@@ -62,16 +61,6 @@ bool TargetMetal::getFlipVertexY() const
 void TargetMetal::setFlipVertexY(bool flip)
 {
 	m_flipVertexY = flip;
-}
-
-bool TargetMetal::getFlipFragmentY() const
-{
-	return m_flipFragmentY;
-}
-
-void TargetMetal::setFlipFragmentY(bool flip)
-{
-	m_flipFragmentY = flip;
 }
 
 std::uint32_t TargetMetal::getId() const
@@ -124,7 +113,6 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 	MetalOutput::Options options;
 	options.remapDepthRange = m_remapDepthRange;
 	options.flipVertexY = m_flipVertexY;
-	options.flipFragmentY = m_flipFragmentY;
 
 	std::string metal = MetalOutput::disassemble(output, spirv, options, fileName, line, column);
 	if (metal.empty())
@@ -177,7 +165,7 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 		switch (getVersion())
 		{
 			case 11:
-				versionStr = "-std=ios-metal1.1";
+				versionStr = "-std=osx-metal1.1";
 				break;
 			default:
 			{
@@ -189,9 +177,11 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 		}
 	}
 
-	ExecuteCommand compile;
+	ExecuteCommand compile(".metal");
 	compile.getInput().write(metal.data(), metal.size());
-	if (!compile.execute(output, "metal $input -W " + versionStr + " -o $output"))
+	std::ofstream asdf("asdf.metal");
+	asdf.write(metal.data(), metal.size());
+	if (!compile.execute(output, "xcrun -sdk " + getSDK() + " metal $input " + versionStr + " -o $output"))
 		return false;
 
 	std::vector<std::uint8_t> compiledData(
@@ -218,7 +208,7 @@ bool TargetMetal::getSharedData(std::vector<std::uint8_t>& data, Output& output)
 	if (m_entryPointData.empty())
 		return true;
 
-	std::string archiveCommand = "metal-ar rcs $output";
+	std::string archiveCommand = "xcrun -sdk " + getSDK() + " metal-ar rcs $output";
 	std::vector<std::string> entryPointFiles;
 	for (const auto& entryPointData : m_entryPointData)
 	{
@@ -237,12 +227,20 @@ bool TargetMetal::getSharedData(std::vector<std::uint8_t>& data, Output& output)
 		return false;
 
 	createlib.getInput() << archive.getOutput().rdbuf();
-	if (!createlib.execute(output, "metallib $input -o $output"))
+	if (!createlib.execute(output, "xcrun -sdk " + getSDK() + " metallib $input -o $output"))
 		return false;
 
 	data.assign(std::istreambuf_iterator<char>(createlib.getOutput().rdbuf()),
 		std::istreambuf_iterator<char>());
 	return true;
+}
+
+std::string TargetMetal::getSDK() const
+{
+	if (m_ios)
+		return "iphoneos";
+	else
+		return "macosx";
 }
 
 } // namespace msl

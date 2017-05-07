@@ -91,18 +91,6 @@ public:
 	 */
 	void setFlipVertexY(bool flip);
 
-	/**
-	 * @brief Returns whether or not to flip the fragment Y coordinates. Defaults to true.
-	 * @return True to flip fragment Y.
-	 */
-	bool getFlipFragmentY() const;
-
-	/**
-	 * @brief Sets whether or not to flip the fragment Y coordinates. Defaults to true.
-	 * @param flip True to flip fragment Y.
-	 */
-	void setFlipFragmentY(bool flip);
-
 	std::uint32_t getId() const override;
 	std::uint32_t getVersion() const override;
 	bool featureSupported(Feature feature) const override;
@@ -124,12 +112,13 @@ private:
 		std::size_t column;
 	};
 
+	std::string getSDK() const;
+
 	std::uint32_t m_version;
 	bool m_ios;
 
 	bool m_remapDepthRange;
 	bool m_flipVertexY;
-	bool m_flipFragmentY;
 
 	std::map<std::string, CompiledDataInfo> m_entryPointData;
 };

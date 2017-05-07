@@ -30,7 +30,7 @@ class Output;
 class MSL_COMPILE_EXPORT ExecuteCommand
 {
 public:
-	ExecuteCommand();
+	explicit ExecuteCommand(std::string inputExtension = std::string());
 	~ExecuteCommand();
 
 	ExecuteCommand(const ExecuteCommand&) = delete;

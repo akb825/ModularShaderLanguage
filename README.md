@@ -45,6 +45,8 @@ The following software is required to build MSL:
 * [doxygen](http://www.stack.nl/~dimitri/doxygen/) (optional)
 * [gtest](https://github.com/google/googletest) (optional)
 
+> **Note:** Boost must be built with C++11 support. For example, when building and installing through the b2 bootstrap command: `./b2 "-std=c++11" -j4 install`
+
 The glslang and SPIRV-Cross submodules can be grabbed by running the commands
 
 	ModularShaderLanguage$ git submodule init
@@ -58,6 +60,7 @@ MSL has been built for and tested on the following platforms:
 
 * Linux (GCC and LLVM clang)
 * Windows (requires Visual Studio 2015 or later)
+* Mac OS X
 
 # Building
 

@@ -30,10 +30,10 @@
 namespace msl
 {
 
-ExecuteCommand::ExecuteCommand()
+ExecuteCommand::ExecuteCommand(std::string inputExtension)
 {
-	m_inputFileName =
-		(boost::filesystem::temp_directory_path()/boost::filesystem::unique_path()).string();
+	m_inputFileName = (boost::filesystem::temp_directory_path()/
+		boost::filesystem::unique_path().replace_extension(inputExtension)).string();
 	m_outputFileName =
 		(boost::filesystem::temp_directory_path()/boost::filesystem::unique_path()).string();
 

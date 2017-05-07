@@ -256,9 +256,6 @@ static std::unique_ptr<msl::Target> createMetalTarget(const std::string& targetN
 	if (config.count("flip-vertex-y"))
 		target->setFlipVertexY(config["flip-vertex-y"].as<bool>());
 
-	if (config.count("flip-fragment-y"))
-		target->setFlipFragmentY(config["flip-fragment-y"].as<bool>());
-
 	return std::move(target);
 }
 
@@ -464,8 +461,6 @@ int main(int argc, char** argv)
 			"from [0, 1] to [-1, 1] in the  vertex shader output for GLSL or Metal targets. "
 			"Defaults to false.")
 		("flip-vertex-y", value<bool>(), "boolean for whether or not to flip the vertex y "
-			"coordinate for Metal targets. Defaults to true.")
-		("flip-fragment-y", value<bool>(), "boolean for whether or not to flip the fragment y "
 			"coordinate for Metal targets. Defaults to true.")
 		("default-float-precision", value<std::string>(), "the default precision to use for "
 			"floats in GLSL targets. Possible values are: none, low, medium, high. Defaults to "

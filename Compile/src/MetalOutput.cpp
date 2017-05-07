@@ -26,7 +26,6 @@ std::string MetalOutput::disassemble(Output& output, const Compiler::SpirV& spir
 {
 	spirv_cross::CompilerMSL::Options compilerOptions;
 	compilerOptions.flip_vert_y = options.flipVertexY;
-	compilerOptions.flip_frag_y = options.flipFragmentY;
 
 	spirv_cross::CompilerMSL compiler(spirv);
 	compiler.set_options(compilerOptions);

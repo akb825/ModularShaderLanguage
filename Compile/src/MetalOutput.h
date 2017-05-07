@@ -29,7 +29,6 @@ public:
 	{
 		bool remapDepthRange;
 		bool flipVertexY;
-		bool flipFragmentY;
 	};
 
 	static std::string disassemble(Output& output, const Compiler::SpirV& spirv,
