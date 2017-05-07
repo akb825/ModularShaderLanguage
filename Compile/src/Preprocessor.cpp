@@ -18,8 +18,12 @@
 #include <MSL/Compile/Output.h>
 
 #if MSL_MSC
-#pragma warning(push, 0)
+// Disable in entire file.
 #pragma warning(disable: 4503)
+
+// Disable for includes.
+#pragma warning(push)
+#pragma warning(disable: 4477)
 #elif MSL_CLANG
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshorten-64-to-32"
