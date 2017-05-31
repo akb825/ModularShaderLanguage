@@ -100,18 +100,8 @@ protected:
 	bool crossCompile(std::vector<std::uint8_t>& data, Output& output, const std::string& fileName,
 		std::size_t line, std::size_t column, compile::Stage stage,
 		const std::vector<std::uint32_t>& spirv, const std::string& entryPoint) override;
-	bool getSharedData(std::vector<std::uint8_t>& data, Output& output) override;
 
 private:
-	struct CompiledDataInfo
-	{
-		std::string metal;
-		std::vector<std::uint8_t> data;
-		std::string fileName;
-		std::size_t line;
-		std::size_t column;
-	};
-
 	std::string getSDK() const;
 
 	std::uint32_t m_version;
@@ -119,8 +109,6 @@ private:
 
 	bool m_remapDepthRange;
 	bool m_flipVertexY;
-
-	std::map<std::string, CompiledDataInfo> m_entryPointData;
 };
 
 } // namespace msl

@@ -351,9 +351,7 @@ static bool shadersAreText(const msl::Module& module)
 	uint32_t targetId = module.targetId();
 	return
 		targetId == MSL_CREATE_ID('G', 'L', 'S', 'L') ||
-		targetId == MSL_CREATE_ID('G', 'L', 'E', 'S') ||
-		targetId == MSL_CREATE_ID('M', 'T', 'L', 'X') ||
-		targetId == MSL_CREATE_ID('M', 'T', 'L', 'I');
+		targetId == MSL_CREATE_ID('G', 'L', 'E', 'S');
 }
 
 static bool openFile(std::ofstream& stream, const std::string& fileName, bool binary)

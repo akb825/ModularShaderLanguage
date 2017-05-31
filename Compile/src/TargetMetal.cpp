@@ -119,25 +119,7 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 		return false;
 
 	// Set the entry point back to its original value. The function mmain was set by SPIRV-Cross.
-	boost::algorithm::replace_all(metal, "mmain", entryPoint);
-
-	// Check if the entry point was already added. Make sure the generated code was the same if so.
-	auto foundIter = m_entryPointData.find(entryPoint);
-	if (foundIter != m_entryPointData.end())
-	{
-		if (foundIter->second.metal != metal)
-		{
-			output.addMessage(Output::Level::Error, fileName, line, column, false,
-				"entry point gave a different compiled result: " + entryPoint);
-			output.addMessage(Output::Level::Error, foundIter->second.fileName,
-				foundIter->second.line, foundIter->second.column, true,
-				"see pipeline for previously compiled entry point");
-			return false;
-		}
-
-		data.assign(entryPoint.begin(), entryPoint.end());
-		return true;
-	}
+	boost::algorithm::replace_all(metal, "main0", entryPoint);
 
 	// Compile this entry point.
 	std::string versionStr;
@@ -179,56 +161,23 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 
 	ExecuteCommand compile(".metal");
 	compile.getInput().write(metal.data(), metal.size());
-	if (!compile.execute(output, "xcrun -sdk " + getSDK() + " metal $input " + versionStr + " -o $output"))
-		return false;
-
-	std::vector<std::uint8_t> compiledData(
-		std::istreambuf_iterator<char>(compile.getOutput().rdbuf()),
-		std::istreambuf_iterator<char>());
-
-	// Add the compiled data for the input.
-	CompiledDataInfo info;
-	info.metal = std::move(metal);
-	info.data = std::move(compiledData);
-	info.fileName = fileName;
-	info.line = line;
-	info.column = column;
-	m_entryPointData.emplace(entryPoint, std::move(info));
-
-	data.assign(entryPoint.begin(), entryPoint.end());
-	// Add null terminator so it can be used as a string.
-	data.push_back(0);
-	return true;
-}
-
-bool TargetMetal::getSharedData(std::vector<std::uint8_t>& data, Output& output)
-{
-	if (m_entryPointData.empty())
-		return true;
-
-	std::string archiveCommand = "xcrun -sdk " + getSDK() + " metal-ar rcs $output";
-	std::vector<std::string> entryPointFiles;
-	for (const auto& entryPointData : m_entryPointData)
+	if (!compile.execute(output, "xcrun -sdk " + getSDK() + " metal $input " + versionStr +
+		" -o $output"))
 	{
-		std::string fileName =
-			(boost::filesystem::temp_directory_path()/boost::filesystem::unique_path()).string();
-		std::fstream stream(fileName);
-		stream.write(reinterpret_cast<const char*>(entryPointData.second.data.data()),
-			entryPointData.second.data.size());
-		archiveCommand.push_back(' ');
-		archiveCommand += fileName;
-		entryPointFiles.push_back(std::move(fileName));
+		return false;
 	}
 
-	ExecuteCommand archive, createlib;
-	if (!archive.execute(output, archiveCommand))
+	ExecuteCommand archive;
+	archive.getInput() << compile.getOutput().rdbuf();
+	if (!archive.execute(output, "xcrun -sdk " + getSDK() + " metal-ar rcs $output $input"))
 		return false;
 
-	createlib.getInput() << archive.getOutput().rdbuf();
-	if (!createlib.execute(output, "xcrun -sdk " + getSDK() + " metallib $input -o $output"))
+	ExecuteCommand createLib;
+	createLib.getInput() << archive.getOutput().rdbuf();
+	if (!createLib.execute(output, "xcrun -sdk " + getSDK() + " metallib $input -o $output"))
 		return false;
 
-	data.assign(std::istreambuf_iterator<char>(createlib.getOutput().rdbuf()),
+	data.assign(std::istreambuf_iterator<char>(createLib.getOutput().rdbuf()),
 		std::istreambuf_iterator<char>());
 	return true;
 }
