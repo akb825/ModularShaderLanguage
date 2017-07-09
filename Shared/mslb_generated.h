@@ -53,6 +53,18 @@ enum class Stage : uint8_t {
   MAX = Compute
 };
 
+inline Stage (&EnumValuesStage())[6] {
+  static Stage values[] = {
+    Stage::Vertex,
+    Stage::TessellationControl,
+    Stage::TessellationEvaluation,
+    Stage::Geometry,
+    Stage::Fragment,
+    Stage::Compute
+  };
+  return values;
+}
+
 inline const char **EnumNamesStage() {
   static const char *names[] = {
     "Vertex",
@@ -182,6 +194,119 @@ enum class Type : uint8_t {
   MIN = Float,
   MAX = Struct
 };
+
+inline Type (&EnumValuesType())[107] {
+  static Type values[] = {
+    Type::Float,
+    Type::Vec2,
+    Type::Vec3,
+    Type::Vec4,
+    Type::Double,
+    Type::DVec2,
+    Type::DVec3,
+    Type::DVec4,
+    Type::Int,
+    Type::IVec2,
+    Type::IVec3,
+    Type::IVec4,
+    Type::UInt,
+    Type::UVec2,
+    Type::UVec3,
+    Type::UVec4,
+    Type::Bool,
+    Type::BVec2,
+    Type::BVec3,
+    Type::BVec4,
+    Type::Mat2,
+    Type::Mat3,
+    Type::Mat4,
+    Type::Mat2x3,
+    Type::Mat2x4,
+    Type::Mat3x2,
+    Type::Mat3x4,
+    Type::Mat4x2,
+    Type::Mat4x3,
+    Type::DMat2,
+    Type::DMat3,
+    Type::DMat4,
+    Type::DMat2x3,
+    Type::DMat2x4,
+    Type::DMat3x2,
+    Type::DMat3x4,
+    Type::DMat4x2,
+    Type::DMat4x3,
+    Type::Sampler1D,
+    Type::Sampler2D,
+    Type::Sampler3D,
+    Type::SamplerCube,
+    Type::Sampler1DShadow,
+    Type::Sampler2DShadow,
+    Type::Sampler1DArray,
+    Type::Sampler2DArray,
+    Type::Sampler1DArrayShadow,
+    Type::Sampler2DArrayShadow,
+    Type::Sampler2DMS,
+    Type::Sampler2DMSArray,
+    Type::SamplerCubeShadow,
+    Type::SamplerBuffer,
+    Type::Sampler2DRect,
+    Type::Sampler2DRectShadow,
+    Type::ISampler1D,
+    Type::ISampler2D,
+    Type::ISampler3D,
+    Type::ISamplerCube,
+    Type::ISampler1DArray,
+    Type::ISampler2DArray,
+    Type::ISampler2DMS,
+    Type::ISampler2DMSArray,
+    Type::ISampler2DRect,
+    Type::USampler1D,
+    Type::USampler2D,
+    Type::USampler3D,
+    Type::USamplerCube,
+    Type::USampler1DArray,
+    Type::USampler2DArray,
+    Type::USampler2DMS,
+    Type::USampler2DMSArray,
+    Type::USampler2DRect,
+    Type::Image1D,
+    Type::Image2D,
+    Type::Image3D,
+    Type::ImageCube,
+    Type::Image1DArray,
+    Type::Image2DArray,
+    Type::Image2DMS,
+    Type::Image2DMSArray,
+    Type::ImageBuffer,
+    Type::Image2DRect,
+    Type::IImage1D,
+    Type::IImage2D,
+    Type::IImage3D,
+    Type::IImageCube,
+    Type::IImage1DArray,
+    Type::IImage2DArray,
+    Type::IImage2DMS,
+    Type::IImage2DMSArray,
+    Type::IImage2DRect,
+    Type::UImage1D,
+    Type::UImage2D,
+    Type::UImage3D,
+    Type::UImageCube,
+    Type::UImage1DArray,
+    Type::UImage2DArray,
+    Type::UImage2DMS,
+    Type::UImage2DMSArray,
+    Type::UImage2DRect,
+    Type::SubpassInput,
+    Type::SubpassInputMS,
+    Type::ISubpassInput,
+    Type::ISubpassInputMS,
+    Type::USubpassInput,
+    Type::USubpassInputMS,
+    Type::Struct
+  };
+  return values;
+}
 
 inline const char **EnumNamesType() {
   static const char *names[] = {
@@ -313,6 +438,18 @@ enum class UniformType : uint8_t {
   MAX = SubpassInput
 };
 
+inline UniformType (&EnumValuesUniformType())[6] {
+  static UniformType values[] = {
+    UniformType::PushConstant,
+    UniformType::Block,
+    UniformType::BlockBuffer,
+    UniformType::Image,
+    UniformType::SampledImage,
+    UniformType::SubpassInput
+  };
+  return values;
+}
+
 inline const char **EnumNamesUniformType() {
   static const char *names[] = {
     "PushConstant",
@@ -339,6 +476,15 @@ enum class Bool : int8_t {
   MAX = True
 };
 
+inline Bool (&EnumValuesBool())[3] {
+  static Bool values[] = {
+    Bool::Unset,
+    Bool::False,
+    Bool::True
+  };
+  return values;
+}
+
 inline const char **EnumNamesBool() {
   static const char *names[] = {
     "Unset",
@@ -362,6 +508,16 @@ enum class PolygonMode : int8_t {
   MIN = Unset,
   MAX = Point
 };
+
+inline PolygonMode (&EnumValuesPolygonMode())[4] {
+  static PolygonMode values[] = {
+    PolygonMode::Unset,
+    PolygonMode::Fill,
+    PolygonMode::Line,
+    PolygonMode::Point
+  };
+  return values;
+}
 
 inline const char **EnumNamesPolygonMode() {
   static const char *names[] = {
@@ -389,6 +545,17 @@ enum class CullMode : int8_t {
   MAX = FrontAndBack
 };
 
+inline CullMode (&EnumValuesCullMode())[5] {
+  static CullMode values[] = {
+    CullMode::Unset,
+    CullMode::None,
+    CullMode::Front,
+    CullMode::Back,
+    CullMode::FrontAndBack
+  };
+  return values;
+}
+
 inline const char **EnumNamesCullMode() {
   static const char *names[] = {
     "Unset",
@@ -413,6 +580,15 @@ enum class FrontFace : int8_t {
   MIN = Unset,
   MAX = Clockwise
 };
+
+inline FrontFace (&EnumValuesFrontFace())[3] {
+  static FrontFace values[] = {
+    FrontFace::Unset,
+    FrontFace::CounterClockwise,
+    FrontFace::Clockwise
+  };
+  return values;
+}
 
 inline const char **EnumNamesFrontFace() {
   static const char *names[] = {
@@ -442,6 +618,21 @@ enum class StencilOp : int8_t {
   MIN = Unset,
   MAX = DecrementAndWrap
 };
+
+inline StencilOp (&EnumValuesStencilOp())[9] {
+  static StencilOp values[] = {
+    StencilOp::Unset,
+    StencilOp::Keep,
+    StencilOp::Zero,
+    StencilOp::Replace,
+    StencilOp::IncrementAndClamp,
+    StencilOp::DecrementAndClamp,
+    StencilOp::Invert,
+    StencilOp::IncrementAndWrap,
+    StencilOp::DecrementAndWrap
+  };
+  return values;
+}
 
 inline const char **EnumNamesStencilOp() {
   static const char *names[] = {
@@ -477,6 +668,21 @@ enum class CompareOp : int8_t {
   MIN = Unset,
   MAX = Always
 };
+
+inline CompareOp (&EnumValuesCompareOp())[9] {
+  static CompareOp values[] = {
+    CompareOp::Unset,
+    CompareOp::Never,
+    CompareOp::Less,
+    CompareOp::Equal,
+    CompareOp::LessOrEqual,
+    CompareOp::Greater,
+    CompareOp::NotEqual,
+    CompareOp::GreaterOrEqual,
+    CompareOp::Always
+  };
+  return values;
+}
 
 inline const char **EnumNamesCompareOp() {
   static const char *names[] = {
@@ -524,6 +730,32 @@ enum class BlendFactor : int8_t {
   MAX = OneMinusSrc1Alpha
 };
 
+inline BlendFactor (&EnumValuesBlendFactor())[20] {
+  static BlendFactor values[] = {
+    BlendFactor::Unset,
+    BlendFactor::Zero,
+    BlendFactor::One,
+    BlendFactor::SrcColor,
+    BlendFactor::OneMinusSrcColor,
+    BlendFactor::DstColor,
+    BlendFactor::OneMinusDstColor,
+    BlendFactor::SrcAlpha,
+    BlendFactor::OneMinusSrcAlpha,
+    BlendFactor::DstAlpha,
+    BlendFactor::OneMinusDstAlpha,
+    BlendFactor::ConstColor,
+    BlendFactor::OneMinusConstColor,
+    BlendFactor::ConstAlpha,
+    BlendFactor::OneMinusConstAlpha,
+    BlendFactor::SrcAlphaSaturate,
+    BlendFactor::Src1Color,
+    BlendFactor::OneMinusSrc1Color,
+    BlendFactor::Src1Alpha,
+    BlendFactor::OneMinusSrc1Alpha
+  };
+  return values;
+}
+
 inline const char **EnumNamesBlendFactor() {
   static const char *names[] = {
     "Unset",
@@ -567,6 +799,18 @@ enum class BlendOp : int8_t {
   MAX = Max
 };
 
+inline BlendOp (&EnumValuesBlendOp())[6] {
+  static BlendOp values[] = {
+    BlendOp::Unset,
+    BlendOp::Add,
+    BlendOp::Subtract,
+    BlendOp::ReverseSubtract,
+    BlendOp::Min,
+    BlendOp::Max
+  };
+  return values;
+}
+
 inline const char **EnumNamesBlendOp() {
   static const char *names[] = {
     "Unset",
@@ -595,6 +839,18 @@ enum class ColorMask : int8_t {
   MIN = Unset,
   MAX = Alpha
 };
+
+inline ColorMask (&EnumValuesColorMask())[6] {
+  static ColorMask values[] = {
+    ColorMask::Unset,
+    ColorMask::None,
+    ColorMask::Red,
+    ColorMask::Green,
+    ColorMask::Blue,
+    ColorMask::Alpha
+  };
+  return values;
+}
 
 inline const char **EnumNamesColorMask() {
   static const char *names[] = {
@@ -640,6 +896,29 @@ enum class LogicOp : int8_t {
   MAX = Set
 };
 
+inline LogicOp (&EnumValuesLogicOp())[17] {
+  static LogicOp values[] = {
+    LogicOp::Unset,
+    LogicOp::Clear,
+    LogicOp::And,
+    LogicOp::AndReverse,
+    LogicOp::Copy,
+    LogicOp::AndInverted,
+    LogicOp::NoOp,
+    LogicOp::Xor,
+    LogicOp::Or,
+    LogicOp::Nor,
+    LogicOp::Equivalent,
+    LogicOp::Invert,
+    LogicOp::OrReverse,
+    LogicOp::CopyInverted,
+    LogicOp::OrInverted,
+    LogicOp::Nand,
+    LogicOp::Set
+  };
+  return values;
+}
+
 inline const char **EnumNamesLogicOp() {
   static const char *names[] = {
     "Unset",
@@ -677,6 +956,15 @@ enum class Filter : int8_t {
   MAX = Linear
 };
 
+inline Filter (&EnumValuesFilter())[3] {
+  static Filter values[] = {
+    Filter::Unset,
+    Filter::Nearest,
+    Filter::Linear
+  };
+  return values;
+}
+
 inline const char **EnumNamesFilter() {
   static const char *names[] = {
     "Unset",
@@ -701,6 +989,17 @@ enum class MipFilter : int8_t {
   MIN = Unset,
   MAX = Anisotropic
 };
+
+inline MipFilter (&EnumValuesMipFilter())[5] {
+  static MipFilter values[] = {
+    MipFilter::Unset,
+    MipFilter::None,
+    MipFilter::Nearest,
+    MipFilter::Linear,
+    MipFilter::Anisotropic
+  };
+  return values;
+}
 
 inline const char **EnumNamesMipFilter() {
   static const char *names[] = {
@@ -729,6 +1028,18 @@ enum class AddressMode : int8_t {
   MIN = Unset,
   MAX = MirrorOnce
 };
+
+inline AddressMode (&EnumValuesAddressMode())[6] {
+  static AddressMode values[] = {
+    AddressMode::Unset,
+    AddressMode::Repeat,
+    AddressMode::MirroredRepeat,
+    AddressMode::ClampToEdge,
+    AddressMode::ClampToBorder,
+    AddressMode::MirrorOnce
+  };
+  return values;
+}
 
 inline const char **EnumNamesAddressMode() {
   static const char *names[] = {
@@ -759,6 +1070,19 @@ enum class BorderColor : int8_t {
   MIN = Unset,
   MAX = OpaqueIntOne
 };
+
+inline BorderColor (&EnumValuesBorderColor())[7] {
+  static BorderColor values[] = {
+    BorderColor::Unset,
+    BorderColor::TransparentBlack,
+    BorderColor::TransparentIntZero,
+    BorderColor::OpaqueBlack,
+    BorderColor::OpaqueIntZero,
+    BorderColor::OpaqueWhite,
+    BorderColor::OpaqueIntOne
+  };
+  return values;
+}
 
 inline const char **EnumNamesBorderColor() {
   static const char *names[] = {
@@ -1077,13 +1401,13 @@ MANUALLY_ALIGNED_STRUCT(4) DepthStencilState FLATBUFFERS_FINAL_CLASS {
   const StencilOpState &frontStencil() const {
     return frontStencil_;
   }
-  const StencilOpState &mutable_frontStencil() {
+  StencilOpState &mutable_frontStencil() {
     return frontStencil_;
   }
   const StencilOpState &backStencil() const {
     return backStencil_;
   }
-  const StencilOpState &mutable_backStencil() {
+  StencilOpState &mutable_backStencil() {
     return backStencil_;
   }
   float minDepthBounds() const {
@@ -1333,19 +1657,19 @@ struct BlendState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return static_cast<Bool>(GetField<int8_t>(VT_LOGICALOPENABLE, 0));
   }
   bool mutate_logicalOpEnable(Bool _logicalOpEnable) {
-    return SetField(VT_LOGICALOPENABLE, static_cast<int8_t>(_logicalOpEnable));
+    return SetField<int8_t>(VT_LOGICALOPENABLE, static_cast<int8_t>(_logicalOpEnable), 0);
   }
   LogicOp logicalOp() const {
     return static_cast<LogicOp>(GetField<int8_t>(VT_LOGICALOP, 0));
   }
   bool mutate_logicalOp(LogicOp _logicalOp) {
-    return SetField(VT_LOGICALOP, static_cast<int8_t>(_logicalOp));
+    return SetField<int8_t>(VT_LOGICALOP, static_cast<int8_t>(_logicalOp), 0);
   }
   Bool separateAttachmentBlendingEnable() const {
     return static_cast<Bool>(GetField<int8_t>(VT_SEPARATEATTACHMENTBLENDINGENABLE, 0));
   }
   bool mutate_separateAttachmentBlendingEnable(Bool _separateAttachmentBlendingEnable) {
-    return SetField(VT_SEPARATEATTACHMENTBLENDINGENABLE, static_cast<int8_t>(_separateAttachmentBlendingEnable));
+    return SetField<int8_t>(VT_SEPARATEATTACHMENTBLENDINGENABLE, static_cast<int8_t>(_separateAttachmentBlendingEnable), 0);
   }
   const flatbuffers::Vector<const BlendAttachmentState *> *blendAttachments() const {
     return GetPointer<const flatbuffers::Vector<const BlendAttachmentState *> *>(VT_BLENDATTACHMENTS);
@@ -1364,9 +1688,9 @@ struct BlendState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int8_t>(verifier, VT_LOGICALOPENABLE) &&
            VerifyField<int8_t>(verifier, VT_LOGICALOP) &&
            VerifyField<int8_t>(verifier, VT_SEPARATEATTACHMENTBLENDINGENABLE) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_BLENDATTACHMENTS) &&
+           VerifyOffsetRequired(verifier, VT_BLENDATTACHMENTS) &&
            verifier.Verify(blendAttachments()) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_BLENDCONSTANTS) &&
+           VerifyOffsetRequired(verifier, VT_BLENDCONSTANTS) &&
            verifier.Verify(blendConstants()) &&
            verifier.EndTable();
   }
@@ -1472,14 +1796,14 @@ struct RenderState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return GetField<uint32_t>(VT_PATCHCONTROLPOINTS, 0);
   }
   bool mutate_patchControlPoints(uint32_t _patchControlPoints) {
-    return SetField(VT_PATCHCONTROLPOINTS, _patchControlPoints);
+    return SetField<uint32_t>(VT_PATCHCONTROLPOINTS, _patchControlPoints, 0);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyFieldRequired<RasterizationState>(verifier, VT_RASTERIZATIONSTATE) &&
            VerifyFieldRequired<MultisampleState>(verifier, VT_MULTISAMPLESTATE) &&
            VerifyFieldRequired<DepthStencilState>(verifier, VT_DEPTHSTENCILSTATE) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_BLENDSTATE) &&
+           VerifyOffsetRequired(verifier, VT_BLENDSTATE) &&
            verifier.VerifyTable(blendState()) &&
            VerifyField<uint32_t>(verifier, VT_PATCHCONTROLPOINTS) &&
            verifier.EndTable();
@@ -1556,25 +1880,25 @@ struct StructMember FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return GetField<uint32_t>(VT_OFFSET, 0);
   }
   bool mutate_offset(uint32_t _offset) {
-    return SetField(VT_OFFSET, _offset);
+    return SetField<uint32_t>(VT_OFFSET, _offset, 0);
   }
   uint32_t size() const {
     return GetField<uint32_t>(VT_SIZE, 0);
   }
   bool mutate_size(uint32_t _size) {
-    return SetField(VT_SIZE, _size);
+    return SetField<uint32_t>(VT_SIZE, _size, 0);
   }
   Type type() const {
     return static_cast<Type>(GetField<uint8_t>(VT_TYPE, 0));
   }
   bool mutate_type(Type _type) {
-    return SetField(VT_TYPE, static_cast<uint8_t>(_type));
+    return SetField<uint8_t>(VT_TYPE, static_cast<uint8_t>(_type), 0);
   }
   uint32_t structIndex() const {
     return GetField<uint32_t>(VT_STRUCTINDEX, 0);
   }
   bool mutate_structIndex(uint32_t _structIndex) {
-    return SetField(VT_STRUCTINDEX, _structIndex);
+    return SetField<uint32_t>(VT_STRUCTINDEX, _structIndex, 0);
   }
   const flatbuffers::Vector<const ArrayInfo *> *arrayElements() const {
     return GetPointer<const flatbuffers::Vector<const ArrayInfo *> *>(VT_ARRAYELEMENTS);
@@ -1586,17 +1910,17 @@ struct StructMember FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return GetField<uint8_t>(VT_ROWMAJOR, 0) != 0;
   }
   bool mutate_rowMajor(bool _rowMajor) {
-    return SetField(VT_ROWMAJOR, static_cast<uint8_t>(_rowMajor));
+    return SetField<uint8_t>(VT_ROWMAJOR, static_cast<uint8_t>(_rowMajor), 0);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
+           VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.Verify(name()) &&
            VerifyField<uint32_t>(verifier, VT_OFFSET) &&
            VerifyField<uint32_t>(verifier, VT_SIZE) &&
            VerifyField<uint8_t>(verifier, VT_TYPE) &&
            VerifyField<uint32_t>(verifier, VT_STRUCTINDEX) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_ARRAYELEMENTS) &&
+           VerifyOffset(verifier, VT_ARRAYELEMENTS) &&
            verifier.Verify(arrayElements()) &&
            VerifyField<uint8_t>(verifier, VT_ROWMAJOR) &&
            verifier.EndTable();
@@ -1696,7 +2020,7 @@ struct Struct FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return GetField<uint32_t>(VT_SIZE, 0);
   }
   bool mutate_size(uint32_t _size) {
-    return SetField(VT_SIZE, _size);
+    return SetField<uint32_t>(VT_SIZE, _size, 0);
   }
   const flatbuffers::Vector<flatbuffers::Offset<StructMember>> *members() const {
     return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<StructMember>> *>(VT_MEMBERS);
@@ -1706,10 +2030,10 @@ struct Struct FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
+           VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.Verify(name()) &&
            VerifyField<uint32_t>(verifier, VT_SIZE) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_MEMBERS) &&
+           VerifyOffsetRequired(verifier, VT_MEMBERS) &&
            verifier.Verify(members()) &&
            verifier.VerifyVectorOfTables(members()) &&
            verifier.EndTable();
@@ -1787,19 +2111,19 @@ struct Uniform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return static_cast<UniformType>(GetField<uint8_t>(VT_UNIFORMTYPE, 0));
   }
   bool mutate_uniformType(UniformType _uniformType) {
-    return SetField(VT_UNIFORMTYPE, static_cast<uint8_t>(_uniformType));
+    return SetField<uint8_t>(VT_UNIFORMTYPE, static_cast<uint8_t>(_uniformType), 0);
   }
   Type type() const {
     return static_cast<Type>(GetField<uint8_t>(VT_TYPE, 0));
   }
   bool mutate_type(Type _type) {
-    return SetField(VT_TYPE, static_cast<uint8_t>(_type));
+    return SetField<uint8_t>(VT_TYPE, static_cast<uint8_t>(_type), 0);
   }
   uint32_t structIndex() const {
     return GetField<uint32_t>(VT_STRUCTINDEX, 0);
   }
   bool mutate_structIndex(uint32_t _structIndex) {
-    return SetField(VT_STRUCTINDEX, _structIndex);
+    return SetField<uint32_t>(VT_STRUCTINDEX, _structIndex, 0);
   }
   const flatbuffers::Vector<const ArrayInfo *> *arrayElements() const {
     return GetPointer<const flatbuffers::Vector<const ArrayInfo *> *>(VT_ARRAYELEMENTS);
@@ -1811,28 +2135,28 @@ struct Uniform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return GetField<uint32_t>(VT_DESCRIPTORSET, 0);
   }
   bool mutate_descriptorSet(uint32_t _descriptorSet) {
-    return SetField(VT_DESCRIPTORSET, _descriptorSet);
+    return SetField<uint32_t>(VT_DESCRIPTORSET, _descriptorSet, 0);
   }
   uint32_t binding() const {
     return GetField<uint32_t>(VT_BINDING, 0);
   }
   bool mutate_binding(uint32_t _binding) {
-    return SetField(VT_BINDING, _binding);
+    return SetField<uint32_t>(VT_BINDING, _binding, 0);
   }
   uint32_t samplerIndex() const {
     return GetField<uint32_t>(VT_SAMPLERINDEX, 0);
   }
   bool mutate_samplerIndex(uint32_t _samplerIndex) {
-    return SetField(VT_SAMPLERINDEX, _samplerIndex);
+    return SetField<uint32_t>(VT_SAMPLERINDEX, _samplerIndex, 0);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
+           VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.Verify(name()) &&
            VerifyField<uint8_t>(verifier, VT_UNIFORMTYPE) &&
            VerifyField<uint8_t>(verifier, VT_TYPE) &&
            VerifyField<uint32_t>(verifier, VT_STRUCTINDEX) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_ARRAYELEMENTS) &&
+           VerifyOffset(verifier, VT_ARRAYELEMENTS) &&
            verifier.Verify(arrayElements()) &&
            VerifyField<uint32_t>(verifier, VT_DESCRIPTORSET) &&
            VerifyField<uint32_t>(verifier, VT_BINDING) &&
@@ -1943,7 +2267,7 @@ struct Attribute FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return static_cast<Type>(GetField<uint8_t>(VT_TYPE, 0));
   }
   bool mutate_type(Type _type) {
-    return SetField(VT_TYPE, static_cast<uint8_t>(_type));
+    return SetField<uint8_t>(VT_TYPE, static_cast<uint8_t>(_type), 0);
   }
   const flatbuffers::Vector<uint32_t> *arrayElements() const {
     return GetPointer<const flatbuffers::Vector<uint32_t> *>(VT_ARRAYELEMENTS);
@@ -1955,20 +2279,20 @@ struct Attribute FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return GetField<uint32_t>(VT_LOCATION, 0);
   }
   bool mutate_location(uint32_t _location) {
-    return SetField(VT_LOCATION, _location);
+    return SetField<uint32_t>(VT_LOCATION, _location, 0);
   }
   uint32_t component() const {
     return GetField<uint32_t>(VT_COMPONENT, 0);
   }
   bool mutate_component(uint32_t _component) {
-    return SetField(VT_COMPONENT, _component);
+    return SetField<uint32_t>(VT_COMPONENT, _component, 0);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
+           VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.Verify(name()) &&
            VerifyField<uint8_t>(verifier, VT_TYPE) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_ARRAYELEMENTS) &&
+           VerifyOffset(verifier, VT_ARRAYELEMENTS) &&
            verifier.Verify(arrayElements()) &&
            VerifyField<uint32_t>(verifier, VT_LOCATION) &&
            VerifyField<uint32_t>(verifier, VT_COMPONENT) &&
@@ -2048,7 +2372,7 @@ struct Shader FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return GetField<uint32_t>(VT_SHADER, 0);
   }
   bool mutate_shader(uint32_t _shader) {
-    return SetField(VT_SHADER, _shader);
+    return SetField<uint32_t>(VT_SHADER, _shader, 0);
   }
   const flatbuffers::Vector<uint32_t> *uniformIds() const {
     return GetPointer<const flatbuffers::Vector<uint32_t> *>(VT_UNIFORMIDS);
@@ -2059,7 +2383,7 @@ struct Shader FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_SHADER) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_UNIFORMIDS) &&
+           VerifyOffset(verifier, VT_UNIFORMIDS) &&
            verifier.Verify(uniformIds()) &&
            verifier.EndTable();
   }
@@ -2151,7 +2475,7 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return GetField<uint32_t>(VT_PUSHCONSTANTSTRUCT, 0);
   }
   bool mutate_pushConstantStruct(uint32_t _pushConstantStruct) {
-    return SetField(VT_PUSHCONSTANTSTRUCT, _pushConstantStruct);
+    return SetField<uint32_t>(VT_PUSHCONSTANTSTRUCT, _pushConstantStruct, 0);
   }
   const RenderState *renderState() const {
     return GetPointer<const RenderState *>(VT_RENDERSTATE);
@@ -2167,23 +2491,23 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_NAME) &&
+           VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.Verify(name()) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_STRUCTS) &&
+           VerifyOffsetRequired(verifier, VT_STRUCTS) &&
            verifier.Verify(structs()) &&
            verifier.VerifyVectorOfTables(structs()) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_SAMPLERSTATES) &&
+           VerifyOffsetRequired(verifier, VT_SAMPLERSTATES) &&
            verifier.Verify(samplerStates()) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_UNIFORMS) &&
+           VerifyOffsetRequired(verifier, VT_UNIFORMS) &&
            verifier.Verify(uniforms()) &&
            verifier.VerifyVectorOfTables(uniforms()) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_ATTRIBUTES) &&
+           VerifyOffsetRequired(verifier, VT_ATTRIBUTES) &&
            verifier.Verify(attributes()) &&
            verifier.VerifyVectorOfTables(attributes()) &&
            VerifyField<uint32_t>(verifier, VT_PUSHCONSTANTSTRUCT) &&
-           VerifyField<flatbuffers::uoffset_t>(verifier, VT_RENDERSTATE) &&
+           VerifyOffset(verifier, VT_RENDERSTATE) &&
            verifier.VerifyTable(renderState()) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_SHADERS) &&
+           VerifyOffsetRequired(verifier, VT_SHADERS) &&
            verifier.Verify(shaders()) &&
            verifier.VerifyVectorOfTables(shaders()) &&
            verifier.EndTable();
@@ -2291,7 +2615,7 @@ struct ShaderData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_DATA) &&
+           VerifyOffsetRequired(verifier, VT_DATA) &&
            verifier.Verify(data()) &&
            verifier.EndTable();
   }
@@ -2346,25 +2670,25 @@ struct Module FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return GetField<uint32_t>(VT_VERSION, 0);
   }
   bool mutate_version(uint32_t _version) {
-    return SetField(VT_VERSION, _version);
+    return SetField<uint32_t>(VT_VERSION, _version, 0);
   }
   uint32_t targetId() const {
     return GetField<uint32_t>(VT_TARGETID, 0);
   }
   bool mutate_targetId(uint32_t _targetId) {
-    return SetField(VT_TARGETID, _targetId);
+    return SetField<uint32_t>(VT_TARGETID, _targetId, 0);
   }
   uint32_t targetVersion() const {
     return GetField<uint32_t>(VT_TARGETVERSION, 0);
   }
   bool mutate_targetVersion(uint32_t _targetVersion) {
-    return SetField(VT_TARGETVERSION, _targetVersion);
+    return SetField<uint32_t>(VT_TARGETVERSION, _targetVersion, 0);
   }
   bool adjustableBindings() const {
     return GetField<uint8_t>(VT_ADJUSTABLEBINDINGS, 0) != 0;
   }
   bool mutate_adjustableBindings(bool _adjustableBindings) {
-    return SetField(VT_ADJUSTABLEBINDINGS, static_cast<uint8_t>(_adjustableBindings));
+    return SetField<uint8_t>(VT_ADJUSTABLEBINDINGS, static_cast<uint8_t>(_adjustableBindings), 0);
   }
   const flatbuffers::Vector<flatbuffers::Offset<Pipeline>> *pipelines() const {
     return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<Pipeline>> *>(VT_PIPELINES);
@@ -2390,13 +2714,13 @@ struct Module FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<uint32_t>(verifier, VT_TARGETID) &&
            VerifyField<uint32_t>(verifier, VT_TARGETVERSION) &&
            VerifyField<uint8_t>(verifier, VT_ADJUSTABLEBINDINGS) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_PIPELINES) &&
+           VerifyOffsetRequired(verifier, VT_PIPELINES) &&
            verifier.Verify(pipelines()) &&
            verifier.VerifyVectorOfTables(pipelines()) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_SHADERS) &&
+           VerifyOffsetRequired(verifier, VT_SHADERS) &&
            verifier.Verify(shaders()) &&
            verifier.VerifyVectorOfTables(shaders()) &&
-           VerifyFieldRequired<flatbuffers::uoffset_t>(verifier, VT_SHAREDDATA) &&
+           VerifyOffsetRequired(verifier, VT_SHAREDDATA) &&
            verifier.Verify(sharedData()) &&
            verifier.EndTable();
   }

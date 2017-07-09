@@ -1223,7 +1223,7 @@ TEST_F(SpirVProcessorTest, ExplicitInputsOutputs)
 	EXPECT_TRUE(vertexProcessor.outputs[4].arrayElements.empty());
 	ASSERT_EQ(2U, vertexProcessor.outputs[4].memberLocations.size());
 	EXPECT_FALSE(vertexProcessor.outputs[4].patch);
-	EXPECT_EQ(unknown, vertexProcessor.outputs[4].location);
+	EXPECT_EQ(2U, vertexProcessor.outputs[4].location);
 	EXPECT_EQ(unknown, vertexProcessor.outputs[4].component);
 
 	ASSERT_EQ(2U, vertexProcessor.structs.size());

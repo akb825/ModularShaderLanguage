@@ -1251,6 +1251,7 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 		inputOutput.type = getType(arrayElements, inputOutput.structIndex, processor, data, typeId);
 		inputOutput.arrayElements = makeArrayLengths(arrayElements);
 		inputOutput.patch = data.patchVars.find(inputOutputIndices.first) != data.patchVars.end();
+		inputOutput.autoAssigned = true;
 		if (inputOutput.type == Type::Struct)
 		{
 			const Struct& structType = processor.structs[inputOutput.structIndex];
@@ -1316,13 +1317,24 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 				assert(foundMembers->second.size() <= inputOutput.memberLocations.size());
 				for (std::size_t j = 0; j < foundMembers->second.size(); ++j)
 				{
+					if (foundMembers->second[j].location == unknown)
+						continue;
+
+					inputOutput.autoAssigned = false;
 					inputOutput.memberLocations[j].first = foundMembers->second[j].location;
 					if (foundMembers->second[j].component != unknown)
 						inputOutput.memberLocations[j].second = foundMembers->second[j].component;
 				}
 			}
 
-			inputOutput.location = unknown;
+			auto foundLocation = data.locations.find(inputOutputIndices.first);
+			if (foundLocation == data.locations.end())
+				inputOutput.location = unknown;
+			else
+			{
+				inputOutput.location = foundLocation->second;
+				inputOutput.autoAssigned = false;
+			}
 			inputOutput.component = unknown;
 		}
 		else
@@ -1341,6 +1353,7 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 				inputOutput.location = unknown;
 			else
 			{
+				inputOutput.autoAssigned = false;
 				inputOutput.location = foundLocation->second;
 				auto foundComponent = data.components.find(inputOutputIndices.first);
 				if (foundComponent != data.components.end())
@@ -1607,13 +1620,20 @@ bool assignInputsOutputs(Output& output, const SpirVProcessor& processor,
 		if (io.type == Type::Struct)
 		{
 			const Struct& ioStruct = processor.structs[io.structIndex];
-			assert(ioStruct.members.size() == io.memberLocations.size());
-			if (!io.memberLocations.empty())
+			if (io.memberLocations.empty() || io.memberLocations[0].first == unknown)
 			{
-				if (io.memberLocations[0].first == unknown)
+				if (io.location == unknown)
 					hasImplicitLocations = true;
 				else
+				{
+					curLocation = io.location;
 					hasExplicitLocations = true;
+				}
+			}
+			else
+			{
+				assert(ioStruct.members.size() == io.memberLocations.size());
+				hasExplicitLocations = true;
 			}
 
 			for (std::size_t i = 0; i < ioStruct.members.size(); ++i)
@@ -2531,6 +2551,9 @@ std::vector<std::uint32_t> SpirVProcessor::process(Strip strip, bool dummyBindin
 				// Add input locations.
 				for (std::size_t j = 0; j < inputs.size(); ++j)
 				{
+					if (!inputs[j].autoAssigned)
+						continue;
+
 					if (inputs[j].type == Type::Struct)
 					{
 						std::uint32_t typeId = structIds[inputs[j].structIndex];
@@ -2561,6 +2584,9 @@ std::vector<std::uint32_t> SpirVProcessor::process(Strip strip, bool dummyBindin
 				// Add output locations.
 				for (std::size_t j = 0; j < outputs.size(); ++j)
 				{
+					if (!outputs[j].autoAssigned)
+						continue;
+
 					if (outputs[j].type == Type::Struct)
 					{
 						std::uint32_t typeId = structIds[outputs[j].structIndex];

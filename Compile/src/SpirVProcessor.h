@@ -49,6 +49,7 @@ public:
 		std::vector<std::uint32_t> arrayElements;
 		std::vector<std::pair<std::uint32_t, std::uint32_t>> memberLocations;
 		bool patch;
+		bool autoAssigned;
 		std::uint32_t location;
 		std::uint32_t component;
 	};
