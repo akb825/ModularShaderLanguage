@@ -1875,6 +1875,11 @@ bool Parser::readSampler(Output& output, const std::vector<Token>& tokens, std::
 			if (!getBorderColor(output, sampler.state.borderColor, value))
 				return false;
 		}
+		else if (key->value == "compare_op")
+		{
+			if (!getCompareOp(output, sampler.state.compareOp, value))
+				return false;
+		}
 		else
 		{
 			output.addMessage(Output::Level::Error, key->fileName, key->line, key->column, false,

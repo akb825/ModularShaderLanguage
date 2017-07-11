@@ -113,6 +113,7 @@ TEST(TargetGlslTest, Glsl450)
 	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].minLod);
 	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].maxLod);
 	EXPECT_EQ(BorderColor::Unset, pipeline->second.samplerStates[0].borderColor);
+	EXPECT_EQ(CompareOp::Unset, pipeline->second.samplerStates[0].compareOp);
 
 	ASSERT_EQ(2U, result.getShaders().size());
 	std::string vertex = reinterpret_cast<const char*>(result.getShaders()[0].data());
@@ -229,6 +230,7 @@ TEST(TargetGlslTest, Glsl120)
 	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].minLod);
 	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].maxLod);
 	EXPECT_EQ(BorderColor::Unset, pipeline->second.samplerStates[0].borderColor);
+	EXPECT_EQ(CompareOp::Unset, pipeline->second.samplerStates[0].compareOp);
 
 	EXPECT_EQ(2U, result.getShaders().size());
 }
@@ -339,6 +341,7 @@ TEST(TargetGlslTest, GlslEs300)
 	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].minLod);
 	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].maxLod);
 	EXPECT_EQ(BorderColor::Unset, pipeline->second.samplerStates[0].borderColor);
+	EXPECT_EQ(CompareOp::Unset, pipeline->second.samplerStates[0].compareOp);
 
 	EXPECT_EQ(2U, result.getShaders().size());
 }
@@ -449,6 +452,7 @@ TEST(TargetGlslTest, GlslEs100)
 	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].minLod);
 	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].maxLod);
 	EXPECT_EQ(BorderColor::Unset, pipeline->second.samplerStates[0].borderColor);
+	EXPECT_EQ(CompareOp::Unset, pipeline->second.samplerStates[0].compareOp);
 
 	EXPECT_EQ(2U, result.getShaders().size());
 }

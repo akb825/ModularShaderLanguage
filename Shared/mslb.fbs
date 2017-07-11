@@ -724,6 +724,11 @@ struct SamplerState
 	 * The border color to apply.
 	 */
 	borderColor : BorderColor;
+
+	/*
+	 * The compare op for shadow samplers.
+	 */
+	compareOp : CompareOp;
 }
 
 /*

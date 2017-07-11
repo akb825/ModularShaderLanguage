@@ -782,6 +782,11 @@ typedef struct mslSamplerState
 	 * @brief The border color to apply.
 	 */
 	mslBorderColor borderColor;
+
+	/**
+	 * @brief The compare op for shadow samplers.
+	 */
+	mslCompareOp compareOp;
 } mslSamplerState;
 
 /**

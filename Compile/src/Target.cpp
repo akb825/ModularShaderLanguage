@@ -413,7 +413,8 @@ bool operator==(const SamplerState& s1, const SamplerState& s2)
 		s1.mipFilter == s2.mipFilter && s1.addressModeU == s2.addressModeU &&
 		s1.addressModeV == s2.addressModeV && s1.addressModeW == s2.addressModeW &&
 		s1.mipLodBias == s2.mipLodBias && s1.maxAnisotropy == s2.maxAnisotropy &&
-		s1.minLod == s2.minLod && s1.maxLod == s2.maxLod && s1.borderColor == s2.borderColor;
+		s1.minLod == s2.minLod && s1.maxLod == s2.maxLod && s1.borderColor == s2.borderColor &&
+		s1.compareOp == s2.compareOp;
 }
 
 static std::uint32_t addSampler(Pipeline& pipeline, const SamplerState& sampler)

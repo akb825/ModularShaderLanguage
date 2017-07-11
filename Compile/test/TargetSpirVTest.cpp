@@ -112,6 +112,7 @@ TEST(TargetSpirVTest, CompleteShader)
 	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].minLod);
 	EXPECT_EQ(unknownFloat, pipeline->second.samplerStates[0].maxLod);
 	EXPECT_EQ(BorderColor::Unset, pipeline->second.samplerStates[0].borderColor);
+	EXPECT_EQ(CompareOp::Unset, pipeline->second.samplerStates[0].compareOp);
 
 	EXPECT_EQ(2U, result.getShaders().size());
 }

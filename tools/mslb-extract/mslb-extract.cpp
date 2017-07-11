@@ -541,6 +541,15 @@ static void writeSamplerStates(std::ostream& jsonFile, const msl::Module& module
 		else
 			jsonFile << "\t\t\t\t\t\"borderColor\": null\n";
 
+		auto compareOp = static_cast<unsigned int>(samplerState.compareOp);
+		if (compareOp < sizeof(compareOpNames)/sizeof(*compareOpNames))
+		{
+			jsonFile << "\t\t\t\t\t\"compareOp\": \"" << compareOpNames[compareOp] <<
+				"\"\n";
+		}
+		else
+			jsonFile << "\t\t\t\t\t\"compareOp\": null\n";
+
 		if (j == pipeline.samplerStateCount - 1)
 			jsonFile << "\t\t\t\t}\n";
 		else

@@ -305,6 +305,8 @@ static bool isValid(const void* data, size_t size)
 				return false;
 			if (!enumInRange(sampler->borderColor()))
 				return false;
+			if (!enumInRange(sampler->compareOp()))
+				return false;
 		}
 
 		// Verify uniforms
@@ -804,6 +806,7 @@ bool mslModule_samplerState(mslSamplerState* outSamplerState, const mslModule* m
 	outSamplerState->minLod = samplerState->minLod();
 	outSamplerState->maxLod = samplerState->maxLod();
 	outSamplerState->borderColor = static_cast<mslBorderColor>(samplerState->borderColor());
+	outSamplerState->compareOp = static_cast<mslCompareOp>(samplerState->compareOp());
 	return true;
 }
 

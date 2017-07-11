@@ -294,6 +294,15 @@ The following render states are available to set:
 * `depth_bias_clamp`: set the minimum (if negative) or maximum (if positive) value to clamp the depth bias to.
 * `depth_bias_slope_factor`: set to a floating point value to add to the depth result based on the polygon slope.
 * `line_width`: set to a floating point value for the number of pixels wide to draw line primitives.
+* `compare_op`: set the compare operation to apply for shadow samplers. Possible values are:
+	* `never`
+	* `less`
+	* `equal`
+	* `less_or_equal`
+	* `greater`
+	* `not_equal`
+	* `greater_or_equal`
+	* `always`
 
 ### Multisample states
 

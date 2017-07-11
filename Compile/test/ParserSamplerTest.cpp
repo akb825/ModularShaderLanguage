@@ -635,4 +635,127 @@ TEST(ParserSamplerTest, BorderColor)
 	}
 }
 
+TEST(ParserSamplerTest, CompareOp)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	{
+		std::stringstream stream("sampler_state Test {compare_op = never ;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_TRUE(parser.parse(output));
+
+		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
+		ASSERT_EQ(1U, samplers.size());
+		EXPECT_EQ(CompareOp::Never, samplers[0].state.compareOp);
+	}
+
+	{
+		std::stringstream stream("sampler_state Test {compare_op = less;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_TRUE(parser.parse(output));
+
+		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
+		ASSERT_EQ(1U, samplers.size());
+		EXPECT_EQ(CompareOp::Less, samplers[0].state.compareOp);
+	}
+
+	{
+		std::stringstream stream("sampler_state Test {compare_op = equal;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_TRUE(parser.parse(output));
+
+		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
+		ASSERT_EQ(1U, samplers.size());
+		EXPECT_EQ(CompareOp::Equal, samplers[0].state.compareOp);
+	}
+
+	{
+		std::stringstream stream("sampler_state Test {compare_op = less_or_equal;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_TRUE(parser.parse(output));
+
+		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
+		ASSERT_EQ(1U, samplers.size());
+		EXPECT_EQ(CompareOp::LessOrEqual, samplers[0].state.compareOp);
+	}
+
+	{
+		std::stringstream stream("sampler_state Test {compare_op = greater;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_TRUE(parser.parse(output));
+
+		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
+		ASSERT_EQ(1U, samplers.size());
+		EXPECT_EQ(CompareOp::Greater, samplers[0].state.compareOp);
+	}
+
+	{
+		std::stringstream stream("sampler_state Test {compare_op = not_equal;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_TRUE(parser.parse(output));
+
+		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
+		ASSERT_EQ(1U, samplers.size());
+		EXPECT_EQ(CompareOp::NotEqual, samplers[0].state.compareOp);
+	}
+
+	{
+		std::stringstream stream("sampler_state Test {compare_op = greater_or_equal;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_TRUE(parser.parse(output));
+
+		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
+		ASSERT_EQ(1U, samplers.size());
+		EXPECT_EQ(CompareOp::GreaterOrEqual, samplers[0].state.compareOp);
+	}
+
+	{
+		std::stringstream stream("sampler_state Test {compare_op = always;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_TRUE(parser.parse(output));
+
+		const std::vector<Parser::Sampler>& samplers = parser.getSamplers();
+		ASSERT_EQ(1U, samplers.size());
+		EXPECT_EQ(CompareOp::Always, samplers[0].state.compareOp);
+	}
+
+	{
+		std::stringstream stream("sampler_state Test {compare_op = asdf;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_FALSE(parser.parse(output));
+
+		ASSERT_EQ(1U, output.getMessages().size());
+		EXPECT_EQ(path, output.getMessages()[0].file);
+		EXPECT_EQ(1U, output.getMessages()[0].line);
+		EXPECT_EQ(34U, output.getMessages()[0].column);
+		EXPECT_EQ("invalid compare op value: asdf", output.getMessages()[0].message);
+	}
+}
+
 } // namespace msl

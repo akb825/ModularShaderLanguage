@@ -793,6 +793,11 @@ struct SamplerState
 	 * @brief The border color to apply.
 	 */
 	BorderColor borderColor = BorderColor::Unset;
+
+	/**
+	 * @brief The compare op for shadow samplers.
+	 */
+	CompareOp compareOp = CompareOp::Unset;
 };
 
 /**

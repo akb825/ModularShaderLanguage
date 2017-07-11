@@ -152,7 +152,8 @@ bool CompiledResult::save(std::ostream& stream) const
 				static_cast<mslb::AddressMode>(samplerState.addressModeV),
 				static_cast<mslb::AddressMode>(samplerState.addressModeW),
 				samplerState.mipLodBias, samplerState.maxAnisotropy, samplerState.minLod,
-				samplerState.maxLod, static_cast<mslb::BorderColor>(samplerState.borderColor));
+				samplerState.maxLod, static_cast<mslb::BorderColor>(samplerState.borderColor),
+				static_cast<mslb::CompareOp>(samplerState.compareOp));
 		}
 
 		uniforms.resize(pipeline.second.uniforms.size());

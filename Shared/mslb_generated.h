@@ -1518,7 +1518,8 @@ MANUALLY_ALIGNED_STRUCT(4) SamplerState FLATBUFFERS_FINAL_CLASS {
   float minLod_;
   float maxLod_;
   int8_t borderColor_;
-  int8_t padding1__;  int16_t padding2__;
+  int8_t compareOp_;
+  int16_t padding1__;
 
  public:
   SamplerState() {
@@ -1527,7 +1528,7 @@ MANUALLY_ALIGNED_STRUCT(4) SamplerState FLATBUFFERS_FINAL_CLASS {
   SamplerState(const SamplerState &_o) {
     memcpy(this, &_o, sizeof(SamplerState));
   }
-  SamplerState(Filter _minFilter, Filter _magFilter, MipFilter _mipFilter, AddressMode _addressModeU, AddressMode _addressModeV, AddressMode _addressModeW, float _mipLodBias, float _maxAnisotropy, float _minLod, float _maxLod, BorderColor _borderColor)
+  SamplerState(Filter _minFilter, Filter _magFilter, MipFilter _mipFilter, AddressMode _addressModeU, AddressMode _addressModeV, AddressMode _addressModeW, float _mipLodBias, float _maxAnisotropy, float _minLod, float _maxLod, BorderColor _borderColor, CompareOp _compareOp)
       : minFilter_(flatbuffers::EndianScalar(static_cast<int8_t>(_minFilter))),
         magFilter_(flatbuffers::EndianScalar(static_cast<int8_t>(_magFilter))),
         mipFilter_(flatbuffers::EndianScalar(static_cast<int8_t>(_mipFilter))),
@@ -1540,10 +1541,10 @@ MANUALLY_ALIGNED_STRUCT(4) SamplerState FLATBUFFERS_FINAL_CLASS {
         minLod_(flatbuffers::EndianScalar(_minLod)),
         maxLod_(flatbuffers::EndianScalar(_maxLod)),
         borderColor_(flatbuffers::EndianScalar(static_cast<int8_t>(_borderColor))),
-        padding1__(0),
-        padding2__(0) {
+        compareOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_compareOp))),
+        padding1__(0) {
     (void)padding0__;
-    (void)padding1__;    (void)padding2__;
+    (void)padding1__;
   }
   Filter minFilter() const {
     return static_cast<Filter>(flatbuffers::EndianScalar(minFilter_));
@@ -1610,6 +1611,12 @@ MANUALLY_ALIGNED_STRUCT(4) SamplerState FLATBUFFERS_FINAL_CLASS {
   }
   void mutate_borderColor(BorderColor _borderColor) {
     flatbuffers::WriteScalar(&borderColor_, static_cast<int8_t>(_borderColor));
+  }
+  CompareOp compareOp() const {
+    return static_cast<CompareOp>(flatbuffers::EndianScalar(compareOp_));
+  }
+  void mutate_compareOp(CompareOp _compareOp) {
+    flatbuffers::WriteScalar(&compareOp_, static_cast<int8_t>(_compareOp));
   }
 };
 STRUCT_END(SamplerState, 28);

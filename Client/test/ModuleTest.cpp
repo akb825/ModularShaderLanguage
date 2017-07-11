@@ -43,26 +43,12 @@ static void testContents(Module& module)
 	Struct pipelineStruct;
 	ASSERT_EQ(2U, pipeline.structCount);
 	EXPECT_TRUE(module.pipelineStruct(pipelineStruct, 0, 0));
-	EXPECT_STREQ("Transform", pipelineStruct.name);
-	EXPECT_EQ(16*sizeof(float), pipelineStruct.size);
+	EXPECT_STREQ("Uniforms", pipelineStruct.name);
+	EXPECT_EQ(4*sizeof(float), pipelineStruct.size);
 
 	StructMember structMember;
 	ASSERT_EQ(1U, pipelineStruct.memberCount);
 	EXPECT_TRUE(module.structMember(structMember, 0, 0, 0));
-	EXPECT_STREQ("transform", structMember.name);
-	EXPECT_EQ(0U, structMember.offset);
-	EXPECT_EQ(16*sizeof(float), structMember.size);
-	EXPECT_EQ(Type::Mat4, structMember.type);
-	EXPECT_EQ(unknown, structMember.structIndex);
-	EXPECT_EQ(0U, structMember.arrayElementCount);
-	EXPECT_FALSE(structMember.rowMajor);
-
-	EXPECT_TRUE(module.pipelineStruct(pipelineStruct, 0, 1));
-	EXPECT_STREQ("Uniforms", pipelineStruct.name);
-	EXPECT_EQ(4*sizeof(float), pipelineStruct.size);
-
-	ASSERT_EQ(1U, pipelineStruct.memberCount);
-	EXPECT_TRUE(module.structMember(structMember, 0, 1, 0));
 	EXPECT_STREQ("texCoords", structMember.name);
 	EXPECT_EQ(0U, structMember.offset);
 	EXPECT_EQ(4*sizeof(float), structMember.size);
@@ -72,23 +58,47 @@ static void testContents(Module& module)
 	EXPECT_FALSE(structMember.rowMajor);
 
 	ArrayInfo arrayInfo;
-	EXPECT_TRUE(module.structMemberArrayInfo(arrayInfo, 0, 1, 0, 0));
+	EXPECT_TRUE(module.structMemberArrayInfo(arrayInfo, 0, 0, 0, 0));
 	EXPECT_EQ(2U, arrayInfo.length);
 	EXPECT_EQ(2*sizeof(float), arrayInfo.stride);
 
+	EXPECT_TRUE(module.pipelineStruct(pipelineStruct, 0, 1));
+	EXPECT_STREQ("Transform", pipelineStruct.name);
+	EXPECT_EQ(16*sizeof(float), pipelineStruct.size);
+
+	ASSERT_EQ(1U, pipelineStruct.memberCount);
+	EXPECT_TRUE(module.structMember(structMember, 0, 1, 0));
+	EXPECT_STREQ("transform", structMember.name);
+	EXPECT_EQ(0U, structMember.offset);
+	EXPECT_EQ(16*sizeof(float), structMember.size);
+	EXPECT_EQ(Type::Mat4, structMember.type);
+	EXPECT_EQ(unknown, structMember.structIndex);
+	EXPECT_EQ(0U, structMember.arrayElementCount);
+	EXPECT_FALSE(structMember.rowMajor);
+
 	Uniform uniform;
-	ASSERT_EQ(2U, pipeline.uniformCount);
+	ASSERT_EQ(3U, pipeline.uniformCount);
 	EXPECT_TRUE(module.uniform(uniform, 0, 0));
+	EXPECT_STREQ("Uniforms", uniform.name);
+	EXPECT_EQ(UniformType::PushConstant, uniform.uniformType);
+	EXPECT_EQ(Type::Struct, uniform.type);
+	EXPECT_EQ(0U, uniform.structIndex);
+	EXPECT_EQ(0U, uniform.arrayElementCount);
+	EXPECT_EQ(unknown, uniform.descriptorSet);
+	EXPECT_EQ(unknown, uniform.binding);
+	EXPECT_EQ(unknown, uniform.samplerIndex);
+
+	EXPECT_TRUE(module.uniform(uniform, 0, 1));
 	EXPECT_STREQ("Transform", uniform.name);
 	EXPECT_EQ(UniformType::Block, uniform.uniformType);
 	EXPECT_EQ(Type::Struct, uniform.type);
-	EXPECT_EQ(0U, uniform.structIndex);
+	EXPECT_EQ(1U, uniform.structIndex);
 	EXPECT_EQ(0U, uniform.arrayElementCount);
 	EXPECT_EQ(0U, uniform.descriptorSet);
 	EXPECT_EQ(unknown, uniform.binding);
 	EXPECT_EQ(unknown, uniform.samplerIndex);
 
-	EXPECT_TRUE(module.uniform(uniform, 0, 1));
+	EXPECT_TRUE(module.uniform(uniform, 0, 2));
 	EXPECT_STREQ("tex", uniform.name);
 	EXPECT_EQ(UniformType::SampledImage, uniform.uniformType);
 	EXPECT_EQ(Type::Sampler2D, uniform.type);
@@ -172,12 +182,26 @@ static void testContents(const mslModule* module)
 	mslStruct pipelineStruct;
 	ASSERT_EQ(2U, pipeline.structCount);
 	EXPECT_TRUE(mslModule_struct(&pipelineStruct, module, 0, 0));
-	EXPECT_STREQ("Transform", pipelineStruct.name);
-	EXPECT_EQ(16*sizeof(float), pipelineStruct.size);
+	EXPECT_STREQ("Uniforms", pipelineStruct.name);
+	EXPECT_EQ(4*sizeof(float), pipelineStruct.size);
 
 	mslStructMember structMember;
 	ASSERT_EQ(1U, pipelineStruct.memberCount);
 	EXPECT_TRUE(mslModule_structMember(&structMember, module, 0, 0, 0));
+	EXPECT_STREQ("texCoords", structMember.name);
+	EXPECT_EQ(0U, structMember.offset);
+	EXPECT_EQ(4*sizeof(float), structMember.size);
+	EXPECT_EQ(mslType_Vec2, structMember.type);
+	EXPECT_EQ(MSL_UNKNOWN, structMember.structIndex);
+	ASSERT_EQ(1U, structMember.arrayElementCount);
+	EXPECT_FALSE(structMember.rowMajor);
+
+	EXPECT_TRUE(mslModule_struct(&pipelineStruct, module, 0, 1));
+	EXPECT_STREQ("Transform", pipelineStruct.name);
+	EXPECT_EQ(16*sizeof(float), pipelineStruct.size);
+
+	ASSERT_EQ(1U, pipelineStruct.memberCount);
+	EXPECT_TRUE(mslModule_structMember(&structMember, module, 0, 1, 0));
 	EXPECT_STREQ("transform", structMember.name);
 	EXPECT_EQ(0U, structMember.offset);
 	EXPECT_EQ(16*sizeof(float), structMember.size);
@@ -187,18 +211,28 @@ static void testContents(const mslModule* module)
 	EXPECT_FALSE(structMember.rowMajor);
 
 	mslUniform uniform;
-	ASSERT_EQ(2U, pipeline.uniformCount);
+	ASSERT_EQ(3U, pipeline.uniformCount);
 	EXPECT_TRUE(mslModule_uniform(&uniform, module, 0, 0));
+	EXPECT_STREQ("Uniforms", uniform.name);
+	EXPECT_EQ(mslUniformType_PushConstant, uniform.uniformType);
+	EXPECT_EQ(mslType_Struct, uniform.type);
+	EXPECT_EQ(0U, uniform.structIndex);
+	EXPECT_EQ(0U, uniform.arrayElementCount);
+	EXPECT_EQ(MSL_UNKNOWN, uniform.descriptorSet);
+	EXPECT_EQ(MSL_UNKNOWN, uniform.binding);
+	EXPECT_EQ(MSL_UNKNOWN, uniform.samplerIndex);
+
+	EXPECT_TRUE(mslModule_uniform(&uniform, module, 0, 1));
 	EXPECT_STREQ("Transform", uniform.name);
 	EXPECT_EQ(mslUniformType_Block, uniform.uniformType);
 	EXPECT_EQ(mslType_Struct, uniform.type);
-	EXPECT_EQ(0U, uniform.structIndex);
+	EXPECT_EQ(1U, uniform.structIndex);
 	EXPECT_EQ(0U, uniform.arrayElementCount);
 	EXPECT_EQ(0U, uniform.descriptorSet);
 	EXPECT_EQ(MSL_UNKNOWN, uniform.binding);
 	EXPECT_EQ(MSL_UNKNOWN, uniform.samplerIndex);
 
-	EXPECT_TRUE(mslModule_uniform(&uniform, module, 0, 1));
+	EXPECT_TRUE(mslModule_uniform(&uniform, module, 0, 2));
 	EXPECT_STREQ("tex", uniform.name);
 	EXPECT_EQ(mslUniformType_SampledImage, uniform.uniformType);
 	EXPECT_EQ(mslType_Sampler2D, uniform.type);
@@ -207,25 +241,6 @@ static void testContents(const mslModule* module)
 	EXPECT_EQ(0U, uniform.descriptorSet);
 	EXPECT_EQ(MSL_UNKNOWN, uniform.binding);
 	EXPECT_EQ(0U, uniform.samplerIndex);
-
-	EXPECT_TRUE(mslModule_struct(&pipelineStruct, module, 0, 1));
-	EXPECT_STREQ("Uniforms", pipelineStruct.name);
-	EXPECT_EQ(4*sizeof(float), pipelineStruct.size);
-
-	ASSERT_EQ(1U, pipelineStruct.memberCount);
-	EXPECT_TRUE(mslModule_structMember(&structMember, module, 0, 1, 0));
-	EXPECT_STREQ("texCoords", structMember.name);
-	EXPECT_EQ(0U, structMember.offset);
-	EXPECT_EQ(4*sizeof(float), structMember.size);
-	EXPECT_EQ(mslType_Vec2, structMember.type);
-	EXPECT_EQ(MSL_UNKNOWN, structMember.structIndex);
-	ASSERT_EQ(1U, structMember.arrayElementCount);
-	EXPECT_FALSE(structMember.rowMajor);
-
-	mslArrayInfo arrayInfo;
-	EXPECT_TRUE(mslModule_structMemberArrayInfo(&arrayInfo, module, 0, 1, 0, 0));
-	EXPECT_EQ(2U, arrayInfo.length);
-	EXPECT_EQ(2*sizeof(float), arrayInfo.stride);
 
 	mslAttribute attribute;
 	ASSERT_EQ(2U, pipeline.attributeCount);
@@ -257,6 +272,7 @@ static void testContents(const mslModule* module)
 	EXPECT_EQ(MSL_UNKNOWN_FLOAT, samplerState.minLod);
 	EXPECT_EQ(MSL_UNKNOWN_FLOAT, samplerState.maxLod);
 	EXPECT_EQ(mslBorderColor_Unset, samplerState.borderColor);
+	EXPECT_EQ(mslCompareOp_Unset, samplerState.compareOp);
 
 	mslRenderState renderState;
 	EXPECT_TRUE(mslModule_renderState(&renderState, module, 0));
