@@ -289,8 +289,8 @@ MSL_CLIENT_EXPORT bool mslModule_setUniformBinding(mslModule* module, uint32_t p
  * @param uniformIndex The index of the uniform within the pipeline.
  * @param descriptorSet The new descriptor set to use.
  * @param binding The new binding index set to use.
- * @param shaderData The data for the shader stages. This must match have come from the original
- *     shader data.
+ * @param shaderData The data for the shader stages. This must have come from the original shader
+ *     data.
  * @return False if the parameters are incorrect or the bindings aren't adjustable.
  */
 MSL_CLIENT_EXPORT bool mslModule_setUniformBindingCopy(const mslModule* module,
