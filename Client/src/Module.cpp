@@ -832,6 +832,7 @@ bool mslModule_uniform(mslUniform* outUniform, const mslModule* module, uint32_t
 	outUniform->arrayElementCount = arrayElements ? arrayElements->size() : 0;
 	outUniform->descriptorSet = uniform->descriptorSet();
 	outUniform->binding = uniform->binding();
+	outUniform->inputAttachmentIndex = uniform->inputAttachmentIndex();
 	outUniform->samplerIndex = uniform->samplerIndex();
 	return true;
 }

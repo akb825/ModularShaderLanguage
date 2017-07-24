@@ -2106,7 +2106,8 @@ struct Uniform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_ARRAYELEMENTS = 12,
     VT_DESCRIPTORSET = 14,
     VT_BINDING = 16,
-    VT_SAMPLERINDEX = 18
+    VT_INPUTATTACHMENTINDEX = 18,
+    VT_SAMPLERINDEX = 20
   };
   const flatbuffers::String *name() const {
     return GetPointer<const flatbuffers::String *>(VT_NAME);
@@ -2150,6 +2151,12 @@ struct Uniform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_binding(uint32_t _binding) {
     return SetField<uint32_t>(VT_BINDING, _binding, 0);
   }
+  uint32_t inputAttachmentIndex() const {
+    return GetField<uint32_t>(VT_INPUTATTACHMENTINDEX, 0);
+  }
+  bool mutate_inputAttachmentIndex(uint32_t _inputAttachmentIndex) {
+    return SetField<uint32_t>(VT_INPUTATTACHMENTINDEX, _inputAttachmentIndex, 0);
+  }
   uint32_t samplerIndex() const {
     return GetField<uint32_t>(VT_SAMPLERINDEX, 0);
   }
@@ -2167,6 +2174,7 @@ struct Uniform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.Verify(arrayElements()) &&
            VerifyField<uint32_t>(verifier, VT_DESCRIPTORSET) &&
            VerifyField<uint32_t>(verifier, VT_BINDING) &&
+           VerifyField<uint32_t>(verifier, VT_INPUTATTACHMENTINDEX) &&
            VerifyField<uint32_t>(verifier, VT_SAMPLERINDEX) &&
            verifier.EndTable();
   }
@@ -2196,6 +2204,9 @@ struct UniformBuilder {
   void add_binding(uint32_t binding) {
     fbb_.AddElement<uint32_t>(Uniform::VT_BINDING, binding, 0);
   }
+  void add_inputAttachmentIndex(uint32_t inputAttachmentIndex) {
+    fbb_.AddElement<uint32_t>(Uniform::VT_INPUTATTACHMENTINDEX, inputAttachmentIndex, 0);
+  }
   void add_samplerIndex(uint32_t samplerIndex) {
     fbb_.AddElement<uint32_t>(Uniform::VT_SAMPLERINDEX, samplerIndex, 0);
   }
@@ -2205,7 +2216,7 @@ struct UniformBuilder {
   }
   UniformBuilder &operator=(const UniformBuilder &);
   flatbuffers::Offset<Uniform> Finish() {
-    const auto end = fbb_.EndTable(start_, 8);
+    const auto end = fbb_.EndTable(start_, 9);
     auto o = flatbuffers::Offset<Uniform>(end);
     fbb_.Required(o, Uniform::VT_NAME);
     return o;
@@ -2221,9 +2232,11 @@ inline flatbuffers::Offset<Uniform> CreateUniform(
     flatbuffers::Offset<flatbuffers::Vector<const ArrayInfo *>> arrayElements = 0,
     uint32_t descriptorSet = 0,
     uint32_t binding = 0,
+    uint32_t inputAttachmentIndex = 0,
     uint32_t samplerIndex = 0) {
   UniformBuilder builder_(_fbb);
   builder_.add_samplerIndex(samplerIndex);
+  builder_.add_inputAttachmentIndex(inputAttachmentIndex);
   builder_.add_binding(binding);
   builder_.add_descriptorSet(descriptorSet);
   builder_.add_arrayElements(arrayElements);
@@ -2243,6 +2256,7 @@ inline flatbuffers::Offset<Uniform> CreateUniformDirect(
     const std::vector<const ArrayInfo *> *arrayElements = nullptr,
     uint32_t descriptorSet = 0,
     uint32_t binding = 0,
+    uint32_t inputAttachmentIndex = 0,
     uint32_t samplerIndex = 0) {
   return mslb::CreateUniform(
       _fbb,
@@ -2253,6 +2267,7 @@ inline flatbuffers::Offset<Uniform> CreateUniformDirect(
       arrayElements ? _fbb.CreateVector<const ArrayInfo *>(*arrayElements) : 0,
       descriptorSet,
       binding,
+      inputAttachmentIndex,
       samplerIndex);
 }
 

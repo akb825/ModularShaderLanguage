@@ -934,6 +934,13 @@ struct Uniform
 	std::uint32_t binding;
 
 	/**
+	 * @brief The input attachment index for subpass inputs.
+	 *
+	 * This may be set to unknown if not set.
+	 */
+	std::uint32_t inputAttachmentIndex;
+
+	/**
 	 * @brief The index of the sampler state to use for sampler states.
 	 *
 	 * This will be set to unknown for non-sampler types or when no sampler state is defined.

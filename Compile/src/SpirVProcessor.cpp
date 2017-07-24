@@ -125,6 +125,7 @@ struct IntermediateData
 	// Metadata
 	std::unordered_map<std::uint32_t, std::uint32_t> descriptorSets;
 	std::unordered_map<std::uint32_t, std::uint32_t> bindings;
+	std::unordered_map<std::uint32_t, std::uint32_t> inputAttachmentIndices;
 	std::unordered_map<std::uint32_t, std::uint32_t> locations;
 	std::unordered_map<std::uint32_t, std::uint32_t> components;
 	std::unordered_set<std::uint32_t> inputOutputStructs;
@@ -1140,6 +1141,7 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 		uniform.uniformType = UniformType::PushConstant;
 		uniform.descriptorSet = unknown;
 		uniform.binding = unknown;
+		uniform.inputAttachmentIndex = unknown;
 		uniform.samplerIndex = unknown;
 
 		++i;
@@ -1182,6 +1184,7 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 		else
 			uniform.binding = foundBinding->second;
 
+		uniform.inputAttachmentIndex = unknown;
 		uniform.samplerIndex = unknown;
 
 		++i;
@@ -1218,6 +1221,12 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 			uniform.binding = unknown;
 		else
 			uniform.binding = foundBinding->second;
+
+		auto foundInputAttachmentIndex = data.inputAttachmentIndices.find(imageIndices.first);
+		if (foundInputAttachmentIndex == data.inputAttachmentIndices.end())
+			uniform.inputAttachmentIndex = unknown;
+		else
+			uniform.inputAttachmentIndex = foundInputAttachmentIndex->second;
 
 		uniform.samplerIndex = unknown;
 
@@ -1781,14 +1790,6 @@ void addDummyBinding(std::vector<std::uint32_t>& spirv, std::uint32_t id)
 	spirv.push_back(unknown);
 }
 
-void addDummyInputAttachmentIndex(std::vector<std::uint32_t>& spirv, std::uint32_t id)
-{
-	spirv.push_back((4 << spv::WordCountShift) | spv::OpDecorate);
-	spirv.push_back(id);
-	spirv.push_back(spv::DecorationInputAttachmentIndex);
-	spirv.push_back(unknown);
-}
-
 void addLocation(std::vector<std::uint32_t>& spirv, std::uint32_t id, std::uint32_t index)
 {
 	spirv.push_back((4 << spv::WordCountShift) | spv::OpDecorate);
@@ -1899,9 +1900,12 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 						data.descriptorSets[id] = spirv[i + 3];
 						break;
 					case spv::DecorationBinding:
-					case spv::DecorationInputAttachmentIndex:
 						assert(wordCount == 4);
 						data.bindings[id] = spirv[i + 3];
+						break;
+					case spv::DecorationInputAttachmentIndex:
+						assert(wordCount == 4);
+						data.inputAttachmentIndices[id] = spirv[i + 3];
 						break;
 					case spv::DecorationLocation:
 						assert(wordCount == 4);
@@ -2621,13 +2625,8 @@ std::vector<std::uint32_t> SpirVProcessor::process(Strip strip, bool dummyBindin
 					{
 						if (uniforms[j].descriptorSet == unknown)
 							addDummyDescriptorSet(result, uniformIds[j]);
-						if (uniforms[j].descriptorSet == unknown)
-						{
-							if (uniforms[j].uniformType == UniformType::SubpassInput)
-								addDummyInputAttachmentIndex(result, uniformIds[j]);
-							else
-								addDummyBinding(result, uniformIds[j]);
-						}
+						if (uniforms[j].binding == unknown)
+							addDummyBinding(result, uniformIds[j]);
 					}
 				}
 

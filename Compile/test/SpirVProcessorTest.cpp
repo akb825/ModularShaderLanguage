@@ -506,32 +506,32 @@ TEST_F(SpirVProcessorTest, PrimitiveTypes)
 	EXPECT_EQ("SubpassInput", processor.uniforms[63].name);
 	EXPECT_EQ(UniformType::SubpassInput, processor.uniforms[63].uniformType);
 	EXPECT_EQ(Type::SubpassInput, processor.uniforms[63].type);
-	EXPECT_EQ(0U, processor.uniforms[63].binding);
+	EXPECT_EQ(0U, processor.uniforms[63].inputAttachmentIndex);
 
 	EXPECT_EQ("SubpassInputMS", processor.uniforms[64].name);
 	EXPECT_EQ(UniformType::SubpassInput, processor.uniforms[64].uniformType);
 	EXPECT_EQ(Type::SubpassInputMS, processor.uniforms[64].type);
-	EXPECT_EQ(1U, processor.uniforms[64].binding);
+	EXPECT_EQ(1U, processor.uniforms[64].inputAttachmentIndex);
 
 	EXPECT_EQ("ISubpassInput", processor.uniforms[65].name);
 	EXPECT_EQ(UniformType::SubpassInput, processor.uniforms[65].uniformType);
 	EXPECT_EQ(Type::ISubpassInput, processor.uniforms[65].type);
-	EXPECT_EQ(2U, processor.uniforms[65].binding);
+	EXPECT_EQ(2U, processor.uniforms[65].inputAttachmentIndex);
 
 	EXPECT_EQ("ISubpassInputMS", processor.uniforms[66].name);
 	EXPECT_EQ(UniformType::SubpassInput, processor.uniforms[66].uniformType);
 	EXPECT_EQ(Type::ISubpassInputMS, processor.uniforms[66].type);
-	EXPECT_EQ(3U, processor.uniforms[66].binding);
+	EXPECT_EQ(3U, processor.uniforms[66].inputAttachmentIndex);
 
 	EXPECT_EQ("USubpassInput", processor.uniforms[67].name);
 	EXPECT_EQ(UniformType::SubpassInput, processor.uniforms[67].uniformType);
 	EXPECT_EQ(Type::USubpassInput, processor.uniforms[67].type);
-	EXPECT_EQ(4U, processor.uniforms[67].binding);
+	EXPECT_EQ(4U, processor.uniforms[67].inputAttachmentIndex);
 
 	EXPECT_EQ("USubpassInputMS", processor.uniforms[68].name);
 	EXPECT_EQ(UniformType::SubpassInput, processor.uniforms[68].uniformType);
 	EXPECT_EQ(Type::USubpassInputMS, processor.uniforms[68].type);
-	EXPECT_EQ(5U, processor.uniforms[68].binding);
+	EXPECT_EQ(5U, processor.uniforms[68].inputAttachmentIndex);
 }
 
 TEST_F(SpirVProcessorTest, StructArrayReflection)

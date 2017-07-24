@@ -174,7 +174,8 @@ bool CompiledResult::save(std::ostream& stream) const
 				static_cast<mslb::UniformType>(uniform.uniformType),
 				static_cast<mslb::Type>(uniform.type), uniform.structIndex,
 				arrayElements.empty() ? 0 : builder.CreateVectorOfStructs(arrayElements),
-				uniform.descriptorSet, uniform.binding, uniform.samplerIndex);
+				uniform.descriptorSet, uniform.binding, uniform.inputAttachmentIndex,
+				uniform.samplerIndex);
 		}
 
 		attributes.resize(pipeline.second.attributes.size());

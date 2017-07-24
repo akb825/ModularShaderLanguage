@@ -86,6 +86,7 @@ static void testContents(Module& module)
 	EXPECT_EQ(0U, uniform.arrayElementCount);
 	EXPECT_EQ(unknown, uniform.descriptorSet);
 	EXPECT_EQ(unknown, uniform.binding);
+	EXPECT_EQ(unknown, uniform.inputAttachmentIndex);
 	EXPECT_EQ(unknown, uniform.samplerIndex);
 
 	EXPECT_TRUE(module.uniform(uniform, 0, 1));
@@ -96,6 +97,7 @@ static void testContents(Module& module)
 	EXPECT_EQ(0U, uniform.arrayElementCount);
 	EXPECT_EQ(0U, uniform.descriptorSet);
 	EXPECT_EQ(unknown, uniform.binding);
+	EXPECT_EQ(unknown, uniform.inputAttachmentIndex);
 	EXPECT_EQ(unknown, uniform.samplerIndex);
 
 	EXPECT_TRUE(module.uniform(uniform, 0, 2));
@@ -106,6 +108,7 @@ static void testContents(Module& module)
 	EXPECT_EQ(0U, uniform.arrayElementCount);
 	EXPECT_EQ(0U, uniform.descriptorSet);
 	EXPECT_EQ(unknown, uniform.binding);
+	EXPECT_EQ(unknown, uniform.inputAttachmentIndex);
 	EXPECT_EQ(0U, uniform.samplerIndex);
 
 	Attribute attribute;
@@ -220,6 +223,7 @@ static void testContents(const mslModule* module)
 	EXPECT_EQ(0U, uniform.arrayElementCount);
 	EXPECT_EQ(MSL_UNKNOWN, uniform.descriptorSet);
 	EXPECT_EQ(MSL_UNKNOWN, uniform.binding);
+	EXPECT_EQ(MSL_UNKNOWN, uniform.inputAttachmentIndex);
 	EXPECT_EQ(MSL_UNKNOWN, uniform.samplerIndex);
 
 	EXPECT_TRUE(mslModule_uniform(&uniform, module, 0, 1));
@@ -230,6 +234,7 @@ static void testContents(const mslModule* module)
 	EXPECT_EQ(0U, uniform.arrayElementCount);
 	EXPECT_EQ(0U, uniform.descriptorSet);
 	EXPECT_EQ(MSL_UNKNOWN, uniform.binding);
+	EXPECT_EQ(MSL_UNKNOWN, uniform.inputAttachmentIndex);
 	EXPECT_EQ(MSL_UNKNOWN, uniform.samplerIndex);
 
 	EXPECT_TRUE(mslModule_uniform(&uniform, module, 0, 2));
@@ -240,6 +245,7 @@ static void testContents(const mslModule* module)
 	EXPECT_EQ(0U, uniform.arrayElementCount);
 	EXPECT_EQ(0U, uniform.descriptorSet);
 	EXPECT_EQ(MSL_UNKNOWN, uniform.binding);
+	EXPECT_EQ(MSL_UNKNOWN, uniform.inputAttachmentIndex);
 	EXPECT_EQ(0U, uniform.samplerIndex);
 
 	mslAttribute attribute;
