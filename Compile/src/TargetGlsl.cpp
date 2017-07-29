@@ -273,6 +273,8 @@ bool TargetGlsl::featureSupported(Feature feature) const
 			else
 				return m_version >= 400;
 		case Feature::TexelFetch:
+		// SPIRV-Cross emulates subpass inputs with texelFetch().
+		case Feature::SubpassInputs:
 			if (m_es)
 				return m_version >= 300;
 			else
@@ -307,8 +309,6 @@ bool TargetGlsl::featureSupported(Feature feature) const
 				return m_version >= 300;
 			else
 				return m_version >= 410;
-		case Feature::SubpassInputs:
-			return false;
 	}
 
 	return false;
