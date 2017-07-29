@@ -29,7 +29,6 @@ namespace msl
 TargetMetal::TargetMetal(std::uint32_t version, bool isIos)
 	: m_version(version)
 	, m_ios(isIos)
-	, m_remapDepthRange(false)
 	, m_flipVertexY(true)
 {
 }
@@ -41,16 +40,6 @@ TargetMetal::~TargetMetal()
 bool TargetMetal::isIos() const
 {
 	return m_ios;
-}
-
-bool TargetMetal::getRemapDepthRange() const
-{
-	return m_remapDepthRange;
-}
-
-void TargetMetal::setRemapDepthRange(bool remap)
-{
-	m_remapDepthRange = remap;
 }
 
 bool TargetMetal::getFlipVertexY() const
@@ -111,7 +100,6 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 
 	// Check to see if the entry point was already compiled.
 	MetalOutput::Options options;
-	options.remapDepthRange = m_remapDepthRange;
 	options.flipVertexY = m_flipVertexY;
 
 	std::string metal = MetalOutput::disassemble(output, spirv, options, fileName, line, column);

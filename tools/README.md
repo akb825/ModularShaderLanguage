@@ -33,7 +33,7 @@ For example:
 
 ## Options in target configuration file
 
-* **target = _arg_**: the target to compile for. Possible values are**: spirv, glsl, glsl-es, metal-osx, metal-ios
+* **target = _arg_**: the target to compile for. Possible values are: spirv, glsl, glsl-es, metal-osx, metal-ios
 * **version = _arg_**: the version of the target. Required for GLSL and Metal.
 * **define = _arg_**: add a define for the preprocessor. A value may optionally be assigned with =. (i.e. DEFINE=val)
 * **force-enable = _arg_**: force a feature to be enabled
@@ -43,10 +43,11 @@ For example:
 * **remap-variables = _arg_**: boolean value for whether or not to remap variable ranges to improve compression of SPIR-V.
 * **dummy-bindings = _arg_**: boolean value for whether or not to add dummy bindings to be changed later for SPIR-V; this will generally be done with a copy of the data.
 * **adjustable-bindings = _arg_**: boolean value for whether or not to allow bindings to be adjusted in-place from the client library for SPIR-V; this also enables dummy-bindings.
-* **remap-depth-range = _arg_**: boolean for whether or not to remap the depth range from \[0, 1\] to \[-1, 1\] in the  vertex shader output for GLSL or Metal targets. Defaults to false.
+* **remap-depth-range = _arg_**: boolean for whether or not to remap the depth range from \[0, 1\] to \[-1, 1\] in the  vertex shader output for GLSL targets. Defaults to false.
 * **flip-vertex-y = _arg_**: boolean for whether or not to flip the vertex y coordinate for Metal targets. Defaults to true.
-* **default-float-precision = _arg_**: the default precision to use for floats in GLSL targets. Possible values are**: none, low, medium, high. Defaults to medium.
-* **default-int-precision = _arg_**: the default precision to use for ints in in GLSL targets. Possible values are**: none, low, medium, high. Defaults to high. header-line = _arg_**: header line to be added verbatim for GLSL targets. This will be used for all stages.
+* **default-float-precision = _arg_**: the default precision to use for floats in GLSL targets. Possible values are: none, low, medium, high. Defaults to medium.
+* **default-int-precision = _arg_**: the default precision to use for ints in in GLSL targets. Possible values are: none, low, medium, high. Defaults to high.
+* **header-line = _arg_**: header line to be added verbatim for GLSL targets. This will be used for all stages.
 * **header-line-vert = _arg_**: header line to be added verbatim for GLSL targets. This will be used for the vertex stage.
 * **header-line-tess-ctrl = _arg_**: header line to be added verbatim for GLSL targets. This will be used for the tessellation control stage.
 * **header-line-tess-eval = _arg_**: header line to be added verbatim for GLSL targets. This will be used for the tessellation evaluation stage.

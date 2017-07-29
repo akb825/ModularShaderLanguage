@@ -67,19 +67,6 @@ public:
 	bool isIos() const;
 
 	/**
-	 * @brief Returns whether or not to remap the depth range from Vulkan to Metal. Defaults to
-	 * true.
-	 * @return True to remap depth range.
-	 */
-	bool getRemapDepthRange() const;
-
-	/**
-	 * @brief Sets whether or not to remap the depth range from Vulkan to Metal. Defaults to true.
-	 * @param remap True to remap depth range.
-	 */
-	void setRemapDepthRange(bool remap);
-
-	/**
 	 * @brief Returns whether or not to flip the vertex Y coordinates. Defaults to true.
 	 * @return True to flip vertex Y.
 	 */
@@ -107,7 +94,6 @@ private:
 	std::uint32_t m_version;
 	bool m_ios;
 
-	bool m_remapDepthRange;
 	bool m_flipVertexY;
 };
 

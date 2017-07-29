@@ -250,9 +250,6 @@ static std::unique_ptr<msl::Target> createMetalTarget(const std::string& targetN
 
 	std::unique_ptr<msl::TargetMetal> target(new msl::TargetMetal(version, ios));
 
-	if (config.count("remap-depth-range"))
-		target->setRemapDepthRange(config["remap-depth-range"].as<bool>());
-
 	if (config.count("flip-vertex-y"))
 		target->setFlipVertexY(config["flip-vertex-y"].as<bool>());
 
