@@ -66,18 +66,6 @@ public:
 	 */
 	bool isIos() const;
 
-	/**
-	 * @brief Returns whether or not to flip the vertex Y coordinates. Defaults to true.
-	 * @return True to flip vertex Y.
-	 */
-	bool getFlipVertexY() const;
-
-	/**
-	 * @brief Sets whether or not to flip the vertex Y coordinates. Defaults to true.
-	 * @param flip True to flip vertex Y.
-	 */
-	void setFlipVertexY(bool flip);
-
 	std::uint32_t getId() const override;
 	std::uint32_t getVersion() const override;
 	bool featureSupported(Feature feature) const override;
@@ -93,8 +81,6 @@ private:
 
 	std::uint32_t m_version;
 	bool m_ios;
-
-	bool m_flipVertexY;
 };
 
 } // namespace msl

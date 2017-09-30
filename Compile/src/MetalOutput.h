@@ -25,13 +25,8 @@ namespace msl
 class MetalOutput
 {
 public:
-	struct Options
-	{
-		bool flipVertexY;
-	};
-
 	static std::string disassemble(Output& output, const Compiler::SpirV& spirv,
-		const Options& options, const std::string& fileName, std::size_t line, std::size_t column);
+		const std::string& fileName, std::size_t line, std::size_t column);
 };
 
 } // namespace msl

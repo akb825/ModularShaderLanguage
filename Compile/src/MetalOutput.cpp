@@ -22,13 +22,9 @@ namespace msl
 {
 
 std::string MetalOutput::disassemble(Output& output, const Compiler::SpirV& spirv,
-	const Options& options, const std::string& fileName, std::size_t line, std::size_t column)
+	const std::string& fileName, std::size_t line, std::size_t column)
 {
-	spirv_cross::CompilerMSL::Options compilerOptions;
-	compilerOptions.flip_vert_y = options.flipVertexY;
-
 	spirv_cross::CompilerMSL compiler(spirv);
-	compiler.set_options(compilerOptions);
 	try
 	{
 		return compiler.compile();

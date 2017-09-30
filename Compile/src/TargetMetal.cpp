@@ -29,7 +29,6 @@ namespace msl
 TargetMetal::TargetMetal(std::uint32_t version, bool isIos)
 	: m_version(version)
 	, m_ios(isIos)
-	, m_flipVertexY(true)
 {
 }
 
@@ -40,16 +39,6 @@ TargetMetal::~TargetMetal()
 bool TargetMetal::isIos() const
 {
 	return m_ios;
-}
-
-bool TargetMetal::getFlipVertexY() const
-{
-	return m_flipVertexY;
-}
-
-void TargetMetal::setFlipVertexY(bool flip)
-{
-	m_flipVertexY = flip;
 }
 
 std::uint32_t TargetMetal::getId() const
@@ -97,12 +86,7 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 	const std::string& fileName, std::size_t line, std::size_t column, compile::Stage,
 	const std::vector<std::uint32_t>& spirv, const std::string& entryPoint)
 {
-
-	// Check to see if the entry point was already compiled.
-	MetalOutput::Options options;
-	options.flipVertexY = m_flipVertexY;
-
-	std::string metal = MetalOutput::disassemble(output, spirv, options, fileName, line, column);
+	std::string metal = MetalOutput::disassemble(output, spirv, fileName, line, column);
 	if (metal.empty())
 		return false;
 

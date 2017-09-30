@@ -44,7 +44,6 @@ For example:
 * **dummy-bindings = _arg_**: boolean value for whether or not to add dummy bindings to be changed later for SPIR-V; this will generally be done with a copy of the data.
 * **adjustable-bindings = _arg_**: boolean value for whether or not to allow bindings to be adjusted in-place from the client library for SPIR-V; this also enables dummy-bindings.
 * **remap-depth-range = _arg_**: boolean for whether or not to remap the depth range from \[0, 1\] to \[-1, 1\] in the  vertex shader output for GLSL targets. Defaults to false.
-* **flip-vertex-y = _arg_**: boolean for whether or not to flip the vertex y coordinate for Metal targets. Defaults to true.
 * **default-float-precision = _arg_**: the default precision to use for floats in GLSL targets. Possible values are: none, low, medium, high. Defaults to medium.
 * **default-int-precision = _arg_**: the default precision to use for ints in in GLSL targets. Possible values are: none, low, medium, high. Defaults to high.
 * **header-line = _arg_**: header line to be added verbatim for GLSL targets. This will be used for all stages.

@@ -250,9 +250,6 @@ static std::unique_ptr<msl::Target> createMetalTarget(const std::string& targetN
 
 	std::unique_ptr<msl::TargetMetal> target(new msl::TargetMetal(version, ios));
 
-	if (config.count("flip-vertex-y"))
-		target->setFlipVertexY(config["flip-vertex-y"].as<bool>());
-
 	return std::move(target);
 }
 
@@ -457,8 +454,6 @@ int main(int argc, char** argv)
 		("remap-depth-range", value<bool>(), "boolean for whether or not to remap the depth range "
 			"from [0, 1] to [-1, 1] in the  vertex shader output for GLSL or Metal targets. "
 			"Defaults to false.")
-		("flip-vertex-y", value<bool>(), "boolean for whether or not to flip the vertex y "
-			"coordinate for Metal targets. Defaults to true.")
 		("default-float-precision", value<std::string>(), "the default precision to use for "
 			"floats in GLSL targets. Possible values are: none, low, medium, high. Defaults to "
 			"medium.")
