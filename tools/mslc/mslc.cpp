@@ -23,12 +23,20 @@
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/program_options.hpp>
+#include <algorithm>
 #include <iostream>
 #include <memory>
 #include <sstream>
 #include <unordered_map>
 
 using namespace boost::program_options;
+
+static std::string filterHeader(const std::string& line)
+{
+	std::string filtered = line;
+	std::replace(filtered.begin(), filtered.end(), '@', '#');
+	return filtered;
+}
 
 static std::unique_ptr<msl::Target> createGlslTarget(const std::string& targetName,
 	const variables_map& config, const std::string& configFilePath)
@@ -102,43 +110,43 @@ static std::unique_ptr<msl::Target> createGlslTarget(const std::string& targetNa
 	if (config.count("header-line"))
 	{
 		for (const std::string& str : config["header-line"].as<std::vector<std::string>>())
-			target->addHeaderLine(str);
+			target->addHeaderLine(filterHeader(str));
 	}
 
 	if (config.count("header-line-vert"))
 	{
 		for (const std::string& str : config["header-line-vert"].as<std::vector<std::string>>())
-			target->addHeaderLine(msl::compile::Stage::Vertex, str);
+			target->addHeaderLine(msl::compile::Stage::Vertex, filterHeader(str));
 	}
 
 	if (config.count("header-line-tess-ctrl"))
 	{
 		for (const std::string& str : config["header-line-tess-ctrl"].as<std::vector<std::string>>())
-			target->addHeaderLine(msl::compile::Stage::TessellationControl, str);
+			target->addHeaderLine(msl::compile::Stage::TessellationControl, filterHeader(str));
 	}
 
 	if (config.count("header-line-tess-eval"))
 	{
 		for (const std::string& str : config["header-line-tess-eval"].as<std::vector<std::string>>())
-			target->addHeaderLine(msl::compile::Stage::TessellationEvaluation, str);
+			target->addHeaderLine(msl::compile::Stage::TessellationEvaluation, filterHeader(str));
 	}
 
 	if (config.count("header-line-geom"))
 	{
 		for (const std::string& str : config["header-line-geom"].as<std::vector<std::string>>())
-			target->addHeaderLine(msl::compile::Stage::Geometry, str);
+			target->addHeaderLine(msl::compile::Stage::Geometry, filterHeader(str));
 	}
 
 	if (config.count("header-line-frag"))
 	{
 		for (const std::string& str : config["header-line-frag"].as<std::vector<std::string>>())
-			target->addHeaderLine(msl::compile::Stage::Fragment, str);
+			target->addHeaderLine(msl::compile::Stage::Fragment, filterHeader(str));
 	}
 
 	if (config.count("header-line-comp"))
 	{
 		for (const std::string& str : config["header-line-comp"].as<std::vector<std::string>>())
-			target->addHeaderLine(msl::compile::Stage::Compute, str);
+			target->addHeaderLine(msl::compile::Stage::Compute, filterHeader(str));
 	}
 
 	if (config.count("extension"))

@@ -44,6 +44,15 @@ add_test(NAME MSLCInvalidConfig
 add_test(NAME MSLCCompile
 	WORKING_DIRECTORY ${testPath}
 	COMMAND ${commandPath} ${mslcPath} "-c spirv.conf -o test.mslb shaders/CompleteShader.msl" 0)
+add_test(NAME MSLCCompileGLSL
+	WORKING_DIRECTORY ${testPath}
+	COMMAND ${commandPath} ${mslcPath} "-c glsl.conf -o test.mslb shaders/CompleteShader.msl" 0)
+add_test(NAME MSLCCompileGLSLES
+	WORKING_DIRECTORY ${testPath}
+	COMMAND ${commandPath} ${mslcPath} "-c glsl-es.conf -o test.mslb shaders/CompleteShader.msl" 0)
+add_test(NAME MSLCCompileGLSLOld
+	WORKING_DIRECTORY ${testPath}
+	COMMAND ${commandPath} ${mslcPath} "-c glsl-old.conf -o test.mslb shaders/CompleteShader.msl" 0)
 add_test(NAME MSLCCompileDuplicate
 	WORKING_DIRECTORY ${testPath}
 	COMMAND ${commandPath} ${mslcPath} "-c spirv.conf -o test.mslb shaders/CompleteShader.msl shaders/CompileWarning.msl" 2)
