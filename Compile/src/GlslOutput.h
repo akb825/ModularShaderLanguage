@@ -28,12 +28,12 @@ class GlslOutput
 public:
 	struct Options
 	{
-		unsigned int version;
-		bool es;
-		bool remapDepthRange;
-		bool vulkanSemantics;
-		TargetGlsl::Precision defaultFloatPrecision;
-		TargetGlsl::Precision defaultIntPrecision;
+		unsigned int version = 0;
+		bool es = false;
+		bool remapDepthRange = false;
+		bool vulkanSemantics = false;
+		TargetGlsl::Precision defaultFloatPrecision = TargetGlsl::Precision::None;
+		TargetGlsl::Precision defaultIntPrecision = TargetGlsl::Precision::None;
 		std::vector<std::string> headerLines;
 		std::vector<std::string> requiredExtensions;
 	};
