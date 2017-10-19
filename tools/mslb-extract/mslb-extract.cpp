@@ -677,6 +677,27 @@ static void writeAttributes(std::ostream& jsonFile, const msl::Module& module,
 	jsonFile << "\t\t\t],\n";
 }
 
+static void writeFragmentOutputs(std::ostream& jsonFile, const msl::Module& module,
+	const msl::Pipeline& pipeline, uint32_t i)
+{
+	jsonFile << "\t\t\t\"fragmentOutputs\":\n\t\t\t[\n";
+	for (uint32_t j = 0; j < pipeline.fragmentOutputCount; ++j)
+	{
+		jsonFile << "\t\t\t\t{\n";
+		msl::FragmentOutput fragmentOutput;
+		module.fragmentOutput(fragmentOutput, i, j);
+
+		jsonFile << "\t\t\t\t\t\"name\": \"" << fragmentOutput.name << "\",\n";
+		jsonFile << "\t\t\t\t\t\"location\": " << fragmentOutput.location << "\n";
+
+		if (j == pipeline.fragmentOutputCount - 1)
+			jsonFile << "\t\t\t\t}\n";
+		else
+			jsonFile << "\t\t\t\t},\n";
+	}
+	jsonFile << "\t\t\t],\n";
+}
+
 static void writeRasterizationState(std::ostream& jsonFile,
 	const msl::RasterizationState& rasterizationState)
 {
@@ -1240,6 +1261,7 @@ int main(int argc, char** argv)
 		writeSamplerStates(jsonFile, module, pipeline, i);
 		writeUniforms(jsonFile, module, pipeline, i);
 		writeAttributes(jsonFile, module, pipeline, i);
+		writeFragmentOutputs(jsonFile, module, pipeline, i);
 		writeRenderState(jsonFile, module, i);
 
 		if (i == pipelineCount - 1)

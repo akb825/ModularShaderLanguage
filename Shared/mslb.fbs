@@ -894,6 +894,22 @@ table Attribute
 }
 
 /*
+ * Structure describing a fragment color output.
+ */
+table FragmentOutput
+{
+	/*
+	 * The name of the output.
+	 */
+	name : string (required);
+
+	/*
+	 * The location of the output.
+	 */
+	location : uint;
+}
+
+/*
  * Structure defining a shader within the pipeline.
  */
 table Shader
@@ -943,6 +959,11 @@ table Pipeline
 	 * The vertex attributes used within the pipeline.
 	 */
 	attributes : [Attribute] (required);
+
+	/*
+	 * The fragment outputs used within the pipeline.
+	 */
+	fragmentOutputs : [FragmentOutput] (required);
 
 	/*
 	 * Index for the push constant structure.

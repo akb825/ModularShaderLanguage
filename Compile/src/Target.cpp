@@ -833,7 +833,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			addedPipeline.shaders[i].uniformIds.resize(addedPipeline.uniforms.size(), unknown);
 		}
 
-		// Add vertex attributes
+		// Add vertex attributes.
 		if (stages.shaders[static_cast<unsigned int>(Stage::Vertex)])
 		{
 			const SpirVProcessor& vertexProcessor =
@@ -853,6 +853,26 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 				addedPipeline.attributes[i].arrayElements = vertexProcessor.inputs[i].arrayElements;
 				addedPipeline.attributes[i].location = vertexProcessor.inputs[i].location;
 				addedPipeline.attributes[i].component = vertexProcessor.inputs[i].component;
+			}
+		}
+
+		// Add fragment outputs.
+		if (stages.shaders[static_cast<unsigned int>(Stage::Fragment)])
+		{
+			const SpirVProcessor& fragmentProcessor =
+				processors[static_cast<unsigned int>(Stage::Fragment)];
+			addedPipeline.fragmentOutputs.resize(fragmentProcessor.outputs.size());
+			for (std::size_t i = 0; i < fragmentProcessor.outputs.size(); ++i)
+			{
+				addedPipeline.fragmentOutputs[i].name = fragmentProcessor.outputs[i].name;
+				if (fragmentProcessor.outputs[i].type == Type::Struct)
+				{
+					output.addMessage(Output::Level::Error, pipeline.token->fileName,
+						pipeline.token->line, pipeline.token->column, false,
+						"linker error: fragment outputs may not use interface blocks");
+					return false;
+				}
+				addedPipeline.fragmentOutputs[i].location = fragmentProcessor.outputs[i].location;
 			}
 		}
 

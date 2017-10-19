@@ -104,6 +104,7 @@ bool CompiledResult::save(std::ostream& stream) const
 	std::vector<mslb::SamplerState> samplerStates;
 	std::vector<flatbuffers::Offset<mslb::Uniform>> uniforms;
 	std::vector<flatbuffers::Offset<mslb::Attribute>> attributes;
+	std::vector<flatbuffers::Offset<mslb::FragmentOutput>> fragmentOutputs;
 	std::vector<mslb::BlendAttachmentState> blendAttachments;
 	blendAttachments.reserve(maxAttachments);
 	std::vector<flatbuffers::Offset<mslb::Shader>> shaders(stageCount);
@@ -191,6 +192,14 @@ bool CompiledResult::save(std::ostream& stream) const
 				static_cast<mslb::Type>(attribute.type),
 				arraySizes.empty() ? 0 : builder.CreateVector(arraySizes),
 				attribute.location, attribute.component);
+		}
+
+		fragmentOutputs.resize(pipeline.second.fragmentOutputs.size());
+		for (std::size_t j = 0; j < fragmentOutputs.size(); ++j)
+		{
+			const FragmentOutput& fragmentOutput = pipeline.second.fragmentOutputs[j];
+			fragmentOutputs[j] = mslb::CreateFragmentOutput(builder,
+				builder.CreateString(fragmentOutput.name), fragmentOutput.location);
 		}
 
 		const RenderState& renderState = pipeline.second.renderState;
@@ -288,6 +297,7 @@ bool CompiledResult::save(std::ostream& stream) const
 			builder.CreateVectorOfStructs(samplerStates),
 			builder.CreateVector(uniforms),
 			builder.CreateVector(attributes),
+			builder.CreateVector(fragmentOutputs),
 			pipeline.second.pushConstantStruct,
 			mslb::CreateRenderState(builder, &rasterizationState, &multisampleState,
 				&depthStencilState, blendState, renderState.patchControlPoints),

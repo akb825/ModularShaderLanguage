@@ -34,6 +34,8 @@ struct Uniform;
 
 struct Attribute;
 
+struct FragmentOutput;
+
 struct Shader;
 
 struct Pipeline;
@@ -2385,6 +2387,74 @@ inline flatbuffers::Offset<Attribute> CreateAttributeDirect(
       component);
 }
 
+struct FragmentOutput FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_NAME = 4,
+    VT_LOCATION = 6
+  };
+  const flatbuffers::String *name() const {
+    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  }
+  flatbuffers::String *mutable_name() {
+    return GetPointer<flatbuffers::String *>(VT_NAME);
+  }
+  uint32_t location() const {
+    return GetField<uint32_t>(VT_LOCATION, 0);
+  }
+  bool mutate_location(uint32_t _location) {
+    return SetField<uint32_t>(VT_LOCATION, _location, 0);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyOffsetRequired(verifier, VT_NAME) &&
+           verifier.Verify(name()) &&
+           VerifyField<uint32_t>(verifier, VT_LOCATION) &&
+           verifier.EndTable();
+  }
+};
+
+struct FragmentOutputBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+    fbb_.AddOffset(FragmentOutput::VT_NAME, name);
+  }
+  void add_location(uint32_t location) {
+    fbb_.AddElement<uint32_t>(FragmentOutput::VT_LOCATION, location, 0);
+  }
+  FragmentOutputBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  FragmentOutputBuilder &operator=(const FragmentOutputBuilder &);
+  flatbuffers::Offset<FragmentOutput> Finish() {
+    const auto end = fbb_.EndTable(start_, 2);
+    auto o = flatbuffers::Offset<FragmentOutput>(end);
+    fbb_.Required(o, FragmentOutput::VT_NAME);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<FragmentOutput> CreateFragmentOutput(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    flatbuffers::Offset<flatbuffers::String> name = 0,
+    uint32_t location = 0) {
+  FragmentOutputBuilder builder_(_fbb);
+  builder_.add_location(location);
+  builder_.add_name(name);
+  return builder_.Finish();
+}
+
+inline flatbuffers::Offset<FragmentOutput> CreateFragmentOutputDirect(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    const char *name = nullptr,
+    uint32_t location = 0) {
+  return mslb::CreateFragmentOutput(
+      _fbb,
+      name ? _fbb.CreateString(name) : 0,
+      location);
+}
+
 struct Shader FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_SHADER = 4,
@@ -2459,9 +2529,10 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_SAMPLERSTATES = 8,
     VT_UNIFORMS = 10,
     VT_ATTRIBUTES = 12,
-    VT_PUSHCONSTANTSTRUCT = 14,
-    VT_RENDERSTATE = 16,
-    VT_SHADERS = 18
+    VT_FRAGMENTOUTPUTS = 14,
+    VT_PUSHCONSTANTSTRUCT = 16,
+    VT_RENDERSTATE = 18,
+    VT_SHADERS = 20
   };
   const flatbuffers::String *name() const {
     return GetPointer<const flatbuffers::String *>(VT_NAME);
@@ -2492,6 +2563,12 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   flatbuffers::Vector<flatbuffers::Offset<Attribute>> *mutable_attributes() {
     return GetPointer<flatbuffers::Vector<flatbuffers::Offset<Attribute>> *>(VT_ATTRIBUTES);
+  }
+  const flatbuffers::Vector<flatbuffers::Offset<FragmentOutput>> *fragmentOutputs() const {
+    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<FragmentOutput>> *>(VT_FRAGMENTOUTPUTS);
+  }
+  flatbuffers::Vector<flatbuffers::Offset<FragmentOutput>> *mutable_fragmentOutputs() {
+    return GetPointer<flatbuffers::Vector<flatbuffers::Offset<FragmentOutput>> *>(VT_FRAGMENTOUTPUTS);
   }
   uint32_t pushConstantStruct() const {
     return GetField<uint32_t>(VT_PUSHCONSTANTSTRUCT, 0);
@@ -2526,6 +2603,9 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyOffsetRequired(verifier, VT_ATTRIBUTES) &&
            verifier.Verify(attributes()) &&
            verifier.VerifyVectorOfTables(attributes()) &&
+           VerifyOffsetRequired(verifier, VT_FRAGMENTOUTPUTS) &&
+           verifier.Verify(fragmentOutputs()) &&
+           verifier.VerifyVectorOfTables(fragmentOutputs()) &&
            VerifyField<uint32_t>(verifier, VT_PUSHCONSTANTSTRUCT) &&
            VerifyOffset(verifier, VT_RENDERSTATE) &&
            verifier.VerifyTable(renderState()) &&
@@ -2554,6 +2634,9 @@ struct PipelineBuilder {
   void add_attributes(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Attribute>>> attributes) {
     fbb_.AddOffset(Pipeline::VT_ATTRIBUTES, attributes);
   }
+  void add_fragmentOutputs(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<FragmentOutput>>> fragmentOutputs) {
+    fbb_.AddOffset(Pipeline::VT_FRAGMENTOUTPUTS, fragmentOutputs);
+  }
   void add_pushConstantStruct(uint32_t pushConstantStruct) {
     fbb_.AddElement<uint32_t>(Pipeline::VT_PUSHCONSTANTSTRUCT, pushConstantStruct, 0);
   }
@@ -2569,13 +2652,14 @@ struct PipelineBuilder {
   }
   PipelineBuilder &operator=(const PipelineBuilder &);
   flatbuffers::Offset<Pipeline> Finish() {
-    const auto end = fbb_.EndTable(start_, 8);
+    const auto end = fbb_.EndTable(start_, 9);
     auto o = flatbuffers::Offset<Pipeline>(end);
     fbb_.Required(o, Pipeline::VT_NAME);
     fbb_.Required(o, Pipeline::VT_STRUCTS);
     fbb_.Required(o, Pipeline::VT_SAMPLERSTATES);
     fbb_.Required(o, Pipeline::VT_UNIFORMS);
     fbb_.Required(o, Pipeline::VT_ATTRIBUTES);
+    fbb_.Required(o, Pipeline::VT_FRAGMENTOUTPUTS);
     fbb_.Required(o, Pipeline::VT_SHADERS);
     return o;
   }
@@ -2588,6 +2672,7 @@ inline flatbuffers::Offset<Pipeline> CreatePipeline(
     flatbuffers::Offset<flatbuffers::Vector<const SamplerState *>> samplerStates = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Uniform>>> uniforms = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Attribute>>> attributes = 0,
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<FragmentOutput>>> fragmentOutputs = 0,
     uint32_t pushConstantStruct = 0,
     flatbuffers::Offset<RenderState> renderState = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Shader>>> shaders = 0) {
@@ -2595,6 +2680,7 @@ inline flatbuffers::Offset<Pipeline> CreatePipeline(
   builder_.add_shaders(shaders);
   builder_.add_renderState(renderState);
   builder_.add_pushConstantStruct(pushConstantStruct);
+  builder_.add_fragmentOutputs(fragmentOutputs);
   builder_.add_attributes(attributes);
   builder_.add_uniforms(uniforms);
   builder_.add_samplerStates(samplerStates);
@@ -2610,6 +2696,7 @@ inline flatbuffers::Offset<Pipeline> CreatePipelineDirect(
     const std::vector<const SamplerState *> *samplerStates = nullptr,
     const std::vector<flatbuffers::Offset<Uniform>> *uniforms = nullptr,
     const std::vector<flatbuffers::Offset<Attribute>> *attributes = nullptr,
+    const std::vector<flatbuffers::Offset<FragmentOutput>> *fragmentOutputs = nullptr,
     uint32_t pushConstantStruct = 0,
     flatbuffers::Offset<RenderState> renderState = 0,
     const std::vector<flatbuffers::Offset<Shader>> *shaders = nullptr) {
@@ -2620,6 +2707,7 @@ inline flatbuffers::Offset<Pipeline> CreatePipelineDirect(
       samplerStates ? _fbb.CreateVector<const SamplerState *>(*samplerStates) : 0,
       uniforms ? _fbb.CreateVector<flatbuffers::Offset<Uniform>>(*uniforms) : 0,
       attributes ? _fbb.CreateVector<flatbuffers::Offset<Attribute>>(*attributes) : 0,
+      fragmentOutputs ? _fbb.CreateVector<flatbuffers::Offset<FragmentOutput>>(*fragmentOutputs) : 0,
       pushConstantStruct,
       renderState,
       shaders ? _fbb.CreateVector<flatbuffers::Offset<Shader>>(*shaders) : 0);

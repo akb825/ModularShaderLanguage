@@ -98,6 +98,10 @@ TEST(TargetSpirVTest, CompleteShader)
 	EXPECT_EQ(1U, pipeline->second.attributes[1].location);
 	EXPECT_EQ(0U, pipeline->second.attributes[1].component);
 
+	ASSERT_EQ(1U, pipeline->second.fragmentOutputs.size());
+	EXPECT_EQ("color", pipeline->second.fragmentOutputs[0].name);
+	EXPECT_EQ(0U, pipeline->second.fragmentOutputs[0].location);
+
 	EXPECT_EQ(unknown, pipeline->second.pushConstantStruct);
 
 	ASSERT_EQ(1U, pipeline->second.samplerStates.size());

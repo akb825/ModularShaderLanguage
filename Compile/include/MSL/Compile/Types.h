@@ -982,6 +982,22 @@ struct Attribute
 };
 
 /**
+ * @brief Structure describing a fragment color output.
+ */
+struct FragmentOutput
+{
+	/**
+	 * @brief The name of the output.
+	 */
+	std::string name;
+
+	/**
+	 * @brief The location of the output.
+	 */
+	std::uint32_t location;
+};
+
+/**
  * @brief Structure defining a shader within the pipeline.
  */
 struct Shader
@@ -1028,6 +1044,11 @@ struct Pipeline
 	 * @brief The vertex attributes used within the pipeline.
 	 */
 	std::vector<Attribute> attributes;
+
+	/**
+	 * @brief The fragment outputs used within the pipeline.
+	 */
+	std::vector<FragmentOutput> fragmentOutputs;
 
 	/**
 	 * @brief Index for the push constant structure.

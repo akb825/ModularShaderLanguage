@@ -242,6 +242,16 @@ public:
 	bool attribute(Attribute& outAttribute, uint32_t pipelineIndex, uint32_t attributeIndex) const;
 
 	/**
+	 * @brief Gets the info for a fragment output within a pipeline.
+	 * @param[out] outOutput The structure to hold the fragment output info.
+	 * @param pipelineIndex The index of the pipeline.
+	 * @param outputIndex The index of the fragment output within the pipeline.
+	 * @return False if the parameters are incorrect.
+	 */
+	bool fragmentOutput(FragmentOutput& outOutput, uint32_t pipelineIndex,
+		uint32_t outputIndex) const;
+
+	/**
 	 * @brief Gets the array length for a vertex attribute within a pipeline.
 	 * @param pipelineIndex The index of the pipeline.
 	 * @param attributeIndex The index of the attribute within the pipeline.
@@ -561,6 +571,14 @@ bool BasicModule<Allocator>::attribute(Attribute& outAttribute, uint32_t pipelin
 {
 	return mslModule_attribute(reinterpret_cast<mslAttribute*>(&outAttribute), m_module,
 		pipelineIndex, attributeIndex);
+}
+
+template <typename Allocator>
+bool BasicModule<Allocator>::fragmentOutput(FragmentOutput& outOutput, uint32_t pipelineIndex,
+	uint32_t outputIndex) const
+{
+	return mslModule_fragmentOutput(reinterpret_cast<mslFragmentOutput*>(&outOutput), m_module,
+		pipelineIndex, outputIndex);
 }
 
 template <typename Allocator>

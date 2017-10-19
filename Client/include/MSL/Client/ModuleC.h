@@ -240,6 +240,17 @@ MSL_CLIENT_EXPORT bool mslModule_attribute(mslAttribute* outAttribute,
 	const mslModule* module, uint32_t pipelineIndex, uint32_t attributeIndex);
 
 /**
+ * @brief Gets the info for a fragment output within a pipeline.
+ * @param[out] outOutput The structure to hold the fragment output info.
+ * @param module The shader module.
+ * @param pipelineIndex The index of the pipeline.
+ * @param outputIndex The index of the fragment output within the pipeline.
+ * @return False if the parameters are incorrect.
+ */
+MSL_CLIENT_EXPORT bool mslModule_fragmentOutput(mslFragmentOutput* outOutput,
+	const mslModule* module, uint32_t pipelineIndex, uint32_t outputIndex);
+
+/**
  * @brief Gets the array length for a vertex attribute within a pipeline.
  * @param module The shader module.
  * @param pipelineIndex The index of the pipeline.

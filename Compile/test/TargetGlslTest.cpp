@@ -99,6 +99,10 @@ TEST(TargetGlslTest, Glsl450)
 	EXPECT_EQ(1U, pipeline->second.attributes[1].location);
 	EXPECT_EQ(0U, pipeline->second.attributes[1].component);
 
+	ASSERT_EQ(1U, pipeline->second.fragmentOutputs.size());
+	EXPECT_EQ("color", pipeline->second.fragmentOutputs[0].name);
+	EXPECT_EQ(0U, pipeline->second.fragmentOutputs[0].location);
+
 	EXPECT_EQ(unknown, pipeline->second.pushConstantStruct);
 
 	ASSERT_EQ(1U, pipeline->second.samplerStates.size());
@@ -216,6 +220,10 @@ TEST(TargetGlslTest, Glsl120)
 	EXPECT_EQ(1U, pipeline->second.attributes[1].location);
 	EXPECT_EQ(0U, pipeline->second.attributes[1].component);
 
+	ASSERT_EQ(1U, pipeline->second.fragmentOutputs.size());
+	EXPECT_EQ("color", pipeline->second.fragmentOutputs[0].name);
+	EXPECT_EQ(0U, pipeline->second.fragmentOutputs[0].location);
+
 	EXPECT_EQ(0U, pipeline->second.pushConstantStruct);
 
 	ASSERT_EQ(1U, pipeline->second.samplerStates.size());
@@ -327,6 +335,10 @@ TEST(TargetGlslTest, GlslEs300)
 	EXPECT_EQ(1U, pipeline->second.attributes[1].location);
 	EXPECT_EQ(0U, pipeline->second.attributes[1].component);
 
+	ASSERT_EQ(1U, pipeline->second.fragmentOutputs.size());
+	EXPECT_EQ("color", pipeline->second.fragmentOutputs[0].name);
+	EXPECT_EQ(0U, pipeline->second.fragmentOutputs[0].location);
+
 	EXPECT_EQ(unknown, pipeline->second.pushConstantStruct);
 
 	ASSERT_EQ(1U, pipeline->second.samplerStates.size());
@@ -437,6 +449,10 @@ TEST(TargetGlslTest, GlslEs100)
 	EXPECT_TRUE(pipeline->second.attributes[1].arrayElements.empty());
 	EXPECT_EQ(1U, pipeline->second.attributes[1].location);
 	EXPECT_EQ(0U, pipeline->second.attributes[1].component);
+
+	ASSERT_EQ(1U, pipeline->second.fragmentOutputs.size());
+	EXPECT_EQ("color", pipeline->second.fragmentOutputs[0].name);
+	EXPECT_EQ(0U, pipeline->second.fragmentOutputs[0].location);
 
 	EXPECT_EQ(0U, pipeline->second.pushConstantStruct);
 

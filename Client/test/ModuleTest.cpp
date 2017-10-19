@@ -127,6 +127,12 @@ static void testContents(Module& module)
 	EXPECT_EQ(1U, attribute.location);
 	EXPECT_EQ(0U, attribute.component);
 
+	FragmentOutput fragmentOutput;
+	ASSERT_EQ(1U, pipeline.fragmentOutputCount);
+	EXPECT_TRUE(module.fragmentOutput(fragmentOutput, 0, 0));
+	EXPECT_STREQ("color", fragmentOutput.name);
+	EXPECT_EQ(0U, fragmentOutput.location);
+
 	SamplerState samplerState;
 	ASSERT_EQ(1U, pipeline.samplerStateCount);
 	EXPECT_TRUE(module.samplerState(samplerState, 0, 0));
@@ -263,6 +269,12 @@ static void testContents(const mslModule* module)
 	EXPECT_EQ(0U, attribute.arrayElementCount);
 	EXPECT_EQ(1U, attribute.location);
 	EXPECT_EQ(0U, attribute.component);
+
+	mslFragmentOutput fragmentOutput;
+	ASSERT_EQ(1U, pipeline.fragmentOutputCount);
+	EXPECT_TRUE(mslModule_fragmentOutput(&fragmentOutput, module, 0, 0));
+	EXPECT_STREQ("color", fragmentOutput.name);
+	EXPECT_EQ(0U, fragmentOutput.location);
 
 	mslSamplerState samplerState;
 	ASSERT_EQ(1U, pipeline.samplerStateCount);

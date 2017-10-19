@@ -976,6 +976,22 @@ typedef struct mslAttribute
 } mslAttribute;
 
 /**
+ * @brief Structure describing a fragment color output.
+ */
+struct mslFragmentOutput
+{
+	/**
+	 * @brief The name of the output.
+	 */
+	const char* name;
+
+	/**
+	 * @brief The location of the output.
+	 */
+	uint32_t location;
+};
+
+/**
  * @brief Structure that holds the information about the a pipeline within the compiled result.
  */
 typedef struct mslPipeline
@@ -1012,6 +1028,13 @@ typedef struct mslPipeline
 	 * The info for each attribute can be queried from the API.
 	 */
 	uint32_t attributeCount;
+
+	/**
+	 * @brief The number of fragment outputs used within the pipeline.
+	 *
+	 * The info for each fragment output can be queried from the API.
+	 */
+	uint32_t fragmentOutputCount;
 
 	/**
 	 * @brief Index for the push constant structure.

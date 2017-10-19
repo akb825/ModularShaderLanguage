@@ -698,6 +698,7 @@ bool mslModule_pipeline(mslPipeline* outPipeline, const mslModule* module,
 	outPipeline->samplerStateCount = pipeline->samplerStates()->size();
 	outPipeline->uniformCount = pipeline->uniforms()->size();
 	outPipeline->attributeCount = pipeline->attributes()->size();
+	outPipeline->fragmentOutputCount = pipeline->fragmentOutputs()->size();
 	outPipeline->pushConstantStruct = pipeline->pushConstantStruct();
 
 	auto& shaders = *pipeline->shaders();
@@ -879,6 +880,25 @@ bool mslModule_attribute(mslAttribute* outAttribute, const mslModule* module,
 	outAttribute->arrayElementCount = arrayElements ? arrayElements->size() : 0;
 	outAttribute->location = attribute->location();
 	outAttribute->component = attribute->component();
+	return true;
+}
+
+bool mslModule_fragmentOutput(mslFragmentOutput* outOutput, const mslModule* module,
+	uint32_t pipelineIndex, uint32_t outputIndex)
+{
+	if (!outOutput || !module)
+		return false;
+
+	auto& pipelines = *module->module->pipelines();
+	if (pipelineIndex >= pipelines.size())
+		return false;
+	auto& fragmentOutputs = *pipelines[pipelineIndex]->fragmentOutputs();
+	if (outputIndex >= fragmentOutputs.size())
+		return false;
+
+	const mslb::FragmentOutput* fragmentOutput = fragmentOutputs[outputIndex];
+	outOutput->name = fragmentOutput->name()->c_str();
+	outOutput->location = fragmentOutput->location();
 	return true;
 }
 
