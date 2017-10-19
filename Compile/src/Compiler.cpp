@@ -96,7 +96,7 @@ static void addToOutput(Output& output, const std::string& baseFileName,
 			curMessage = curMessage.substr(0, curMessage.size() - std::strlen(entryPointSuffix));
 
 		std::string prefix;
-		Output::Level level = Output::Level::Error;
+		Output::Level level = Output::Level::Info;
 		if (boost::algorithm::starts_with(curMessage, warningPrefix))
 		{
 			curMessage = curMessage.substr(std::strlen(warningPrefix));
