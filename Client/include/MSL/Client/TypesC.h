@@ -978,7 +978,7 @@ typedef struct mslAttribute
 /**
  * @brief Structure describing a fragment color output.
  */
-struct mslFragmentOutput
+typedef struct mslFragmentOutput
 {
 	/**
 	 * @brief The name of the output.
@@ -989,7 +989,7 @@ struct mslFragmentOutput
 	 * @brief The location of the output.
 	 */
 	uint32_t location;
-};
+} mslFragmentOutput;
 
 /**
  * @brief Structure that holds the information about the a pipeline within the compiled result.
