@@ -334,6 +334,7 @@ static bool setCommonTargetConfig(msl::Target& target, const variables_map& opti
 			target.addIncludePath(str);
 	}
 
+	// Commind-line option defines
 	if (options.count("define"))
 	{
 		for (const std::string& str : options["define"].as<std::vector<std::string>>())
@@ -343,6 +344,7 @@ static bool setCommonTargetConfig(msl::Target& target, const variables_map& opti
 		}
 	}
 
+	// Config file defines
 	if (config.count("define"))
 	{
 		for (const std::string& str : config["define"].as<std::vector<std::string>>())
@@ -350,6 +352,12 @@ static bool setCommonTargetConfig(msl::Target& target, const variables_map& opti
 			auto definePair = splitDefineString(str);
 			target.addDefine(std::move(definePair.first), std::move(definePair.second));
 		}
+	}
+
+	if (config.count("pre-header-line"))
+	{
+		for (const std::string& str : config["pre-header-line"].as<std::vector<std::string>>())
+			target.addPreHeaderLine(filterHeader(str));
 	}
 
 	if (config.count("remap-variables"))
@@ -467,6 +475,8 @@ int main(int argc, char** argv)
 			"medium.")
 		("default-int-precision", value<std::string>(), "the default precision to use for ints in "
 			"in GLSL targets. Possible values are: none, low, medium, high. Defaults to high.")
+		("pre-header-line", value<std::vector<std::string>>(), "header line to be added verbatim "
+			"before any processing.")
 		("header-line", value<std::vector<std::string>>(), "header line to be added verbatim for "
 			"GLSL targets. This will be used for all stages.")
 		("header-line-vert", value<std::vector<std::string>>(), "header line to be added "

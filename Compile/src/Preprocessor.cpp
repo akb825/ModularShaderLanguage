@@ -202,7 +202,7 @@ void Preprocessor::addDefine(std::string name, std::string value)
 }
 
 bool Preprocessor::preprocess(TokenList& tokenList, Output& output,
-	const std::string& fileName) const
+	const std::string& fileName, const std::vector<std::string>& headerLines) const
 {
 	std::ifstream stream(fileName);
 	if (!stream.is_open())
@@ -212,14 +212,27 @@ bool Preprocessor::preprocess(TokenList& tokenList, Output& output,
 		return false;
 	}
 
-	return preprocess(tokenList, output, stream, fileName);
+	return preprocess(tokenList, output, stream, fileName, headerLines);
 }
 
 bool Preprocessor::preprocess(TokenList& tokenList, Output& output, std::istream& stream,
-	const std::string& fileName) const
+	const std::string& fileName, const std::vector<std::string>& headerLines) const
 {
 	std::string input(std::istreambuf_iterator<char>(stream.rdbuf()),
 		std::istreambuf_iterator<char>());
+	if (!headerLines.empty())
+	{
+		std::string prefix = "#line 1 \"pre-header\"\n";
+		for (const std::string& line : headerLines)
+		{
+			prefix += line;
+			prefix += '\n';
+		}
+		prefix += "#line 1 \"";
+		prefix += fileName;
+		prefix += "\"\n";
+		input = prefix + input;
+	}
 
 	const auto language = static_cast<boost::wave::language_support>(
 		boost::wave::support_c99 |

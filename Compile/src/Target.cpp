@@ -510,6 +510,22 @@ void Target::clearDefines()
 	m_defines.clear();
 }
 
+void Target::addPreHeaderLine(std::string header)
+{
+	m_preHeaderLines.push_back(std::move(header));
+}
+
+const std::vector<std::string>& Target::getPreHeaderLines() const
+{
+	return m_preHeaderLines;
+}
+
+void Target::clearPreHeaderLines()
+{
+	for (auto& headerLines : m_preHeaderLines)
+		headerLines.clear();
+}
+
 const std::string& Target::getSpirVToolCommand() const
 {
 	return m_spirVToolCommand;
@@ -586,7 +602,7 @@ bool Target::compile(CompiledResult& result, Output& output, const std::string& 
 	setupPreprocessor(preprocessor);
 
 	Parser parser;
-	if (!preprocessor.preprocess(parser.getTokens(), output, fileName))
+	if (!preprocessor.preprocess(parser.getTokens(), output, fileName, m_preHeaderLines))
 		return false;
 
 	return compileImpl(result, output, parser, fileName);
@@ -599,7 +615,7 @@ bool Target::compile(CompiledResult& result, Output& output, std::istream& strea
 	setupPreprocessor(preprocessor);
 
 	Parser parser;
-	if (!preprocessor.preprocess(parser.getTokens(), output, stream, fileName))
+	if (!preprocessor.preprocess(parser.getTokens(), output, stream, fileName, m_preHeaderLines))
 		return false;
 
 	return compileImpl(result, output, parser, fileName);

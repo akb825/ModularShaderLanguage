@@ -46,6 +46,7 @@ For example:
 * **remap-depth-range = _arg_**: boolean for whether or not to remap the depth range from \[0, 1\] to \[-1, 1\] in the  vertex shader output for GLSL targets. Defaults to false.
 * **default-float-precision = _arg_**: the default precision to use for floats in GLSL targets. Possible values are: none, low, medium, high. Defaults to medium.
 * **default-int-precision = _arg_**: the default precision to use for ints in in GLSL targets. Possible values are: none, low, medium, high. Defaults to high.
+* **pre-header-line = _arg_**: header line to be added verbatim before any processing.
 * **header-line = _arg_**: header line to be added verbatim for GLSL targets. This will be used for all stages.
 * **header-line-vert = _arg_**: header line to be added verbatim for GLSL targets. This will be used for the vertex stage.
 * **header-line-tess-ctrl = _arg_**: header line to be added verbatim for GLSL targets. This will be used for the tessellation control stage.

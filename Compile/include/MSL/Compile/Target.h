@@ -248,6 +248,23 @@ public:
 	void clearDefines();
 
 	/**
+	 * @brief Adds a header line to to be added to the source before any processing.
+	 * @param header The header line.
+	 */
+	void addPreHeaderLine(std::string header);
+
+	/**
+	 * @brief Gets the header lines to be added before any processing.
+	 * @return The header lines.
+	 */
+	const std::vector<std::string>& getPreHeaderLines() const;
+
+	/**
+	 * @brief Clears the pre-header lines.
+	 */
+	void clearPreHeaderLines();
+
+	/**
 	 * @brief Gets the tool command to run on the output SPIR-V before cross-compiling.
 	 * @return The SPIR-V tool command.
 	 */
@@ -456,6 +473,7 @@ private:
 	std::array<State, featureCount> m_featureStates;
 	std::vector<std::string> m_includePaths;
 	std::vector<std::pair<std::string, std::string>> m_defines;
+	std::vector<std::string> m_preHeaderLines;
 	std::string m_spirVToolCommand;
 
 	bool m_remapVariables;

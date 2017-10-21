@@ -37,9 +37,10 @@ public:
 	void setSupportsUniformBlocks(bool supports);
 	void addIncludePath(std::string path);
 	void addDefine(std::string name, std::string value);
-	bool preprocess(TokenList& tokenList, Output& output, const std::string& fileName) const;
+	bool preprocess(TokenList& tokenList, Output& output, const std::string& fileName,
+		const std::vector<std::string>& headerLines = {}) const;
 	bool preprocess(TokenList& tokenList, Output& output, std::istream& stream,
-		const std::string& fileName) const;
+		const std::string& fileName, const std::vector<std::string>& headerLines = {}) const;
 
 private:
 	bool m_supportsUniformBlocks;
