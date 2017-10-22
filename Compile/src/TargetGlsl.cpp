@@ -189,7 +189,7 @@ bool TargetGlsl::featureSupported(Feature feature) const
 			if (m_es)
 				return m_version >= 300;
 			else
-				return m_version >= 420;
+				return m_version >= 150;
 		case Feature::Buffers:
 			if (m_es)
 				return m_version >= 320;
