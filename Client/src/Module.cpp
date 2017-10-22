@@ -363,6 +363,19 @@ static bool isValid(const void* data, size_t size)
 			}
 		}
 
+		// Verify fragment outputs.
+		auto fragmentOutputs = pipeline->fragmentOutputs();
+		if (!fragmentOutputs)
+			return false;
+		for (uint32_t j = 0; j < fragmentOutputs->size(); ++j)
+		{
+			const mslb::FragmentOutput* fragmentOutput = (*fragmentOutputs)[j];
+			if (!fragmentOutput)
+				return false;
+			if (!fragmentOutput->name())
+				return false;
+		}
+
 		// Verify push constant
 		uint32_t pushConstantStruct = pipeline->pushConstantStruct();
 		if (pushConstantStruct != MSL_UNKNOWN && pushConstantStruct >= structs->size())

@@ -1,0 +1,50 @@
+uniform sampler2D tex;
+
+uniform Transform
+{
+	mat4 transform;
+} block;
+
+sampler_state tex
+{
+	address_mode_u = clamp_to_edge;
+	address_mode_v = repeat;
+	min_filter = nearest;
+	mag_filter = nearest;
+	mip_filter = none;
+};
+
+[[vertex]] in vec3 position;
+[[vertex]] in vec4 color;
+
+[[vertex]] out VertexOut
+{
+	vec4 color;
+} outputs;
+
+[[fragment]] in VertexOut
+{
+	vec4 color;
+} inputs;
+
+[[fragment]] out vec4 color;
+
+[[vertex]]
+void vertShader()
+{
+	gl_Position = INSTANCE(block).transform*vec4(position, 1.0);
+	outputs.color = color;
+}
+
+[[fragment]]
+void fragShader()
+{
+	vec4 texResult = texture(tex, vec2(0.75, 0.25));
+	color = inputs.color*texResult;
+}
+
+pipeline Test2
+{
+	vertex = vertShader;
+	fragment = fragShader;
+}
