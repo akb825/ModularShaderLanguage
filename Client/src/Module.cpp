@@ -472,17 +472,17 @@ static bool isValid(const void* data, size_t size)
 		for (int j = 0; j < mslStage_Count; ++j)
 		{
 			const mslb::Shader* shader = (*shaders)[i];
-			if (shader || shader->shader() == MSL_UNKNOWN)
-			{
-				if (shader->shader() >= shaderData->size())
-					return false;
+			if (!shader || shader->shader() == MSL_UNKNOWN)
+				continue;
 
-				if (isSpirV)
-				{
-					auto uniformIds = shader->uniformIds();
-					if (!uniformIds || uniformIds->size() != uniforms->size())
-						return false;
-				}
+			if (shader->shader() >= shaderData->size())
+				return false;
+
+			if (isSpirV)
+			{
+				auto uniformIds = shader->uniformIds();
+				if (!uniformIds || uniformIds->size() != uniforms->size())
+					return false;
 			}
 		}
 	}
