@@ -229,7 +229,7 @@ bool Preprocessor::preprocess(TokenList& tokenList, Output& output, std::istream
 			prefix += '\n';
 		}
 		prefix += "#line 1 \"";
-		prefix += fileName;
+		prefix += boost::algorithm::replace_all_copy(fileName, "\\", "\\\\");
 		prefix += "\"\n";
 		input = prefix + input;
 	}
