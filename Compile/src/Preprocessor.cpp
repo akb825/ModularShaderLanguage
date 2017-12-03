@@ -56,7 +56,8 @@ enum class Action
 	Skip
 };
 
-void handleException(Output& output, Output::Level level, const boost::wave::cpp_exception& e)
+void handleException(Output& output, Output::Level level, const boost::wave::cpp_exception& e,
+	const char* extraLineFile)
 {
 	std::string message = e.description();
 	message = message.substr(
@@ -66,15 +67,24 @@ void handleException(Output& output, Output::Level level, const boost::wave::cpp
 	boost::algorithm::replace_first(message,
 		"encountered #error directive or #pragma wave stop()", "encountered #error directive");
 
-	output.addMessage(level, e.file_name(), e.line_no(), e.column_no(), false, message);
+	// Compensate for the line we needed to add.
+	std::size_t line = e.line_no();
+	if (extraLineFile && std::strcmp(extraLineFile, e.file_name()) == 0)
+		--line;
+	output.addMessage(level, e.file_name(), line, e.column_no(), false, message);
 }
 
 void handleException(Output& output, Output::Level level,
-	const boost::wave::cpplexer::cpplexer_exception& e)
+	const boost::wave::cpplexer::cpplexer_exception& e, const char* extraLineFile)
 {
 	std::string message = e.description();
 	message = message.substr(
 		std::strlen(boost::wave::util::get_severity(e.get_severity())) + 2);
+
+	// Compensate for the line we needed to add.
+	std::size_t line = e.line_no();
+	if (extraLineFile && std::strcmp(extraLineFile, e.file_name()) == 0)
+		--line;
 	output.addMessage(level, e.file_name(), e.line_no(), e.column_no(), false, message);
 }
 
@@ -94,6 +104,11 @@ public:
 	bool hadError() const
 	{
 		return m_error;
+	}
+
+	void setExtraLineFile(const char* fileName)
+	{
+		m_extraLineFile = fileName;
 	}
 
 	template <typename ContextT, typename ExceptionT>
@@ -122,14 +137,16 @@ public:
 		if (e.is_recoverable())
 		{
 			if (m_output)
-				handleException(*m_output, level, e);
+				handleException(*m_output, level, e, m_extraLineFile);
 		}
 		else
 			boost::throw_exception(e);
 	}
+
 private:
 	Output* m_output;
 	bool m_error;
+	const char* m_extraLineFile;
 };
 
 template <typename FlexStr>
@@ -220,6 +237,7 @@ bool Preprocessor::preprocess(TokenList& tokenList, Output& output, std::istream
 {
 	std::string input(std::istreambuf_iterator<char>(stream.rdbuf()),
 		std::istreambuf_iterator<char>());
+	const char* extraLineFile = nullptr;
 	if (!headerLines.empty())
 	{
 		std::string prefix = "#line 1 \"pre-header\"\n";
@@ -231,6 +249,11 @@ bool Preprocessor::preprocess(TokenList& tokenList, Output& output, std::istream
 		prefix += "#line 1 \"";
 		prefix += boost::algorithm::replace_all_copy(fileName, "\\", "\\\\");
 		prefix += "\"\n";
+
+		// HACK: If the first element after #line is a comment, the comment will be ignored.
+		// Add an empty newline to ensure that the lines are set correctly.
+		prefix += '\n';
+		extraLineFile = fileName.c_str();
 		input = prefix + input;
 	}
 
@@ -249,6 +272,8 @@ bool Preprocessor::preprocess(TokenList& tokenList, Output& output, std::istream
 	{
 		Context context(input.begin(), input.end(), fileName.c_str());
 		context.get_hooks().setOutput(output);
+		context.get_hooks().setExtraLineFile(extraLineFile);
+
 		context.set_language(language);
 		if (m_supportsUniformBlocks)
 			context.add_macro_definition("INSTANCE(x)=x", true);
@@ -277,8 +302,12 @@ bool Preprocessor::preprocess(TokenList& tokenList, Output& output, std::istream
 					break;
 			}
 
-			tokens.emplace_back(type, token.get_value().c_str(),
-				tokenList.stringPtr(position.get_file().c_str()), position.get_line(),
+			// Compensate for the line we needed to add.
+			const char* tokenFile = tokenList.stringPtr(position.get_file().c_str());
+			std::size_t line = position.get_line();
+			if (!headerLines.empty() && tokenFile == fileName)
+				--line;
+			tokens.emplace_back(type, token.get_value().c_str(), tokenFile, line,
 				position.get_column());
 		}
 
@@ -287,12 +316,12 @@ bool Preprocessor::preprocess(TokenList& tokenList, Output& output, std::istream
 	}
 	catch (const boost::wave::cpp_exception& e)
 	{
-		handleException(output, Output::Level::Error, e);
+		handleException(output, Output::Level::Error, e, extraLineFile);
 		return false;
 	}
 	catch (const boost::wave::cpplexer::cpplexer_exception& e)
 	{
-		handleException(output, Output::Level::Error, e);
+		handleException(output, Output::Level::Error, e, extraLineFile);
 		return false;
 	}
 }

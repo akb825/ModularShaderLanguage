@@ -62,7 +62,7 @@ TEST(PreprocessorTest, PreprocError)
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(Output::Level::Error, output.getMessages()[0].level);
 	EXPECT_EQ(fileName, output.getMessages()[0].file);
-	EXPECT_EQ(2U, output.getMessages()[0].line);
+	EXPECT_EQ(3U, output.getMessages()[0].line);
 	EXPECT_EQ(1U, output.getMessages()[0].column);
 	EXPECT_EQ("illegal macro redefinition: a", output.getMessages()[0].message);
 }
@@ -82,7 +82,7 @@ TEST(PreprocessorTest, PreprocErrorHeaderLines)
 	ASSERT_EQ(1U, output.getMessages().size());
 	EXPECT_EQ(Output::Level::Error, output.getMessages()[0].level);
 	EXPECT_EQ(fileName, output.getMessages()[0].file);
-	EXPECT_EQ(2U, output.getMessages()[0].line);
+	EXPECT_EQ(3U, output.getMessages()[0].line);
 	EXPECT_EQ(1U, output.getMessages()[0].column);
 	EXPECT_EQ("illegal macro redefinition: a", output.getMessages()[0].message);
 }

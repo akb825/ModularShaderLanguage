@@ -67,7 +67,15 @@ static void addToOutput(Output& output, const std::string& baseFileName,
 	const char* unimplementedPrefix = "UNIMPLEMENTED: ";
 	const char* notePrefix = "NOTE: ";
 	const char* unknownPrefix = "UNKNOWN ERROR: ";
-	const char* entryPointSuffix = ": Each stage requires one \"void main()\" entry point";
+
+	const char* ignoreMessages[] =
+	{
+		"No code generated.",
+		"most version-specific features are present, but some are missing.",
+		"stage:",
+		"all default precisions are highp; use precision statements to quiet warning, e.g.:",
+		"\"precision mediump int; precision highp float;\""
+	};
 
 	for (std::size_t start = 0; start < infoStr.size();)
 	{
@@ -80,20 +88,23 @@ static void addToOutput(Output& output, const std::string& baseFileName,
 		std::string curMessage = infoStr.substr(start, curLen);
 		boost::algorithm::trim(curMessage);
 
-		if (curMessage.empty() ||
-			boost::algorithm::ends_with(curMessage, "No code generated.") ||
-			boost::algorithm::ends_with(curMessage,
-				"most version-specific features are present, but some are missing.") ||
-			boost::algorithm::ends_with(curMessage, "stage:"))
+		bool ignored = false;
+		for (const char* suffix : ignoreMessages)
+		{
+			if (boost::algorithm::ends_with(curMessage, suffix))
+			{
+				ignored = true;
+				break;
+			}
+		}
+
+		if (curMessage.empty() || ignored)
 		{
 			start = end;
 			if (start != std::string::npos)
 				++start;
 			continue;
 		}
-
-		if (boost::algorithm::ends_with(curMessage, entryPointSuffix))
-			curMessage = curMessage.substr(0, curMessage.size() - std::strlen(entryPointSuffix));
 
 		std::string prefix;
 		Output::Level level = Output::Level::Info;
