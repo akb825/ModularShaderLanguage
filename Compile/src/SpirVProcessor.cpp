@@ -20,6 +20,7 @@
 #include <SPIRV/spirv.hpp>
 #include <algorithm>
 #include <cassert>
+#include <cstring>
 #include <map>
 #include <unordered_map>
 #include <unordered_set>
@@ -2208,9 +2209,14 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 	addPushConstants(*this, data);
 
 	// Sanity checks:
+	const char* builtinPrefix = "gl_";
+	std::size_t builtinPrefixLen = std::strlen(builtinPrefix);
 	std::unordered_set<std::string> encounteredNames;
 	for (const Struct& thisStruct : structs)
 	{
+		if (thisStruct.name.compare(0, builtinPrefixLen, builtinPrefix) == 0)
+			continue;
+
 		if (!encounteredNames.insert(thisStruct.name).second)
 		{
 			output.addMessage(Output::Level::Error, fileName, line, column, false,
