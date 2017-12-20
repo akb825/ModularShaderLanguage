@@ -47,6 +47,8 @@ The following software is required to build MSL:
 
 > **Note:** Boost must be built with C++11 support. For example, when building and installing through the b2 bootstrap command: `./b2 "-std=c++11" -j4 install`
 
+> **Note:** When Boost is manually installed, you may need to add the installation location for the specific version to use on your `PATH`. An example path on Windows is `C:\local\boost_1_64_0\lib64-msvc-14.1`.
+
 The glslang and SPIRV-Cross submodules can be grabbed by running the commands
 
 	ModularShaderLanguage$ git submodule init
@@ -100,7 +102,7 @@ The following options may be used when running cmake:
 
 Once you have built and installed MSL, and have added the `lib/cmake/MSL` directory to `CMAKE_PREFIX_PATH`, you can find the various modules with the `find_package()` CMake function. For example:
 
-    find_package(MSL COMPONENTS Compile)
+	find_package(MSL COMPONENTS Compile)
 
 Libraries and include directories can be found through the `MSLModule_LIBRARIES` and `MSLModule_INCLUDE_DIRS` CMake variables. For example: `MSLCompile_LIBRARIES` and `MSLCompile_INCLUDE_DIRS`.
 
