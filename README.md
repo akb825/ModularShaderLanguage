@@ -47,7 +47,7 @@ The following software is required to build MSL:
 
 > **Note:** Boost must be built with C++11 support. For example, when building and installing through the b2 bootstrap command: `./b2 "-std=c++11" -j4 install`
 
-> **Note:** When Boost is manually installed, you may need to add the installation location for the specific version to use on your `PATH`. An example path on Windows is `C:\local\boost_1_64_0\lib64-msvc-14.1`.
+> **Note:** When Boost is manually installed, the appropriate variables should be set. In the case of Windows, the `BOOST_LIBRARYDIR` and `BOOST_ROOT` variables should be set. (examples: `BOOST_LIBRARYDIR=C:\local\boost_1_64_0\lib64-msvc-14.1` and `BOOST_ROOT=C:\local\boost_1_64_0`) In Windows, the value of `BOOST_LIBRARYDIR` should also be on `PATH` to ensure the DLLs can be loaded.
 
 The glslang and SPIRV-Cross submodules can be grabbed by running the commands
 
