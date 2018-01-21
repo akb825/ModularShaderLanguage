@@ -100,11 +100,13 @@ The following options may be used when running cmake:
 * `-DMSL_ROOT_FOLDER=folder`: The root folder for the projects in IDEs that support them. (e.g. Visual Studio or XCode) This is useful if embedding MSL in another project. Defaults to MSL.
 * `-DMSL_INSTALL=ON|OFF`: Allow installation for MSL components. This can be useful when embedding in other projects to prevent installations from including MSL. For example, when statically linking into a shared library. Default is `ON`.
 
-Once you have built and installed MSL, and have added the `lib/cmake/MSL` directory to `CMAKE_PREFIX_PATH`, you can find the various modules with the `find_package()` CMake function. For example:
+Once you have built and installed MSL, you can find the various modules with the `find_package()` CMake function in `CONFIG` mode. For example:
 
-	find_package(MSL COMPONENTS Compile)
+	find_package(MSL CONFIG COMPONENTS Compile)
 
 Libraries and include directories can be found through the `MSLModule_LIBRARIES` and `MSLModule_INCLUDE_DIRS` CMake variables. For example: `MSLCompile_LIBRARIES` and `MSLCompile_INCLUDE_DIRS`.
+
+> **Note:** In order for `find_package()` to succeed, on Windows you will need to add the path to `INSTALL_DIR/lib/cmake` to `CMAKE_PREFIX_PATH`. (e.g. `C:/Program Files/MSL/lib/cmake`) On other systems, if you don't install to a standard location, you will need to add the base installation path to `CMAKE_PREFIX_PATH`.
 
 # Modules
 
