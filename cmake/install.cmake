@@ -88,7 +88,7 @@ function(msl_install_library)
 		"set(MSL${ARGS_MODULE}_LIBRARIES ${ARGS_TARGET})\n"
 		"get_target_property(MSL${ARGS_MODULE}_INCLUDE_DIRS ${ARGS_TARGET} INTERFACE_INCLUDE_DIRECTORIES)\n")
 
-	set(configPackageDir lib/cmake/MSL)
+	set(configPackageDir lib/cmake/${moduleName})
 	install(EXPORT ${moduleName}Targets FILE ${moduleName}Targets.cmake
 		DESTINATION ${configPackageDir})
 	install(FILES ${configPath} ${versionPath} DESTINATION ${configPackageDir} COMPONENT dev)
