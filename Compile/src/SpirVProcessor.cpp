@@ -1854,6 +1854,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 	this->column = column;
 	this->spirv = &spirv;
 
+	MSL_UNUSED(minVersion);
 	assert(spirv.size() > firstInstruction);
 	assert(spirv[0] == spv::MagicNumber);
 	assert(spirv[1] >= minVersion && spirv[1] <= spv::Version);
