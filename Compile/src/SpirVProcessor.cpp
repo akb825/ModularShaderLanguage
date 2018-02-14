@@ -31,6 +31,7 @@ namespace msl
 namespace
 {
 
+static const unsigned int minVersion = 0x00010000;
 static const unsigned int firstInstruction = 5;
 static const unsigned int unknownLength = (unsigned int)-1;
 
@@ -1855,7 +1856,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 
 	assert(spirv.size() > firstInstruction);
 	assert(spirv[0] == spv::MagicNumber);
-	assert(spirv[1] == spv::Version);
+	assert(spirv[1] >= minVersion && spirv[1] <= spv::Version);
 	std::vector<char> tempBuffer;
 
 	IntermediateData data;

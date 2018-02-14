@@ -1,24 +1,32 @@
+# Copyright 2018 Aaron Barany
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
 if (MSVC)
-	set(commonFlags "/W3 /WX /wd4200 /wd4996 /D_CRT_SECURE_NO_WARNINGS /D_CRT_NONSTDC_NO_WARNINGS /MP")
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${commonFlags}")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${commonFlags}")
-	add_definitions(-DBOOST_ALL_NO_LIB)
+	add_compile_options(/W3 /WX /wd4200 /MP)
+	add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_CRT_NONSTDC_NO_WARNINGS -DBOOST_ALL_NO_LIB)
 	if (MSL_SHARED)
 		add_definitions(-DBOOST_ALL_DYN_LINK)
 	endif()
 else()
-	if (MSL_SHARED AND
-		(CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang"))
-		set(otherCFlags "-fvisibility=hidden")
-		set(otherCXXFlags "${otherCFlags} -fvisibility-inlines-hidden")
-	else()
-		set(otherCFlags)
-		set(otherCXXFlags)
+	add_compile_options(-Wall -Werror -Wconversion -Wno-sign-conversion -fno-strict-aliasing)
+	# Behavior for VISIBILITY_PRESET variables are inconsistent between CMake versions.
+	if (MSL_SHARED)
+		add_compile_options(-fvisibility=hidden -fvisibility-inlines-hidden)
 	endif()
-
-	set(commonFlags "-fPIC -Wall -Werror -Wconversion -Wno-sign-conversion -fno-strict-aliasing")
-	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${commonFlags} ${otherCFlags}")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${commonFlags} -std=c++11 ${otherCXXFlags}")
 endif()
 
 enable_testing()
