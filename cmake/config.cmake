@@ -25,7 +25,8 @@ else()
 	add_compile_options(-Wall -Werror -Wconversion -Wno-sign-conversion -fno-strict-aliasing)
 	# Behavior for VISIBILITY_PRESET variables are inconsistent between CMake versions.
 	if (MSL_SHARED)
-		add_compile_options(-fvisibility=hidden -fvisibility-inlines-hidden)
+		add_compile_options(-fvisibility=hidden)
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility-inlines-hidden")
 	endif()
 endif()
 
