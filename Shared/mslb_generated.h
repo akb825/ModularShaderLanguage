@@ -1123,9 +1123,6 @@ MANUALLY_ALIGNED_STRUCT(4) RasterizationState FLATBUFFERS_FINAL_CLASS {
   RasterizationState() {
     memset(this, 0, sizeof(RasterizationState));
   }
-  RasterizationState(const RasterizationState &_o) {
-    memcpy(this, &_o, sizeof(RasterizationState));
-  }
   RasterizationState(Bool _depthClampEnable, Bool _rasterizerDiscardEnable, PolygonMode _polygonMode, CullMode _cullMode, FrontFace _frontFace, Bool _depthBiasEnable, float _depthBiasConstantFactor, float _depthBiasClamp, float _depthBiasSlopeFactor, float _lineWidth)
       : depthClampEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthClampEnable))),
         rasterizerDiscardEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_rasterizerDiscardEnable))),
@@ -1217,9 +1214,6 @@ MANUALLY_ALIGNED_STRUCT(4) MultisampleState FLATBUFFERS_FINAL_CLASS {
   MultisampleState() {
     memset(this, 0, sizeof(MultisampleState));
   }
-  MultisampleState(const MultisampleState &_o) {
-    memcpy(this, &_o, sizeof(MultisampleState));
-  }
   MultisampleState(Bool _sampleShadingEnable, float _minSampleShading, uint32_t _sampleMask, Bool _alphaToCoverageEnable, Bool _alphaToOneEnable)
       : sampleShadingEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_sampleShadingEnable))),
         padding0__(0),
@@ -1278,9 +1272,6 @@ MANUALLY_ALIGNED_STRUCT(4) StencilOpState FLATBUFFERS_FINAL_CLASS {
  public:
   StencilOpState() {
     memset(this, 0, sizeof(StencilOpState));
-  }
-  StencilOpState(const StencilOpState &_o) {
-    memcpy(this, &_o, sizeof(StencilOpState));
   }
   StencilOpState(StencilOp _failOp, StencilOp _passOp, StencilOp _depthFailOp, CompareOp _compareOp, uint32_t _compareMask, uint32_t _writeMask, uint32_t _reference)
       : failOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_failOp))),
@@ -1352,9 +1343,6 @@ MANUALLY_ALIGNED_STRUCT(4) DepthStencilState FLATBUFFERS_FINAL_CLASS {
  public:
   DepthStencilState() {
     memset(this, 0, sizeof(DepthStencilState));
-  }
-  DepthStencilState(const DepthStencilState &_o) {
-    memcpy(this, &_o, sizeof(DepthStencilState));
   }
   DepthStencilState(Bool _depthTestEnable, Bool _depthWriteEnable, CompareOp _depthCompareOp, Bool _depthBoundsTestEnable, Bool _stencilTestEnable, const StencilOpState &_frontStencil, const StencilOpState &_backStencil, float _minDepthBounds, float _maxDepthBounds)
       : depthTestEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthTestEnable))),
@@ -1442,9 +1430,6 @@ MANUALLY_ALIGNED_STRUCT(1) BlendAttachmentState FLATBUFFERS_FINAL_CLASS {
   BlendAttachmentState() {
     memset(this, 0, sizeof(BlendAttachmentState));
   }
-  BlendAttachmentState(const BlendAttachmentState &_o) {
-    memcpy(this, &_o, sizeof(BlendAttachmentState));
-  }
   BlendAttachmentState(Bool _blendEnable, BlendFactor _srcColorBlendFactor, BlendFactor _dstColorBlendFactor, BlendOp _colorBlendOp, BlendFactor _srcAlphaBlendFactor, BlendFactor _dstAlphaBlendFactor, BlendOp _alphaBlendOp, ColorMask _colorWriteMask)
       : blendEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_blendEnable))),
         srcColorBlendFactor_(flatbuffers::EndianScalar(static_cast<int8_t>(_srcColorBlendFactor))),
@@ -1526,9 +1511,6 @@ MANUALLY_ALIGNED_STRUCT(4) SamplerState FLATBUFFERS_FINAL_CLASS {
  public:
   SamplerState() {
     memset(this, 0, sizeof(SamplerState));
-  }
-  SamplerState(const SamplerState &_o) {
-    memcpy(this, &_o, sizeof(SamplerState));
   }
   SamplerState(Filter _minFilter, Filter _magFilter, MipFilter _mipFilter, AddressMode _addressModeU, AddressMode _addressModeV, AddressMode _addressModeW, float _mipLodBias, float _maxAnisotropy, float _minLod, float _maxLod, BorderColor _borderColor, CompareOp _compareOp)
       : minFilter_(flatbuffers::EndianScalar(static_cast<int8_t>(_minFilter))),
@@ -1632,9 +1614,6 @@ MANUALLY_ALIGNED_STRUCT(4) ArrayInfo FLATBUFFERS_FINAL_CLASS {
   ArrayInfo() {
     memset(this, 0, sizeof(ArrayInfo));
   }
-  ArrayInfo(const ArrayInfo &_o) {
-    memcpy(this, &_o, sizeof(ArrayInfo));
-  }
   ArrayInfo(uint32_t _length, uint32_t _stride)
       : length_(flatbuffers::EndianScalar(_length)),
         stride_(flatbuffers::EndianScalar(_stride)) {
@@ -1723,13 +1702,13 @@ struct BlendStateBuilder {
   void add_blendConstants(flatbuffers::Offset<flatbuffers::Vector<float>> blendConstants) {
     fbb_.AddOffset(BlendState::VT_BLENDCONSTANTS, blendConstants);
   }
-  BlendStateBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit BlendStateBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
   BlendStateBuilder &operator=(const BlendStateBuilder &);
   flatbuffers::Offset<BlendState> Finish() {
-    const auto end = fbb_.EndTable(start_, 5);
+    const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<BlendState>(end);
     fbb_.Required(o, BlendState::VT_BLENDATTACHMENTS);
     fbb_.Required(o, BlendState::VT_BLENDCONSTANTS);
@@ -1837,13 +1816,13 @@ struct RenderStateBuilder {
   void add_patchControlPoints(uint32_t patchControlPoints) {
     fbb_.AddElement<uint32_t>(RenderState::VT_PATCHCONTROLPOINTS, patchControlPoints, 0);
   }
-  RenderStateBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit RenderStateBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
   RenderStateBuilder &operator=(const RenderStateBuilder &);
   flatbuffers::Offset<RenderState> Finish() {
-    const auto end = fbb_.EndTable(start_, 5);
+    const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<RenderState>(end);
     fbb_.Required(o, RenderState::VT_RASTERIZATIONSTATE);
     fbb_.Required(o, RenderState::VT_MULTISAMPLESTATE);
@@ -1960,13 +1939,13 @@ struct StructMemberBuilder {
   void add_rowMajor(bool rowMajor) {
     fbb_.AddElement<uint8_t>(StructMember::VT_ROWMAJOR, static_cast<uint8_t>(rowMajor), 0);
   }
-  StructMemberBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit StructMemberBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
   StructMemberBuilder &operator=(const StructMemberBuilder &);
   flatbuffers::Offset<StructMember> Finish() {
-    const auto end = fbb_.EndTable(start_, 7);
+    const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<StructMember>(end);
     fbb_.Required(o, StructMember::VT_NAME);
     return o;
@@ -2061,13 +2040,13 @@ struct StructBuilder {
   void add_members(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<StructMember>>> members) {
     fbb_.AddOffset(Struct::VT_MEMBERS, members);
   }
-  StructBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit StructBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
   StructBuilder &operator=(const StructBuilder &);
   flatbuffers::Offset<Struct> Finish() {
-    const auto end = fbb_.EndTable(start_, 3);
+    const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Struct>(end);
     fbb_.Required(o, Struct::VT_NAME);
     fbb_.Required(o, Struct::VT_MEMBERS);
@@ -2212,13 +2191,13 @@ struct UniformBuilder {
   void add_samplerIndex(uint32_t samplerIndex) {
     fbb_.AddElement<uint32_t>(Uniform::VT_SAMPLERINDEX, samplerIndex, 0);
   }
-  UniformBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit UniformBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
   UniformBuilder &operator=(const UniformBuilder &);
   flatbuffers::Offset<Uniform> Finish() {
-    const auto end = fbb_.EndTable(start_, 9);
+    const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Uniform>(end);
     fbb_.Required(o, Uniform::VT_NAME);
     return o;
@@ -2342,13 +2321,13 @@ struct AttributeBuilder {
   void add_component(uint32_t component) {
     fbb_.AddElement<uint32_t>(Attribute::VT_COMPONENT, component, 0);
   }
-  AttributeBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit AttributeBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
   AttributeBuilder &operator=(const AttributeBuilder &);
   flatbuffers::Offset<Attribute> Finish() {
-    const auto end = fbb_.EndTable(start_, 5);
+    const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Attribute>(end);
     fbb_.Required(o, Attribute::VT_NAME);
     return o;
@@ -2422,13 +2401,13 @@ struct FragmentOutputBuilder {
   void add_location(uint32_t location) {
     fbb_.AddElement<uint32_t>(FragmentOutput::VT_LOCATION, location, 0);
   }
-  FragmentOutputBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit FragmentOutputBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
   FragmentOutputBuilder &operator=(const FragmentOutputBuilder &);
   flatbuffers::Offset<FragmentOutput> Finish() {
-    const auto end = fbb_.EndTable(start_, 2);
+    const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<FragmentOutput>(end);
     fbb_.Required(o, FragmentOutput::VT_NAME);
     return o;
@@ -2490,13 +2469,13 @@ struct ShaderBuilder {
   void add_uniformIds(flatbuffers::Offset<flatbuffers::Vector<uint32_t>> uniformIds) {
     fbb_.AddOffset(Shader::VT_UNIFORMIDS, uniformIds);
   }
-  ShaderBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit ShaderBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
   ShaderBuilder &operator=(const ShaderBuilder &);
   flatbuffers::Offset<Shader> Finish() {
-    const auto end = fbb_.EndTable(start_, 2);
+    const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Shader>(end);
     return o;
   }
@@ -2646,13 +2625,13 @@ struct PipelineBuilder {
   void add_shaders(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Shader>>> shaders) {
     fbb_.AddOffset(Pipeline::VT_SHADERS, shaders);
   }
-  PipelineBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit PipelineBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
   PipelineBuilder &operator=(const PipelineBuilder &);
   flatbuffers::Offset<Pipeline> Finish() {
-    const auto end = fbb_.EndTable(start_, 9);
+    const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Pipeline>(end);
     fbb_.Required(o, Pipeline::VT_NAME);
     fbb_.Required(o, Pipeline::VT_STRUCTS);
@@ -2737,13 +2716,13 @@ struct ShaderDataBuilder {
   void add_data(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> data) {
     fbb_.AddOffset(ShaderData::VT_DATA, data);
   }
-  ShaderDataBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit ShaderDataBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
   ShaderDataBuilder &operator=(const ShaderDataBuilder &);
   flatbuffers::Offset<ShaderData> Finish() {
-    const auto end = fbb_.EndTable(start_, 1);
+    const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<ShaderData>(end);
     fbb_.Required(o, ShaderData::VT_DATA);
     return o;
@@ -2860,13 +2839,13 @@ struct ModuleBuilder {
   void add_sharedData(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> sharedData) {
     fbb_.AddOffset(Module::VT_SHAREDDATA, sharedData);
   }
-  ModuleBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit ModuleBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
   ModuleBuilder &operator=(const ModuleBuilder &);
   flatbuffers::Offset<Module> Finish() {
-    const auto end = fbb_.EndTable(start_, 7);
+    const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Module>(end);
     fbb_.Required(o, Module::VT_PIPELINES);
     fbb_.Required(o, Module::VT_SHADERS);
