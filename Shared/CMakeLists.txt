@@ -8,7 +8,7 @@ if (FLATC)
 		WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 	add_custom_target(mslb DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/mslb_generated.h)
 else()
-	message("flatc not installed. Using pre-compiled flatbuffer.")
+	message("flatc not installed. Using pre-generated flatbuffers.")
 	add_custom_target(mslb)
 endif()
 

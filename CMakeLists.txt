@@ -34,10 +34,10 @@ if (MSL_BUILD_DOCS)
 	endif()
 endif()
 
-find_file(FLATBUFFERS_H flatbuffers/flatbuffers.h)
-if (NOT FLATBUFFERS_H)
-	set(FLATBUFFERS_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/Shared/external)
-endif()
+# This will try to find the include directory on the system, and fall back to the version checked
+# into the repository.
+find_path(FLATBUFFERS_INCLUDE_DIRS flatbuffers/flatbuffers.h
+	PATHS ${CMAKE_CURRENT_SOURCE_DIR}/Shared/external)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
