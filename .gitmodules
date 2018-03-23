@@ -1,6 +1,6 @@
 [submodule "glslang"]
 	path = Compile/glslang
-	url = https://github.com/akb825/glslang.git
+	url = https://github.com/KhronosGroup/glslang.git
 [submodule "SPIRV-Cross"]
 	path = Compile/SPIRV-Cross
 	url = https://github.com/KhronosGroup/SPIRV-Cross

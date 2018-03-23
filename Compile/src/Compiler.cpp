@@ -280,6 +280,8 @@ bool Compiler::compile(Stages& stages, Output &output, const std::string& baseFi
 	std::unique_ptr<glslang::TShader> shader(
 		new glslang::TShader(stageMap[static_cast<unsigned int>(stage)]));
 	shader->setStrings(&glslStr, 1);
+	shader->setAutoMapBindings(true);
+	shader->setAutoMapLocations(true);
 
 	bool success = shader->parse(&resources, 450, ECoreProfile, true, false, glslMessages);
 	addToOutput(output, baseFileName, lineMappings, shader->getInfoLog());

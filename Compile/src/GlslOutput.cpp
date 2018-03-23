@@ -35,7 +35,7 @@ std::string GlslOutput::disassemble(Output& output, const Compiler::SpirV& spirv
 		static_cast<spirv_cross::CompilerGLSL::Options::Precision>(options.defaultIntPrecision);
 
 	spirv_cross::CompilerGLSL compiler(spirv);
-	compiler.set_options(compilerOptions);
+	compiler.set_common_options(compilerOptions);
 	for (const std::string& header : options.headerLines)
 		compiler.add_header_line(header);
 	for (const std::string& extension : options.requiredExtensions)
