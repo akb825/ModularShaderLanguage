@@ -62,7 +62,7 @@ buffer BufferInstanceAll
 {
 	vec4 instance;
 } bufferInstanceAll;
-void funcDeclAll();
+void funcDeclAll(in vec3 input, out vec4 output);
 void funcAll()
 {
 	if (true)
@@ -100,7 +100,7 @@ buffer BufferGeometry
 {
 	vec4 instance;
 } bufferInstanceGeometry;
- void funcDeclGeometry();
+ void funcDeclGeometry(in vec3 input, out vec4 output);
  void funcGeometry()
 {
 	if (true)

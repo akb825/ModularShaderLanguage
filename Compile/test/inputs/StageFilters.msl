@@ -44,7 +44,7 @@ struct InstanceStructAll
 {
 	vec4 value;
 } structInstanceAll;
-void funcDeclAll();
+void funcDeclAll(in vec3 input, out vec4 output);
 void funcAll()
 {
 	if (true)
@@ -100,7 +100,7 @@ buffer BufferVertex
 {
 	vec4 value;
 } structInstanceVertex;
-[[vertex]] void funcDeclVertex();
+[[vertex]] void funcDeclVertex(in vec3 input, out vec4 output);
 [[vertex]] void funcVertex()
 {
 	if (true)
@@ -156,7 +156,7 @@ buffer BufferTessControl
 {
 	vec4 value;
 } structInstanceTessControl;
-[[tessellation_control]] void funcDeclTessControl();
+[[tessellation_control]] void funcDeclTessControl(in vec3 input, out vec4 output);
 [[tessellation_control]] void funcTessControl()
 {
 	if (true)
@@ -212,7 +212,7 @@ buffer BufferTessEvaluation
 {
 	vec4 value;
 } structInstanceTessEvaluation;
-[[tessellation_evaluation]] void funcDeclTessEvaluation();
+[[tessellation_evaluation]] void funcDeclTessEvaluation(in vec3 input, out vec4 output);
 [[tessellation_evaluation]] void funcTessEvaluation()
 {
 	if (true)
@@ -268,7 +268,7 @@ buffer BufferGeometry
 {
 	vec4 value;
 } structInstanceGeometry;
-[[geometry]] void funcDeclGeometry();
+[[geometry]] void funcDeclGeometry(in vec3 input, out vec4 output);
 [[geometry]] void funcGeometry()
 {
 	if (true)
@@ -324,7 +324,7 @@ buffer BufferFragment
 {
 	vec4 value;
 } structInstanceFragment;
-[[fragment]] void funcDeclFragment();
+[[fragment]] void funcDeclFragment(in vec3 input, out vec4 output);
 [[fragment]] void funcFragment()
 {
 	if (true)
@@ -380,7 +380,7 @@ buffer BufferCompute
 {
 	vec4 value;
 } structInstanceCompute;
-[[compute]] void funcDeclCompute();
+[[compute]] void funcDeclCompute(in vec3 input, out vec4 output);
 [[compute]] void funcCompute()
 {
 	if (true)
@@ -436,7 +436,7 @@ buffer BufferVertexFragment
 {
 	vec4 value;
 } structInstanceVertexFragment;
-[[vertex, fragment]] void funcDeclVertexFragment();
+[[vertex, fragment]] void funcDeclVertexFragment(in vec3 input, out vec4 output);
 [[vertex, fragment]] void funcVertexFragment()
 {
 	if (true)

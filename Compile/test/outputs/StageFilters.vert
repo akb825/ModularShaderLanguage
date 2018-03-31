@@ -79,7 +79,7 @@ buffer BufferInstanceAll
 {
 	vec4 instance;
 } bufferInstanceAll;
-void funcDeclAll();
+void funcDeclAll(in vec3 input, out vec4 output);
 void funcAll()
 {
 	if (true)
@@ -117,7 +117,7 @@ buffer BufferVertex
 {
 	vec4 instance;
 } bufferInstanceVertex;
- void funcDeclVertex();
+ void funcDeclVertex(in vec3 input, out vec4 output);
  void funcVertex()
 {
 	if (true)
@@ -155,7 +155,7 @@ buffer BufferVertexFragment
 {
 	vec4 instance;
 } bufferInstanceVertexFragment;
- void funcDeclVertexFragment();
+ void funcDeclVertexFragment(in vec3 input, out vec4 output);
  void funcVertexFragment()
 {
 	if (true)

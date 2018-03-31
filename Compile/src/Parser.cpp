@@ -1293,7 +1293,6 @@ bool Parser::parse(Output& output, int options)
 	unsigned int squareCount = 0;
 	bool elementStart = true;
 	bool inStageDecl = false;
-	bool hadScope = false;
 	Element element = Element::Unknown;
 
 	const Token* lastToken = nullptr;
@@ -1409,7 +1408,6 @@ bool Parser::parse(Output& output, int options)
 			{
 				if (braceCount == 0)
 					startBraceToken = &token;
-				hadScope = true;
 				++braceCount;
 			}
 			else if (token.value == "}")
@@ -1428,7 +1426,6 @@ bool Parser::parse(Output& output, int options)
 					endElement(stages, tokenRange, i);
 					element = Element::Unknown;
 					elementStart = true;
-					hadScope = false;
 				}
 			}
 			else if (token.value == "]")
@@ -1447,24 +1444,26 @@ bool Parser::parse(Output& output, int options)
 					tokenRange.start = i + 1;
 				}
 			}
-			else if (token.value == ";" && parenCount == 0 && braceCount == 0 && squareCount == 0)
+			else if (parenCount == 0 && braceCount == 0 && squareCount == 0)
 			{
-				// End element ; outside of (, {, and [ block.
-				endElement(stages, tokenRange, i);
-				element = Element::Unknown;
-				elementStart = true;
-				hadScope = false;
+				if (token.value == ";")
+				{
+					// End element ; outside of (, {, and [ block.
+					endElement(stages, tokenRange, i);
+					element = Element::Unknown;
+					elementStart = true;
+				}
+				else if (token.value == "uniform")
+					element = Element::Uniform;
+				else if (token.value == "buffer")
+					element = Element::Buffer;
+				else if (token.value == "struct")
+					element = Element::Struct;
+				else if (token.value == "in")
+					element = Element::In;
+				else if (token.value == "out")
+					element = Element::Out;
 			}
-			else if (!hadScope && token.value == "uniform")
-				element = Element::Uniform;
-			else if (!hadScope && token.value == "buffer")
-				element = Element::Buffer;
-			else if (!hadScope && token.value == "struct")
-				element = Element::Struct;
-			else if (!hadScope && token.value == "in")
-				element = Element::In;
-			else if (!hadScope && token.value == "out")
-				element = Element::Out;
 		}
 
 		lastToken = &token;

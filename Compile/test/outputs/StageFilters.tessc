@@ -62,7 +62,7 @@ buffer BufferInstanceAll
 {
 	vec4 instance;
 } bufferInstanceAll;
-void funcDeclAll();
+void funcDeclAll(in vec3 input, out vec4 output);
 void funcAll()
 {
 	if (true)
@@ -100,7 +100,7 @@ buffer BufferTessControl
 {
 	vec4 instance;
 } bufferInstanceTessControl;
- void funcDeclTessControl();
+ void funcDeclTessControl(in vec3 input, out vec4 output);
  void funcTessControl()
 {
 	if (true)
