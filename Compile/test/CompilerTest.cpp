@@ -55,12 +55,12 @@ TEST_F(CompilerTest, CompleteShader)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;
@@ -101,7 +101,7 @@ TEST_F(CompilerTest, CompileError)
 
 	auto stage = Stage::Fragment;
 	std::vector<Parser::LineMapping> lineMappings;
-	std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+	std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 	EXPECT_FALSE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 		Compiler::getDefaultResources()));
 
@@ -131,7 +131,7 @@ TEST_F(CompilerTest, CompileWarning)
 
 	auto stage = Stage::Fragment;
 	std::vector<Parser::LineMapping> lineMappings;
-	std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+	std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 	EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 		Compiler::getDefaultResources()));
 
@@ -161,28 +161,66 @@ TEST_F(CompilerTest, MissingEntryPoint)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
-		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
+		if (stage == Stage::Fragment)
+			EXPECT_TRUE(glsl.empty());
+		else
+			EXPECT_FALSE(glsl.empty());
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
-
-	Compiler::Program program;
-	EXPECT_FALSE(Compiler::link(program, output, pipeline, stages));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
 	EXPECT_EQ(pathStr(inputDir/"MissingEntryPoint.mslh"), pathStr(messages[0].file));
-	EXPECT_EQ(5U, messages[0].line);
-	EXPECT_EQ("Linking fragment stage: Missing entry point: Each stage requires one entry point",
-		messages[0].message);
+	EXPECT_EQ(8U, messages[0].line);
+	EXPECT_EQ("entry point 'fragShader' not found", messages[0].message);
+}
+
+TEST_F(CompilerTest, DuplicateEntryPoint)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"DuplicateEntryPoint.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	preprocessor.addIncludePath(pathStr(inputDir));
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].value.empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
+		if (stage == Stage::Fragment)
+			EXPECT_TRUE(glsl.empty());
+		else
+			EXPECT_FALSE(glsl.empty());
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_LE(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_EQ(pathStr(inputDir/"DuplicateEntryPoint.mslh"), pathStr(messages[0].file));
+	EXPECT_EQ(8U, messages[0].line);
+	EXPECT_EQ("entry point 'fragShader' found multiple times", messages[0].message);
 }
 
 } // namespace msl

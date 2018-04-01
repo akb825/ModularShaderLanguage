@@ -757,10 +757,12 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 		for (unsigned int i = 0; i < stageCount; ++i)
 		{
 			auto stage = static_cast<Stage>(i);
-			if (pipeline.entryPoints[i].empty())
+			if (pipeline.entryPoints[i].value.empty())
 				continue;
 
-			std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+			std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
+			if (glsl.empty())
+				return false;
 			if (!Compiler::compile(stages, output, fileName, glsl, lineMappings, stage, resources))
 				return false;
 		}
@@ -854,14 +856,16 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 		{
 			const SpirVProcessor& vertexProcessor =
 				processors[static_cast<unsigned int>(Stage::Vertex)];
+			const Token& entryPoint =
+				pipeline.entryPoints[static_cast<unsigned int>(Stage::Fragment)];
 			addedPipeline.attributes.resize(vertexProcessor.inputs.size());
 			for (std::size_t i = 0; i < vertexProcessor.inputs.size(); ++i)
 			{
 				addedPipeline.attributes[i].name = vertexProcessor.inputs[i].name;
 				if (vertexProcessor.inputs[i].type == Type::Struct)
 				{
-					output.addMessage(Output::Level::Error, pipeline.token->fileName,
-						pipeline.token->line, pipeline.token->column, false,
+					output.addMessage(Output::Level::Error, entryPoint.fileName,
+						entryPoint.line, entryPoint.column, false,
 						"linker error: vertex inputs may not use interface blocks");
 					return false;
 				}
@@ -877,14 +881,16 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 		{
 			const SpirVProcessor& fragmentProcessor =
 				processors[static_cast<unsigned int>(Stage::Fragment)];
+			const Token& entryPoint =
+				pipeline.entryPoints[static_cast<unsigned int>(Stage::Fragment)];
 			addedPipeline.fragmentOutputs.resize(fragmentProcessor.outputs.size());
 			for (std::size_t i = 0; i < fragmentProcessor.outputs.size(); ++i)
 			{
 				addedPipeline.fragmentOutputs[i].name = fragmentProcessor.outputs[i].name;
 				if (fragmentProcessor.outputs[i].type == Type::Struct)
 				{
-					output.addMessage(Output::Level::Error, pipeline.token->fileName,
-						pipeline.token->line, pipeline.token->column, false,
+					output.addMessage(Output::Level::Error, entryPoint.fileName,
+						entryPoint.line, entryPoint.column, false,
 						"linker error: fragment outputs may not use interface blocks");
 					return false;
 				}
@@ -925,8 +931,9 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			}
 
 			shaderData.clear();
-			if (!crossCompile(shaderData, output, fileName, pipeline.token->line,
-				pipeline.token->column, stage, spirv[i], pipeline.entryPoints[i]))
+			const Token& entryPoint = pipeline.entryPoints[i];
+			if (!crossCompile(shaderData, output, entryPoint.fileName, entryPoint.line,
+				entryPoint.column, stage, spirv[i], entryPoint.value))
 			{
 				return false;
 			}

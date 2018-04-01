@@ -904,9 +904,28 @@ TEST(TargetGlslTest, MissingEntryPoint)
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
 	EXPECT_EQ(pathStr(inputDir/"MissingEntryPoint.mslh"), pathStr(messages[0].file));
-	EXPECT_EQ(5U, messages[0].line);
-	EXPECT_EQ("Linking fragment stage: Missing entry point: Each stage requires one entry point",
-		messages[0].message);
+	EXPECT_EQ(8U, messages[0].line);
+	EXPECT_EQ("entry point 'fragShader' not found", messages[0].message);
+}
+
+TEST(TargetGlslTest, DuplicateEntryPoint)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"DuplicateEntryPoint.msl");
+
+	TargetGlsl target(450, false);
+	target.addIncludePath(pathStr(inputDir));
+
+	Output output;
+	CompiledResult result;
+	EXPECT_FALSE(target.compile(result, output, shaderName));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_LE(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_EQ(pathStr(inputDir/"DuplicateEntryPoint.mslh"), pathStr(messages[0].file));
+	EXPECT_EQ(8U, messages[0].line);
+	EXPECT_EQ("entry point 'fragShader' found multiple times", messages[0].message);
 }
 
 } // namespace msl

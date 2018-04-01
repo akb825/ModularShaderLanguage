@@ -752,7 +752,7 @@ static ParseResult readStage(Output& output, Parser::Pipeline& pipeline, const T
 		return ParseResult::Error;
 	}
 
-	pipeline.entryPoints[static_cast<int>(stage)] = value.value;
+	pipeline.entryPoints[static_cast<int>(stage)] = value;
 	return ParseResult::Success;
 }
 
@@ -1518,8 +1518,8 @@ bool Parser::parse(Output& output, int options)
 	return true;
 }
 
-std::string Parser::createShaderString(std::vector<LineMapping>& lineMappings,
-	const Pipeline& pipeline, Stage stage) const
+std::string Parser::createShaderString(std::vector<LineMapping>& lineMappings, Output& output,
+	const Pipeline& pipeline, Stage stage, bool ignoreEntryPoint) const
 {
 	lineMappings.clear();
 	std::string shaderString;
@@ -1539,13 +1539,13 @@ std::string Parser::createShaderString(std::vector<LineMapping>& lineMappings,
 	for (const TokenRange& tokenRange :
 		m_elements[static_cast<unsigned int>(Element::Precision)][stageIndex])
 	{
-		addElementString(shaderString, lineMappings, tokenRange, pipeline.entryPoints[stageIndex]);
+		addElementString(shaderString, lineMappings, tokenRange);
 	}
 
 	for (const TokenRange& tokenRange :
 		m_elements[static_cast<unsigned int>(Element::Struct)][stageIndex])
 	{
-		addElementString(shaderString, lineMappings, tokenRange, pipeline.entryPoints[stageIndex]);
+		addElementString(shaderString, lineMappings, tokenRange);
 	}
 
 	// Add the push constants.
@@ -1567,8 +1567,7 @@ std::string Parser::createShaderString(std::vector<LineMapping>& lineMappings,
 		for (const TokenRange& tokenRange :
 			m_elements[static_cast<unsigned int>(Element::FreeUniform)][stageIndex])
 		{
-			addElementString(shaderString, lineMappings, tokenRange,
-				pipeline.entryPoints[stageIndex]);
+			addElementString(shaderString, lineMappings, tokenRange);
 		}
 
 		// Add the uniform blocks if removing them.
@@ -1577,8 +1576,7 @@ std::string Parser::createShaderString(std::vector<LineMapping>& lineMappings,
 			for (const TokenRange& tokenRange :
 				m_elements[static_cast<unsigned int>(Element::UniformBlock)][stageIndex])
 			{
-				addElementString(shaderString, lineMappings, tokenRange,
-					pipeline.entryPoints[stageIndex]);
+				addElementString(shaderString, lineMappings, tokenRange);
 			}
 		}
 
@@ -1598,16 +1596,38 @@ std::string Parser::createShaderString(std::vector<LineMapping>& lineMappings,
 		for (const TokenRange& tokenRange :
 			m_elements[static_cast<unsigned int>(Element::UniformBlock)][stageIndex])
 		{
-			addElementString(shaderString, lineMappings, tokenRange,
-				pipeline.entryPoints[stageIndex]);
+			addElementString(shaderString, lineMappings, tokenRange);
 		}
 	}
 
 	// Add everything else.
+	bool foundEntryPoint = false;
+	const Token& entryPoint = pipeline.entryPoints[stageIndex];
 	for (const TokenRange& tokenRange :
 		m_elements[static_cast<unsigned int>(Element::Default)][stageIndex])
 	{
-		addElementString(shaderString, lineMappings, tokenRange, pipeline.entryPoints[stageIndex]);
+		EntryPointState state = addElementString(shaderString, lineMappings, tokenRange,
+			&entryPoint);
+		if (ignoreEntryPoint)
+			continue;
+
+		if (state == EntryPointState::MultipleFound ||
+			(foundEntryPoint && state == EntryPointState::Replaced))
+		{
+			output.addMessage(Output::Level::Error, entryPoint.fileName, entryPoint.line,
+				entryPoint.column, false, "entry point '" + entryPoint.value +
+				"' found multiple times");
+			return std::string();
+		}
+		else if (state == EntryPointState::Replaced)
+			foundEntryPoint = true;
+	}
+
+	if (!ignoreEntryPoint && !foundEntryPoint)
+	{
+		output.addMessage(Output::Level::Error, entryPoint.fileName, entryPoint.line,
+			entryPoint.column, false, "entry point '" + entryPoint.value + "' not found");
+		return std::string();
 	}
 
 	return shaderString;
@@ -1894,14 +1914,15 @@ bool Parser::readSampler(Output& output, const std::vector<Token>& tokens, std::
 	return true;
 }
 
-void Parser::addElementString(std::string& str, std::vector<LineMapping>& lineMappings,
-	const TokenRange& tokenRange, const std::string& entryPoint) const
+Parser::EntryPointState Parser::addElementString(std::string& str,
+	std::vector<LineMapping>& lineMappings, const TokenRange& tokenRange,
+	const Token* entryPoint) const
 {
 	if (tokenRange.count == 0)
-		return;
+		return EntryPointState::NotFound;
 
 	if (removeUniformBlock(str, lineMappings, tokenRange))
-		return;
+		return EntryPointState::NotFound;
 
 	bool newline = true;
 	const auto& tokens = m_tokens.getTokens();
@@ -1910,6 +1931,7 @@ void Parser::addElementString(std::string& str, std::vector<LineMapping>& lineMa
 	unsigned int braceCount = 0;
 	unsigned int squareCount = 0;
 
+	bool foundEntryPoint = false;
 	std::size_t maxValue = std::min(tokenRange.start + tokenRange.count, tokens.size());
 	for (std::size_t i = tokenRange.start; i < maxValue; ++i)
 	{
@@ -1943,11 +1965,19 @@ void Parser::addElementString(std::string& str, std::vector<LineMapping>& lineMa
 			--squareCount;
 
 		// Replace entry point name at global scope with "main".
-		if (parenCount == 0 && braceCount == 0 && squareCount == 0 && token.value == entryPoint)
+		if (parenCount == 0 && braceCount == 0 && squareCount == 0 && entryPoint &&
+			token.value == entryPoint->value)
+		{
+			if (foundEntryPoint)
+				return EntryPointState::MultipleFound;
+			foundEntryPoint = true;
 			str += "main";
+		}
 		else
 			str += token.value;
 	}
+
+	return foundEntryPoint ? EntryPointState::Replaced : EntryPointState::NotFound;
 }
 
 bool Parser::removeUniformBlock(std::string& str, std::vector<LineMapping>& lineMappings,

@@ -67,12 +67,12 @@ TEST_F(SpirVProcessorTest, PrimitiveTypes)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;
@@ -551,12 +551,12 @@ TEST_F(SpirVProcessorTest, StructArrayReflection)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;
@@ -759,12 +759,12 @@ TEST_F(SpirVProcessorTest, InputsOutputs)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;
@@ -1148,12 +1148,12 @@ TEST_F(SpirVProcessorTest, ExplicitInputsOutputs)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;
@@ -1329,12 +1329,12 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;
@@ -2009,12 +2009,12 @@ TEST_F(SpirVProcessorTest, LinkDifferentType)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;
@@ -2065,12 +2065,12 @@ TEST_F(SpirVProcessorTest, LinkDifferentStructType)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;
@@ -2122,12 +2122,12 @@ TEST_F(SpirVProcessorTest, LinkNotPresent)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;
@@ -2178,12 +2178,12 @@ TEST_F(SpirVProcessorTest, LinkStructNotPresent)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;
@@ -2234,12 +2234,12 @@ TEST_F(SpirVProcessorTest, LinkStructArray)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;
@@ -2283,12 +2283,12 @@ TEST_F(SpirVProcessorTest, LinkStructUsedTwice)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;
@@ -2332,12 +2332,12 @@ TEST_F(SpirVProcessorTest, StructWithinOutputBlock)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;
@@ -2380,12 +2380,12 @@ TEST_F(SpirVProcessorTest, MultipleLinkMembers)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;
@@ -2436,12 +2436,12 @@ TEST_F(SpirVProcessorTest, MixedExplicitImplicitLocations)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;
@@ -2491,12 +2491,12 @@ TEST_F(SpirVProcessorTest, StructInBlockAndBuffer)
 	bool compiledStage = false;
 	for (unsigned int i = 0; i < stageCount; ++i)
 	{
-		if (pipeline.entryPoints[i].empty())
+		if (pipeline.entryPoints[i].value.empty())
 			continue;
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, pipeline, stage);
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;

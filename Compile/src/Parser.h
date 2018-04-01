@@ -41,9 +41,9 @@ public:
 
 	struct Pipeline
 	{
-		const Token* token;
+		const Token* token = nullptr;
 		std::string name;
-		std::array<std::string, stageCount> entryPoints;
+		std::array<Token, stageCount> entryPoints;
 		RenderState renderState;
 	};
 
@@ -81,8 +81,8 @@ public:
 	}
 
 	bool parse(Output& output, int options = 0);
-	std::string createShaderString(std::vector<LineMapping>& lineMappings, const Pipeline& pipeline,
-		Stage stage) const;
+	std::string createShaderString(std::vector<LineMapping>& lineMappings, Output& output,
+		const Pipeline& pipeline, Stage stage, bool ignoreEntryPoint = false) const;
 
 private:
 	enum class Element
@@ -92,6 +92,13 @@ private:
 		FreeUniform,
 		UniformBlock,
 		Default
+	};
+
+	enum class EntryPointState
+	{
+		NotFound,
+		Replaced,
+		MultipleFound
 	};
 
 	static const unsigned int elementCount = static_cast<unsigned int>(Element::Default) + 1;
@@ -107,8 +114,8 @@ private:
 	void endMetaElement(TokenRange& tokenRange, std::size_t index);
 	bool readPipeline(Output& output, const std::vector<Token>& tokens, std::size_t& i);
 	bool readSampler(Output& output, const std::vector<Token>& tokens, std::size_t& i);
-	void addElementString(std::string& str, std::vector<LineMapping>& lineMappings,
-		const TokenRange& tokenRange, const std::string& entryPoint) const;
+	EntryPointState addElementString(std::string& str, std::vector<LineMapping>& lineMappings,
+		const TokenRange& tokenRange, const Token* entryPoint = nullptr) const;
 	bool removeUniformBlock(std::string& str, std::vector<LineMapping>& lineMappings,
 		const TokenRange& tokenRange) const;
 

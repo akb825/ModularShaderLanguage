@@ -1,0 +1,9 @@
+#pragma once
+
+// Put these in header to test line numbers.
+
+pipeline Test
+{
+	vertex = vertShader;
+	fragment = fragShader;
+}
