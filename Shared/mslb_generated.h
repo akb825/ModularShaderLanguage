@@ -55,8 +55,8 @@ enum class Stage : uint8_t {
   MAX = Compute
 };
 
-inline Stage (&EnumValuesStage())[6] {
-  static Stage values[] = {
+inline const Stage (&EnumValuesStage())[6] {
+  static const Stage values[] = {
     Stage::Vertex,
     Stage::TessellationControl,
     Stage::TessellationEvaluation,
@@ -67,8 +67,8 @@ inline Stage (&EnumValuesStage())[6] {
   return values;
 }
 
-inline const char **EnumNamesStage() {
-  static const char *names[] = {
+inline const char * const *EnumNamesStage() {
+  static const char * const names[] = {
     "Vertex",
     "TessellationControl",
     "TessellationEvaluation",
@@ -197,8 +197,8 @@ enum class Type : uint8_t {
   MAX = Struct
 };
 
-inline Type (&EnumValuesType())[107] {
-  static Type values[] = {
+inline const Type (&EnumValuesType())[107] {
+  static const Type values[] = {
     Type::Float,
     Type::Vec2,
     Type::Vec3,
@@ -310,8 +310,8 @@ inline Type (&EnumValuesType())[107] {
   return values;
 }
 
-inline const char **EnumNamesType() {
-  static const char *names[] = {
+inline const char * const *EnumNamesType() {
+  static const char * const names[] = {
     "Float",
     "Vec2",
     "Vec3",
@@ -440,8 +440,8 @@ enum class UniformType : uint8_t {
   MAX = SubpassInput
 };
 
-inline UniformType (&EnumValuesUniformType())[6] {
-  static UniformType values[] = {
+inline const UniformType (&EnumValuesUniformType())[6] {
+  static const UniformType values[] = {
     UniformType::PushConstant,
     UniformType::Block,
     UniformType::BlockBuffer,
@@ -452,8 +452,8 @@ inline UniformType (&EnumValuesUniformType())[6] {
   return values;
 }
 
-inline const char **EnumNamesUniformType() {
-  static const char *names[] = {
+inline const char * const *EnumNamesUniformType() {
+  static const char * const names[] = {
     "PushConstant",
     "Block",
     "BlockBuffer",
@@ -478,8 +478,8 @@ enum class Bool : int8_t {
   MAX = True
 };
 
-inline Bool (&EnumValuesBool())[3] {
-  static Bool values[] = {
+inline const Bool (&EnumValuesBool())[3] {
+  static const Bool values[] = {
     Bool::Unset,
     Bool::False,
     Bool::True
@@ -487,8 +487,8 @@ inline Bool (&EnumValuesBool())[3] {
   return values;
 }
 
-inline const char **EnumNamesBool() {
-  static const char *names[] = {
+inline const char * const *EnumNamesBool() {
+  static const char * const names[] = {
     "Unset",
     "False",
     "True",
@@ -511,8 +511,8 @@ enum class PolygonMode : int8_t {
   MAX = Point
 };
 
-inline PolygonMode (&EnumValuesPolygonMode())[4] {
-  static PolygonMode values[] = {
+inline const PolygonMode (&EnumValuesPolygonMode())[4] {
+  static const PolygonMode values[] = {
     PolygonMode::Unset,
     PolygonMode::Fill,
     PolygonMode::Line,
@@ -521,8 +521,8 @@ inline PolygonMode (&EnumValuesPolygonMode())[4] {
   return values;
 }
 
-inline const char **EnumNamesPolygonMode() {
-  static const char *names[] = {
+inline const char * const *EnumNamesPolygonMode() {
+  static const char * const names[] = {
     "Unset",
     "Fill",
     "Line",
@@ -547,8 +547,8 @@ enum class CullMode : int8_t {
   MAX = FrontAndBack
 };
 
-inline CullMode (&EnumValuesCullMode())[5] {
-  static CullMode values[] = {
+inline const CullMode (&EnumValuesCullMode())[5] {
+  static const CullMode values[] = {
     CullMode::Unset,
     CullMode::None,
     CullMode::Front,
@@ -558,8 +558,8 @@ inline CullMode (&EnumValuesCullMode())[5] {
   return values;
 }
 
-inline const char **EnumNamesCullMode() {
-  static const char *names[] = {
+inline const char * const *EnumNamesCullMode() {
+  static const char * const names[] = {
     "Unset",
     "None",
     "Front",
@@ -583,8 +583,8 @@ enum class FrontFace : int8_t {
   MAX = Clockwise
 };
 
-inline FrontFace (&EnumValuesFrontFace())[3] {
-  static FrontFace values[] = {
+inline const FrontFace (&EnumValuesFrontFace())[3] {
+  static const FrontFace values[] = {
     FrontFace::Unset,
     FrontFace::CounterClockwise,
     FrontFace::Clockwise
@@ -592,8 +592,8 @@ inline FrontFace (&EnumValuesFrontFace())[3] {
   return values;
 }
 
-inline const char **EnumNamesFrontFace() {
-  static const char *names[] = {
+inline const char * const *EnumNamesFrontFace() {
+  static const char * const names[] = {
     "Unset",
     "CounterClockwise",
     "Clockwise",
@@ -621,8 +621,8 @@ enum class StencilOp : int8_t {
   MAX = DecrementAndWrap
 };
 
-inline StencilOp (&EnumValuesStencilOp())[9] {
-  static StencilOp values[] = {
+inline const StencilOp (&EnumValuesStencilOp())[9] {
+  static const StencilOp values[] = {
     StencilOp::Unset,
     StencilOp::Keep,
     StencilOp::Zero,
@@ -636,8 +636,8 @@ inline StencilOp (&EnumValuesStencilOp())[9] {
   return values;
 }
 
-inline const char **EnumNamesStencilOp() {
-  static const char *names[] = {
+inline const char * const *EnumNamesStencilOp() {
+  static const char * const names[] = {
     "Unset",
     "Keep",
     "Zero",
@@ -671,8 +671,8 @@ enum class CompareOp : int8_t {
   MAX = Always
 };
 
-inline CompareOp (&EnumValuesCompareOp())[9] {
-  static CompareOp values[] = {
+inline const CompareOp (&EnumValuesCompareOp())[9] {
+  static const CompareOp values[] = {
     CompareOp::Unset,
     CompareOp::Never,
     CompareOp::Less,
@@ -686,8 +686,8 @@ inline CompareOp (&EnumValuesCompareOp())[9] {
   return values;
 }
 
-inline const char **EnumNamesCompareOp() {
-  static const char *names[] = {
+inline const char * const *EnumNamesCompareOp() {
+  static const char * const names[] = {
     "Unset",
     "Never",
     "Less",
@@ -732,8 +732,8 @@ enum class BlendFactor : int8_t {
   MAX = OneMinusSrc1Alpha
 };
 
-inline BlendFactor (&EnumValuesBlendFactor())[20] {
-  static BlendFactor values[] = {
+inline const BlendFactor (&EnumValuesBlendFactor())[20] {
+  static const BlendFactor values[] = {
     BlendFactor::Unset,
     BlendFactor::Zero,
     BlendFactor::One,
@@ -758,8 +758,8 @@ inline BlendFactor (&EnumValuesBlendFactor())[20] {
   return values;
 }
 
-inline const char **EnumNamesBlendFactor() {
-  static const char *names[] = {
+inline const char * const *EnumNamesBlendFactor() {
+  static const char * const names[] = {
     "Unset",
     "Zero",
     "One",
@@ -801,8 +801,8 @@ enum class BlendOp : int8_t {
   MAX = Max
 };
 
-inline BlendOp (&EnumValuesBlendOp())[6] {
-  static BlendOp values[] = {
+inline const BlendOp (&EnumValuesBlendOp())[6] {
+  static const BlendOp values[] = {
     BlendOp::Unset,
     BlendOp::Add,
     BlendOp::Subtract,
@@ -813,8 +813,8 @@ inline BlendOp (&EnumValuesBlendOp())[6] {
   return values;
 }
 
-inline const char **EnumNamesBlendOp() {
-  static const char *names[] = {
+inline const char * const *EnumNamesBlendOp() {
+  static const char * const names[] = {
     "Unset",
     "Add",
     "Subtract",
@@ -842,8 +842,8 @@ enum class ColorMask : int8_t {
   MAX = Alpha
 };
 
-inline ColorMask (&EnumValuesColorMask())[6] {
-  static ColorMask values[] = {
+inline const ColorMask (&EnumValuesColorMask())[6] {
+  static const ColorMask values[] = {
     ColorMask::Unset,
     ColorMask::None,
     ColorMask::Red,
@@ -854,8 +854,8 @@ inline ColorMask (&EnumValuesColorMask())[6] {
   return values;
 }
 
-inline const char **EnumNamesColorMask() {
-  static const char *names[] = {
+inline const char * const *EnumNamesColorMask() {
+  static const char * const names[] = {
     "Unset",
     "None",
     "Red",
@@ -898,8 +898,8 @@ enum class LogicOp : int8_t {
   MAX = Set
 };
 
-inline LogicOp (&EnumValuesLogicOp())[17] {
-  static LogicOp values[] = {
+inline const LogicOp (&EnumValuesLogicOp())[17] {
+  static const LogicOp values[] = {
     LogicOp::Unset,
     LogicOp::Clear,
     LogicOp::And,
@@ -921,8 +921,8 @@ inline LogicOp (&EnumValuesLogicOp())[17] {
   return values;
 }
 
-inline const char **EnumNamesLogicOp() {
-  static const char *names[] = {
+inline const char * const *EnumNamesLogicOp() {
+  static const char * const names[] = {
     "Unset",
     "Clear",
     "And",
@@ -958,8 +958,8 @@ enum class Filter : int8_t {
   MAX = Linear
 };
 
-inline Filter (&EnumValuesFilter())[3] {
-  static Filter values[] = {
+inline const Filter (&EnumValuesFilter())[3] {
+  static const Filter values[] = {
     Filter::Unset,
     Filter::Nearest,
     Filter::Linear
@@ -967,8 +967,8 @@ inline Filter (&EnumValuesFilter())[3] {
   return values;
 }
 
-inline const char **EnumNamesFilter() {
-  static const char *names[] = {
+inline const char * const *EnumNamesFilter() {
+  static const char * const names[] = {
     "Unset",
     "Nearest",
     "Linear",
@@ -992,8 +992,8 @@ enum class MipFilter : int8_t {
   MAX = Anisotropic
 };
 
-inline MipFilter (&EnumValuesMipFilter())[5] {
-  static MipFilter values[] = {
+inline const MipFilter (&EnumValuesMipFilter())[5] {
+  static const MipFilter values[] = {
     MipFilter::Unset,
     MipFilter::None,
     MipFilter::Nearest,
@@ -1003,8 +1003,8 @@ inline MipFilter (&EnumValuesMipFilter())[5] {
   return values;
 }
 
-inline const char **EnumNamesMipFilter() {
-  static const char *names[] = {
+inline const char * const *EnumNamesMipFilter() {
+  static const char * const names[] = {
     "Unset",
     "None",
     "Nearest",
@@ -1031,8 +1031,8 @@ enum class AddressMode : int8_t {
   MAX = MirrorOnce
 };
 
-inline AddressMode (&EnumValuesAddressMode())[6] {
-  static AddressMode values[] = {
+inline const AddressMode (&EnumValuesAddressMode())[6] {
+  static const AddressMode values[] = {
     AddressMode::Unset,
     AddressMode::Repeat,
     AddressMode::MirroredRepeat,
@@ -1043,8 +1043,8 @@ inline AddressMode (&EnumValuesAddressMode())[6] {
   return values;
 }
 
-inline const char **EnumNamesAddressMode() {
-  static const char *names[] = {
+inline const char * const *EnumNamesAddressMode() {
+  static const char * const names[] = {
     "Unset",
     "Repeat",
     "MirroredRepeat",
@@ -1073,8 +1073,8 @@ enum class BorderColor : int8_t {
   MAX = OpaqueIntOne
 };
 
-inline BorderColor (&EnumValuesBorderColor())[7] {
-  static BorderColor values[] = {
+inline const BorderColor (&EnumValuesBorderColor())[7] {
+  static const BorderColor values[] = {
     BorderColor::Unset,
     BorderColor::TransparentBlack,
     BorderColor::TransparentIntZero,
@@ -1086,8 +1086,8 @@ inline BorderColor (&EnumValuesBorderColor())[7] {
   return values;
 }
 
-inline const char **EnumNamesBorderColor() {
-  static const char *names[] = {
+inline const char * const *EnumNamesBorderColor() {
+  static const char * const names[] = {
     "Unset",
     "TransparentBlack",
     "TransparentIntZero",
@@ -1737,14 +1737,14 @@ inline flatbuffers::Offset<BlendState> CreateBlendStateDirect(
     Bool logicalOpEnable = Bool::False,
     LogicOp logicalOp = LogicOp::Clear,
     Bool separateAttachmentBlendingEnable = Bool::False,
-    const std::vector<const BlendAttachmentState *> *blendAttachments = nullptr,
+    const std::vector<BlendAttachmentState> *blendAttachments = nullptr,
     const std::vector<float> *blendConstants = nullptr) {
   return mslb::CreateBlendState(
       _fbb,
       logicalOpEnable,
       logicalOp,
       separateAttachmentBlendingEnable,
-      blendAttachments ? _fbb.CreateVector<const BlendAttachmentState *>(*blendAttachments) : 0,
+      blendAttachments ? _fbb.CreateVectorOfStructs<BlendAttachmentState>(*blendAttachments) : 0,
       blendConstants ? _fbb.CreateVector<float>(*blendConstants) : 0);
 }
 
@@ -1979,7 +1979,7 @@ inline flatbuffers::Offset<StructMember> CreateStructMemberDirect(
     uint32_t size = 0,
     Type type = Type::Float,
     uint32_t structIndex = 0,
-    const std::vector<const ArrayInfo *> *arrayElements = nullptr,
+    const std::vector<ArrayInfo> *arrayElements = nullptr,
     bool rowMajor = false) {
   return mslb::CreateStructMember(
       _fbb,
@@ -1988,7 +1988,7 @@ inline flatbuffers::Offset<StructMember> CreateStructMemberDirect(
       size,
       type,
       structIndex,
-      arrayElements ? _fbb.CreateVector<const ArrayInfo *>(*arrayElements) : 0,
+      arrayElements ? _fbb.CreateVectorOfStructs<ArrayInfo>(*arrayElements) : 0,
       rowMajor);
 }
 
@@ -2234,7 +2234,7 @@ inline flatbuffers::Offset<Uniform> CreateUniformDirect(
     UniformType uniformType = UniformType::PushConstant,
     Type type = Type::Float,
     uint32_t structIndex = 0,
-    const std::vector<const ArrayInfo *> *arrayElements = nullptr,
+    const std::vector<ArrayInfo> *arrayElements = nullptr,
     uint32_t descriptorSet = 0,
     uint32_t binding = 0,
     uint32_t inputAttachmentIndex = 0,
@@ -2245,7 +2245,7 @@ inline flatbuffers::Offset<Uniform> CreateUniformDirect(
       uniformType,
       type,
       structIndex,
-      arrayElements ? _fbb.CreateVector<const ArrayInfo *>(*arrayElements) : 0,
+      arrayElements ? _fbb.CreateVectorOfStructs<ArrayInfo>(*arrayElements) : 0,
       descriptorSet,
       binding,
       inputAttachmentIndex,
@@ -2672,7 +2672,7 @@ inline flatbuffers::Offset<Pipeline> CreatePipelineDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
     const std::vector<flatbuffers::Offset<Struct>> *structs = nullptr,
-    const std::vector<const SamplerState *> *samplerStates = nullptr,
+    const std::vector<SamplerState> *samplerStates = nullptr,
     const std::vector<flatbuffers::Offset<Uniform>> *uniforms = nullptr,
     const std::vector<flatbuffers::Offset<Attribute>> *attributes = nullptr,
     const std::vector<flatbuffers::Offset<FragmentOutput>> *fragmentOutputs = nullptr,
@@ -2683,7 +2683,7 @@ inline flatbuffers::Offset<Pipeline> CreatePipelineDirect(
       _fbb,
       name ? _fbb.CreateString(name) : 0,
       structs ? _fbb.CreateVector<flatbuffers::Offset<Struct>>(*structs) : 0,
-      samplerStates ? _fbb.CreateVector<const SamplerState *>(*samplerStates) : 0,
+      samplerStates ? _fbb.CreateVectorOfStructs<SamplerState>(*samplerStates) : 0,
       uniforms ? _fbb.CreateVector<flatbuffers::Offset<Uniform>>(*uniforms) : 0,
       attributes ? _fbb.CreateVector<flatbuffers::Offset<Attribute>>(*attributes) : 0,
       fragmentOutputs ? _fbb.CreateVector<flatbuffers::Offset<FragmentOutput>>(*fragmentOutputs) : 0,
@@ -2898,6 +2898,10 @@ inline const mslb::Module *GetModule(const void *buf) {
   return flatbuffers::GetRoot<mslb::Module>(buf);
 }
 
+inline const mslb::Module *GetSizePrefixedModule(const void *buf) {
+  return flatbuffers::GetSizePrefixedRoot<mslb::Module>(buf);
+}
+
 inline Module *GetMutableModule(void *buf) {
   return flatbuffers::GetMutableRoot<Module>(buf);
 }
@@ -2907,10 +2911,21 @@ inline bool VerifyModuleBuffer(
   return verifier.VerifyBuffer<mslb::Module>(nullptr);
 }
 
+inline bool VerifySizePrefixedModuleBuffer(
+    flatbuffers::Verifier &verifier) {
+  return verifier.VerifySizePrefixedBuffer<mslb::Module>(nullptr);
+}
+
 inline void FinishModuleBuffer(
     flatbuffers::FlatBufferBuilder &fbb,
     flatbuffers::Offset<mslb::Module> root) {
   fbb.Finish(root);
+}
+
+inline void FinishSizePrefixedModuleBuffer(
+    flatbuffers::FlatBufferBuilder &fbb,
+    flatbuffers::Offset<mslb::Module> root) {
+  fbb.FinishSizePrefixed(root);
 }
 
 }  // namespace mslb
