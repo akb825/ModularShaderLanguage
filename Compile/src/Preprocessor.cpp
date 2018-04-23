@@ -23,7 +23,7 @@
 
 // Disable for includes.
 #pragma warning(push)
-#pragma warning(disable: 4477)
+#pragma warning(disable: 4477 4267)
 #elif MSL_CLANG
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshorten-64-to-32"
