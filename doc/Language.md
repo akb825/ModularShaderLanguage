@@ -134,6 +134,12 @@ For example:
 		color = inputs.color*texResult/getValue();
 	}
 
+# Input/output limitations
+
+When structs are used for inputs and outputs, that struct may only be used for a single output/input pair. During linking the location information is embedded in the struct itself, which can only be used once. Additionally, you may not have nested structs (i.e. a struct member variable) for an input or output.
+
+When linking, inputs and outputs are matched based on their undecorated names. In other words, it will look for members of any interface blocks as well as member variables. As a result, if multiple interface blocks are used, they may not share member names.
+
 ## Input/output variables for older versions of GLSL
 
 Input and output locations are automatically calculated to link the stages together. However, older versions of GLSL don't suppprt explicit locations. In order to ensure that shaders can link in older versions of GLSL, one of these two should be done:
