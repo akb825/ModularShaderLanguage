@@ -19,8 +19,18 @@
 #include <MSL/Config.h>
 #include <MSL/Compile/Export.h>
 #include "Parser.h"
-#include "glslang/Public/ShaderLang.h"
 #include <memory>
+
+#if MSL_GCC || MSL_CLANG
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+
+#include "glslang/Public/ShaderLang.h"
+
+#if MSL_GCC || MSL_CLANG
+#pragma GCC diagnostic pop
+#endif
 
 namespace msl
 {

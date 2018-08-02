@@ -709,8 +709,8 @@ TEST_F(SpirVProcessorTest, StructArrayReflection)
 	EXPECT_EQ(unknown, processor.structs[3].members[4].size);
 	EXPECT_EQ(Type::Float, processor.structs[3].members[4].type);
 	EXPECT_EQ(unknown, processor.structs[3].members[4].structIndex);
-	EXPECT_EQ((std::vector<ArrayInfo>{{unknown, 3*sizeof(float)}, {3, sizeof(float)}}),
-		processor.structs[3].members[4].arrayElements);
+	EXPECT_EQ((std::vector<ArrayInfo>{{unknown, (std::uint32_t)(3*sizeof(float))},
+		{3, (std::uint32_t)sizeof(float)}}), processor.structs[3].members[4].arrayElements);
 	EXPECT_FALSE(processor.structs[3].members[4].rowMajor);
 
 	ASSERT_EQ(3U, processor.uniforms.size());

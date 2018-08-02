@@ -1,7 +1,7 @@
 if (NOT MSL_SHARED)
 	set(Boost_USE_STATIC_LIBS ON)
 endif()
-find_package(Boost COMPONENTS system thread filesystem wave)
+find_package(Boost COMPONENTS system thread filesystem wave REQUIRED)
 find_package(Threads)
 
 set(GLSLANG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/glslang)

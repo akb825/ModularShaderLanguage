@@ -47,7 +47,7 @@ static const char* stageNames[] =
 static_assert(sizeof(stageNames)/sizeof(*stageNames) == stageCount,
 	"stage name array is out of sync with enum");
 
-static std::uint32_t typeSizes[] =
+static std::size_t typeSizes[] =
 {
 	// Scalars and vectors
 	sizeof(float),    // Float
@@ -972,7 +972,7 @@ std::uint32_t getTypeSize(const SpirVProcessor& processor, Type type, std::uint3
 	{
 		unsigned int typeIndex = static_cast<unsigned int>(type);
 		assert(typeIndex < sizeof(typeSizes)/sizeof(*typeSizes));
-		return typeSizes[typeIndex];
+		return static_cast<std::uint32_t>(typeSizes[typeIndex]);
 	}
 }
 
@@ -1089,7 +1089,7 @@ Type getType(std::vector<ArrayInfo>& arrayElements, std::uint32_t& structIndex,
 		if (newStruct.size != unknown && lastMember.size != unknown)
 		{
 			newStruct.size += lastMember.size;
-			const unsigned int minAlignment = sizeof(float)*4;
+			const unsigned int minAlignment = static_cast<unsigned int>(sizeof(float)*4);
 			newStruct.size = ((newStruct.size + minAlignment - 1)/minAlignment)*minAlignment;
 		}
 	}
