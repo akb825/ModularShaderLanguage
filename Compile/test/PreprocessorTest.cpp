@@ -58,7 +58,7 @@ TEST(PreprocessorTest, PreprocError)
 
 	TokenList tokens;
 	Output output;
-	std::string fileName = (inputDir/"PreprocError.msl").string();
+	std::string fileName = pathStr(inputDir/"PreprocError.msl");
 	EXPECT_FALSE(preprocessor.preprocess(tokens, output, fileName));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
@@ -80,7 +80,7 @@ TEST(PreprocessorTest, PreprocErrorHeaderLines)
 
 	TokenList tokens;
 	Output output;
-	std::string fileName = (inputDir/"PreprocError.msl").string();
+	std::string fileName = pathStr(inputDir/"PreprocError.msl");
 	EXPECT_FALSE(preprocessor.preprocess(tokens, output, fileName, {"int foo;", "float bar;"}));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
@@ -102,7 +102,7 @@ TEST(PreprocessorTest, IncludeError)
 
 	TokenList tokens;
 	Output output;
-	std::string fileName = (inputDir/"IncludeError.msl").string();
+	std::string fileName = pathStr(inputDir/"IncludeError.msl");
 	EXPECT_FALSE(preprocessor.preprocess(tokens, output, fileName));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
