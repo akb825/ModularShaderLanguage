@@ -16,6 +16,7 @@
 
 #include "ExecuteCommand.h"
 #include <MSL/Compile/Output.h>
+#include <boost/algorithm/string/predicate.hpp>
 #include <gtest/gtest.h>
 
 namespace msl
@@ -27,14 +28,8 @@ TEST(ExecuteCommandTest, CommandNotFound)
 	ExecuteCommand command;
 	EXPECT_FALSE(command.execute(output, "asdf"));
 	ASSERT_EQ(2U, output.getMessages().size());
-#if MSL_WINDOWS
-	EXPECT_EQ("output from running command: asdf\n'asdf' is not recognized as an internal or "
-		"external command,\noperable program or batch file.",
-		output.getMessages()[0].message);
-#else
-	EXPECT_EQ("output from running command: asdf\nsh: asdf: command not found",
-		output.getMessages()[0].message);
-#endif
+	EXPECT_TRUE(boost::algorithm::starts_with(output.getMessages()[0].message,
+		"output from running command: asdf\n"));
 }
 
 #if !MSL_WINDOWS

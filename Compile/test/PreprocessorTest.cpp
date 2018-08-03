@@ -17,6 +17,7 @@
 #include "Helpers.h"
 #include <MSL/Compile/Output.h>
 #include "Preprocessor.h"
+#include <boost/algorithm/string/predicate.hpp>
 #include <gtest/gtest.h>
 
 namespace msl
@@ -59,12 +60,14 @@ TEST(PreprocessorTest, PreprocError)
 	Output output;
 	std::string fileName = (inputDir/"PreprocError.msl").string();
 	EXPECT_FALSE(preprocessor.preprocess(tokens, output, fileName));
-	ASSERT_EQ(1U, output.getMessages().size());
-	EXPECT_EQ(Output::Level::Error, output.getMessages()[0].level);
-	EXPECT_EQ(fileName, output.getMessages()[0].file);
-	EXPECT_EQ(3U, output.getMessages()[0].line);
-	EXPECT_EQ(1U, output.getMessages()[0].column);
-	EXPECT_EQ("illegal macro redefinition: a", output.getMessages()[0].message);
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), fileName));
+	EXPECT_EQ(3U, messages[0].line);
+	EXPECT_EQ(1U, messages[0].column);
+	EXPECT_EQ("illegal macro redefinition: a", messages[0].message);
 }
 
 TEST(PreprocessorTest, PreprocErrorHeaderLines)
@@ -79,12 +82,14 @@ TEST(PreprocessorTest, PreprocErrorHeaderLines)
 	Output output;
 	std::string fileName = (inputDir/"PreprocError.msl").string();
 	EXPECT_FALSE(preprocessor.preprocess(tokens, output, fileName, {"int foo;", "float bar;"}));
-	ASSERT_EQ(1U, output.getMessages().size());
-	EXPECT_EQ(Output::Level::Error, output.getMessages()[0].level);
-	EXPECT_EQ(fileName, output.getMessages()[0].file);
-	EXPECT_EQ(3U, output.getMessages()[0].line);
-	EXPECT_EQ(1U, output.getMessages()[0].column);
-	EXPECT_EQ("illegal macro redefinition: a", output.getMessages()[0].message);
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), fileName));
+	EXPECT_EQ(3U, messages[0].line);
+	EXPECT_EQ(1U, messages[0].column);
+	EXPECT_EQ("illegal macro redefinition: a", messages[0].message);
 }
 
 TEST(PreprocessorTest, IncludeError)
@@ -99,12 +104,14 @@ TEST(PreprocessorTest, IncludeError)
 	Output output;
 	std::string fileName = (inputDir/"IncludeError.msl").string();
 	EXPECT_FALSE(preprocessor.preprocess(tokens, output, fileName));
-	ASSERT_EQ(1U, output.getMessages().size());
-	EXPECT_EQ(Output::Level::Error, output.getMessages()[0].level);
-	EXPECT_EQ(fileName, output.getMessages()[0].file);
-	EXPECT_EQ(1U, output.getMessages()[0].line);
-	EXPECT_EQ(1U, output.getMessages()[0].column);
-	EXPECT_EQ("could not find include file: asdf.mslh", output.getMessages()[0].message);
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), fileName));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(1U, messages[0].column);
+	EXPECT_EQ("could not find include file: asdf.mslh", messages[0].message);
 }
 
 } // namespace msl

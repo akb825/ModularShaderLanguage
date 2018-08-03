@@ -18,6 +18,7 @@
 #include <MSL/Compile/CompiledResult.h>
 #include <MSL/Compile/Output.h>
 #include <MSL/Compile/TargetGlsl.h>
+#include <boost/algorithm/string/predicate.hpp>
 #include <gtest/gtest.h>
 
 namespace msl
@@ -223,7 +224,7 @@ TEST(TargetGlslTest, Glsl450VersionNumber)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(pathStr(exeDir/"test.msl"), messages[0].file);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), pathStr(exeDir/"test.msl")));
 	EXPECT_EQ(2U, messages[0].line);
 	EXPECT_EQ("encountered #error directive: Version correctly set.", messages[0].message);
 }
@@ -415,7 +416,7 @@ TEST(TargetGlslTest, Glsl120VersionNumber)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(pathStr(exeDir/"test.msl"), messages[0].file);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), pathStr(exeDir/"test.msl")));
 	EXPECT_EQ(2U, messages[0].line);
 	EXPECT_EQ("encountered #error directive: Version correctly set.", messages[0].message);
 }
@@ -607,7 +608,7 @@ TEST(TargetGlslTest, GlslEs300VersionNumber)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(pathStr(exeDir/"test.msl"), messages[0].file);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), pathStr(exeDir/"test.msl")));
 	EXPECT_EQ(2U, messages[0].line);
 	EXPECT_EQ("encountered #error directive: Version correctly set.", messages[0].message);
 }
@@ -799,7 +800,7 @@ TEST(TargetGlslTest, GlslEs100VersionNumber)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(pathStr(exeDir/"test.msl"), messages[0].file);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), pathStr(exeDir/"test.msl")));
 	EXPECT_EQ(2U, messages[0].line);
 	EXPECT_EQ("encountered #error directive: Version correctly set.", messages[0].message);
 }
@@ -821,7 +822,7 @@ TEST(TargetGlslTest, Glsl450HasUniformBlocks)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(pathStr(exeDir/"test.msl"), messages[0].file);
+	EXPECT_TRUE(boost::algorithm::ends_with(messages[0].file, pathStr(exeDir/"test.msl")));
 	EXPECT_EQ(2U, messages[0].line);
 	EXPECT_EQ("encountered #error directive: Has blocks set.", messages[0].message);
 }
@@ -843,7 +844,7 @@ TEST(TargetGlslTest, Glsl120HasUniformBlocks)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(pathStr(exeDir/"test.msl"), messages[0].file);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), pathStr(exeDir/"test.msl")));
 	EXPECT_EQ(4U, messages[0].line);
 	EXPECT_EQ("encountered #error directive: Has blocks not set.", messages[0].message);
 }
@@ -863,7 +864,8 @@ TEST(TargetGlslTest, CompileError)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(pathStr(inputDir/"CompileError.mslh"), pathStr(messages[0].file));
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file),
+		pathStr(inputDir/"CompileError.mslh")));
 	EXPECT_EQ(15U, messages[0].line);
 	EXPECT_EQ("'inputss' : undeclared identifier", messages[0].message);
 }
@@ -883,7 +885,8 @@ TEST(TargetGlslTest, CompileWarning)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Warning, messages[0].level);
-	EXPECT_EQ(pathStr(inputDir/"CompileWarning.mslh"), pathStr(messages[0].file));
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file),
+		pathStr(inputDir/"CompileWarning.mslh")));
 	EXPECT_EQ(15U, messages[0].line);
 	EXPECT_EQ("'switch' : last case/default label not followed by statements", messages[0].message);
 }
@@ -903,7 +906,8 @@ TEST(TargetGlslTest, MissingEntryPoint)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(pathStr(inputDir/"MissingEntryPoint.mslh"), pathStr(messages[0].file));
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file),
+		pathStr(inputDir/"MissingEntryPoint.mslh")));
 	EXPECT_EQ(8U, messages[0].line);
 	EXPECT_EQ("entry point 'fragShader' not found", messages[0].message);
 }
@@ -923,7 +927,8 @@ TEST(TargetGlslTest, DuplicateEntryPoint)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(pathStr(inputDir/"DuplicateEntryPoint.mslh"), pathStr(messages[0].file));
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file),
+		pathStr(inputDir/"DuplicateEntryPoint.mslh")));
 	EXPECT_EQ(8U, messages[0].line);
 	EXPECT_EQ("entry point 'fragShader' found multiple times", messages[0].message);
 }

@@ -21,6 +21,7 @@
 #include "Preprocessor.h"
 #include "SpirVProcessor.h"
 #include "StandAlone/ResourceLimits.h"
+#include <boost/algorithm/string/predicate.hpp>
 #include <gtest/gtest.h>
 
 namespace msl
@@ -2040,7 +2041,7 @@ TEST_F(SpirVProcessorTest, LinkDifferentType)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_EQ(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), shaderName));
 	EXPECT_EQ(18U, messages[0].line);
 	EXPECT_EQ(10U, messages[0].column);
 	EXPECT_FALSE(messages[0].continued);
@@ -2096,7 +2097,7 @@ TEST_F(SpirVProcessorTest, LinkDifferentStructType)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_EQ(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), shaderName));
 	EXPECT_EQ(25U, messages[0].line);
 	EXPECT_EQ(10U, messages[0].column);
 	EXPECT_FALSE(messages[0].continued);
@@ -2153,7 +2154,7 @@ TEST_F(SpirVProcessorTest, LinkNotPresent)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_EQ(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), shaderName));
 	EXPECT_EQ(18U, messages[0].line);
 	EXPECT_EQ(10U, messages[0].column);
 	EXPECT_FALSE(messages[0].continued);
@@ -2209,7 +2210,7 @@ TEST_F(SpirVProcessorTest, LinkStructNotPresent)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_EQ(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), shaderName));
 	EXPECT_EQ(25U, messages[0].line);
 	EXPECT_EQ(10U, messages[0].column);
 	EXPECT_FALSE(messages[0].continued);
@@ -2258,7 +2259,7 @@ TEST_F(SpirVProcessorTest, LinkStructArray)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_EQ(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), shaderName));
 	EXPECT_EQ(24U, messages[0].line);
 	EXPECT_EQ(10U, messages[0].column);
 	EXPECT_FALSE(messages[0].continued);
@@ -2307,7 +2308,7 @@ TEST_F(SpirVProcessorTest, LinkStructUsedTwice)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_EQ(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), shaderName));
 	EXPECT_EQ(25U, messages[0].line);
 	EXPECT_EQ(10U, messages[0].column);
 	EXPECT_FALSE(messages[0].continued);
@@ -2356,7 +2357,7 @@ TEST_F(SpirVProcessorTest, StructWithinOutputBlock)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_EQ(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), shaderName));
 	EXPECT_EQ(30U, messages[0].line);
 	EXPECT_EQ(10U, messages[0].column);
 	EXPECT_FALSE(messages[0].continued);
@@ -2411,7 +2412,7 @@ TEST_F(SpirVProcessorTest, MultipleLinkMembers)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_EQ(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), shaderName));
 	EXPECT_EQ(30U, messages[0].line);
 	EXPECT_EQ(10U, messages[0].column);
 	EXPECT_FALSE(messages[0].continued);
@@ -2466,7 +2467,7 @@ TEST_F(SpirVProcessorTest, MixedExplicitImplicitLocations)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_EQ(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), shaderName));
 	EXPECT_EQ(18U, messages[0].line);
 	EXPECT_EQ(10U, messages[0].column);
 	EXPECT_FALSE(messages[0].continued);
@@ -2515,7 +2516,7 @@ TEST_F(SpirVProcessorTest, StructInBlockAndBuffer)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_EQ(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(shaderName, messages[0].file);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), shaderName));
 	EXPECT_EQ(30U, messages[0].line);
 	EXPECT_EQ(10U, messages[0].column);
 	EXPECT_FALSE(messages[0].continued);

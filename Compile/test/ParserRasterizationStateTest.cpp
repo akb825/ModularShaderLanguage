@@ -18,6 +18,7 @@
 #include <MSL/Compile/Output.h>
 #include "Parser.h"
 #include "Preprocessor.h"
+#include <boost/algorithm/string/predicate.hpp>
 #include <gtest/gtest.h>
 
 namespace msl
@@ -86,11 +87,12 @@ TEST(ParserRasterizationStateTest, DepthClampEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(37U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(37U, messages[0].column);
+		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
 	}
 }
 
@@ -131,11 +133,12 @@ TEST(ParserRasterizationStateTest, RasterizerDiscardEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(44U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(44U, messages[0].column);
+		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
 	}
 }
 
@@ -189,11 +192,12 @@ TEST(ParserRasterizationStateTest, PolygonMode)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(31U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid polygon mode value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(31U, messages[0].column);
+		EXPECT_EQ("invalid polygon mode value: asdf", messages[0].message);
 	}
 }
 
@@ -260,11 +264,12 @@ TEST(ParserRasterizationStateTest, CullMode)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(28U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid cull mode value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(28U, messages[0].column);
+		EXPECT_EQ("invalid cull mode value: asdf", messages[0].message);
 	}
 }
 
@@ -306,11 +311,12 @@ TEST(ParserRasterizationStateTest, FrontFace)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(29U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid front face value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(29U, messages[0].column);
+		EXPECT_EQ("invalid front face value: asdf", messages[0].message);
 	}
 }
 
@@ -351,11 +357,12 @@ TEST(ParserRasterizationStateTest, DepthBiasEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(36U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(36U, messages[0].column);
+		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
 	}
 }
 
@@ -398,11 +405,12 @@ TEST(ParserRasterizationStateTest, DepthBiasConstantFactor)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(45U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid float value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(45U, messages[0].column);
+		EXPECT_EQ("invalid float value: asdf", messages[0].message);
 	}
 }
 
@@ -445,11 +453,12 @@ TEST(ParserRasterizationStateTest, DepthBiasClamp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(35U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid float value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(35U, messages[0].column);
+		EXPECT_EQ("invalid float value: asdf", messages[0].message);
 	}
 }
 
@@ -492,11 +501,12 @@ TEST(ParserRasterizationStateTest, DepthBiasSlopeFactor)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(42U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid float value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(42U, messages[0].column);
+		EXPECT_EQ("invalid float value: asdf", messages[0].message);
 	}
 }
 
@@ -539,11 +549,12 @@ TEST(ParserRasterizationStateTest, LineWidth)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(29U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid float value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(29U, messages[0].column);
+		EXPECT_EQ("invalid float value: asdf", messages[0].message);
 	}
 }
 

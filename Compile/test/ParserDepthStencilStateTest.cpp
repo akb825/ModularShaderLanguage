@@ -18,6 +18,7 @@
 #include <MSL/Compile/Output.h>
 #include "Parser.h"
 #include "Preprocessor.h"
+#include <boost/algorithm/string/predicate.hpp>
 #include <gtest/gtest.h>
 
 namespace msl
@@ -64,11 +65,12 @@ TEST(ParserDepthStencilStateTest, SampledShadingEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(36U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(36U, messages[0].column);
+		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
 	}
 }
 
@@ -111,11 +113,12 @@ TEST(ParserDepthStencilStateTest, DepthWriteEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(37U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(37U, messages[0].column);
+		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
 	}
 }
 
@@ -242,11 +245,12 @@ TEST(ParserDepthStencilStateTest, DepthCompareOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(35U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid compare op value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(35U, messages[0].column);
+		EXPECT_EQ("invalid compare op value: asdf", messages[0].message);
 	}
 }
 
@@ -289,11 +293,12 @@ TEST(ParserDepthStencilStateTest, DepthBoundsTestEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(43U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(43U, messages[0].column);
+		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
 	}
 }
 
@@ -336,11 +341,12 @@ TEST(ParserDepthStencilStateTest, StencilTestEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(38U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(38U, messages[0].column);
+		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
 	}
 }
 
@@ -483,11 +489,12 @@ TEST(ParserDepthStencilStateTest, StencilFailOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(34U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(34U, messages[0].column);
+		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
 	}
 }
 
@@ -534,11 +541,12 @@ TEST(ParserDepthStencilStateTest, StencilPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(34U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(34U, messages[0].column);
+		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
 	}
 }
 
@@ -585,11 +593,12 @@ TEST(ParserDepthStencilStateTest, StencilDepthPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(40U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(40U, messages[0].column);
+		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
 	}
 }
 
@@ -636,11 +645,12 @@ TEST(ParserDepthStencilStateTest, StencilCompareMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(39U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid int value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(39U, messages[0].column);
+		EXPECT_EQ("invalid int value: asdf", messages[0].message);
 	}
 }
 
@@ -687,11 +697,12 @@ TEST(ParserDepthStencilStateTest, StencilWriteMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(37U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid int value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(37U, messages[0].column);
+		EXPECT_EQ("invalid int value: asdf", messages[0].message);
 	}
 }
 
@@ -738,11 +749,12 @@ TEST(ParserDepthStencilStateTest, StencilReference)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(36U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid int value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(36U, messages[0].column);
+		EXPECT_EQ("invalid int value: asdf", messages[0].message);
 	}
 }
 
@@ -789,11 +801,12 @@ TEST(ParserDepthStencilStateTest, FrontStencilFailOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(40U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(40U, messages[0].column);
+		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
 	}
 }
 
@@ -840,11 +853,12 @@ TEST(ParserDepthStencilStateTest, FrontStencilPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(40U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(40U, messages[0].column);
+		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
 	}
 }
 
@@ -891,11 +905,12 @@ TEST(ParserDepthStencilStateTest, FrontStencilDepthPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(46U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(46U, messages[0].column);
+		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
 	}
 }
 
@@ -942,11 +957,12 @@ TEST(ParserDepthStencilStateTest, FrontStencilCompareMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(45U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid int value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(45U, messages[0].column);
+		EXPECT_EQ("invalid int value: asdf", messages[0].message);
 	}
 }
 
@@ -993,11 +1009,12 @@ TEST(ParserDepthStencilStateTest, FrontStencilWriteMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(43U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid int value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(43U, messages[0].column);
+		EXPECT_EQ("invalid int value: asdf", messages[0].message);
 	}
 }
 
@@ -1044,11 +1061,12 @@ TEST(ParserDepthStencilStateTest, FrontStencilReference)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(42U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid int value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(42U, messages[0].column);
+		EXPECT_EQ("invalid int value: asdf", messages[0].message);
 	}
 }
 
@@ -1095,11 +1113,12 @@ TEST(ParserDepthStencilStateTest, BackStencilFailOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(39U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(39U, messages[0].column);
+		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
 	}
 }
 
@@ -1146,11 +1165,12 @@ TEST(ParserDepthStencilStateTest, BackStencilPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(39U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(39U, messages[0].column);
+		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
 	}
 }
 
@@ -1197,11 +1217,12 @@ TEST(ParserDepthStencilStateTest, BackStencilDepthPassOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(45U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(45U, messages[0].column);
+		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
 	}
 }
 
@@ -1248,11 +1269,12 @@ TEST(ParserDepthStencilStateTest, BackStencilCompareMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(44U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid int value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(44U, messages[0].column);
+		EXPECT_EQ("invalid int value: asdf", messages[0].message);
 	}
 }
 
@@ -1299,11 +1321,12 @@ TEST(ParserDepthStencilStateTest, BackStencilWriteMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(42U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid int value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(42U, messages[0].column);
+		EXPECT_EQ("invalid int value: asdf", messages[0].message);
 	}
 }
 
@@ -1350,11 +1373,12 @@ TEST(ParserDepthStencilStateTest, BackStencilReference)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(41U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid int value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(41U, messages[0].column);
+		EXPECT_EQ("invalid int value: asdf", messages[0].message);
 	}
 }
 
@@ -1397,11 +1421,12 @@ TEST(ParserDepthStencilStateTest, MinDepthBounds)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(37U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid float value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(37U, messages[0].column);
+		EXPECT_EQ("invalid float value: asdf", messages[0].message);
 	}
 }
 
@@ -1444,11 +1469,12 @@ TEST(ParserDepthStencilStateTest, MaxDepthBounds)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(35U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid float value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(35U, messages[0].column);
+		EXPECT_EQ("invalid float value: asdf", messages[0].message);
 	}
 }
 

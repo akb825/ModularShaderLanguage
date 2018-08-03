@@ -47,49 +47,49 @@ static const char* stageNames[] =
 static_assert(sizeof(stageNames)/sizeof(*stageNames) == stageCount,
 	"stage name array is out of sync with enum");
 
-static std::size_t typeSizes[] =
+static std::uint32_t typeSizes[] =
 {
 	// Scalars and vectors
-	sizeof(float),    // Float
-	sizeof(float)*2,  // Vec2
-	sizeof(float)*3,  // Vec3
-	sizeof(float)*4,  // Vec4
-	sizeof(double),   // Double
-	sizeof(double)*2, // DVec2
-	sizeof(double)*3, // DVec3
-	sizeof(double)*4, // DVec4
-	sizeof(int),      // Int
-	sizeof(int)*2,    // IVec2
-	sizeof(int)*3,    // IVec3
-	sizeof(int)*4,    // IVec4
-	sizeof(int),      // UInt
-	sizeof(int)*2,    // UVec2
-	sizeof(int)*3,    // UVec3
-	sizeof(int)*4,    // UVec4
-	sizeof(int),      // Bool
-	sizeof(int)*2,    // BVec2
-	sizeof(int)*3,    // BVec3
-	sizeof(int)*4,    // BVec4
+	static_cast<std::uint32_t>(sizeof(float)),    // Float
+	static_cast<std::uint32_t>(sizeof(float)*2),  // Vec2
+	static_cast<std::uint32_t>(sizeof(float)*3),  // Vec3
+	static_cast<std::uint32_t>(sizeof(float)*4),  // Vec4
+	static_cast<std::uint32_t>(sizeof(double)),   // Double
+	static_cast<std::uint32_t>(sizeof(double)*2), // DVec2
+	static_cast<std::uint32_t>(sizeof(double)*3), // DVec3
+	static_cast<std::uint32_t>(sizeof(double)*4), // DVec4
+	static_cast<std::uint32_t>(sizeof(int)),      // Int
+	static_cast<std::uint32_t>(sizeof(int)*2),    // IVec2
+	static_cast<std::uint32_t>(sizeof(int)*3),    // IVec3
+	static_cast<std::uint32_t>(sizeof(int)*4),    // IVec4
+	static_cast<std::uint32_t>(sizeof(int)),      // UInt
+	static_cast<std::uint32_t>(sizeof(int)*2),    // UVec2
+	static_cast<std::uint32_t>(sizeof(int)*3),    // UVec3
+	static_cast<std::uint32_t>(sizeof(int)*4),    // UVec4
+	static_cast<std::uint32_t>(sizeof(int)),      // Bool
+	static_cast<std::uint32_t>(sizeof(int)*2),    // BVec2
+	static_cast<std::uint32_t>(sizeof(int)*3),    // BVec3
+	static_cast<std::uint32_t>(sizeof(int)*4),    // BVec4
 
 	// Matrices
-	sizeof(float)*4*2,  // Mat2
-	sizeof(float)*4*3,  // Mat3
-	sizeof(float)*4*2,  // Mat4
-	sizeof(float)*4*3,  // Mat2x3
-	sizeof(float)*4*4,  // Mat2x4
-	sizeof(float)*4*2,  // Mat3x2
-	sizeof(float)*4*4,  // Mat3x4
-	sizeof(float)*4*2,  // Mat4x2
-	sizeof(float)*4*3,  // Mat4x3
-	sizeof(double)*2*2, // DMat2
-	sizeof(double)*4*2, // DMat3
-	sizeof(double)*4*4, // DMat4
-	sizeof(double)*2*3, // DMat2x3
-	sizeof(double)*2*4, // DMat2x4
-	sizeof(double)*4*2, // DMat3x2
-	sizeof(double)*4*4, // DMat3x4
-	sizeof(double)*4*2, // DMat4x2
-	sizeof(double)*4*3, // DMat4x3
+	static_cast<std::uint32_t>(sizeof(float)*4*2),  // Mat2
+	static_cast<std::uint32_t>(sizeof(float)*4*3),  // Mat3
+	static_cast<std::uint32_t>(sizeof(float)*4*2),  // Mat4
+	static_cast<std::uint32_t>(sizeof(float)*4*3),  // Mat2x3
+	static_cast<std::uint32_t>(sizeof(float)*4*4),  // Mat2x4
+	static_cast<std::uint32_t>(sizeof(float)*4*2),  // Mat3x2
+	static_cast<std::uint32_t>(sizeof(float)*4*4),  // Mat3x4
+	static_cast<std::uint32_t>(sizeof(float)*4*2),  // Mat4x2
+	static_cast<std::uint32_t>(sizeof(float)*4*3),  // Mat4x3
+	static_cast<std::uint32_t>(sizeof(double)*2*2), // DMat2
+	static_cast<std::uint32_t>(sizeof(double)*4*2), // DMat3
+	static_cast<std::uint32_t>(sizeof(double)*4*4), // DMat4
+	static_cast<std::uint32_t>(sizeof(double)*2*3), // DMat2x3
+	static_cast<std::uint32_t>(sizeof(double)*2*4), // DMat2x4
+	static_cast<std::uint32_t>(sizeof(double)*4*2), // DMat3x2
+	static_cast<std::uint32_t>(sizeof(double)*4*4), // DMat3x4
+	static_cast<std::uint32_t>(sizeof(double)*4*2), // DMat4x2
+	static_cast<std::uint32_t>(sizeof(double)*4*3), // DMat4x3
 };
 
 struct SpirArrayInfo
@@ -972,7 +972,7 @@ std::uint32_t getTypeSize(const SpirVProcessor& processor, Type type, std::uint3
 	{
 		unsigned int typeIndex = static_cast<unsigned int>(type);
 		assert(typeIndex < sizeof(typeSizes)/sizeof(*typeSizes));
-		return static_cast<std::uint32_t>(typeSizes[typeIndex]);
+		return typeSizes[typeIndex];
 	}
 }
 

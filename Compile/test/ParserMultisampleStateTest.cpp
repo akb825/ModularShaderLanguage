@@ -18,6 +18,7 @@
 #include <MSL/Compile/Output.h>
 #include "Parser.h"
 #include "Preprocessor.h"
+#include <boost/algorithm/string/predicate.hpp>
 #include <gtest/gtest.h>
 
 namespace msl
@@ -60,11 +61,12 @@ TEST(ParserMultisampleStateTest, SampledShadingEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(40U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(40U, messages[0].column);
+		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
 	}
 }
 
@@ -107,11 +109,12 @@ TEST(ParserMultisampleStateTest, MinSampleShading)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(37U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid float value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(37U, messages[0].column);
+		EXPECT_EQ("invalid float value: asdf", messages[0].message);
 	}
 }
 
@@ -168,11 +171,12 @@ TEST(ParserMultisampleStateTest, SampleMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(30U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid int value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(30U, messages[0].column);
+		EXPECT_EQ("invalid int value: asdf", messages[0].message);
 	}
 }
 
@@ -213,11 +217,12 @@ TEST(ParserMultisampleStateTest, AlphaToCoverageEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(43U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(43U, messages[0].column);
+		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
 	}
 }
 
@@ -258,11 +263,12 @@ TEST(ParserMultisampleStateTest, AlphaToOneEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(38U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(38U, messages[0].column);
+		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
 	}
 }
 

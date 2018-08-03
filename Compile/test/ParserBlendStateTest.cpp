@@ -18,6 +18,7 @@
 #include <MSL/Compile/Output.h>
 #include "Parser.h"
 #include "Preprocessor.h"
+#include <boost/algorithm/string/predicate.hpp>
 #include <gtest/gtest.h>
 
 namespace msl
@@ -60,11 +61,12 @@ TEST(ParserBlendStateTest, LogicalOpEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(36U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(36U, messages[0].column);
+		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
 	}
 }
 
@@ -287,11 +289,12 @@ TEST(ParserBlendStateTest, LogicalOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(29U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid logic op value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(29U, messages[0].column);
+		EXPECT_EQ("invalid logic op value: asdf", messages[0].message);
 	}
 }
 
@@ -333,11 +336,12 @@ TEST(ParserBlendStateTest, SeparateAttachmentBlendingEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(54U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(54U, messages[0].column);
+		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
 	}
 }
 
@@ -380,11 +384,12 @@ TEST(ParserBlendStateTest, BlendEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(31U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(31U, messages[0].column);
+		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
 	}
 }
 
@@ -703,11 +708,12 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(41U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(41U, messages[0].column);
+		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
 	}
 }
 
@@ -754,11 +760,12 @@ TEST(ParserBlendStateTest, DstColorBlendFactor)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(41U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(41U, messages[0].column);
+		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
 	}
 }
 
@@ -853,11 +860,12 @@ TEST(ParseBlendStateTest, ColorBlendOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(41U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(41U, messages[0].column);
+		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
 	}
 }
 
@@ -904,11 +912,12 @@ TEST(ParserBlendStateTest, SrcAlphaBlendFactor)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(41U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(41U, messages[0].column);
+		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
 	}
 }
 
@@ -955,11 +964,12 @@ TEST(ParserBlendStateTest, DstAlphaBlendFactor)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(41U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(41U, messages[0].column);
+		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
 	}
 }
 
@@ -1006,11 +1016,12 @@ TEST(ParseBlendStateTest, AlphaBlendOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(33U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend op value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(33U, messages[0].column);
+		EXPECT_EQ("invalid blend op value: asdf", messages[0].message);
 	}
 }
 
@@ -1057,11 +1068,12 @@ TEST(ParserBlendStateTest, SrcBlendFactor)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(35U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(35U, messages[0].column);
+		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
 	}
 }
 
@@ -1108,11 +1120,12 @@ TEST(ParserBlendStateTest, DstBlendFactor)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(35U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(35U, messages[0].column);
+		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
 	}
 }
 
@@ -1159,11 +1172,12 @@ TEST(ParseBlendStateTest, BlendOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(27U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend op value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(27U, messages[0].column);
+		EXPECT_EQ("invalid blend op value: asdf", messages[0].message);
 	}
 }
 
@@ -1263,11 +1277,12 @@ TEST(ParseBlendStateTest, ColorWriteMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(35U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid color mask value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(35U, messages[0].column);
+		EXPECT_EQ("invalid color mask value: asdf", messages[0].message);
 	}
 }
 
@@ -1310,11 +1325,12 @@ TEST(ParserBlendStateTest, AttachmentBlendEnable)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(43U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(43U, messages[0].column);
+		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
 	}
 }
 
@@ -1361,11 +1377,12 @@ TEST(ParserBlendStateTest, AttachmentSrcColorBlendFactor)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(53U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(53U, messages[0].column);
+		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
 	}
 }
 
@@ -1412,11 +1429,12 @@ TEST(ParserBlendStateTest, AttachmentDstColorBlendFactor)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(53U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(53U, messages[0].column);
+		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
 	}
 }
 
@@ -1463,11 +1481,12 @@ TEST(ParseBlendStateTest, AttachmentColorBlendOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(53U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(53U, messages[0].column);
+		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
 	}
 }
 
@@ -1514,11 +1533,12 @@ TEST(ParserBlendStateTest, AttachmentSrcAlphaBlendFactor)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(53U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(53U, messages[0].column);
+		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
 	}
 }
 
@@ -1565,11 +1585,12 @@ TEST(ParserBlendStateTest, AttachmentDstAlphaBlendFactor)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(53U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(53U, messages[0].column);
+		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
 	}
 }
 
@@ -1616,11 +1637,12 @@ TEST(ParseBlendStateTest, AttachmentAlphaBlendOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(45U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend op value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(45U, messages[0].column);
+		EXPECT_EQ("invalid blend op value: asdf", messages[0].message);
 	}
 }
 
@@ -1667,11 +1689,12 @@ TEST(ParserBlendStateTest, AttachmentSrcBlendFactor)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(47U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(47U, messages[0].column);
+		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
 	}
 }
 
@@ -1718,11 +1741,12 @@ TEST(ParserBlendStateTest, AttachmentDstBlendFactor)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(47U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(47U, messages[0].column);
+		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
 	}
 }
 
@@ -1769,11 +1793,12 @@ TEST(ParseBlendStateTest, AttachmentBlendOp)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(39U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid blend op value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(39U, messages[0].column);
+		EXPECT_EQ("invalid blend op value: asdf", messages[0].message);
 	}
 }
 
@@ -1817,11 +1842,12 @@ TEST(ParseBlendStateTest, AttachmentColorWriteMask)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(47U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid color mask value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(47U, messages[0].column);
+		EXPECT_EQ("invalid color mask value: asdf", messages[0].message);
 	}
 }
 
@@ -1876,11 +1902,12 @@ TEST(ParseBlendStateTest, BlendConstants)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(33U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid vec4 value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(33U, messages[0].column);
+		EXPECT_EQ("invalid vec4 value: asdf", messages[0].message);
 	}
 
 	{
@@ -1891,11 +1918,12 @@ TEST(ParseBlendStateTest, BlendConstants)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(33U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid vec4 value: vec3(1.2,3.4,5.6)", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(33U, messages[0].column);
+		EXPECT_EQ("invalid vec4 value: vec3(1.2,3.4,5.6)", messages[0].message);
 	}
 
 	{
@@ -1906,11 +1934,12 @@ TEST(ParseBlendStateTest, BlendConstants)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(33U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid vec4 value: vec4(1.2,3.4,5.6)", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(33U, messages[0].column);
+		EXPECT_EQ("invalid vec4 value: vec4(1.2,3.4,5.6)", messages[0].message);
 	}
 
 	{
@@ -1921,11 +1950,12 @@ TEST(ParseBlendStateTest, BlendConstants)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(33U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid vec4 value: vec4(1.2,3.4,5.6,7.8,9.0)", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(33U, messages[0].column);
+		EXPECT_EQ("invalid vec4 value: vec4(1.2,3.4,5.6,7.8,9.0)", messages[0].message);
 	}
 
 	{
@@ -1936,11 +1966,12 @@ TEST(ParseBlendStateTest, BlendConstants)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(33U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid vec4 value: vec4(1.2,3.4,5.6,7.8", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(33U, messages[0].column);
+		EXPECT_EQ("invalid vec4 value: vec4(1.2,3.4,5.6,7.8", messages[0].message);
 	}
 
 	{
@@ -1951,11 +1982,12 @@ TEST(ParseBlendStateTest, BlendConstants)
 		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
 		EXPECT_FALSE(parser.parse(output));
 
-		ASSERT_EQ(1U, output.getMessages().size());
-		EXPECT_EQ(path, output.getMessages()[0].file);
-		EXPECT_EQ(1U, output.getMessages()[0].line);
-		EXPECT_EQ(33U, output.getMessages()[0].column);
-		EXPECT_EQ("invalid float value: asdf", output.getMessages()[0].message);
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(33U, messages[0].column);
+		EXPECT_EQ("invalid float value: asdf", messages[0].message);
 	}
 }
 

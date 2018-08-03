@@ -19,6 +19,7 @@
 #include "Compiler.h"
 #include "Parser.h"
 #include "Preprocessor.h"
+#include <boost/algorithm/string/predicate.hpp>
 #include <gtest/gtest.h>
 
 namespace msl
@@ -108,7 +109,8 @@ TEST_F(CompilerTest, CompileError)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(pathStr(inputDir/"CompileError.mslh"), pathStr(messages[0].file));
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file),
+		pathStr(inputDir/"CompileError.mslh")));
 	EXPECT_EQ(15U, messages[0].line);
 	EXPECT_EQ("'inputss' : undeclared identifier", messages[0].message);
 }
@@ -138,7 +140,8 @@ TEST_F(CompilerTest, CompileWarning)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Warning, messages[0].level);
-	EXPECT_EQ(pathStr(inputDir/"CompileWarning.mslh"), pathStr(messages[0].file));
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file),
+		pathStr(inputDir/"CompileWarning.mslh")));
 	EXPECT_EQ(15U, messages[0].line);
 	EXPECT_EQ("'switch' : last case/default label not followed by statements", messages[0].message);
 }
@@ -178,7 +181,8 @@ TEST_F(CompilerTest, MissingEntryPoint)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(pathStr(inputDir/"MissingEntryPoint.mslh"), pathStr(messages[0].file));
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file),
+		pathStr(inputDir/"MissingEntryPoint.mslh")));
 	EXPECT_EQ(8U, messages[0].line);
 	EXPECT_EQ("entry point 'fragShader' not found", messages[0].message);
 }
@@ -218,7 +222,8 @@ TEST_F(CompilerTest, DuplicateEntryPoint)
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
 	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_EQ(pathStr(inputDir/"DuplicateEntryPoint.mslh"), pathStr(messages[0].file));
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file),
+		pathStr(inputDir/"DuplicateEntryPoint.mslh")));
 	EXPECT_EQ(8U, messages[0].line);
 	EXPECT_EQ("entry point 'fragShader' found multiple times", messages[0].message);
 }
