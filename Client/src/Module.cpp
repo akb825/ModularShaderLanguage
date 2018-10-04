@@ -471,7 +471,7 @@ static bool isValid(const void* data, size_t size)
 			return false;
 		for (int j = 0; j < mslStage_Count; ++j)
 		{
-			const mslb::Shader* shader = (*shaders)[i];
+			const mslb::Shader* shader = (*shaders)[j];
 			if (!shader || shader->shader() == MSL_UNKNOWN)
 				continue;
 

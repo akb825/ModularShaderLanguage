@@ -1802,6 +1802,9 @@ void addLocation(std::vector<std::uint32_t>& spirv, std::uint32_t id, std::uint3
 
 void addComponent(std::vector<std::uint32_t>& spirv, std::uint32_t id, std::uint32_t index)
 {
+	if (index == 0)
+		return;
+
 	spirv.push_back((4 << spv::WordCountShift) | spv::OpDecorate);
 	spirv.push_back(id);
 	spirv.push_back(spv::DecorationComponent);
@@ -1821,6 +1824,9 @@ void addMemberLocation(std::vector<std::uint32_t>& spirv, std::uint32_t id,
 void addMemberComponent(std::vector<std::uint32_t>& spirv, std::uint32_t id,
 	std::uint32_t memberIndex, std::uint32_t index)
 {
+	if (index == 0)
+		return;
+
 	spirv.push_back((5 << spv::WordCountShift) | spv::OpMemberDecorate);
 	spirv.push_back(id);
 	spirv.push_back(memberIndex);
