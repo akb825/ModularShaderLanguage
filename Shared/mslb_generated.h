@@ -1105,7 +1105,7 @@ inline const char *EnumNameBorderColor(BorderColor e) {
   return EnumNamesBorderColor()[index];
 }
 
-MANUALLY_ALIGNED_STRUCT(4) RasterizationState FLATBUFFERS_FINAL_CLASS {
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) RasterizationState FLATBUFFERS_FINAL_CLASS {
  private:
   int8_t depthClampEnable_;
   int8_t rasterizerDiscardEnable_;
@@ -1198,9 +1198,9 @@ MANUALLY_ALIGNED_STRUCT(4) RasterizationState FLATBUFFERS_FINAL_CLASS {
     flatbuffers::WriteScalar(&lineWidth_, _lineWidth);
   }
 };
-STRUCT_END(RasterizationState, 24);
+FLATBUFFERS_STRUCT_END(RasterizationState, 24);
 
-MANUALLY_ALIGNED_STRUCT(4) MultisampleState FLATBUFFERS_FINAL_CLASS {
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) MultisampleState FLATBUFFERS_FINAL_CLASS {
  private:
   int8_t sampleShadingEnable_;
   int8_t padding0__;  int16_t padding1__;
@@ -1257,9 +1257,9 @@ MANUALLY_ALIGNED_STRUCT(4) MultisampleState FLATBUFFERS_FINAL_CLASS {
     flatbuffers::WriteScalar(&alphaToOneEnable_, static_cast<int8_t>(_alphaToOneEnable));
   }
 };
-STRUCT_END(MultisampleState, 16);
+FLATBUFFERS_STRUCT_END(MultisampleState, 16);
 
-MANUALLY_ALIGNED_STRUCT(4) StencilOpState FLATBUFFERS_FINAL_CLASS {
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) StencilOpState FLATBUFFERS_FINAL_CLASS {
  private:
   int8_t failOp_;
   int8_t passOp_;
@@ -1325,9 +1325,9 @@ MANUALLY_ALIGNED_STRUCT(4) StencilOpState FLATBUFFERS_FINAL_CLASS {
     flatbuffers::WriteScalar(&reference_, _reference);
   }
 };
-STRUCT_END(StencilOpState, 16);
+FLATBUFFERS_STRUCT_END(StencilOpState, 16);
 
-MANUALLY_ALIGNED_STRUCT(4) DepthStencilState FLATBUFFERS_FINAL_CLASS {
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) DepthStencilState FLATBUFFERS_FINAL_CLASS {
  private:
   int8_t depthTestEnable_;
   int8_t depthWriteEnable_;
@@ -1413,9 +1413,9 @@ MANUALLY_ALIGNED_STRUCT(4) DepthStencilState FLATBUFFERS_FINAL_CLASS {
     flatbuffers::WriteScalar(&maxDepthBounds_, _maxDepthBounds);
   }
 };
-STRUCT_END(DepthStencilState, 48);
+FLATBUFFERS_STRUCT_END(DepthStencilState, 48);
 
-MANUALLY_ALIGNED_STRUCT(1) BlendAttachmentState FLATBUFFERS_FINAL_CLASS {
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(1) BlendAttachmentState FLATBUFFERS_FINAL_CLASS {
  private:
   int8_t blendEnable_;
   int8_t srcColorBlendFactor_;
@@ -1489,9 +1489,9 @@ MANUALLY_ALIGNED_STRUCT(1) BlendAttachmentState FLATBUFFERS_FINAL_CLASS {
     flatbuffers::WriteScalar(&colorWriteMask_, static_cast<int8_t>(_colorWriteMask));
   }
 };
-STRUCT_END(BlendAttachmentState, 8);
+FLATBUFFERS_STRUCT_END(BlendAttachmentState, 8);
 
-MANUALLY_ALIGNED_STRUCT(4) SamplerState FLATBUFFERS_FINAL_CLASS {
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) SamplerState FLATBUFFERS_FINAL_CLASS {
  private:
   int8_t minFilter_;
   int8_t magFilter_;
@@ -1603,9 +1603,9 @@ MANUALLY_ALIGNED_STRUCT(4) SamplerState FLATBUFFERS_FINAL_CLASS {
     flatbuffers::WriteScalar(&compareOp_, static_cast<int8_t>(_compareOp));
   }
 };
-STRUCT_END(SamplerState, 28);
+FLATBUFFERS_STRUCT_END(SamplerState, 28);
 
-MANUALLY_ALIGNED_STRUCT(4) ArrayInfo FLATBUFFERS_FINAL_CLASS {
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) ArrayInfo FLATBUFFERS_FINAL_CLASS {
  private:
   uint32_t length_;
   uint32_t stride_;
@@ -1631,7 +1631,7 @@ MANUALLY_ALIGNED_STRUCT(4) ArrayInfo FLATBUFFERS_FINAL_CLASS {
     flatbuffers::WriteScalar(&stride_, _stride);
   }
 };
-STRUCT_END(ArrayInfo, 8);
+FLATBUFFERS_STRUCT_END(ArrayInfo, 8);
 
 struct BlendState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
@@ -1677,9 +1677,9 @@ struct BlendState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<int8_t>(verifier, VT_LOGICALOP) &&
            VerifyField<int8_t>(verifier, VT_SEPARATEATTACHMENTBLENDINGENABLE) &&
            VerifyOffsetRequired(verifier, VT_BLENDATTACHMENTS) &&
-           verifier.Verify(blendAttachments()) &&
+           verifier.VerifyVector(blendAttachments()) &&
            VerifyOffsetRequired(verifier, VT_BLENDCONSTANTS) &&
-           verifier.Verify(blendConstants()) &&
+           verifier.VerifyVector(blendConstants()) &&
            verifier.EndTable();
   }
 };
@@ -1903,13 +1903,13 @@ struct StructMember FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyField<uint32_t>(verifier, VT_OFFSET) &&
            VerifyField<uint32_t>(verifier, VT_SIZE) &&
            VerifyField<uint8_t>(verifier, VT_TYPE) &&
            VerifyField<uint32_t>(verifier, VT_STRUCTINDEX) &&
            VerifyOffset(verifier, VT_ARRAYELEMENTS) &&
-           verifier.Verify(arrayElements()) &&
+           verifier.VerifyVector(arrayElements()) &&
            VerifyField<uint8_t>(verifier, VT_ROWMAJOR) &&
            verifier.EndTable();
   }
@@ -2019,10 +2019,10 @@ struct Struct FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyField<uint32_t>(verifier, VT_SIZE) &&
            VerifyOffsetRequired(verifier, VT_MEMBERS) &&
-           verifier.Verify(members()) &&
+           verifier.VerifyVector(members()) &&
            verifier.VerifyVectorOfTables(members()) &&
            verifier.EndTable();
   }
@@ -2147,12 +2147,12 @@ struct Uniform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyField<uint8_t>(verifier, VT_UNIFORMTYPE) &&
            VerifyField<uint8_t>(verifier, VT_TYPE) &&
            VerifyField<uint32_t>(verifier, VT_STRUCTINDEX) &&
            VerifyOffset(verifier, VT_ARRAYELEMENTS) &&
-           verifier.Verify(arrayElements()) &&
+           verifier.VerifyVector(arrayElements()) &&
            VerifyField<uint32_t>(verifier, VT_DESCRIPTORSET) &&
            VerifyField<uint32_t>(verifier, VT_BINDING) &&
            VerifyField<uint32_t>(verifier, VT_INPUTATTACHMENTINDEX) &&
@@ -2293,10 +2293,10 @@ struct Attribute FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyField<uint8_t>(verifier, VT_TYPE) &&
            VerifyOffset(verifier, VT_ARRAYELEMENTS) &&
-           verifier.Verify(arrayElements()) &&
+           verifier.VerifyVector(arrayElements()) &&
            VerifyField<uint32_t>(verifier, VT_LOCATION) &&
            VerifyField<uint32_t>(verifier, VT_COMPONENT) &&
            verifier.EndTable();
@@ -2386,7 +2386,7 @@ struct FragmentOutput FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyField<uint32_t>(verifier, VT_LOCATION) &&
            verifier.EndTable();
   }
@@ -2455,7 +2455,7 @@ struct Shader FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_SHADER) &&
            VerifyOffset(verifier, VT_UNIFORMIDS) &&
-           verifier.Verify(uniformIds()) &&
+           verifier.VerifyVector(uniformIds()) &&
            verifier.EndTable();
   }
 };
@@ -2570,26 +2570,26 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
-           verifier.Verify(name()) &&
+           verifier.VerifyString(name()) &&
            VerifyOffsetRequired(verifier, VT_STRUCTS) &&
-           verifier.Verify(structs()) &&
+           verifier.VerifyVector(structs()) &&
            verifier.VerifyVectorOfTables(structs()) &&
            VerifyOffsetRequired(verifier, VT_SAMPLERSTATES) &&
-           verifier.Verify(samplerStates()) &&
+           verifier.VerifyVector(samplerStates()) &&
            VerifyOffsetRequired(verifier, VT_UNIFORMS) &&
-           verifier.Verify(uniforms()) &&
+           verifier.VerifyVector(uniforms()) &&
            verifier.VerifyVectorOfTables(uniforms()) &&
            VerifyOffsetRequired(verifier, VT_ATTRIBUTES) &&
-           verifier.Verify(attributes()) &&
+           verifier.VerifyVector(attributes()) &&
            verifier.VerifyVectorOfTables(attributes()) &&
            VerifyOffsetRequired(verifier, VT_FRAGMENTOUTPUTS) &&
-           verifier.Verify(fragmentOutputs()) &&
+           verifier.VerifyVector(fragmentOutputs()) &&
            verifier.VerifyVectorOfTables(fragmentOutputs()) &&
            VerifyField<uint32_t>(verifier, VT_PUSHCONSTANTSTRUCT) &&
            VerifyOffset(verifier, VT_RENDERSTATE) &&
            verifier.VerifyTable(renderState()) &&
            VerifyOffsetRequired(verifier, VT_SHADERS) &&
-           verifier.Verify(shaders()) &&
+           verifier.VerifyVector(shaders()) &&
            verifier.VerifyVectorOfTables(shaders()) &&
            verifier.EndTable();
   }
@@ -2705,7 +2705,7 @@ struct ShaderData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_DATA) &&
-           verifier.Verify(data()) &&
+           verifier.VerifyVector(data()) &&
            verifier.EndTable();
   }
 };
@@ -2804,13 +2804,13 @@ struct Module FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<uint32_t>(verifier, VT_TARGETVERSION) &&
            VerifyField<uint8_t>(verifier, VT_ADJUSTABLEBINDINGS) &&
            VerifyOffsetRequired(verifier, VT_PIPELINES) &&
-           verifier.Verify(pipelines()) &&
+           verifier.VerifyVector(pipelines()) &&
            verifier.VerifyVectorOfTables(pipelines()) &&
            VerifyOffsetRequired(verifier, VT_SHADERS) &&
-           verifier.Verify(shaders()) &&
+           verifier.VerifyVector(shaders()) &&
            verifier.VerifyVectorOfTables(shaders()) &&
            VerifyOffsetRequired(verifier, VT_SHAREDDATA) &&
-           verifier.Verify(sharedData()) &&
+           verifier.VerifyVector(sharedData()) &&
            verifier.EndTable();
   }
 };
