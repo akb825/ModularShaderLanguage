@@ -659,7 +659,7 @@ size_t BasicModule<Allocator>::readFunc(void* userData, void* buffer, size_t siz
 {
 	std::istream& stream = *reinterpret_cast<std::istream*>(userData);
 	stream.read(reinterpret_cast<char*>(buffer), size);
-	return stream.gcount();
+	return (size_t)stream.gcount();
 }
 
 } // namespace msl
