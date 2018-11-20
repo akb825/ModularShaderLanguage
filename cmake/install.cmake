@@ -102,7 +102,11 @@ function(msl_install_library)
 		"set(MSL${ARGS_MODULE}_LIBRARIES ${ARGS_TARGET})\n"
 		"get_target_property(MSL${ARGS_MODULE}_INCLUDE_DIRS ${ARGS_TARGET} INTERFACE_INCLUDE_DIRECTORIES)\n")
 
-	set(configPackageDir lib/cmake/${moduleName})
+	if (WIN32)
+		set(configPackageDir ${moduleName}/cmake)
+	else()
+		set(configPackageDir lib/cmake/${moduleName})
+	endif()
 	install(EXPORT ${moduleName}Targets FILE ${moduleName}Targets.cmake
 		DESTINATION ${configPackageDir})
 	install(FILES ${configPath} ${versionPath} DESTINATION ${configPackageDir} COMPONENT dev)
@@ -119,8 +123,13 @@ function(msl_install_master_config)
 		VERSION ${MSL_VERSION}
 		COMPATIBILITY SameMajorVersion)
 
+	if (WIN32)
+		set(configPackageDir MSL/cmake)
+	else()
+		set(configPackageDir lib/cmake/MSL)
+	endif()
 	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/cmake/MSLConfig.cmake
 		DESTINATION ${MSL_EXPORTS_DIR})
 	install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/MSLConfig.cmake ${versionPath}
-		DESTINATION lib/cmake/MSL COMPONENT dev)
+		DESTINATION ${configPackageDir} COMPONENT dev)
 endfunction()
