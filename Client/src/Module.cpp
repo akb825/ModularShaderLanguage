@@ -219,7 +219,7 @@ static bool isValid(const void* data, size_t size)
 		return false;
 
 	bool isSpirV = module->targetId() == MSL_CREATE_ID('S', 'P', 'R', 'V');
-	if (module->adjustableBindings() && isSpirV)
+	if (module->adjustableBindings() && !isSpirV)
 		return false;
 
 	auto shaderData = module->shaders();
