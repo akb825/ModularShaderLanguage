@@ -1,5 +1,6 @@
 /build
 /tools/mslc/test/*.mslb
+.idea
 .vscode
 *.swp
 *.user
