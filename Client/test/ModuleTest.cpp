@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,7 +96,7 @@ static void testContents(Module& module)
 	EXPECT_EQ(1U, uniform.structIndex);
 	EXPECT_EQ(0U, uniform.arrayElementCount);
 	EXPECT_EQ(0U, uniform.descriptorSet);
-	EXPECT_EQ(unknown, uniform.binding);
+	//EXPECT_EQ(unknown, uniform.binding);
 	EXPECT_EQ(unknown, uniform.inputAttachmentIndex);
 	EXPECT_EQ(unknown, uniform.samplerIndex);
 
@@ -107,7 +107,7 @@ static void testContents(Module& module)
 	EXPECT_EQ(unknown, uniform.structIndex);
 	EXPECT_EQ(0U, uniform.arrayElementCount);
 	EXPECT_EQ(0U, uniform.descriptorSet);
-	EXPECT_EQ(unknown, uniform.binding);
+	//EXPECT_EQ(unknown, uniform.binding);
 	EXPECT_EQ(unknown, uniform.inputAttachmentIndex);
 	EXPECT_EQ(0U, uniform.samplerIndex);
 
@@ -239,7 +239,7 @@ static void testContents(const mslModule* module)
 	EXPECT_EQ(1U, uniform.structIndex);
 	EXPECT_EQ(0U, uniform.arrayElementCount);
 	EXPECT_EQ(0U, uniform.descriptorSet);
-	EXPECT_EQ(MSL_UNKNOWN, uniform.binding);
+	//EXPECT_EQ(MSL_UNKNOWN, uniform.binding);
 	EXPECT_EQ(MSL_UNKNOWN, uniform.inputAttachmentIndex);
 	EXPECT_EQ(MSL_UNKNOWN, uniform.samplerIndex);
 
@@ -250,7 +250,7 @@ static void testContents(const mslModule* module)
 	EXPECT_EQ(MSL_UNKNOWN, uniform.structIndex);
 	EXPECT_EQ(0U, uniform.arrayElementCount);
 	EXPECT_EQ(0U, uniform.descriptorSet);
-	EXPECT_EQ(MSL_UNKNOWN, uniform.binding);
+	//EXPECT_EQ(MSL_UNKNOWN, uniform.binding);
 	EXPECT_EQ(MSL_UNKNOWN, uniform.inputAttachmentIndex);
 	EXPECT_EQ(0U, uniform.samplerIndex);
 
@@ -365,6 +365,88 @@ TEST(ModuleTest, InvalidAllocator)
 	std::string fileName = pathStr(exeDir/"CompleteShader.mslb");
 	EXPECT_EQ(nullptr, mslModule_readFile(fileName.c_str(), &allocator));
 	EXPECT_EQ(EINVAL, errno);
+}
+
+TEST(ModuleTest, SetUniformBinding)
+{
+	std::string fileName = pathStr(exeDir/"CompleteShader.mslb");
+	Module module;
+	EXPECT_TRUE(module.read(fileName));
+
+	EXPECT_EQ(moduleVersion, module.version());
+	EXPECT_EQ(MSL_CREATE_ID('S', 'P', 'R', 'V'), module.targetId());
+	EXPECT_EQ(1U, module.targetVersion());
+
+	EXPECT_TRUE(module.setUniformBinding(0, 1, 1, 2));
+	Uniform transformUniform;
+	EXPECT_TRUE(module.uniform(transformUniform, 0, 1));
+	EXPECT_STREQ("Transform", transformUniform.name);
+	EXPECT_EQ(1U, transformUniform.descriptorSet);
+	EXPECT_EQ(2U, transformUniform.binding);
+
+	EXPECT_TRUE(module.setUniformBinding(0, 2, 2, 3));
+	Uniform texUniform;
+	EXPECT_TRUE(module.uniform(texUniform, 0, 2));
+	EXPECT_STREQ("tex", texUniform.name);
+	EXPECT_EQ(2U, texUniform.descriptorSet);
+	EXPECT_EQ(3U, texUniform.binding);
+}
+
+TEST(ModuleTest, SetUniformBindingCopy)
+{
+	std::string fileName = pathStr(exeDir/"CompleteShader.mslb");
+	Module module;
+	EXPECT_TRUE(module.read(fileName));
+
+	EXPECT_EQ(moduleVersion, module.version());
+	EXPECT_EQ(MSL_CREATE_ID('S', 'P', 'R', 'V'), module.targetId());
+	EXPECT_EQ(1U, module.targetVersion());
+
+	ASSERT_EQ(1U, module.pipelineCount());
+	Pipeline pipeline;
+	EXPECT_TRUE(module.pipeline(pipeline, 0));
+	EXPECT_STREQ("Test", pipeline.name);
+
+	SizedData shaderData[mslStage_Count] = {};
+	EXPECT_FALSE(module.setUniformBinding(0, 1, 1, 2, shaderData));
+	EXPECT_FALSE(module.setUniformBinding(0, 2, 2, 1, shaderData));
+
+	for (int i = 0; i < mslStage_Count; ++i)
+	{
+		uint32_t shaderIndex = pipeline.shaders[i];
+		if (shaderIndex == unknown)
+			continue;
+
+		shaderData[i].size = module.shaderSize(shaderIndex);
+		shaderData[i].data = new uint8_t[shaderData[i].size];
+		memcpy(shaderData[i].data, module.shaderData(shaderIndex), shaderData[i].size);
+	}
+
+	EXPECT_TRUE(module.setUniformBinding(0, 1, 1, 2, shaderData));
+	EXPECT_TRUE(module.setUniformBinding(0, 2, 2, 1, shaderData));
+
+	for (int i = 0; i < mslStage_Count; ++i)
+	{
+		uint32_t shaderIndex = pipeline.shaders[i];
+		if (shaderIndex == unknown)
+			continue;
+
+		EXPECT_NE(0, memcmp(shaderData[i].data, module.shaderData(shaderIndex),
+			shaderData[i].size));
+		delete[] reinterpret_cast<uint8_t*>(shaderData[i].data);
+	}
+
+	Uniform transformUniform;
+	EXPECT_TRUE(module.uniform(transformUniform, 0, 1));
+	EXPECT_STREQ("Transform", transformUniform.name);
+	EXPECT_NE(1U, transformUniform.descriptorSet);
+	EXPECT_NE(2U, transformUniform.binding);
+
+	Uniform texUniform;
+	EXPECT_TRUE(module.uniform(texUniform, 0, 2));
+	EXPECT_STREQ("tex", texUniform.name);
+	EXPECT_NE(2U, texUniform.descriptorSet);
+	EXPECT_NE(3U, texUniform.binding);
 }
 
 } // namespace msl

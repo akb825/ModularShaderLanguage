@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1073,20 +1073,23 @@ bool mslModule_setUniformBinding(mslModule* module, uint32_t pipelineIndex, uint
 	mslb::Uniform* uniform = const_cast<mslb::Uniform*>(uniforms[uniformIndex]);
 
 	// Set the new indices.
-	uniform->mutate_descriptorSet(descriptorSet);
-	uniform->mutate_binding(binding);
+	if (!uniform->mutate_descriptorSet(descriptorSet))
+		return false;
+	if (!uniform->mutate_binding(binding))
+		return false;
 
 	// Modify the SPIR-V.
 	mslSizedData shaderDataArray[mslStage_Count] = {};
+	const auto& shaderRefs = *pipeline->shaders();
 	auto& shaderData = *module->module->shaders();
 	for (int i = 0; i < mslStage_Count; ++i)
 	{
-		if (shaderData[i] && shaderData[i]->data())
-		{
-			shaderDataArray[i].data =
-				const_cast<uint8_t*>(shaderData[i]->data()->data());
-			shaderDataArray[i].size = shaderData[i]->data()->size();
-		}
+		uint32_t shaderIndex = shaderRefs[i]->shader();
+		if (shaderIndex == MSL_UNKNOWN)
+			continue;
+
+		shaderDataArray[i].data = const_cast<uint8_t*>(shaderData[shaderIndex]->data()->data());
+		shaderDataArray[i].size = shaderData[shaderIndex]->data()->size();
 	}
 	setUniformBinding(*pipeline->shaders(), shaderDataArray, uniformIndex, descriptorSet, binding);
 	return true;
@@ -1109,22 +1112,23 @@ bool mslModule_setUniformBindingCopy(const mslModule* module, uint32_t pipelineI
 		return false;
 
 	// Modify the SPIR-V.
-	mslSizedData shaderDataArray[mslStage_Count] = {};
+	const auto& expectedShaders = *pipeline->shaders();
 	const auto& expectedShaderData = *module->module->shaders();
 	for (int i = 0; i < mslStage_Count; ++i)
 	{
-		if (expectedShaderData[i] && expectedShaderData[i]->data())
-		{
-			if (shaderData[i].size != expectedShaderData[i]->data()->size())
-				return false;
-		}
-		else
+		uint32_t shaderIndex = expectedShaders[i]->shader();
+		if (shaderIndex == MSL_UNKNOWN)
 		{
 			if (shaderData[i].size > 0)
 				return false;
 		}
+		else
+		{
+			if (shaderData[i].size != expectedShaderData[shaderIndex]->data()->size())
+				return false;
+		}
 	}
-	setUniformBinding(*pipeline->shaders(), shaderDataArray, uniformIndex, descriptorSet, binding);
+	setUniformBinding(*pipeline->shaders(), shaderData, uniformIndex, descriptorSet, binding);
 	return true;
 }
 

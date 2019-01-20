@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,7 +95,9 @@ bool CompiledResult::save(std::ostream& stream) const
 		return false;
 
 	bool isSpirV = m_target->getId() == MSL_CREATE_ID('S', 'P', 'R', 'V');
+	bool adjustableBindings = m_target->getAdjustableBindings() && isSpirV;
 	flatbuffers::FlatBufferBuilder builder;
+	builder.ForceDefaults(adjustableBindings);
 	std::vector<flatbuffers::Offset<mslb::Pipeline>> pipelines(m_pipelines.size());
 	std::vector<flatbuffers::Offset<mslb::Struct>> structs;
 	std::vector<mslb::ArrayInfo> arrayElements;
@@ -329,7 +331,7 @@ bool CompiledResult::save(std::ostream& stream) const
 		version,
 		m_target->getId(),
 		m_target->getVersion(),
-		m_target->getAdjustableBindings() && isSpirV,
+		adjustableBindings,
 		builder.CreateVector(pipelines),
 		builder.CreateVector(shaderData),
 		builder.CreateVector(m_sharedData)));
