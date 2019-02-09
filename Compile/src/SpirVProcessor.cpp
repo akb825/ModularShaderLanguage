@@ -195,6 +195,7 @@ std::string readString(std::vector<char>& tempBuffer,
 void readVector(IntermediateData& data, const std::vector<std::uint32_t>& spirv, std::size_t i,
 	std::uint32_t wordCount)
 {
+	MSL_UNUSED(wordCount);
 	assert(wordCount == 4);
 	std::uint32_t id = spirv[i + 1];
 	std::uint32_t typeId = spirv[i + 2];
@@ -297,6 +298,7 @@ void readVector(IntermediateData& data, const std::vector<std::uint32_t>& spirv,
 void readMatrix(IntermediateData& data, const std::vector<std::uint32_t>& spirv, std::size_t i,
 	std::uint32_t wordCount)
 {
+	MSL_UNUSED(wordCount);
 	assert(wordCount == 4);
 	std::uint32_t id = spirv[i + 1];
 	std::uint32_t typeId = spirv[i + 2];
@@ -410,6 +412,7 @@ void readMatrix(IntermediateData& data, const std::vector<std::uint32_t>& spirv,
 void readImage(IntermediateData& data, const std::vector<std::uint32_t>& spirv, std::size_t i,
 	std::uint32_t wordCount)
 {
+	MSL_UNUSED(wordCount);
 	assert(wordCount >= 8);
 	std::uint32_t id = spirv[i + 1];
 	std::uint32_t typeId = spirv[i + 2];
@@ -2637,6 +2640,12 @@ std::vector<std::uint32_t> SpirVProcessor::process(Strip strip, bool dummyBindin
 				{
 					for (std::size_t j = 0; j < uniforms.size(); ++j)
 					{
+						if (uniforms[j].structIndex != unknown &&
+							uniforms[j].structIndex == pushConstantStruct)
+						{
+							continue;
+						}
+
 						if (uniforms[j].descriptorSet == unknown)
 							addDummyDescriptorSet(result, uniformIds[j]);
 						if (uniforms[j].binding == unknown)
