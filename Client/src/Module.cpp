@@ -501,7 +501,6 @@ static void setUniformBinding(const flatbuffers::Vector<flatbuffers::Offset<mslb
 	const uint32_t opDecorate = 71;
 	const uint32_t decorationBinding = 33;
 	const uint32_t decorationDescriptorSet = 34;
-	const uint32_t decorationInputAttachmentIndex = 43;
 	for (int i = 0; i < mslStage_Count; ++i)
 	{
 		const mslb::Shader* shader = shaders[i];
@@ -526,7 +525,6 @@ static void setUniformBinding(const flatbuffers::Vector<flatbuffers::Offset<mslb
 				switch (spirV[j + 2])
 				{
 					case decorationBinding:
-					case decorationInputAttachmentIndex:
 						spirV[j + 3] = binding;
 						break;
 					case decorationDescriptorSet:

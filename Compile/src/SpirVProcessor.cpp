@@ -1795,14 +1795,6 @@ void addDummyBinding(std::vector<std::uint32_t>& spirv, std::uint32_t id)
 	spirv.push_back(unknown);
 }
 
-void addDummyInputAttachment(std::vector<std::uint32_t>& spirv, std::uint32_t id)
-{
-	spirv.push_back((4 << spv::WordCountShift) | spv::OpDecorate);
-	spirv.push_back(id);
-	spirv.push_back(spv::DecorationInputAttachmentIndex);
-	spirv.push_back(unknown);
-}
-
 void addLocation(std::vector<std::uint32_t>& spirv, std::uint32_t id, std::uint32_t index)
 {
 	spirv.push_back((4 << spv::WordCountShift) | spv::OpDecorate);
@@ -2656,17 +2648,8 @@ std::vector<std::uint32_t> SpirVProcessor::process(Strip strip, bool dummyBindin
 
 						if (uniforms[j].descriptorSet == unknown)
 							addDummyDescriptorSet(result, uniformIds[j]);
-						if (uniforms[i].type == Type::SubpassInput ||
-							uniforms[i].type == Type::SubpassInputMS)
-						{
-							if (uniforms[i].inputAttachmentIndex == unknown)
-								addDummyInputAttachment(result, uniformIds[j]);
-						}
-						else
-						{
-							if (uniforms[i].binding == unknown)
-								addDummyBinding(result, uniformIds[j]);
-						}
+						if (uniforms[j].binding == unknown)
+							addDummyBinding(result, uniformIds[j]);
 					}
 				}
 
