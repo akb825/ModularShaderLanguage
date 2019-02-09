@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Aaron Barany
+ * Copyright 2016 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ TEST(TargetSpirVTest, CompleteShader)
 	EXPECT_EQ(0U, pipeline->second.uniforms[0].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[0].arrayElements.empty());
 	EXPECT_EQ(0, pipeline->second.uniforms[0].descriptorSet);
-	//EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].samplerIndex);
 
 	EXPECT_EQ("tex", pipeline->second.uniforms[1].name);
@@ -85,7 +85,7 @@ TEST(TargetSpirVTest, CompleteShader)
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
 	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
-	//EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
 	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
 	ASSERT_EQ(2U, pipeline->second.attributes.size());
@@ -151,7 +151,7 @@ TEST(TargetSpirVTest, CompleteShader)
 	EXPECT_EQ(0U, pipeline->second.uniforms[0].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[0].arrayElements.empty());
 	EXPECT_EQ(0, pipeline->second.uniforms[0].descriptorSet);
-	//EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].samplerIndex);
 
 	EXPECT_EQ("tex", pipeline->second.uniforms[1].name);
@@ -160,7 +160,7 @@ TEST(TargetSpirVTest, CompleteShader)
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
 	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
-	//EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
 	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
 	ASSERT_EQ(2U, pipeline->second.attributes.size());
@@ -304,7 +304,7 @@ TEST(TargetSpirVTest, CombineReflection)
 	EXPECT_EQ(0U, pipeline->second.uniforms[0].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[0].arrayElements.empty());
 	EXPECT_EQ(0, pipeline->second.uniforms[0].descriptorSet);
-	//EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].samplerIndex);
 
 	EXPECT_EQ("FragmentUniform", pipeline->second.uniforms[1].name);
@@ -313,7 +313,7 @@ TEST(TargetSpirVTest, CombineReflection)
 	EXPECT_EQ(3U, pipeline->second.uniforms[1].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
 	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
-	//EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
+	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].samplerIndex);
 
 	EXPECT_EQ(2U, result.getShaders().size());
