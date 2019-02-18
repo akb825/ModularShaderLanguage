@@ -18,15 +18,10 @@ uniform vec2[2] texCoords;
 [[vertex]] in vec3 position;
 [[vertex]] in vec4 color;
 
-[[vertex]] out VertexOut
+varying(vertex, fragment)
 {
-	vec4 color;
-} outputs;
-
-[[fragment]] in FragmentIn
-{
-	vec4 color;
-} inputs;
+	vec4 vfColor;
+};
 
 [[fragment]] out vec4 color;
 
@@ -34,14 +29,14 @@ uniform vec2[2] texCoords;
 void vertShader()
 {
 	gl_Position = INSTANCE(block).transform*vec4(position, 1.0);
-	outputs.color = color;
+	vfColor = color;
 }
 
 [[fragment]]
 void fragShader()
 {
 	vec4 texResult = texture(tex, uniforms.texCoords[1]);
-	color = inputs.color*texResult;
+	color = vfColor*texResult;
 }
 
 pipeline Test

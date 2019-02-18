@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,6 @@
 #include "Preprocessor.h"
 #include <boost/algorithm/string/predicate.hpp>
 #include <gtest/gtest.h>
-#include <cstring>
-#include <sstream>
 
 namespace msl
 {
@@ -76,7 +74,7 @@ TEST(ParserTest, InvalidStageName)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(3U, messages[0].column);
-	EXPECT_EQ("unknown stage type: asdf", messages[0].message);
+	EXPECT_EQ("unknown stage type: 'asdf'", messages[0].message);
 }
 
 TEST(ParserTest, StageDeclNotFirst)
@@ -112,7 +110,7 @@ TEST(ParserTest, StageDeclInvalidChar)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(3U, messages[0].column);
-	EXPECT_EQ("unexpected token: [", messages[0].message);
+	EXPECT_EQ("unexpected token: '['", messages[0].message);
 }
 
 TEST(ParserTest, UnterminatedEnd)
@@ -148,7 +146,7 @@ TEST(ParserTest, ExtraEndParen)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(10U, messages[0].column);
-	EXPECT_EQ("encountered ) without opening (", messages[0].message);
+	EXPECT_EQ("encountered ')' without opening '('", messages[0].message);
 }
 
 TEST(ParserTest, MissingCloseParen)
@@ -166,12 +164,12 @@ TEST(ParserTest, MissingCloseParen)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(32U, messages[0].column);
-	EXPECT_EQ("reached end of file without terminating )", messages[0].message);
+	EXPECT_EQ("reached end of file without terminating ')'", messages[0].message);
 
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[1].file), path));
 	EXPECT_EQ(1U, messages[1].line);
 	EXPECT_EQ(8U, messages[1].column);
-	EXPECT_EQ("see opening (", messages[1].message);
+	EXPECT_EQ("see opening '('", messages[1].message);
 }
 
 TEST(ParserTest, ExtraEndBrace)
@@ -189,7 +187,7 @@ TEST(ParserTest, ExtraEndBrace)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(34U, messages[0].column);
-	EXPECT_EQ("encountered } without opening {", messages[0].message);
+	EXPECT_EQ("encountered '}' without opening '{'", messages[0].message);
 }
 
 TEST(ParserTest, MissingCloseBrace)
@@ -207,12 +205,12 @@ TEST(ParserTest, MissingCloseBrace)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(32U, messages[0].column);
-	EXPECT_EQ("reached end of file without terminating }", messages[0].message);
+	EXPECT_EQ("reached end of file without terminating '}'", messages[0].message);
 
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[1].file), path));
 	EXPECT_EQ(1U, messages[1].line);
 	EXPECT_EQ(11U, messages[1].column);
-	EXPECT_EQ("see opening {", messages[1].message);
+	EXPECT_EQ("see opening '{'", messages[1].message);
 }
 
 TEST(ParserTest, SquareEndBrace)
@@ -230,7 +228,7 @@ TEST(ParserTest, SquareEndBrace)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(32U, messages[0].column);
-	EXPECT_EQ("encountered ] without opening [", messages[0].message);
+	EXPECT_EQ("encountered ']' without opening '['", messages[0].message);
 }
 
 TEST(ParserTest, MissingCloseSquare)
@@ -249,13 +247,13 @@ TEST(ParserTest, MissingCloseSquare)
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(32U, messages[0].column);
 	EXPECT_FALSE(messages[0].continued);
-	EXPECT_EQ("reached end of file without terminating ]", messages[0].message);
+	EXPECT_EQ("reached end of file without terminating ']'", messages[0].message);
 
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[1].file), path));
 	EXPECT_EQ(1U, messages[1].line);
 	EXPECT_EQ(29U, messages[1].column);
 	EXPECT_TRUE(messages[1].continued);
-	EXPECT_EQ("see opening [", messages[1].message);
+	EXPECT_EQ("see opening '['", messages[1].message);
 }
 
 TEST(ParserTest, Pipeline)
@@ -300,7 +298,7 @@ TEST(ParserTest, UnnamedPipeline)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(10U, messages[0].column);
-	EXPECT_EQ("unexpected token: {", messages[0].message);
+	EXPECT_EQ("unexpected token: '{', expected identifier", messages[0].message);
 }
 
 TEST(ParserTest, PipelineMissingOpenBrace)
@@ -318,7 +316,7 @@ TEST(ParserTest, PipelineMissingOpenBrace)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(15U, messages[0].column);
-	EXPECT_EQ("unexpected token: compute", messages[0].message);
+	EXPECT_EQ("unexpected token: 'compute', expected '{'", messages[0].message);
 }
 
 TEST(ParserTest, PipelineUnknownStage)
@@ -336,7 +334,7 @@ TEST(ParserTest, PipelineUnknownStage)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(16U, messages[0].column);
-	EXPECT_EQ("unknown pipeline stage or render state name: asdf", messages[0].message);
+	EXPECT_EQ("unknown pipeline stage or render state name: 'asdf'", messages[0].message);
 }
 
 TEST(ParserTest, PipelineMissingEquals)
@@ -354,7 +352,7 @@ TEST(ParserTest, PipelineMissingEquals)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(24U, messages[0].column);
-	EXPECT_EQ("unexpected token: computeEntry", messages[0].message);
+	EXPECT_EQ("unexpected token: 'computeEntry', expected '='", messages[0].message);
 }
 
 TEST(ParserTest, PipelineMissingEntryPoint)
@@ -372,7 +370,7 @@ TEST(ParserTest, PipelineMissingEntryPoint)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(25U, messages[0].column);
-	EXPECT_EQ("unexpected token: ;", messages[0].message);
+	EXPECT_EQ("unexpected token: ';'", messages[0].message);
 }
 
 TEST(ParserTest, PipelineMissingSemicolon)
@@ -390,7 +388,7 @@ TEST(ParserTest, PipelineMissingSemicolon)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(38U, messages[0].column);
-	EXPECT_EQ("unexpected token: }", messages[0].message);
+	EXPECT_EQ("unexpected token: '}'", messages[0].message);
 }
 
 TEST(ParserTest, PipelineMissingEndBrace)
@@ -427,13 +425,249 @@ TEST(ParserTest, DuplicatePipeline)
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(27U, messages[0].column);
 	EXPECT_FALSE(messages[0].continued);
-	EXPECT_EQ("pipeline of name Test already declared", messages[0].message);
+	EXPECT_EQ("pipeline of name 'Test' already declared", messages[0].message);
 
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[1].file), path));
 	EXPECT_EQ(1U, messages[1].line);
 	EXPECT_EQ(10U, messages[1].column);
 	EXPECT_TRUE(messages[1].continued);
-	EXPECT_EQ("see other declaration of pipeline Test", messages[1].message);
+	EXPECT_EQ("see other declaration of pipeline 'Test'", messages[1].message);
+}
+
+TEST(ParserTest, Varying)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	boost::filesystem::path outputDir = exeDir/"outputs";
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output,
+		pathStr(inputDir/"Varying.msl")));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	EXPECT_EQ("Foo", pipeline.name);
+	EXPECT_EQ("vertEntry", pipeline.entryPoints[0].value);
+	EXPECT_EQ("fragEntry", pipeline.entryPoints[4].value);
+
+	std::vector<Parser::LineMapping> lineMappings;
+	EXPECT_EQ(readFile(outputDir/"Varying.vert"),
+		parser.createShaderString(lineMappings, output, pipeline, Stage::Vertex) + '\n');
+
+	EXPECT_EQ(readFile(outputDir/"Varying.frag"),
+		parser.createShaderString(lineMappings, output, pipeline, Stage::Fragment) + '\n');
+}
+
+TEST(ParserTest, VaryingMissingOpenParen)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("varying vertex, fragment) {}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(9U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected token: 'vertex', expected '('", messages[0].message);
+}
+
+TEST(ParserTest, VaryingInvalidOutputStage)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("varying (asdf, fragment) {}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(10U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unknown stage type: 'asdf'", messages[0].message);
+}
+
+TEST(ParserTest, VaryingMissingComma)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("varying (vertex fragment) {}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(17U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected token: 'fragment', expected ','", messages[0].message);
+}
+
+TEST(ParserTest, VaryingInvalidInputStage)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("varying (vertex, asdf) {}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(18U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unknown stage type: 'asdf'", messages[0].message);
+}
+
+TEST(ParserTest, VaryingMissingCloseParen)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("varying (vertex, fragment {}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(27U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected token: '{', expected ')'", messages[0].message);
+}
+
+TEST(ParserTest, VaryingMissingOpenBrace)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("varying (vertex, fragment) }");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(28U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected token: '}', expected '{'", messages[0].message);
+}
+
+TEST(ParserTest, VaryingMissingSemicolon)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("varying (vertex, fragment) {vec2 foo}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(37U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected token: '}', expected ';'", messages[0].message);
+}
+
+TEST(ParserTest, VaryingMissingCloseBrace)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("varying (vertex, fragment) {");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(28U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected end of file", messages[0].message);
+}
+
+TEST(ParserTest, VaryingComputeAsOutput)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("varying (compute, fragment) {}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(10U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("cannot use compute stage for varying", messages[0].message);
+}
+
+TEST(ParserTest, VaryingComputeAsInput)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("varying (vertex, compute) {}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(18U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("cannot use compute stage for varying", messages[0].message);
+}
+
+TEST(ParserTest, VaryingWrongOrder)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("varying (fragment, vertex) {}");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(1U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("varying output stage 'fragment' not before input stage 'vertex'",
+		messages[0].message);
 }
 
 TEST(ParserTest, PatchControlPoints)
@@ -478,7 +712,7 @@ TEST(ParserTest, PatchControlPoints)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(39U, messages[0].column);
-		EXPECT_EQ("invalid int value: asdf", messages[0].message);
+		EXPECT_EQ("invalid int value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -497,7 +731,7 @@ TEST(ParserTest, UnnamedSamplerState)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(15U, messages[0].column);
-	EXPECT_EQ("unexpected token: {", messages[0].message);
+	EXPECT_EQ("unexpected token: '{', expected identifier", messages[0].message);
 }
 
 TEST(ParserTest, SamplerStateMissingOpenBrace)
@@ -515,7 +749,7 @@ TEST(ParserTest, SamplerStateMissingOpenBrace)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(20U, messages[0].column);
-	EXPECT_EQ("unexpected token: min_filter", messages[0].message);
+	EXPECT_EQ("unexpected token: 'min_filter', expected '{'", messages[0].message);
 }
 
 TEST(ParserTest, SamplerStateUnknownState)
@@ -533,7 +767,7 @@ TEST(ParserTest, SamplerStateUnknownState)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(21U, messages[0].column);
-	EXPECT_EQ("unknown sampler state name: asdf", messages[0].message);
+	EXPECT_EQ("unknown sampler state name: 'asdf'", messages[0].message);
 }
 
 TEST(ParserTest, SamplerStateMissingEquals)
@@ -551,7 +785,7 @@ TEST(ParserTest, SamplerStateMissingEquals)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(32U, messages[0].column);
-	EXPECT_EQ("unexpected token: linear", messages[0].message);
+	EXPECT_EQ("unexpected token: 'linear', expected '='", messages[0].message);
 }
 
 TEST(ParserTest, SamplerStateMissingValue)
@@ -569,7 +803,7 @@ TEST(ParserTest, SamplerStateMissingValue)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(33U, messages[0].column);
-	EXPECT_EQ("unexpected token: ;", messages[0].message);
+	EXPECT_EQ("unexpected token: ';'", messages[0].message);
 }
 
 TEST(ParserTest, SamplerStateMissingSemicolon)
@@ -587,7 +821,7 @@ TEST(ParserTest, SamplerStateMissingSemicolon)
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(40U, messages[0].column);
-	EXPECT_EQ("unexpected token: }", messages[0].message);
+	EXPECT_EQ("unexpected token: '}'", messages[0].message);
 }
 
 TEST(ParserTest, SamplerStateMissingEndBrace)
@@ -624,13 +858,13 @@ TEST(ParserTest, DuplicateSamplerState)
 	EXPECT_EQ(1U, messages[0].line);
 	EXPECT_EQ(37U, messages[0].column);
 	EXPECT_FALSE(messages[0].continued);
-	EXPECT_EQ("sampler state of name Test already declared", messages[0].message);
+	EXPECT_EQ("sampler state of name 'Test' already declared", messages[0].message);
 
 	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[1].file), path));
 	EXPECT_EQ(1U, messages[1].line);
 	EXPECT_EQ(15U, messages[1].column);
 	EXPECT_TRUE(messages[1].continued);
-	EXPECT_EQ("see other declaration of sampler state Test", messages[1].message);
+	EXPECT_EQ("see other declaration of sampler state 'Test'", messages[1].message);
 }
 
 TEST(ParserTest, RemoveUniformBlocks)
@@ -683,6 +917,17 @@ TEST(ParserTest, LineNumbers)
 		Parser::LineMapping{includeFileName.c_str(), 11},
 		Parser::LineMapping{fileName.c_str(), 1},
 		Parser::LineMapping{includeFileName.c_str(), 1},
+		Parser::LineMapping{includeFileName.c_str(), 16},
+		Parser::LineMapping{includeFileName.c_str(), 17},
+		Parser::LineMapping{includeFileName.c_str(), 18},
+		Parser::LineMapping{includeFileName.c_str(), 19},
+		Parser::LineMapping{includeFileName.c_str(), 19},
+		Parser::LineMapping{includeFileName.c_str(), 20},
+		Parser::LineMapping{includeFileName.c_str(), 21},
+		Parser::LineMapping{includeFileName.c_str(), 22},
+		Parser::LineMapping{includeFileName.c_str(), 22},
+		Parser::LineMapping{includeFileName.c_str(), 23},
+		Parser::LineMapping{includeFileName.c_str(), 26},
 		Parser::LineMapping{fileName.c_str(), 6},
 		Parser::LineMapping{fileName.c_str(), 7},
 		Parser::LineMapping{fileName.c_str(), 8},
@@ -734,6 +979,17 @@ TEST(ParserTest, LineNumbersRemoveUniformBlocks)
 		Parser::LineMapping{"<internal>", 0},
 		Parser::LineMapping{fileName.c_str(), 1},
 		Parser::LineMapping{includeFileName.c_str(), 1},
+		Parser::LineMapping{includeFileName.c_str(), 16},
+		Parser::LineMapping{includeFileName.c_str(), 17},
+		Parser::LineMapping{includeFileName.c_str(), 18},
+		Parser::LineMapping{includeFileName.c_str(), 19},
+		Parser::LineMapping{includeFileName.c_str(), 19},
+		Parser::LineMapping{includeFileName.c_str(), 20},
+		Parser::LineMapping{includeFileName.c_str(), 21},
+		Parser::LineMapping{includeFileName.c_str(), 22},
+		Parser::LineMapping{includeFileName.c_str(), 22},
+		Parser::LineMapping{includeFileName.c_str(), 23},
+		Parser::LineMapping{includeFileName.c_str(), 26},
 		Parser::LineMapping{fileName.c_str(), 6},
 		Parser::LineMapping{fileName.c_str(), 7},
 		Parser::LineMapping{fileName.c_str(), 8},

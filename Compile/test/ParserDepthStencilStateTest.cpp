@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@ TEST(ParserDepthStencilStateTest, SampledShadingEnable)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(36U, messages[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
+		EXPECT_EQ("invalid boolean value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -118,7 +118,7 @@ TEST(ParserDepthStencilStateTest, DepthWriteEnable)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(37U, messages[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
+		EXPECT_EQ("invalid boolean value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -250,7 +250,7 @@ TEST(ParserDepthStencilStateTest, DepthCompareOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(35U, messages[0].column);
-		EXPECT_EQ("invalid compare op value: asdf", messages[0].message);
+		EXPECT_EQ("invalid compare op value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -298,7 +298,7 @@ TEST(ParserDepthStencilStateTest, DepthBoundsTestEnable)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(43U, messages[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
+		EXPECT_EQ("invalid boolean value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -346,7 +346,7 @@ TEST(ParserDepthStencilStateTest, StencilTestEnable)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(38U, messages[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
+		EXPECT_EQ("invalid boolean value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -494,7 +494,7 @@ TEST(ParserDepthStencilStateTest, StencilFailOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(34U, messages[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
+		EXPECT_EQ("invalid stencil op value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -546,7 +546,7 @@ TEST(ParserDepthStencilStateTest, StencilPassOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(34U, messages[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
+		EXPECT_EQ("invalid stencil op value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -598,7 +598,7 @@ TEST(ParserDepthStencilStateTest, StencilDepthPassOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(40U, messages[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
+		EXPECT_EQ("invalid stencil op value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -650,7 +650,7 @@ TEST(ParserDepthStencilStateTest, StencilCompareMask)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(39U, messages[0].column);
-		EXPECT_EQ("invalid int value: asdf", messages[0].message);
+		EXPECT_EQ("invalid int value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -702,7 +702,7 @@ TEST(ParserDepthStencilStateTest, StencilWriteMask)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(37U, messages[0].column);
-		EXPECT_EQ("invalid int value: asdf", messages[0].message);
+		EXPECT_EQ("invalid int value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -754,7 +754,7 @@ TEST(ParserDepthStencilStateTest, StencilReference)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(36U, messages[0].column);
-		EXPECT_EQ("invalid int value: asdf", messages[0].message);
+		EXPECT_EQ("invalid int value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -806,7 +806,7 @@ TEST(ParserDepthStencilStateTest, FrontStencilFailOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(40U, messages[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
+		EXPECT_EQ("invalid stencil op value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -858,7 +858,7 @@ TEST(ParserDepthStencilStateTest, FrontStencilPassOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(40U, messages[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
+		EXPECT_EQ("invalid stencil op value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -910,7 +910,7 @@ TEST(ParserDepthStencilStateTest, FrontStencilDepthPassOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(46U, messages[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
+		EXPECT_EQ("invalid stencil op value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -962,7 +962,7 @@ TEST(ParserDepthStencilStateTest, FrontStencilCompareMask)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(45U, messages[0].column);
-		EXPECT_EQ("invalid int value: asdf", messages[0].message);
+		EXPECT_EQ("invalid int value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1014,7 +1014,7 @@ TEST(ParserDepthStencilStateTest, FrontStencilWriteMask)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(43U, messages[0].column);
-		EXPECT_EQ("invalid int value: asdf", messages[0].message);
+		EXPECT_EQ("invalid int value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1066,7 +1066,7 @@ TEST(ParserDepthStencilStateTest, FrontStencilReference)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(42U, messages[0].column);
-		EXPECT_EQ("invalid int value: asdf", messages[0].message);
+		EXPECT_EQ("invalid int value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1118,7 +1118,7 @@ TEST(ParserDepthStencilStateTest, BackStencilFailOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(39U, messages[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
+		EXPECT_EQ("invalid stencil op value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1170,7 +1170,7 @@ TEST(ParserDepthStencilStateTest, BackStencilPassOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(39U, messages[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
+		EXPECT_EQ("invalid stencil op value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1222,7 +1222,7 @@ TEST(ParserDepthStencilStateTest, BackStencilDepthPassOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(45U, messages[0].column);
-		EXPECT_EQ("invalid stencil op value: asdf", messages[0].message);
+		EXPECT_EQ("invalid stencil op value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1274,7 +1274,7 @@ TEST(ParserDepthStencilStateTest, BackStencilCompareMask)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(44U, messages[0].column);
-		EXPECT_EQ("invalid int value: asdf", messages[0].message);
+		EXPECT_EQ("invalid int value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1326,7 +1326,7 @@ TEST(ParserDepthStencilStateTest, BackStencilWriteMask)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(42U, messages[0].column);
-		EXPECT_EQ("invalid int value: asdf", messages[0].message);
+		EXPECT_EQ("invalid int value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1378,7 +1378,7 @@ TEST(ParserDepthStencilStateTest, BackStencilReference)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(41U, messages[0].column);
-		EXPECT_EQ("invalid int value: asdf", messages[0].message);
+		EXPECT_EQ("invalid int value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1426,7 +1426,7 @@ TEST(ParserDepthStencilStateTest, MinDepthBounds)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(37U, messages[0].column);
-		EXPECT_EQ("invalid float value: asdf", messages[0].message);
+		EXPECT_EQ("invalid float value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1474,7 +1474,7 @@ TEST(ParserDepthStencilStateTest, MaxDepthBounds)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(35U, messages[0].column);
-		EXPECT_EQ("invalid float value: asdf", messages[0].message);
+		EXPECT_EQ("invalid float value: 'asdf'", messages[0].message);
 	}
 }
 

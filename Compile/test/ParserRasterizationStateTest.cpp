@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -92,7 +92,7 @@ TEST(ParserRasterizationStateTest, DepthClampEnable)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(37U, messages[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
+		EXPECT_EQ("invalid boolean value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -138,7 +138,7 @@ TEST(ParserRasterizationStateTest, RasterizerDiscardEnable)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(44U, messages[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
+		EXPECT_EQ("invalid boolean value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -197,7 +197,7 @@ TEST(ParserRasterizationStateTest, PolygonMode)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(31U, messages[0].column);
-		EXPECT_EQ("invalid polygon mode value: asdf", messages[0].message);
+		EXPECT_EQ("invalid polygon mode value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -269,7 +269,7 @@ TEST(ParserRasterizationStateTest, CullMode)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(28U, messages[0].column);
-		EXPECT_EQ("invalid cull mode value: asdf", messages[0].message);
+		EXPECT_EQ("invalid cull mode value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -316,7 +316,7 @@ TEST(ParserRasterizationStateTest, FrontFace)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(29U, messages[0].column);
-		EXPECT_EQ("invalid front face value: asdf", messages[0].message);
+		EXPECT_EQ("invalid front face value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -362,7 +362,7 @@ TEST(ParserRasterizationStateTest, DepthBiasEnable)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(36U, messages[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
+		EXPECT_EQ("invalid boolean value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -410,7 +410,7 @@ TEST(ParserRasterizationStateTest, DepthBiasConstantFactor)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(45U, messages[0].column);
-		EXPECT_EQ("invalid float value: asdf", messages[0].message);
+		EXPECT_EQ("invalid float value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -458,7 +458,7 @@ TEST(ParserRasterizationStateTest, DepthBiasClamp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(35U, messages[0].column);
-		EXPECT_EQ("invalid float value: asdf", messages[0].message);
+		EXPECT_EQ("invalid float value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -506,7 +506,7 @@ TEST(ParserRasterizationStateTest, DepthBiasSlopeFactor)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(42U, messages[0].column);
-		EXPECT_EQ("invalid float value: asdf", messages[0].message);
+		EXPECT_EQ("invalid float value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -554,7 +554,7 @@ TEST(ParserRasterizationStateTest, LineWidth)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(29U, messages[0].column);
-		EXPECT_EQ("invalid float value: asdf", messages[0].message);
+		EXPECT_EQ("invalid float value: 'asdf'", messages[0].message);
 	}
 }
 

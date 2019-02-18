@@ -104,13 +104,10 @@ For example:
 	[[vertex]] in vec3 position;
 	[[vertex]] in vec4 color;
 
-	struct VertexOut
+	varying(vertex, fragment)
 	{
-		vec4 color;
-	};
-
-	[[vertex]] out VertexOut outputs;
-	[[fragment]] in VertexOut inputs;
+		vec4 vertColor;
+	}
 
 	[[fragment]] out vec4 color;
 
@@ -124,17 +121,41 @@ For example:
 	void vertShader()
 	{
 		gl_Position = INSTANCE(block).transform*vec4(position, 1.0);
-		outputs.color = color*getValue();
+		vertColor = color*getValue();
 	}
 
 	[[fragment]]
 	void fragShader()
 	{
 		vec4 texResult = texture(tex, vec2(0.5, 0.5));
-		color = inputs.color*texResult/getValue();
+		color = vertColor*texResult/getValue();
 	}
 
-# Input/output limitations
+# Inputs/outputs
+
+## Varying blocks
+
+Variables may be placed in a varying block to handle outputs from one stage to outputs to another stage, allowing them to be declared once for both stages rather than having two declarations for each.
+
+The syntax of this is `varying(output, input) {...}`, where `output` is the stage to output the values from and `input` is the stage to input the values to. For example, the following block:
+
+	varying(vertex, fragment)
+	{
+		vec2 texCoord;
+		vec4 color;
+		vec3 normal;
+	}
+
+is equivalent to the following code without a varying block:
+
+	[[vertex]] out vec2 texCoord;
+	[[vertex]] out vec4 color;
+	[[vertex]] out vec3 normal;
+	[[fragment]] in vec2 texCoord;
+	[[fragment]] in vec4 color;
+	[[fragment]] in vec3 normal;
+
+## Input/output limitations
 
 When structs are used for inputs and outputs, that struct may only be used for a single output/input pair. During linking the location information is embedded in the struct itself, which can only be used once. Additionally, you may not have nested structs (i.e. a struct member variable) for an input or output.
 

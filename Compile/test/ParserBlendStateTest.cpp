@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ TEST(ParserBlendStateTest, LogicalOpEnable)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(36U, messages[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
+		EXPECT_EQ("invalid boolean value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -294,7 +294,7 @@ TEST(ParserBlendStateTest, LogicalOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(29U, messages[0].column);
-		EXPECT_EQ("invalid logic op value: asdf", messages[0].message);
+		EXPECT_EQ("invalid logic op value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -341,7 +341,7 @@ TEST(ParserBlendStateTest, SeparateAttachmentBlendingEnable)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(54U, messages[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
+		EXPECT_EQ("invalid boolean value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -389,7 +389,7 @@ TEST(ParserBlendStateTest, BlendEnable)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(31U, messages[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
+		EXPECT_EQ("invalid boolean value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -713,7 +713,7 @@ TEST(ParserBlendStateTest, SrcColorBlendFactor)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(41U, messages[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend factor value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -765,7 +765,7 @@ TEST(ParserBlendStateTest, DstColorBlendFactor)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(41U, messages[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend factor value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -865,7 +865,7 @@ TEST(ParseBlendStateTest, ColorBlendOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(41U, messages[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend factor value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -917,7 +917,7 @@ TEST(ParserBlendStateTest, SrcAlphaBlendFactor)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(41U, messages[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend factor value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -969,7 +969,7 @@ TEST(ParserBlendStateTest, DstAlphaBlendFactor)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(41U, messages[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend factor value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1021,7 +1021,7 @@ TEST(ParseBlendStateTest, AlphaBlendOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(33U, messages[0].column);
-		EXPECT_EQ("invalid blend op value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend op value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1073,7 +1073,7 @@ TEST(ParserBlendStateTest, SrcBlendFactor)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(35U, messages[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend factor value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1125,7 +1125,7 @@ TEST(ParserBlendStateTest, DstBlendFactor)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(35U, messages[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend factor value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1177,7 +1177,7 @@ TEST(ParseBlendStateTest, BlendOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(27U, messages[0].column);
-		EXPECT_EQ("invalid blend op value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend op value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1282,7 +1282,7 @@ TEST(ParseBlendStateTest, ColorWriteMask)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(35U, messages[0].column);
-		EXPECT_EQ("invalid color mask value: asdf", messages[0].message);
+		EXPECT_EQ("invalid color mask value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1330,7 +1330,7 @@ TEST(ParserBlendStateTest, AttachmentBlendEnable)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(43U, messages[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
+		EXPECT_EQ("invalid boolean value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1382,7 +1382,7 @@ TEST(ParserBlendStateTest, AttachmentSrcColorBlendFactor)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(53U, messages[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend factor value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1434,7 +1434,7 @@ TEST(ParserBlendStateTest, AttachmentDstColorBlendFactor)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(53U, messages[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend factor value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1486,7 +1486,7 @@ TEST(ParseBlendStateTest, AttachmentColorBlendOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(53U, messages[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend factor value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1538,7 +1538,7 @@ TEST(ParserBlendStateTest, AttachmentSrcAlphaBlendFactor)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(53U, messages[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend factor value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1590,7 +1590,7 @@ TEST(ParserBlendStateTest, AttachmentDstAlphaBlendFactor)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(53U, messages[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend factor value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1642,7 +1642,7 @@ TEST(ParseBlendStateTest, AttachmentAlphaBlendOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(45U, messages[0].column);
-		EXPECT_EQ("invalid blend op value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend op value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1694,7 +1694,7 @@ TEST(ParserBlendStateTest, AttachmentSrcBlendFactor)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(47U, messages[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend factor value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1746,7 +1746,7 @@ TEST(ParserBlendStateTest, AttachmentDstBlendFactor)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(47U, messages[0].column);
-		EXPECT_EQ("invalid blend factor value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend factor value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1798,7 +1798,7 @@ TEST(ParseBlendStateTest, AttachmentBlendOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(39U, messages[0].column);
-		EXPECT_EQ("invalid blend op value: asdf", messages[0].message);
+		EXPECT_EQ("invalid blend op value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1847,7 +1847,7 @@ TEST(ParseBlendStateTest, AttachmentColorWriteMask)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(47U, messages[0].column);
-		EXPECT_EQ("invalid color mask value: asdf", messages[0].message);
+		EXPECT_EQ("invalid color mask value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -1907,7 +1907,7 @@ TEST(ParseBlendStateTest, BlendConstants)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(33U, messages[0].column);
-		EXPECT_EQ("invalid vec4 value: asdf", messages[0].message);
+		EXPECT_EQ("invalid vec4 value: 'asdf'", messages[0].message);
 	}
 
 	{
@@ -1923,7 +1923,7 @@ TEST(ParseBlendStateTest, BlendConstants)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(33U, messages[0].column);
-		EXPECT_EQ("invalid vec4 value: vec3(1.2,3.4,5.6)", messages[0].message);
+		EXPECT_EQ("invalid vec4 value: 'vec3(1.2,3.4,5.6)'", messages[0].message);
 	}
 
 	{
@@ -1939,7 +1939,7 @@ TEST(ParseBlendStateTest, BlendConstants)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(33U, messages[0].column);
-		EXPECT_EQ("invalid vec4 value: vec4(1.2,3.4,5.6)", messages[0].message);
+		EXPECT_EQ("invalid vec4 value: 'vec4(1.2,3.4,5.6)'", messages[0].message);
 	}
 
 	{
@@ -1955,7 +1955,7 @@ TEST(ParseBlendStateTest, BlendConstants)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(33U, messages[0].column);
-		EXPECT_EQ("invalid vec4 value: vec4(1.2,3.4,5.6,7.8,9.0)", messages[0].message);
+		EXPECT_EQ("invalid vec4 value: 'vec4(1.2,3.4,5.6,7.8,9.0)'", messages[0].message);
 	}
 
 	{
@@ -1971,7 +1971,7 @@ TEST(ParseBlendStateTest, BlendConstants)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(33U, messages[0].column);
-		EXPECT_EQ("invalid vec4 value: vec4(1.2,3.4,5.6,7.8", messages[0].message);
+		EXPECT_EQ("invalid vec4 value: 'vec4(1.2,3.4,5.6,7.8'", messages[0].message);
 	}
 
 	{
@@ -1987,7 +1987,7 @@ TEST(ParseBlendStateTest, BlendConstants)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(33U, messages[0].column);
-		EXPECT_EQ("invalid float value: asdf", messages[0].message);
+		EXPECT_EQ("invalid float value: 'asdf'", messages[0].message);
 	}
 }
 

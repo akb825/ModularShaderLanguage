@@ -1,0 +1,28 @@
+varying(vertex, fragment)
+{
+	vec4 position;
+	vec3
+		normal;
+	vec2 texCoord1; vec2 texCoord2;
+	Block
+	{
+		vec3 tangent;
+		vec3 binormal;
+	};
+}
+
+[[vertex]]
+void vertEntry()
+{
+}
+
+[[fragment]]
+void fragEntry()
+{
+}
+
+pipeline Foo
+{
+	vertex = vertEntry ;
+	fragment = fragEntry;
+}

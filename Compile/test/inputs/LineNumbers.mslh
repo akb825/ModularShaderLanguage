@@ -12,3 +12,15 @@ std140
 
 uniform vec2
 	freeUniform;
+
+varying(vertex, fragment) {vec4 position;
+	vec3
+		normal;
+	vec2 texCoord1; vec2 texCoord2
+	;
+	Block {vec3 tangent; vec3 binormal;
+	}; vec2
+		texCoord3;
+}
+
+uniform sampler2D otherTestTexture;

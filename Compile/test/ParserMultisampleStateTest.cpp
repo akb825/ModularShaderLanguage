@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ TEST(ParserMultisampleStateTest, SampledShadingEnable)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(40U, messages[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
+		EXPECT_EQ("invalid boolean value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -114,7 +114,7 @@ TEST(ParserMultisampleStateTest, MinSampleShading)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(37U, messages[0].column);
-		EXPECT_EQ("invalid float value: asdf", messages[0].message);
+		EXPECT_EQ("invalid float value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -176,7 +176,7 @@ TEST(ParserMultisampleStateTest, SampleMask)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(30U, messages[0].column);
-		EXPECT_EQ("invalid int value: asdf", messages[0].message);
+		EXPECT_EQ("invalid int value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -222,7 +222,7 @@ TEST(ParserMultisampleStateTest, AlphaToCoverageEnable)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(43U, messages[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
+		EXPECT_EQ("invalid boolean value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -268,7 +268,7 @@ TEST(ParserMultisampleStateTest, AlphaToOneEnable)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(38U, messages[0].column);
-		EXPECT_EQ("invalid boolean value: asdf", messages[0].message);
+		EXPECT_EQ("invalid boolean value: 'asdf'", messages[0].message);
 	}
 }
 

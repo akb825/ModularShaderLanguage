@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -101,10 +101,18 @@ private:
 		MultipleFound
 	};
 
+	enum class Prepend
+	{
+		None,
+		In,
+		Out
+	};
+
 	static const unsigned int elementCount = static_cast<unsigned int>(Element::Default) + 1;
 
 	struct TokenRange
 	{
+		Prepend extraElement;
 		std::size_t start;
 		std::size_t count;
 	};
@@ -114,6 +122,7 @@ private:
 	void endMetaElement(TokenRange& tokenRange, std::size_t index);
 	bool readPipeline(Output& output, const std::vector<Token>& tokens, std::size_t& i);
 	bool readSampler(Output& output, const std::vector<Token>& tokens, std::size_t& i);
+	bool readVarying(Output& output, const std::vector<Token>& tokens, std::size_t& i);
 	EntryPointState addElementString(std::string& str, std::vector<LineMapping>& lineMappings,
 		const TokenRange& tokenRange, const Token* entryPoint = nullptr) const;
 	bool removeUniformBlock(std::string& str, std::vector<LineMapping>& lineMappings,

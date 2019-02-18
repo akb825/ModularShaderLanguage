@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,7 +66,7 @@ TEST(ParserSamplerTest, MinFilter)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(34U, messages[0].column);
-		EXPECT_EQ("invalid filter value: asdf", messages[0].message);
+		EXPECT_EQ("invalid filter value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -112,7 +112,7 @@ TEST(ParserSamplerTest, MagFilter)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(34U, messages[0].column);
-		EXPECT_EQ("invalid filter value: asdf", messages[0].message);
+		EXPECT_EQ("invalid filter value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -184,7 +184,7 @@ TEST(ParserSamplerTest, MipFilter)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(34U, messages[0].column);
-		EXPECT_EQ("invalid mip filter value: asdf", messages[0].message);
+		EXPECT_EQ("invalid mip filter value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -269,7 +269,7 @@ TEST(ParserSamplerTest, AddressModeU)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(38U, messages[0].column);
-		EXPECT_EQ("invalid address mode value: asdf", messages[0].message);
+		EXPECT_EQ("invalid address mode value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -315,7 +315,7 @@ TEST(ParserSamplerTest, AddressModeV)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(38U, messages[0].column);
-		EXPECT_EQ("invalid address mode value: asdf", messages[0].message);
+		EXPECT_EQ("invalid address mode value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -361,7 +361,7 @@ TEST(ParserSamplerTest, AddressModeW)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(38U, messages[0].column);
-		EXPECT_EQ("invalid address mode value: asdf", messages[0].message);
+		EXPECT_EQ("invalid address mode value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -407,7 +407,7 @@ TEST(ParserSamplerTest, MipLodBias)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(36U, messages[0].column);
-		EXPECT_EQ("invalid float value: asdf", messages[0].message);
+		EXPECT_EQ("invalid float value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -453,7 +453,7 @@ TEST(ParserSamplerTest, MaxAnisotropy)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(38U, messages[0].column);
-		EXPECT_EQ("invalid float value: asdf", messages[0].message);
+		EXPECT_EQ("invalid float value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -499,7 +499,7 @@ TEST(ParserSamplerTest, MinLod)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(31U, messages[0].column);
-		EXPECT_EQ("invalid float value: asdf", messages[0].message);
+		EXPECT_EQ("invalid float value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -545,7 +545,7 @@ TEST(ParserSamplerTest, MaxLod)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(31U, messages[0].column);
-		EXPECT_EQ("invalid float value: asdf", messages[0].message);
+		EXPECT_EQ("invalid float value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -643,7 +643,7 @@ TEST(ParserSamplerTest, BorderColor)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(36U, messages[0].column);
-		EXPECT_EQ("invalid border color value: asdf", messages[0].message);
+		EXPECT_EQ("invalid border color value: 'asdf'", messages[0].message);
 	}
 }
 
@@ -767,7 +767,7 @@ TEST(ParserSamplerTest, CompareOp)
 		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(34U, messages[0].column);
-		EXPECT_EQ("invalid compare op value: asdf", messages[0].message);
+		EXPECT_EQ("invalid compare op value: 'asdf'", messages[0].message);
 	}
 }
 

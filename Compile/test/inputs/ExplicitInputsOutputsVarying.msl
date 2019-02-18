@@ -1,0 +1,32 @@
+varying(vertex, fragment)
+{
+	layout(location = 0) float floatVal;
+	layout(location = 0, component = 2) vec2 vec2Val;
+	layout(location = 1) flat ivec3 ivec3Val;
+	layout(location = 1, component = 3) flat int intVal;
+	layout(location = 2) VertFragBlock
+	{
+		flat dvec3 dvec3Val;
+		mat4 mat4Val;
+	};
+}
+
+[[vertex]]
+void vertShader()
+{
+	gl_Position = vec4(0.0);
+}
+
+[[fragment]] out vec4 color;
+
+[[fragment]]
+void fragShader()
+{
+	color = vec4(1.0);
+}
+
+pipeline Test
+{
+	vertex = vertShader;
+	fragment = fragShader;
+}

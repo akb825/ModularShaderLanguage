@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -266,6 +266,26 @@ static bool skipWhitespace(Output& output, const std::vector<Token>& tokens, std
 	return false;
 }
 
+static bool isIdentifier(Output& output, const Token& token)
+{
+	if (token.type == Token::Type::Identifier)
+		return true;
+
+	output.addMessage(Output::Level::Error, token.fileName, token.line, token.column, false,
+		"unexpected token: '" + token.value + "', expected identifier");
+	return false;
+}
+
+static bool isToken(Output& output, const Token& token, const char* expectedToken)
+{
+	if (token.value == expectedToken)
+		return true;
+
+	output.addMessage(Output::Level::Error, token.fileName, token.line, token.column, false,
+		"unexpected token: '" + token.value + "', expected '" + expectedToken + "'");
+	return false;
+}
+
 enum class KeyValueResult
 {
 	Success,
@@ -273,7 +293,7 @@ enum class KeyValueResult
 	End
 };
 
-KeyValueResult readKeyValue(Output& output, const Token*& key, Token& valueToken,
+static KeyValueResult readKeyValue(Output& output, const Token*& key, Token& valueToken,
 	const std::vector<Token>& tokens, std::size_t& i)
 {
 	do
@@ -297,24 +317,16 @@ KeyValueResult readKeyValue(Output& output, const Token*& key, Token& valueToken
 		else
 		{
 			// key = value;
-			if (tokens[i].type != Token::Type::Identifier)
-			{
-				output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
-					tokens[i].column, false, "unexpected token: " + tokens[i].value);
+			if (!isIdentifier(output, tokens[i]))
 				return KeyValueResult::Error;
-			}
 
 			key = &tokens[i];
 
 			if (!skipWhitespace(output, tokens, ++i))
 				return KeyValueResult::Error;
 
-			if (tokens[i].value != "=")
-			{
-				output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
-					tokens[i].column, false, "unexpected token: " + tokens[i].value);
+			if (!isToken(output, tokens[i], "="))
 				return KeyValueResult::Error;
-			}
 
 			if (!skipWhitespace(output, tokens, ++i))
 				return KeyValueResult::Error;
@@ -322,7 +334,7 @@ KeyValueResult readKeyValue(Output& output, const Token*& key, Token& valueToken
 			if (tokens[i].value == ";" || tokens[i].value == "}")
 			{
 				output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
-					tokens[i].column, false, "unexpected token: " + tokens[i].value);
+					tokens[i].column, false, "unexpected token: '" + tokens[i].value + "'");
 				return KeyValueResult::Error;
 			}
 
@@ -341,7 +353,7 @@ KeyValueResult readKeyValue(Output& output, const Token*& key, Token& valueToken
 				else if (tokens[i].value == "}")
 				{
 					output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
-						tokens[i].column, false, "unexpected token: " + tokens[i].value);
+						tokens[i].column, false, "unexpected token: '" + tokens[i].value + "'");
 					return KeyValueResult::Error;
 				}
 
@@ -359,8 +371,7 @@ KeyValueResult readKeyValue(Output& output, const Token*& key, Token& valueToken
 
 	const Token& lastToken = tokens.back();
 	output.addMessage(Output::Level::Error, lastToken.fileName, lastToken.line,
-		lastToken.column, false,
-		"unexpected end of file");
+		lastToken.column, false, "unexpected end of file");
 	return KeyValueResult::Error;
 }
 
@@ -397,7 +408,7 @@ static bool getBool(Output& output, Bool& value, const Token& token)
 		catch (...)
 		{
 			output.addMessage(Output::Level::Error, token.fileName, token.line,
-				token.column, false, "invalid boolean value: " + token.value);
+				token.column, false, "invalid boolean value: '" + token.value + "'");
 			return false;
 		}
 	}
@@ -419,7 +430,7 @@ static bool getInt(Output& output, std::uint32_t& value, const Token& token)
 	if (!stream)
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid int value: " + token.value);
+			token.column, false, "invalid int value: '" + token.value + "'");
 		return false;
 	}
 
@@ -436,7 +447,7 @@ static bool getFloat(Output& output, float& value, const Token& token)
 	catch (...)
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid float value: " + token.value);
+			token.column, false, "invalid float value: '" + token.value + "'");
 		return false;
 	}
 }
@@ -448,7 +459,7 @@ static bool getVec4(Output& output, std::array<float, 4>& value, const Token& to
 		!boost::algorithm::ends_with(token.value, ")"))
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid vec4 value: " + token.value);
+			token.column, false, "invalid vec4 value: '" + token.value + "'");
 		return false;
 	}
 
@@ -486,7 +497,7 @@ static bool getVec4(Output& output, std::array<float, 4>& value, const Token& to
 	else
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid vec4 value: " + token.value);
+			token.column, false, "invalid vec4 value: '" + token.value + "'");
 		return false;
 	}
 
@@ -499,7 +510,7 @@ static bool getPolygonMode(Output& output, PolygonMode& value, const Token& toke
 	if (foundIter == polygonModeMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid polygon mode value: " + token.value);
+			token.column, false, "invalid polygon mode value: '" + token.value + "'");
 		return false;
 	}
 
@@ -513,7 +524,7 @@ static bool getCullMode(Output& output, CullMode& value, const Token& token)
 	if (foundIter == cullModeMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid cull mode value: " + token.value);
+			token.column, false, "invalid cull mode value: '" + token.value + "'");
 		return false;
 	}
 
@@ -527,7 +538,7 @@ static bool getFrontFace(Output& output, FrontFace& value, const Token& token)
 	if (foundIter == frontFaceMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid front face value: " + token.value);
+			token.column, false, "invalid front face value: '" + token.value + "'");
 		return false;
 	}
 
@@ -541,7 +552,7 @@ static bool getStencilOp(Output& output, StencilOp& value, const Token& token)
 	if (foundIter == stencilOpMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid stencil op value: " + token.value);
+			token.column, false, "invalid stencil op value: '" + token.value + "'");
 		return false;
 	}
 
@@ -555,7 +566,7 @@ static bool getCompareOp(Output& output, CompareOp& value, const Token& token)
 	if (foundIter == compareOpMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid compare op value: " + token.value);
+			token.column, false, "invalid compare op value: '" + token.value + "'");
 		return false;
 	}
 
@@ -569,7 +580,7 @@ static bool getBlendFactor(Output& output, BlendFactor& value, const Token& toke
 	if (foundIter == blendFactorMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid blend factor value: " + token.value);
+			token.column, false, "invalid blend factor value: '" + token.value + "'");
 		return false;
 	}
 
@@ -583,7 +594,7 @@ static bool getBlendOp(Output& output, BlendOp& value, const Token& token)
 	if (foundIter == blendOpMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid blend op value: " + token.value);
+			token.column, false, "invalid blend op value: '" + token.value + "'");
 		return false;
 	}
 
@@ -622,7 +633,7 @@ static bool getColorMask(Output& output, ColorMask& value, const Token& token)
 				break;
 			default:
 				output.addMessage(Output::Level::Error, token.fileName, token.line,
-					token.column, false, "invalid color mask value: " + token.value);
+					token.column, false, "invalid color mask value: '" + token.value + "'");
 				return false;
 		}
 	}
@@ -636,7 +647,7 @@ static bool getLogicalOp(Output& output, LogicOp& value, const Token& token)
 	if (foundIter == logicOpMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid logic op value: " + token.value);
+			token.column, false, "invalid logic op value: '" + token.value + "'");
 		return false;
 	}
 
@@ -681,7 +692,7 @@ static bool getFilter(Output& output, Filter& value, const Token& token)
 	if (foundIter == filterMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid filter value: " + token.value);
+			token.column, false, "invalid filter value: '" + token.value + "'");
 		return false;
 	}
 
@@ -695,7 +706,7 @@ static bool getMipFilter(Output& output, MipFilter& value, const Token& token)
 	if (foundIter == mipFilterMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid mip filter value: " + token.value);
+			token.column, false, "invalid mip filter value: '" + token.value + "'");
 		return false;
 	}
 
@@ -709,7 +720,7 @@ static bool getAddressMode(Output& output, AddressMode& value, const Token& toke
 	if (foundIter == addressModeMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid address mode value: " + token.value);
+			token.column, false, "invalid address mode value: '" + token.value + "'");
 		return false;
 	}
 
@@ -723,7 +734,7 @@ static bool getBorderColor(Output& output, BorderColor& value, const Token& toke
 	if (foundIter == borderColorMap.end())
 	{
 		output.addMessage(Output::Level::Error, token.fileName, token.line,
-			token.column, false, "invalid border color value: " + token.value);
+			token.column, false, "invalid border color value: '" + token.value + "'");
 		return false;
 	}
 
@@ -745,12 +756,8 @@ static ParseResult readStage(Output& output, Parser::Pipeline& pipeline, const T
 	if (!getStage(stage, key))
 		return ParseResult::NotThisType;
 
-	if (value.type != Token::Type::Identifier)
-	{
-		output.addMessage(Output::Level::Error, value.fileName, value.line,
-			value.column, false, "unexpected token: " + value.value);
+	if (!isIdentifier(output, value))
 		return ParseResult::Error;
-	}
 
 	pipeline.entryPoints[static_cast<int>(stage)] = value;
 	return ParseResult::Success;
@@ -1302,7 +1309,7 @@ bool Parser::parse(Output& output, int options)
 
 	TokenRange tokenRange = {};
 	std::vector<Stage> stages;
-	const auto& tokens = m_tokens.getTokens();
+	const std::vector<Token>& tokens = m_tokens.getTokens();
 	if (tokens.empty())
 		return true;
 
@@ -1325,7 +1332,7 @@ bool Parser::parse(Output& output, int options)
 				else if (token.value != "," || (lastToken && lastToken->value == ","))
 				{
 					output.addMessage(Output::Level::Error, token.fileName, token.line,
-						token.column, false, "unexpected token: " + token.value);
+						token.column, false, "unexpected token: '" + token.value + "'");
 					return false;
 				}
 			}
@@ -1335,7 +1342,7 @@ bool Parser::parse(Output& output, int options)
 				if (!getStage(stage, token))
 				{
 					output.addMessage(Output::Level::Error, token.fileName, token.line,
-						token.column, false, "unknown stage type: " + token.value);
+						token.column, false, "unknown stage type: '" + token.value + "'");
 					return false;
 				}
 
@@ -1345,7 +1352,8 @@ bool Parser::parse(Output& output, int options)
 			}
 		}
 
-		// Declarations that must be in the start: pipeline, sampler_state, and [ for stage declaration.
+		// Declarations that must be in the start: pipeline, sampler_state, varying, and [ for stage
+		// declaration.
 		if (elementStart && token.value == "pipeline")
 		{
 			if (!readPipeline(output, tokens, ++i))
@@ -1359,6 +1367,16 @@ bool Parser::parse(Output& output, int options)
 		else if (elementStart && token.value == "sampler_state")
 		{
 			if (!readSampler(output, tokens, ++i))
+				return false;
+
+			if (i >= tokens.size())
+				break;
+			lastToken = &tokens[i];
+			endMetaElement(tokenRange, i);
+		}
+		else if (elementStart && token.value == "varying")
+		{
+			if (!readVarying(output, tokens, ++i))
 				return false;
 
 			if (i >= tokens.size())
@@ -1399,7 +1417,7 @@ bool Parser::parse(Output& output, int options)
 				if (parenCount == 0)
 				{
 					output.addMessage(Output::Level::Error, token.fileName, token.line,
-						token.column, false, "encountered ) without opening (");
+						token.column, false, "encountered ')' without opening '('");
 					return false;
 				}
 				--parenCount;
@@ -1415,7 +1433,7 @@ bool Parser::parse(Output& output, int options)
 				if (braceCount == 0)
 				{
 					output.addMessage(Output::Level::Error, token.fileName, token.line,
-						token.column, false, "encountered } without opening {");
+						token.column, false, "encountered '}' without opening '{'");
 					return false;
 				}
 
@@ -1433,7 +1451,7 @@ bool Parser::parse(Output& output, int options)
 				if (squareCount == 0)
 				{
 					output.addMessage(Output::Level::Error, token.fileName, token.line,
-						token.column, false, "encountered ] without opening [");
+						token.column, false, "encountered ']' without opening '['");
 					return false;
 				}
 
@@ -1474,44 +1492,43 @@ bool Parser::parse(Output& output, int options)
 	if (parenCount > 0)
 	{
 		output.addMessage(Output::Level::Error, lastToken->fileName, lastToken->line,
-			lastToken->column, false,
-			"reached end of file without terminating )");
+			lastToken->column, false, "reached end of file without terminating ')'");
 		if (startParenToken)
+		{
 			output.addMessage(Output::Level::Error, startParenToken->fileName,
-				startParenToken->line, startParenToken->column, true,
-				"see opening (");
+				startParenToken->line, startParenToken->column, true, "see opening '('");
+		}
 		return false;
 	}
 
 	if (braceCount > 0)
 	{
 		output.addMessage(Output::Level::Error, lastToken->fileName, lastToken->line,
-			lastToken->column, false,
-			"reached end of file without terminating }");
+			lastToken->column, false, "reached end of file without terminating '}'");
 		if (startBraceToken)
+		{
 			output.addMessage(Output::Level::Error, startBraceToken->fileName,
-				startBraceToken->line, startBraceToken->column, true,
-				"see opening {");
+				startBraceToken->line, startBraceToken->column, true, "see opening '{'");
+		}
 		return false;
 	}
 
 	if (squareCount > 0)
 	{
 		output.addMessage(Output::Level::Error, lastToken->fileName, lastToken->line,
-			lastToken->column, false,
-			"reached end of file without terminating ]");
+			lastToken->column, false, "reached end of file without terminating ']'");
 		if (startSquareToken)
+		{
 			output.addMessage(Output::Level::Error, startSquareToken->fileName,
-				startSquareToken->line, startSquareToken->column, true,
-				"see opening [");
+				startSquareToken->line, startSquareToken->column, true, "see opening '['");
+		}
 		return false;
 	}
 
 	if (!elementStart)
 	{
 		output.addMessage(Output::Level::Error, lastToken->fileName, lastToken->line,
-			lastToken->column, false,
-			"unexpected end of file");
+			lastToken->column, false, "unexpected end of file");
 		return false;
 	}
 
@@ -1718,12 +1735,8 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 		return false;
 
 	// Read the name
-	if (tokens[i].type != Token::Type::Identifier)
-	{
-		output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
-			tokens[i].column, false, "unexpected token: " + tokens[i].value);
+	if (!isIdentifier(output, tokens[i]))
 		return false;
-	}
 
 	pipeline.token = &tokens[i];
 	pipeline.name = tokens[i].value;
@@ -1732,11 +1745,11 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 		if (other.name == pipeline.name)
 		{
 			output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
-				tokens[i].column, false, "pipeline of name " + pipeline.name +
-				" already declared");
+				tokens[i].column, false, "pipeline of name '" + pipeline.name +
+				"' already declared");
 			output.addMessage(Output::Level::Error, other.token->fileName, other.token->line,
 				other.token->column, true,
-				"see other declaration of pipeline " + pipeline.name);
+				"see other declaration of pipeline '" + pipeline.name + "'");
 			return false;
 		}
 	}
@@ -1744,12 +1757,8 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 	if (!skipWhitespace(output, tokens, ++i))
 		return false;
 
-	if (tokens[i].value != "{")
-	{
-		output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
-			tokens[i].column, false, "unexpected token: " + tokens[i].value);
+	if (!isToken(output, tokens[i], "{"))
 		return false;
-	}
 
 	++i;
 	KeyValueResult keyValueResult;
@@ -1772,8 +1781,8 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 			else if (parseResult == ParseResult::NotThisType)
 			{
 				output.addMessage(Output::Level::Error, key->fileName, key->line,
-					key->column, false, "unknown pipeline stage or render state name: " +
-					key->value);
+					key->column, false, "unknown pipeline stage or render state name: '" +
+					key->value + "'");
 				return false;
 			}
 		}
@@ -1796,12 +1805,8 @@ bool Parser::readSampler(Output& output, const std::vector<Token>& tokens, std::
 		return false;
 
 	// Read the name
-	if (tokens[i].type != Token::Type::Identifier)
-	{
-		output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
-			tokens[i].column, false, "unexpected token: " + tokens[i].value);
+	if (!isIdentifier(output, tokens[i]))
 		return false;
-	}
 
 	sampler.token = &tokens[i];
 	sampler.name = tokens[i].value;
@@ -1810,11 +1815,11 @@ bool Parser::readSampler(Output& output, const std::vector<Token>& tokens, std::
 		if (other.name == sampler.name)
 		{
 			output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
-				tokens[i].column, false, "sampler state of name " + sampler.name +
-				" already declared");
+				tokens[i].column, false, "sampler state of name '" + sampler.name +
+				"' already declared");
 			output.addMessage(Output::Level::Error, other.token->fileName, other.token->line,
 				other.token->column, true,
-				"see other declaration of sampler state " + sampler.name);
+				"see other declaration of sampler state '" + sampler.name + "'");
 			return false;
 		}
 	}
@@ -1822,12 +1827,8 @@ bool Parser::readSampler(Output& output, const std::vector<Token>& tokens, std::
 	if (!skipWhitespace(output, tokens, ++i))
 		return false;
 
-	if (tokens[i].value != "{")
-	{
-		output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
-			tokens[i].column, false, "unexpected token: " + tokens[i].value);
+	if (!isToken(output, tokens[i], "{"))
 		return false;
-	}
 
 	++i;
 	KeyValueResult keyValueResult;
@@ -1902,7 +1903,7 @@ bool Parser::readSampler(Output& output, const std::vector<Token>& tokens, std::
 		else
 		{
 			output.addMessage(Output::Level::Error, key->fileName, key->line, key->column, false,
-				"unknown sampler state name: " + key->value);
+				"unknown sampler state name: '" + key->value + "'");
 			return false;
 		}
 	} while (keyValueResult == KeyValueResult::Success);
@@ -1911,6 +1912,130 @@ bool Parser::readSampler(Output& output, const std::vector<Token>& tokens, std::
 		return false;
 
 	m_samplers.push_back(std::move(sampler));
+	return true;
+}
+
+bool Parser::readVarying(Output& output, const std::vector<Token>& tokens, std::size_t& i)
+{
+	// Handle all parsing of the pipeline here. This will not be output for any part of the
+	// target GLSL.
+	std::size_t varyingIndex = i - 1;
+	if (!skipWhitespace(output, tokens, i))
+		return false;
+
+	// Read the stages
+	if (!isToken(output, tokens[i], "("))
+		return false;
+
+	if (!skipWhitespace(output, tokens, ++i))
+		return false;
+
+	auto foundOutputStage = stageMap.find(tokens[i].value);
+	if (foundOutputStage == stageMap.end())
+	{
+		output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+			tokens[i].column, false, "unknown stage type: '" + tokens[i].value + "'");
+		return false;
+	}
+
+	Stage outputStage = foundOutputStage->second;
+	auto outputStageIndex = static_cast<unsigned int>(outputStage);
+	if (outputStage == Stage::Compute)
+	{
+		output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+			tokens[i].column, false, "cannot use compute stage for varying");
+		return false;
+	}
+
+	if (!skipWhitespace(output, tokens, ++i))
+		return false;
+
+	if (!isToken(output, tokens[i], ","))
+		return false;
+
+	if (!skipWhitespace(output, tokens, ++i))
+		return false;
+
+	auto foundInputStage = stageMap.find(tokens[i].value);
+	if (foundInputStage == stageMap.end())
+	{
+		output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+			tokens[i].column, false, "unknown stage type: '" + tokens[i].value + "'");
+		return false;
+	}
+
+	Stage inputStage = foundInputStage->second;
+	auto inputStageIndex = static_cast<unsigned int>(inputStage);
+	if (inputStage == Stage::Compute)
+	{
+		output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+			tokens[i].column, false, "cannot use compute stage for varying");
+		return false;
+	}
+
+	if (inputStageIndex <= outputStageIndex)
+	{
+		output.addMessage(Output::Level::Error, tokens[varyingIndex].fileName,
+			tokens[varyingIndex].line, tokens[varyingIndex].column, false,
+			"varying output stage '" + foundOutputStage->first + "' not before input stage '" +
+			foundInputStage->first + "'");
+		return false;
+	}
+
+	if (!skipWhitespace(output, tokens, ++i))
+		return false;
+
+	if (!isToken(output, tokens[i], ")"))
+		return false;
+
+	if (!skipWhitespace(output, tokens, ++i))
+		return false;
+
+	if (!isToken(output, tokens[i], "{"))
+		return false;
+
+	std::uint32_t braceCount = 0;
+	auto elementIndex = static_cast<unsigned int>(Element::Default);
+	do
+	{
+		if (!skipWhitespace(output, tokens, ++i))
+			return false;
+
+		if (tokens[i].value == "}")
+			break;
+
+		// Find the end of the current statement.
+		TokenRange range = {};
+		range.start = i;
+		for (; i < tokens.size(); ++i)
+		{
+			if (tokens[i].value == "{")
+				++braceCount;
+			else if (tokens[i].value == "}")
+			{
+				if (braceCount == 0)
+				{
+					output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+						tokens[i].column, false, "unexpected token: '" + tokens[i].value +
+						"', expected ';'");
+					return false;
+				}
+
+				--braceCount;
+			}
+			else if (braceCount == 0 && tokens[i].value == ";")
+				break;
+		}
+
+		range.count = i - range.start + 1;
+		range.extraElement = Prepend::Out;
+		m_elements[elementIndex][outputStageIndex].push_back(range);
+
+		range.extraElement = Prepend::In;
+		m_elements[elementIndex][inputStageIndex].push_back(range);
+	} while(true);
+
+	++i;
 	return true;
 }
 
@@ -1932,6 +2057,8 @@ Parser::EntryPointState Parser::addElementString(std::string& str,
 	unsigned int squareCount = 0;
 
 	bool foundEntryPoint = false;
+	bool beginning = true;
+
 	std::size_t maxValue = std::min(tokenRange.start + tokenRange.count, tokens.size());
 	for (std::size_t i = tokenRange.start; i < maxValue; ++i)
 	{
@@ -1947,6 +2074,22 @@ Parser::EntryPointState Parser::addElementString(std::string& str,
 			lineMappings.back().fileName = token.fileName;
 			lineMappings.back().line = token.line;
 			newline = false;
+		}
+
+		if (beginning)
+		{
+			switch (tokenRange.extraElement)
+			{
+				case Prepend::None:
+					break;
+				case Prepend::In:
+					str += "in ";
+					break;
+				case Prepend::Out:
+					str += "out ";
+					break;
+			}
+			beginning = false;
 		}
 
 		if (token.value == "\n")
