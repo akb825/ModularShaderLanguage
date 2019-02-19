@@ -105,6 +105,7 @@ private:
 	{
 		None,
 		In,
+		InArray,
 		Out
 	};
 

@@ -155,6 +155,21 @@ is equivalent to the following code without a varying block:
 	[[fragment]] in vec4 color;
 	[[fragment]] in vec3 normal;
 
+### Tessellation control and geometry shader inputs
+
+Inputs for tessellation control and geometry shader stages that are declared in varying blocks are automatically converted to arrays. This is **not** done for interface blocks declared within the varying block. This is because it's ambiguous if you want the members or the block itself (assuming it's named) to be an array. In this case the block will remain unchanged, which will then have a compile error when compiling the GLSL.
+
+	varying(vertex, tessellation_control)
+	{
+		vec4 position; // Converted to array.
+		Block // NOT converted to an array: will result in a compile error.
+		{
+			vec2 texCoord;
+			vec4 color;
+			vec3 normal;
+		};
+	}
+
 ## Input/output limitations
 
 When structs are used for inputs and outputs, that struct may only be used for a single output/input pair. During linking the location information is embedded in the struct itself, which can only be used once. Additionally, you may not have nested structs (i.e. a struct member variable) for an input or output.

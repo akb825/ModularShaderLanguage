@@ -1995,6 +1995,8 @@ bool Parser::readVarying(Output& output, const std::vector<Token>& tokens, std::
 		return false;
 
 	std::uint32_t braceCount = 0;
+	bool isBlock = false;
+	bool anyToken = false;
 	auto elementIndex = static_cast<unsigned int>(Element::Default);
 	do
 	{
@@ -2010,7 +2012,10 @@ bool Parser::readVarying(Output& output, const std::vector<Token>& tokens, std::
 		for (; i < tokens.size(); ++i)
 		{
 			if (tokens[i].value == "{")
+			{
 				++braceCount;
+				isBlock = true;
+			}
 			else if (tokens[i].value == "}")
 			{
 				if (braceCount == 0)
@@ -2025,14 +2030,28 @@ bool Parser::readVarying(Output& output, const std::vector<Token>& tokens, std::
 			}
 			else if (braceCount == 0 && tokens[i].value == ";")
 				break;
+
+			if (tokens[i].type != Token::Type::Whitespace)
+				anyToken = true;
+		}
+
+		if (!anyToken)
+		{
+			isBlock = false;
+			continue;
 		}
 
 		range.count = i - range.start + 1;
 		range.extraElement = Prepend::Out;
 		m_elements[elementIndex][outputStageIndex].push_back(range);
 
-		range.extraElement = Prepend::In;
+		if ((inputStage == Stage::TessellationControl || inputStage == Stage::Geometry) && !isBlock)
+			range.extraElement = Prepend::InArray;
+		else
+			range.extraElement = Prepend::In;
 		m_elements[elementIndex][inputStageIndex].push_back(range);
+		isBlock = false;
+		anyToken = false;
 	} while(true);
 
 	++i;
@@ -2083,6 +2102,7 @@ Parser::EntryPointState Parser::addElementString(std::string& str,
 				case Prepend::None:
 					break;
 				case Prepend::In:
+				case Prepend::InArray:
 					str += "in ";
 					break;
 				case Prepend::Out:
@@ -2106,6 +2126,8 @@ Parser::EntryPointState Parser::addElementString(std::string& str,
 			++squareCount;
 		else if (token.value == "]")
 			--squareCount;
+		else if (tokenRange.extraElement == Prepend::InArray && token.value == ";")
+			str += "[]";
 
 		// Replace entry point name at global scope with "main".
 		if (parenCount == 0 && braceCount == 0 && squareCount == 0 && entryPoint &&

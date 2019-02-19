@@ -1,12 +1,11 @@
-in vec4 position;
-in vec3
-		normal;
-in vec2 texCoord1;
-in vec2 texCoord2;
+in vec4 tefPosition;
+in vec3 tefNormal;
+in vec2 tefTexCoord1;
+in vec2 tefTexCoord2;
 in Block
 	{
-		vec3 tangent;
-		vec3 binormal;
+		vec3 tefTangent;
+		vec3 tefBinormal;
 	};
 void main()
 {

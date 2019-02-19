@@ -1,18 +1,53 @@
-varying(vertex, fragment)
+varying(vertex, tessellation_control)
 {
-	vec4 position;
+	; vec4 vtcPosition;
 	vec3
-		normal;
-	vec2 texCoord1; vec2 texCoord2;
+		vtcNormal
+		;
+	vec2 vtcTexCoord1; vec2 vtcTexCoord2; ;;
 	Block
 	{
-		vec3 tangent;
-		vec3 binormal;
+		vec3 vtcTangent;
+		vec3 vtcBinormal;
+	};; ;
+}
+
+varying (tessellation_control,tessellation_evaluation)
+{
+	vec4 tcePosition[];
+	patch vec3 tceNormal;
+	patch vec2 tceTexCoord1; patch vec2 tceTexCoord2;
+	patch Block
+	{
+		vec3 tceTangent;
+		vec3 tceBinormal;
+	};
+}
+
+varying( tessellation_evaluation , fragment )
+{
+	vec4 tefPosition;
+	vec3 tefNormal;
+	vec2 tefTexCoord1; vec2 tefTexCoord2;
+	Block
+	{
+		vec3 tefTangent;
+		vec3 tefBinormal;
 	};
 }
 
 [[vertex]]
 void vertEntry()
+{
+}
+
+[[tessellation_control]]
+void tessControlEntry()
+{
+}
+
+[[tessellation_evaluation]]
+void tessEvalEntry()
 {
 }
 
@@ -23,6 +58,8 @@ void fragEntry()
 
 pipeline Foo
 {
-	vertex = vertEntry ;
+	vertex = vertEntry;
+	tessellation_control = tessControlEntry;
+	tessellation_evaluation = tessEvalEntry;
 	fragment = fragEntry;
 }

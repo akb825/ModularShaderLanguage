@@ -450,11 +450,21 @@ TEST(ParserTest, Varying)
 	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
 	EXPECT_EQ("Foo", pipeline.name);
 	EXPECT_EQ("vertEntry", pipeline.entryPoints[0].value);
+	EXPECT_EQ("tessControlEntry", pipeline.entryPoints[1].value);
+	EXPECT_EQ("tessEvalEntry", pipeline.entryPoints[2].value);
 	EXPECT_EQ("fragEntry", pipeline.entryPoints[4].value);
 
 	std::vector<Parser::LineMapping> lineMappings;
 	EXPECT_EQ(readFile(outputDir/"Varying.vert"),
 		parser.createShaderString(lineMappings, output, pipeline, Stage::Vertex) + '\n');
+
+	EXPECT_EQ(readFile(outputDir/"Varying.tesc"),
+		parser.createShaderString(lineMappings, output, pipeline, Stage::TessellationControl) +
+		'\n');
+
+	EXPECT_EQ(readFile(outputDir/"Varying.tese"),
+		parser.createShaderString(lineMappings, output, pipeline, Stage::TessellationEvaluation) +
+		'\n');
 
 	EXPECT_EQ(readFile(outputDir/"Varying.frag"),
 		parser.createShaderString(lineMappings, output, pipeline, Stage::Fragment) + '\n');
@@ -918,16 +928,16 @@ TEST(ParserTest, LineNumbers)
 		Parser::LineMapping{fileName.c_str(), 1},
 		Parser::LineMapping{includeFileName.c_str(), 1},
 		Parser::LineMapping{includeFileName.c_str(), 16},
-		Parser::LineMapping{includeFileName.c_str(), 17},
 		Parser::LineMapping{includeFileName.c_str(), 18},
 		Parser::LineMapping{includeFileName.c_str(), 19},
-		Parser::LineMapping{includeFileName.c_str(), 19},
+		Parser::LineMapping{includeFileName.c_str(), 20},
 		Parser::LineMapping{includeFileName.c_str(), 20},
 		Parser::LineMapping{includeFileName.c_str(), 21},
 		Parser::LineMapping{includeFileName.c_str(), 22},
-		Parser::LineMapping{includeFileName.c_str(), 22},
 		Parser::LineMapping{includeFileName.c_str(), 23},
-		Parser::LineMapping{includeFileName.c_str(), 26},
+		Parser::LineMapping{includeFileName.c_str(), 23},
+		Parser::LineMapping{includeFileName.c_str(), 24},
+		Parser::LineMapping{includeFileName.c_str(), 27},
 		Parser::LineMapping{fileName.c_str(), 6},
 		Parser::LineMapping{fileName.c_str(), 7},
 		Parser::LineMapping{fileName.c_str(), 8},
@@ -980,16 +990,16 @@ TEST(ParserTest, LineNumbersRemoveUniformBlocks)
 		Parser::LineMapping{fileName.c_str(), 1},
 		Parser::LineMapping{includeFileName.c_str(), 1},
 		Parser::LineMapping{includeFileName.c_str(), 16},
-		Parser::LineMapping{includeFileName.c_str(), 17},
 		Parser::LineMapping{includeFileName.c_str(), 18},
 		Parser::LineMapping{includeFileName.c_str(), 19},
-		Parser::LineMapping{includeFileName.c_str(), 19},
+		Parser::LineMapping{includeFileName.c_str(), 20},
 		Parser::LineMapping{includeFileName.c_str(), 20},
 		Parser::LineMapping{includeFileName.c_str(), 21},
 		Parser::LineMapping{includeFileName.c_str(), 22},
-		Parser::LineMapping{includeFileName.c_str(), 22},
 		Parser::LineMapping{includeFileName.c_str(), 23},
-		Parser::LineMapping{includeFileName.c_str(), 26},
+		Parser::LineMapping{includeFileName.c_str(), 23},
+		Parser::LineMapping{includeFileName.c_str(), 24},
+		Parser::LineMapping{includeFileName.c_str(), 27},
 		Parser::LineMapping{fileName.c_str(), 6},
 		Parser::LineMapping{fileName.c_str(), 7},
 		Parser::LineMapping{fileName.c_str(), 8},
