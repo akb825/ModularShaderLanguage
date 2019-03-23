@@ -54,6 +54,7 @@ static const std::unordered_set<std::string> opaqueTypes =
 	{"isampler2DArray"},
 	{"isampler2DMS"},
 	{"isampler2DMSArray"},
+	{"isamplerBuffer"},
 	{"isampler2DRect"},
 	{"usampler1D"},
 	{"usampler2D"},
@@ -63,6 +64,7 @@ static const std::unordered_set<std::string> opaqueTypes =
 	{"usampler2DArray"},
 	{"usampler2DMS"},
 	{"usampler2DMSArray"},
+	{"usamplerBuffer"},
 	{"usampler2DRect"},
 
 	// Images
@@ -84,6 +86,7 @@ static const std::unordered_set<std::string> opaqueTypes =
 	{"iimage2DArray"},
 	{"iimage2DMS"},
 	{"iimage2DMSArray"},
+	{"iimageBuffer"},
 	{"iimage2DRect"},
 	{"uimage1D"},
 	{"uimage2D"},
@@ -93,6 +96,7 @@ static const std::unordered_set<std::string> opaqueTypes =
 	{"uimage2DArray"},
 	{"uimage2DMS"},
 	{"uimage2DMSArray"},
+	{"uimageBuffer"},
 	{"uimage2DRect"},
 
 	// Subpass inputs
