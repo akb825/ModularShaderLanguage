@@ -26,7 +26,8 @@ class MetalOutput
 {
 public:
 	static std::string disassemble(Output& output, const Compiler::SpirV& spirv,
-		const std::string& fileName, std::size_t line, std::size_t column);
+		std::uint32_t version, bool ios, const std::string& fileName, std::size_t line,
+		std::size_t column);
 };
 
 } // namespace msl

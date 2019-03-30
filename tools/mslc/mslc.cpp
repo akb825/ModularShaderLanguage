@@ -242,6 +242,12 @@ static std::unique_ptr<msl::Target> createMetalTarget(const std::string& targetN
 			version = 10;
 		else if (versionStr == "1.1")
 			version = 11;
+		else if (versionStr == "1.2")
+			version = 12;
+		else if (versionStr == "2.0")
+			version = 20;
+		else if (versionStr == "2.1")
+			version = 21;
 		else
 		{
 			std::cerr << configFilePath << " error: invalid version: " << versionStr <<

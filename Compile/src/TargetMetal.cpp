@@ -63,10 +63,10 @@ bool TargetMetal::featureSupported(Feature feature) const
 		case Feature::Std430:
 		case Feature::BindingPoints:
 		case Feature::DescriptorSets:
-		case Feature::TessellationStages:
 		case Feature::GeometryStage:
-		case Feature::SubpassInputs:
 			return false;
+		case Feature::TessellationStages:
+			return m_version >= 12;
 		default:
 			return true;
 	}
@@ -86,7 +86,8 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 	const std::string& fileName, std::size_t line, std::size_t column, compile::Stage,
 	const std::vector<std::uint32_t>& spirv, const std::string& entryPoint)
 {
-	std::string metal = MetalOutput::disassemble(output, spirv, fileName, line, column);
+	std::string metal = MetalOutput::disassemble(output, spirv, m_version, m_ios, fileName, line,
+		column);
 	if (metal.empty())
 		return false;
 
@@ -105,6 +106,15 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 			case 11:
 				versionStr = "-std=ios-metal1.1";
 				break;
+			case 12:
+				versionStr = "-std=ios-metal1.2";
+				break;
+			case 20:
+				versionStr = "-std=ios-metal2.0";
+				break;
+			case 21:
+				versionStr = "-std=ios-metal2.1";
+				break;
 			default:
 			{
 				std::stringstream stream;
@@ -121,6 +131,14 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 			case 11:
 				versionStr = "-std=osx-metal1.1";
 				break;
+			case 12:
+				versionStr = "-std=osx-metal1.2";
+				break;
+			case 20:
+				versionStr = "-std=osx-metal2.0";
+				break;
+			case 21:
+				versionStr = "-std=osx-metal2.1";
 			default:
 			{
 				std::stringstream stream;
