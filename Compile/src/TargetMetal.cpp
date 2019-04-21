@@ -91,7 +91,7 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 	if (metal.empty())
 		return false;
 
-	// Set the entry point back to its original value. The function mmain was set by SPIRV-Cross.
+	// Set the entry point back to its original value. The function main0 was set by SPIRV-Cross.
 	boost::algorithm::replace_all(metal, "main0", entryPoint);
 
 	// Compile this entry point.
