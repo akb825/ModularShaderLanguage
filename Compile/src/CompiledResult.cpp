@@ -104,7 +104,7 @@ bool CompiledResult::save(std::ostream& stream) const
 	std::vector<flatbuffers::Offset<mslb::Pipeline>> pipelines(m_pipelines.size());
 	std::vector<flatbuffers::Offset<mslb::Struct>> structs;
 	std::vector<mslb::ArrayInfo> arrayElements;
-	std::vector<uint32_t> arraySizes;
+	std::vector<std::uint32_t> arraySizes;
 	std::vector<flatbuffers::Offset<mslb::StructMember>> structMembers;
 	std::vector<mslb::SamplerState> samplerStates;
 	std::vector<flatbuffers::Offset<mslb::Uniform>> uniforms;
