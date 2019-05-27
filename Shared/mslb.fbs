@@ -923,9 +923,13 @@ table Shader
 	 * The IDs for each unfirom.
 	 *
 	 * Each unused uniform will be set to unknown, and the vector will be empty if shader is set
-	 * to noShader. This will correspond to the SPIR-V IDs for the uniforms, which can be used
-	 * to easily adjust the descriptor sets or binding points of the uniforms with minimal
+	 * to noShader.
+	 *
+	 * In SPIR-V, this will correspond to the SPIR-V IDs for the uniforms, which can be used to
+	 * easily adjust the descriptor sets or binding points of the uniforms with minimal
 	 * processing.
+	 *
+	 * In Metal, this will correspond to the buffer or texture index the uniform is assigned to.
 	 */
 	uniformIds : [uint];
 }

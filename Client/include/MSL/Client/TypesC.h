@@ -53,6 +53,48 @@ extern "C"
 #define MSL_MAX_ATTACHMENTS 16
 
 /**
+ * @brief Constant for the width of a texture buffer in Metal.
+ */
+#define MSL_METAL_TEXTURE_BUFFER_WIDTH 4096
+
+/**
+ * @brief Constant for the index of the push constant buffer in Metal.
+ */
+#define MSL_METAL_PUSH_CONSTANT_INDEX 0
+
+/**
+ * @brief Constant for the index of the tessellation indirect parameters buffer in Metal.
+ *
+ * This is used when translating tessellation shaders to Metal, which require manual separation of
+ * vertex processing and tessellation stages.
+ */
+#define MSL_METAL_TESS_INDIRECT_PARAMS_INDEX 29
+
+/**
+ * @brief Constant for the index of vertex output buffer in Metal.
+ *
+ * This is used when translating tessellation shaders to Metal, which require manual separation of
+ * vertex processing and tessellation stages.
+ */
+#define MSL_METAL_VERTEX_OUTPUT_INDEX 28
+
+/**
+ * @brief Constant for the index of the tessellation patch output buffer in Metal.
+ *
+ * This is used when translating tessellation shaders to Metal, which require manual separation of
+ * vertex processing and tessellation stages.
+ */
+#define MSL_METAL_PATCH_OUTPUT_BUFFER_INDEX 27
+
+/**
+ * @brief Constant for the index of the tessellation factor output buffer in Metal.
+ *
+ * This is used when translating tessellation shaders to Metal, which require manual separation of
+ * vertex processing and tessellation stages.
+ */
+#define MSL_METAL_TESS_FACTOR_OUTPUT_BUFFER_INDEX 26
+
+/**
  * @brief Enum for a stage within a shader pipeline.
  */
 typedef enum mslStage

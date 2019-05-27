@@ -270,6 +270,21 @@ public:
 	bool renderState(RenderState& outRenderState, uint32_t pipelineIndex) const;
 
 	/**
+	* @brief Gets the uniform ID for a pipeline stage's shader.
+	*
+	* This has different meaning depending on the target:
+	* SPIR-V: The SPIR-V ID for the uniform variable.
+	* Metal: The buffer or texture index for the buffer.
+	*
+	* @param pipelineIndex The index of the pipeline.
+	* @param uniformIndex The index of the uniform.
+	* @param stage The shader stage.
+	* @return The unform ID or unknown if the uniform is unused, the ID isn't valid for the current
+	*     target, or the parameters are incorrect.
+	*/
+	uint32_t shaderUniformId(uint32_t pipelineIndex, uint32_t uniformIndex, Stage stage) const;
+
+	/**
 	 * @brief Sets the descriptor set and binding for a uniform within a pipeline.
 	 *
 	 * This is only valid when the bindings are adjustable, which itself is only available for
@@ -600,6 +615,14 @@ bool BasicModule<Allocator>::renderState(RenderState& outRenderState, uint32_t p
 {
 	return mslModule_renderState(reinterpret_cast<mslRenderState*>(&outRenderState), m_module,
 		pipelineIndex);
+}
+
+template <typename Allocator>
+uint32_t BasicModule<Allocator>::shaderUniformId(uint32_t pipelineIndex, uint32_t uniformIndex,
+	Stage stage) const
+{
+	return mslModule_shaderUniformId(m_module, pipelineIndex, uniformIndex,
+		static_cast<mslStage>(stage));
 }
 
 template <typename Allocator>

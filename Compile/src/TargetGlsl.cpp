@@ -326,7 +326,8 @@ std::vector<std::pair<std::string, std::string>> TargetGlsl::getExtraDefines() c
 
 bool TargetGlsl::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 	const std::string& fileName, std::size_t line, std::size_t column, Stage stage,
-	const std::vector<std::uint32_t>& spirv, const std::string&)
+	const std::vector<std::uint32_t>& spirv, const std::string&,
+	const std::vector<compile::Uniform>&, std::vector<std::uint32_t>&)
 {
 	std::size_t stageIndex = static_cast<std::size_t>(stage);
 

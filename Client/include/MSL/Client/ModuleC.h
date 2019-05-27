@@ -272,6 +272,23 @@ MSL_CLIENT_EXPORT bool mslModule_renderState(mslRenderState* outRenderState,
 	const mslModule* module, uint32_t pipelineIndex);
 
 /**
+ * @brief Gets the uniform ID for a pipeline stage's shader.
+ *
+ * This has different meaning depending on the target:
+ * SPIR-V: The SPIR-V ID for the uniform variable.
+ * Metal: The buffer or texture index for the buffer.
+ *
+ * @param module The shader module.
+ * @param pipelineIndex The index of the pipeline.
+ * @param uniformIndex The index of the uniform.
+ * @param stage The shader stage.
+ * @return The unform ID or MSL_UNKNOWN if the uniform is unused, the ID isn't valid for the
+ *     current target, or the parameters are incorrect.
+ */
+MSL_CLIENT_EXPORT uint32_t mslModule_shaderUniformId(const mslModule* module,
+	uint32_t pipelineIndex, uint32_t uniformIndex, mslStage stage);
+
+/**
  * @brief Sets the descriptor set and binding for a uniform within a pipeline.
  *
  * This is only valid when the bindings are adjustable, which itself is only available for SPIR-V

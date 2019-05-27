@@ -1068,6 +1068,28 @@ bool mslModule_renderState(mslRenderState* outRenderState, const mslModule* modu
 	return true;
 }
 
+uint32_t mslModule_shaderUniformId(const mslModule* module, uint32_t pipelineIndex,
+	uint32_t uniformIndex, mslStage stage)
+{
+	if (!module)
+		return MSL_UNKNOWN;
+
+	auto& pipelines = *module->module->pipelines();
+	if (pipelineIndex >= pipelines.size())
+		return MSL_UNKNOWN;
+
+	const mslb::Pipeline* pipeline = pipelines[pipelineIndex];
+	const auto& shaders = *pipeline->shaders();
+	if ((uint32_t)stage >= shaders.size() || !shaders[stage])
+		return MSL_UNKNOWN;
+
+	const auto* uniformIds = shaders[stage]->uniformIds();
+	if (!uniformIds || uniformIndex >= uniformIds->size())
+		return MSL_UNKNOWN;
+
+	return (*uniformIds)[uniformIndex];
+}
+
 bool mslModule_setUniformBinding(mslModule* module, uint32_t pipelineIndex, uint32_t uniformIndex,
 	uint32_t descriptorSet, uint32_t binding)
 {

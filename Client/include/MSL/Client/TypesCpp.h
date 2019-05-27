@@ -17,6 +17,7 @@
 #pragma once
 
 #include <MSL/Config.h>
+#include <MSL/Client/TypesC.h>
 #include <array>
 #include <limits>
 #include <stddef.h>
@@ -33,22 +34,60 @@ namespace msl
 /**
  * @brief Constant for the current module file version.
  */
-static const uint32_t moduleVersion = 0;
+static const uint32_t moduleVersion = MSL_MODULE_VERSION;
 
 /**
  * @brief Constant for no known value.
  */
-static const uint32_t unknown = static_cast<uint32_t>(-1);
+static const uint32_t unknown = MSL_UNKNOWN;
 
 /**
  * @brief Constant for no known float value.
  */
-static const float unknownFloat = std::numeric_limits<float>::max();
+static const float unknownFloat = MSL_UNKNOWN_FLOAT;
 
 /**
  * @brief Constant for the maximum number of color attachments for a pixel shader.
  */
-static const unsigned int maxAttachments = 16;
+static const unsigned int maxAttachments = MSL_MAX_ATTACHMENTS;
+
+/**
+ * @brief Constant for the index of the push constant buffer in Metal.
+ */
+static const unsigned int metalPushConstantIndex = MSL_METAL_PUSH_CONSTANT_INDEX;
+
+/**
+ * @brief Constant for the index of the tessellation indirect parameters buffer in Metal.
+ *
+ * This is used when translating tessellation shaders to Metal, which require manual separation of
+ * vertex processing and tessellation stages.
+ */
+static const unsigned int metalTessIndirectParamsIndex = MSL_METAL_TESS_INDIRECT_PARAMS_INDEX;
+
+/**
+ * @brief Constant for the index of vertex output buffer in Metal.
+ *
+ * This is used when translating tessellation shaders to Metal, which require manual separation of
+ * vertex processing and tessellation stages.
+ */
+static const unsigned int metalVertexOutputIndex = MSL_METAL_VERTEX_OUTPUT_INDEX;
+
+/**
+ * @brief Constant for the index of the tessellation patch output buffer in Metal.
+ *
+ * This is used when translating tessellation shaders to Metal, which require manual separation of
+ * vertex processing and tessellation stages.
+ */
+static const unsigned int metalPatchOutputBufferIndex = MSL_METAL_PATCH_OUTPUT_BUFFER_INDEX;
+
+/**
+ * @brief Constant for the index of the tessellation factor output buffer in Metal.
+ *
+ * This is used when translating tessellation shaders to Metal, which require manual separation of
+ * vertex processing and tessellation stages.
+ */
+static const unsigned int metalTessFactorOutputBufferIndex =
+	MSL_METAL_TESS_FACTOR_OUTPUT_BUFFER_INDEX;
 
 /**
  * @brief Enum for a stage within a shader pipeline.

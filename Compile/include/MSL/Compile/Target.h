@@ -431,6 +431,11 @@ protected:
 	virtual bool needsReflectionNames() const;
 
 	/**
+	 * @brief Function called when about to compile a shader.
+	 */
+	virtual void willCompile();
+
+	/**
 	 * @brief Cross-compiles SPIR-V to the final target.
 	 *
 	 * If an error occurred, a message should be added to output explaining why.
@@ -444,11 +449,15 @@ protected:
 	 * @param spirv The SPIR-V input.
 	 * @param entryPoint The name of the entry point. This can be used to rename main back to the
 	 *     original entry point name.
+	 * @param uniforms The uniforms used by the shader.
+	 * @param uniformIds The SPIR-V IDs for each uniform in the uniforms array. This may be modified
+	 *     if a separate meaning is needed by the target.
 	 * @return False if the compilation failed.
 	 */
 	virtual bool crossCompile(std::vector<std::uint8_t>& data, Output& output,
 		const std::string& fileName, std::size_t line, std::size_t column, compile::Stage stage,
-		const std::vector<std::uint32_t>& spirv, const std::string& entryPoint) = 0;
+		const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
+		const std::vector<compile::Uniform>& uniforms, std::vector<std::uint32_t>& uniformIds) = 0;
 
 	/**
 	 * @brief Gets the shared data for the compiled shader.

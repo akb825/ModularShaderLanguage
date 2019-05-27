@@ -115,6 +115,14 @@ static void testContents(Module& module)
 	EXPECT_EQ(unknown, uniform.inputAttachmentIndex);
 	EXPECT_EQ(0U, uniform.samplerIndex);
 
+	EXPECT_NE(unknown, module.shaderUniformId(0, 0, Stage::Vertex));
+	EXPECT_EQ(unknown, module.shaderUniformId(0, 1, Stage::Vertex));
+	EXPECT_EQ(unknown, module.shaderUniformId(0, 2, Stage::Vertex));
+
+	EXPECT_EQ(unknown, module.shaderUniformId(0, 0, Stage::Fragment));
+	EXPECT_NE(unknown, module.shaderUniformId(0, 1, Stage::Fragment));
+	EXPECT_NE(unknown, module.shaderUniformId(0, 2, Stage::Fragment));
+
 	Attribute attribute;
 	ASSERT_EQ(2U, pipeline.attributeCount);
 	EXPECT_TRUE(module.attribute(attribute, 0, 0));
@@ -262,6 +270,14 @@ static void testContents(const mslModule* module)
 	EXPECT_EQ(MSL_UNKNOWN, uniform.binding);
 	EXPECT_EQ(MSL_UNKNOWN, uniform.inputAttachmentIndex);
 	EXPECT_EQ(0U, uniform.samplerIndex);
+
+	EXPECT_NE(MSL_UNKNOWN, mslModule_shaderUniformId(module, 0, 0, mslStage_Vertex));
+	EXPECT_EQ(MSL_UNKNOWN, mslModule_shaderUniformId(module, 0, 1, mslStage_Vertex));
+	EXPECT_EQ(MSL_UNKNOWN, mslModule_shaderUniformId(module, 0, 2, mslStage_Vertex));
+
+	EXPECT_EQ(MSL_UNKNOWN, mslModule_shaderUniformId(module, 0, 0, mslStage_Fragment));
+	EXPECT_NE(MSL_UNKNOWN, mslModule_shaderUniformId(module, 0, 1, mslStage_Fragment));
+	EXPECT_NE(MSL_UNKNOWN, mslModule_shaderUniformId(module, 0, 2, mslStage_Fragment));
 
 	mslAttribute attribute;
 	ASSERT_EQ(2U, pipeline.attributeCount);

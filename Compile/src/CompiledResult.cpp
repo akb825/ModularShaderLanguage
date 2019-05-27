@@ -96,6 +96,8 @@ bool CompiledResult::save(std::ostream& stream) const
 		return false;
 
 	bool isSpirV = m_target->getId() == MSL_CREATE_ID('S', 'P', 'R', 'V');
+	bool isMetal = m_target->getId() == MSL_CREATE_ID('M', 'T', 'L', 'I') ||
+		m_target->getId() == MSL_CREATE_ID('M', 'T', 'L', 'X');
 	bool adjustableBindings = m_target->getAdjustableBindings() && isSpirV;
 	flatbuffers::FlatBufferBuilder builder;
 	builder.ForceDefaults(adjustableBindings);
@@ -288,7 +290,7 @@ bool CompiledResult::save(std::ostream& stream) const
 			{
 				assert(shader.shader < m_shaders.size());
 				shaders[j] = mslb::CreateShader(builder, static_cast<std::uint32_t>(shader.shader),
-					isSpirV ? builder.CreateVector(shader.uniformIds) : 0);
+					isSpirV || isMetal ? builder.CreateVector(shader.uniformIds) : 0);
 			}
 		}
 

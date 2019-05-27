@@ -598,6 +598,8 @@ void Target::setResourcesFileName(std::string fileName)
 
 bool Target::compile(CompiledResult& result, Output& output, const std::string& fileName)
 {
+	willCompile();
+
 	Preprocessor preprocessor;
 	setupPreprocessor(preprocessor);
 
@@ -611,6 +613,8 @@ bool Target::compile(CompiledResult& result, Output& output, const std::string& 
 bool Target::compile(CompiledResult& result, Output& output, std::istream& stream,
 	const std::string& fileName)
 {
+	willCompile();
+
 	Preprocessor preprocessor;
 	setupPreprocessor(preprocessor);
 
@@ -640,6 +644,10 @@ bool Target::finish(CompiledResult& result, Output& output)
 bool Target::needsReflectionNames() const
 {
 	return true;
+}
+
+void Target::willCompile()
+{
 }
 
 bool Target::getSharedData(std::vector<std::uint8_t>&, Output&)
@@ -936,7 +944,8 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			shaderData.clear();
 			const Token& entryPoint = pipeline.entryPoints[i];
 			if (!crossCompile(shaderData, output, entryPoint.fileName, entryPoint.line,
-				entryPoint.column, stage, spirv[i], entryPoint.value))
+					entryPoint.column, stage, spirv[i], entryPoint.value, addedPipeline.uniforms,
+					addedPipeline.shaders[i].uniformIds))
 			{
 				return false;
 			}
