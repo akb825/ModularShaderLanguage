@@ -78,7 +78,7 @@ public:
 	std::vector<InputOutput> outputs;
 	std::vector<std::uint32_t> outputIds;
 	std::uint32_t pushConstantStruct = unknown;
-	std::array<std::uint32_t, 3> computeLocalSize = {1, 1, 1};
+	std::array<std::uint32_t, 3> computeLocalSize = {{1, 1, 1}};
 };
 
 } // namespace msl

@@ -134,7 +134,7 @@ private:
 	std::map<std::string, compile::Pipeline> m_pipelines;
 	std::vector<ShaderData> m_shaders;
 	std::vector<std::uint8_t> m_sharedData;
-	std::array<std::uint32_t, 3> m_computeLocalSize = {1, 1, 1};
+	std::array<std::uint32_t, 3> m_computeLocalSize = {{1, 1, 1}};
 };
 
 inline const std::map<std::string, compile::Pipeline>& CompiledResult::getPipelines() const
