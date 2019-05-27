@@ -38,6 +38,8 @@ struct FragmentOutput;
 
 struct Shader;
 
+struct ComputeLocalSize;
+
 struct Pipeline;
 
 struct ShaderData;
@@ -1650,6 +1652,42 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) ArrayInfo FLATBUFFERS_FINAL_CLASS {
 };
 FLATBUFFERS_STRUCT_END(ArrayInfo, 8);
 
+FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) ComputeLocalSize FLATBUFFERS_FINAL_CLASS {
+ private:
+  uint32_t x_;
+  uint32_t y_;
+  uint32_t z_;
+
+ public:
+  ComputeLocalSize() {
+    memset(static_cast<void *>(this), 0, sizeof(ComputeLocalSize));
+  }
+  ComputeLocalSize(uint32_t _x, uint32_t _y, uint32_t _z)
+      : x_(flatbuffers::EndianScalar(_x)),
+        y_(flatbuffers::EndianScalar(_y)),
+        z_(flatbuffers::EndianScalar(_z)) {
+  }
+  uint32_t x() const {
+    return flatbuffers::EndianScalar(x_);
+  }
+  void mutate_x(uint32_t _x) {
+    flatbuffers::WriteScalar(&x_, _x);
+  }
+  uint32_t y() const {
+    return flatbuffers::EndianScalar(y_);
+  }
+  void mutate_y(uint32_t _y) {
+    flatbuffers::WriteScalar(&y_, _y);
+  }
+  uint32_t z() const {
+    return flatbuffers::EndianScalar(z_);
+  }
+  void mutate_z(uint32_t _z) {
+    flatbuffers::WriteScalar(&z_, _z);
+  }
+};
+FLATBUFFERS_STRUCT_END(ComputeLocalSize, 12);
+
 struct BlendState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_LOGICALOPENABLE = 4,
@@ -2540,7 +2578,8 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_FRAGMENTOUTPUTS = 14,
     VT_PUSHCONSTANTSTRUCT = 16,
     VT_RENDERSTATE = 18,
-    VT_SHADERS = 20
+    VT_SHADERS = 20,
+    VT_COMPUTLOCALSIZE = 22
   };
   const flatbuffers::String *name() const {
     return GetPointer<const flatbuffers::String *>(VT_NAME);
@@ -2596,6 +2635,12 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   flatbuffers::Vector<flatbuffers::Offset<Shader>> *mutable_shaders() {
     return GetPointer<flatbuffers::Vector<flatbuffers::Offset<Shader>> *>(VT_SHADERS);
   }
+  const ComputeLocalSize *computLocalSize() const {
+    return GetStruct<const ComputeLocalSize *>(VT_COMPUTLOCALSIZE);
+  }
+  ComputeLocalSize *mutable_computLocalSize() {
+    return GetStruct<ComputeLocalSize *>(VT_COMPUTLOCALSIZE);
+  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
@@ -2615,11 +2660,12 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            verifier.VerifyVector(fragmentOutputs()) &&
            verifier.VerifyVectorOfTables(fragmentOutputs()) &&
            VerifyField<uint32_t>(verifier, VT_PUSHCONSTANTSTRUCT) &&
-           VerifyOffset(verifier, VT_RENDERSTATE) &&
+           VerifyOffsetRequired(verifier, VT_RENDERSTATE) &&
            verifier.VerifyTable(renderState()) &&
            VerifyOffsetRequired(verifier, VT_SHADERS) &&
            verifier.VerifyVector(shaders()) &&
            verifier.VerifyVectorOfTables(shaders()) &&
+           VerifyField<ComputeLocalSize>(verifier, VT_COMPUTLOCALSIZE) &&
            verifier.EndTable();
   }
 };
@@ -2654,6 +2700,9 @@ struct PipelineBuilder {
   void add_shaders(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Shader>>> shaders) {
     fbb_.AddOffset(Pipeline::VT_SHADERS, shaders);
   }
+  void add_computLocalSize(const ComputeLocalSize *computLocalSize) {
+    fbb_.AddStruct(Pipeline::VT_COMPUTLOCALSIZE, computLocalSize);
+  }
   explicit PipelineBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
@@ -2668,6 +2717,7 @@ struct PipelineBuilder {
     fbb_.Required(o, Pipeline::VT_UNIFORMS);
     fbb_.Required(o, Pipeline::VT_ATTRIBUTES);
     fbb_.Required(o, Pipeline::VT_FRAGMENTOUTPUTS);
+    fbb_.Required(o, Pipeline::VT_RENDERSTATE);
     fbb_.Required(o, Pipeline::VT_SHADERS);
     return o;
   }
@@ -2683,8 +2733,10 @@ inline flatbuffers::Offset<Pipeline> CreatePipeline(
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<FragmentOutput>>> fragmentOutputs = 0,
     uint32_t pushConstantStruct = 0,
     flatbuffers::Offset<RenderState> renderState = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Shader>>> shaders = 0) {
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<Shader>>> shaders = 0,
+    const ComputeLocalSize *computLocalSize = 0) {
   PipelineBuilder builder_(_fbb);
+  builder_.add_computLocalSize(computLocalSize);
   builder_.add_shaders(shaders);
   builder_.add_renderState(renderState);
   builder_.add_pushConstantStruct(pushConstantStruct);
@@ -2707,7 +2759,8 @@ inline flatbuffers::Offset<Pipeline> CreatePipelineDirect(
     const std::vector<flatbuffers::Offset<FragmentOutput>> *fragmentOutputs = nullptr,
     uint32_t pushConstantStruct = 0,
     flatbuffers::Offset<RenderState> renderState = 0,
-    const std::vector<flatbuffers::Offset<Shader>> *shaders = nullptr) {
+    const std::vector<flatbuffers::Offset<Shader>> *shaders = nullptr,
+    const ComputeLocalSize *computLocalSize = 0) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
   auto structs__ = structs ? _fbb.CreateVector<flatbuffers::Offset<Struct>>(*structs) : 0;
   auto samplerStates__ = samplerStates ? _fbb.CreateVectorOfStructs<SamplerState>(*samplerStates) : 0;
@@ -2725,12 +2778,14 @@ inline flatbuffers::Offset<Pipeline> CreatePipelineDirect(
       fragmentOutputs__,
       pushConstantStruct,
       renderState,
-      shaders__);
+      shaders__,
+      computLocalSize);
 }
 
 struct ShaderData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
-    VT_DATA = 4
+    VT_DATA = 4,
+    VT_USESPUSHCONSTANTS = 6
   };
   const flatbuffers::Vector<uint8_t> *data() const {
     return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_DATA);
@@ -2738,10 +2793,17 @@ struct ShaderData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   flatbuffers::Vector<uint8_t> *mutable_data() {
     return GetPointer<flatbuffers::Vector<uint8_t> *>(VT_DATA);
   }
+  bool usesPushConstants() const {
+    return GetField<uint8_t>(VT_USESPUSHCONSTANTS, 1) != 0;
+  }
+  bool mutate_usesPushConstants(bool _usesPushConstants) {
+    return SetField<uint8_t>(VT_USESPUSHCONSTANTS, static_cast<uint8_t>(_usesPushConstants), 1);
+  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_DATA) &&
            verifier.VerifyVector(data()) &&
+           VerifyField<uint8_t>(verifier, VT_USESPUSHCONSTANTS) &&
            verifier.EndTable();
   }
 };
@@ -2751,6 +2813,9 @@ struct ShaderDataBuilder {
   flatbuffers::uoffset_t start_;
   void add_data(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> data) {
     fbb_.AddOffset(ShaderData::VT_DATA, data);
+  }
+  void add_usesPushConstants(bool usesPushConstants) {
+    fbb_.AddElement<uint8_t>(ShaderData::VT_USESPUSHCONSTANTS, static_cast<uint8_t>(usesPushConstants), 1);
   }
   explicit ShaderDataBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -2767,19 +2832,23 @@ struct ShaderDataBuilder {
 
 inline flatbuffers::Offset<ShaderData> CreateShaderData(
     flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> data = 0) {
+    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> data = 0,
+    bool usesPushConstants = true) {
   ShaderDataBuilder builder_(_fbb);
   builder_.add_data(data);
+  builder_.add_usesPushConstants(usesPushConstants);
   return builder_.Finish();
 }
 
 inline flatbuffers::Offset<ShaderData> CreateShaderDataDirect(
     flatbuffers::FlatBufferBuilder &_fbb,
-    const std::vector<uint8_t> *data = nullptr) {
+    const std::vector<uint8_t> *data = nullptr,
+    bool usesPushConstants = true) {
   auto data__ = data ? _fbb.CreateVector<uint8_t>(*data) : 0;
   return mslb::CreateShaderData(
       _fbb,
-      data__);
+      data__,
+      usesPushConstants);
 }
 
 struct Module FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {

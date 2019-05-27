@@ -2174,6 +2174,48 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ(0U, fragmentProcessor.outputs[0].component);
 }
 
+TEST_F(SpirVProcessorTest, ComputeLocalSize)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"ComputeLocalSize.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].value.empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			Compiler::getDefaultResources()));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	Compiler::Program program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV computeSpirv = Compiler::assemble(output, program, Stage::Compute, pipeline);
+
+	SpirVProcessor computeProcessor;
+	EXPECT_TRUE(computeProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, computeSpirv, Stage::Compute));
+
+	EXPECT_EQ(2U, computeProcessor.computeLocalSize[0]);
+	EXPECT_EQ(3U, computeProcessor.computeLocalSize[1]);
+	EXPECT_EQ(4U, computeProcessor.computeLocalSize[2]);
+}
+
 TEST_F(SpirVProcessorTest, LinkDifferentType)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";

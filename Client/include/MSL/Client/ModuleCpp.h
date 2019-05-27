@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -325,6 +325,13 @@ public:
 	const void* shaderData(uint32_t shader) const;
 
 	/**
+	 * @brief Gets whether or not a shader uses push constants
+	 * @param shader The index of the shader.
+	 * @return True if the shader uses push constants, false if not.
+	 */
+	bool shaderUsesPushConstants(uint32_t shader) const;
+
+	/**
 	 * @brief Gets the size of the shared data within the module.
 	 * @return The size of the shared data in bytes.
 	 */
@@ -627,6 +634,12 @@ template <typename Allocator>
 const void* BasicModule<Allocator>::shaderData(uint32_t shader) const
 {
 	return mslModule_shaderData(m_module, shader);
+}
+
+template <typename Allocator>
+bool BasicModule<Allocator>::shaderUsesPushConstants(uint32_t shader) const
+{
+	return mslModule_shaderUsesPushConstants(m_module, shader);
 }
 
 template <typename Allocator>

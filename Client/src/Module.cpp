@@ -712,6 +712,20 @@ bool mslModule_pipeline(mslPipeline* outPipeline, const mslModule* module,
 	outPipeline->fragmentOutputCount = pipeline->fragmentOutputs()->size();
 	outPipeline->pushConstantStruct = pipeline->pushConstantStruct();
 
+	const mslb::ComputeLocalSize* computeLocalSize = pipeline->computLocalSize();
+	if (computeLocalSize)
+	{
+		outPipeline->computeLocalSize[0] = computeLocalSize->x();
+		outPipeline->computeLocalSize[1] = computeLocalSize->y();
+		outPipeline->computeLocalSize[2] = computeLocalSize->z();
+	}
+	else
+	{
+		outPipeline->computeLocalSize[0] = 1;
+		outPipeline->computeLocalSize[1] = 1;
+		outPipeline->computeLocalSize[2] = 1;
+	}
+
 	auto& shaders = *pipeline->shaders();
 	for (int i = 0; i < mslStage_Count; ++i)
 		outPipeline->shaders[i] = shaders[i] ? shaders[i]->shader() : MSL_UNKNOWN;
@@ -1160,6 +1174,18 @@ const void* mslModule_shaderData(const mslModule* module, uint32_t shader)
 		return nullptr;
 
 	return shaders[shader]->data()->data();
+}
+
+bool mslModule_shaderUsesPushConstants(const mslModule* module, uint32_t shader)
+{
+	if (!module)
+		return false;
+
+	auto& shaders = *module->module->shaders();
+	if (shader >= shaders.size())
+		return false;
+
+	return shaders[shader]->usesPushConstants();
 }
 
 uint32_t mslModule_sharedDataSize(const mslModule* module)

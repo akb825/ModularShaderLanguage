@@ -198,15 +198,18 @@ TEST(TargetGlslTest, Glsl450)
 	EXPECT_EQ(CompareOp::Unset, pipeline->second.samplerStates[0].compareOp);
 
 	ASSERT_EQ(3U, result.getShaders().size());
-	std::string vertex = reinterpret_cast<const char*>(result.getShaders()[0].data());
-	std::string fragment = reinterpret_cast<const char*>(result.getShaders()[1].data());
-	std::string fragment2 = reinterpret_cast<const char*>(result.getShaders()[2].data());
+	std::string vertex = reinterpret_cast<const char*>(result.getShaders()[0].data.data());
+	std::string fragment = reinterpret_cast<const char*>(result.getShaders()[1].data.data());
+	std::string fragment2 = reinterpret_cast<const char*>(result.getShaders()[2].data.data());
 	EXPECT_NE(std::string::npos, vertex.find("precision mediump float;"));
 	EXPECT_EQ(std::string::npos, vertex.find("precision mediump sampler2D;"));
 	EXPECT_NE(std::string::npos, fragment.find("precision mediump float;"));
 	EXPECT_NE(std::string::npos, fragment.find("precision mediump sampler2D;"));
 	EXPECT_NE(std::string::npos, fragment2.find("precision mediump float;"));
 	EXPECT_NE(std::string::npos, fragment2.find("precision mediump sampler2D;"));
+	EXPECT_FALSE(result.getShaders()[0].usesPushConstants);
+	EXPECT_FALSE(result.getShaders()[1].usesPushConstants);
+	EXPECT_FALSE(result.getShaders()[2].usesPushConstants);
 }
 
 TEST(TargetGlslTest, Glsl450VersionNumber)

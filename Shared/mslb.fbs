@@ -931,6 +931,27 @@ table Shader
 }
 
 /*
+ * Structure holding the local size for a compute shader.
+ */
+struct ComputeLocalSize
+{
+	/*
+	 * Size in the X dimension.
+	 */
+	x : uint;
+
+	/*
+	 * Size in the Y dimension.
+	 */
+	y : uint;
+
+	/*
+	 * Size in the Z dimension.
+	 */
+	z : uint;
+}
+
+/*
  * Structure that holds the information about the a pipeline within the compiled result.
  */
 table Pipeline
@@ -976,12 +997,17 @@ table Pipeline
 	/*
 	 * The render state to apply to the pipeline.
 	 */
-	renderState : RenderState;
+	renderState : RenderState (required);
 
 	/*
-	* The shaders for the different pipeline stages. This can be indexed by the Stage enum.
-	*/
+	 * The shaders for the different pipeline stages. This can be indexed by the Stage enum.
+	 */
 	shaders : [Shader] (required);
+
+	/*
+	 * The local size for the compute shader.
+	 */
+	computLocalSize : ComputeLocalSize;
 }
 
 /*
@@ -993,6 +1019,11 @@ table ShaderData
 	 * The data for the shader.
 	 */
 	data : [ubyte] (required);
+	
+	/*
+	 * Whether or not the shader uses push constants.
+	 */
+	usesPushConstants : bool = true;
 }
 
 /*

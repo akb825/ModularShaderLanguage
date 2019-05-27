@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 #include <MSL/Config.h>
 #include <MSL/Compile/Export.h>
 #include <MSL/Compile/Types.h>
+#include <array>
 #include <cstdint>
 #include <string>
 #include <utility>
@@ -77,6 +78,7 @@ public:
 	std::vector<InputOutput> outputs;
 	std::vector<std::uint32_t> outputIds;
 	std::uint32_t pushConstantStruct = unknown;
+	std::array<std::uint32_t, 3> computeLocalSize = {1, 1, 1};
 };
 
 } // namespace msl

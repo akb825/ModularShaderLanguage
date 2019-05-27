@@ -74,18 +74,19 @@ std::uint32_t CompiledResult::getTargetVersion() const
 	return m_target ? m_target->getVersion() : 0;
 }
 
-std::size_t CompiledResult::addShader(std::vector<uint8_t> shader, bool dontRemoveDuplicates)
+std::size_t CompiledResult::addShader(std::vector<uint8_t> shader, bool usesPushConstants,
+	bool dontRemoveDuplicates)
 {
 	if (!dontRemoveDuplicates)
 	{
 		for (std::size_t i = 0; i < m_shaders.size(); ++i)
 		{
-			if (m_shaders[i] == shader)
+			if (m_shaders[i].data == shader && m_shaders[i].usesPushConstants == usesPushConstants)
 				return i;
 		}
 	}
 
-	m_shaders.push_back(std::move(shader));
+	m_shaders.push_back(ShaderData{std::move(shader), usesPushConstants});
 	return m_shaders.size() - 1;
 }
 
@@ -291,6 +292,9 @@ bool CompiledResult::save(std::ostream& stream) const
 			}
 		}
 
+		mslb::ComputeLocalSize computeLocalSize = {m_computeLocalSize[0], m_computeLocalSize[1],
+			m_computeLocalSize[2]};
+
 		assert(pipeline.second.pushConstantStruct == unknown ||
 			pipeline.second.pushConstantStruct < structs.size());
 		pipelines[i] = mslb::CreatePipeline(builder,
@@ -303,7 +307,8 @@ bool CompiledResult::save(std::ostream& stream) const
 			pipeline.second.pushConstantStruct,
 			mslb::CreateRenderState(builder, &rasterizationState, &multisampleState,
 				&depthStencilState, blendState, renderState.patchControlPoints),
-			builder.CreateVector(shaders));
+			builder.CreateVector(shaders),
+			&computeLocalSize);
 
 		++i;
 	}
@@ -316,15 +321,19 @@ bool CompiledResult::save(std::ostream& stream) const
 	{
 		if (swap)
 		{
-			swapShader = m_shaders[i];
+			swapShader = m_shaders[i].data;
 			std::uint32_t* swapShader32 = reinterpret_cast<std::uint32_t*>(swapShader.data());
 			std::size_t swapShader32Size = swapShader.size()/sizeof(std::uint32_t);
 			for (std::size_t j = 0; j < swapShader32Size; ++j)
 				swapShader32[j] = flatbuffers::EndianScalar(swapShader[j]);
-			shaderData[i] = mslb::CreateShaderData(builder, builder.CreateVector(swapShader));
+			shaderData[i] = mslb::CreateShaderData(builder, builder.CreateVector(swapShader),
+				m_shaders[i].usesPushConstants);
 		}
 		else
-			shaderData[i] = mslb::CreateShaderData(builder, builder.CreateVector(m_shaders[i]));
+		{
+			shaderData[i] = mslb::CreateShaderData(builder, builder.CreateVector(m_shaders[i].data),
+				m_shaders[i].usesPushConstants);
+		}
 	}
 
 	builder.Finish(mslb::CreateModule(builder,

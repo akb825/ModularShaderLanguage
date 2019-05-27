@@ -48,6 +48,22 @@ public:
 	 */
 	static const std::uint32_t version = 0;
 
+	/**
+	 * @brief Struct with the data for a shader.
+	 */
+	struct ShaderData
+	{
+		/**
+		 * @brief data The data for the shader.
+		 */
+		std::vector<std::uint8_t> data;
+
+		/**
+		 * @brief True if the shader uses push constants, false if not.
+		 */
+		bool usesPushConstants;
+	};
+
 	CompiledResult();
 
 	/**
@@ -78,13 +94,19 @@ public:
 	 *
 	 * @return The shaders.
 	 */
-	inline const std::vector<std::vector<uint8_t>>& getShaders() const;
+	inline const std::vector<ShaderData>& getShaders() const;
 
 	/**
 	 * @brief Gets the shared data for all the shaders.
 	 * @return The shared data.
 	 */
 	inline const std::vector<std::uint8_t>& getSharedData() const;
+
+	/**
+	 * @brief Gets the compute local size for the compute stage, if available.
+	 * @return The compute local size.
+	 */
+	inline const std::array<std::uint32_t, 3>& getComputeLocalSize() const;
 
 	/**
 	 * @brief Saves the compiled shader to a stream.
@@ -103,14 +125,16 @@ public:
 private:
 	friend class Target;
 
-	std::size_t addShader(std::vector<std::uint8_t> shader, bool dontRemoveDuplicates);
+	std::size_t addShader(std::vector<std::uint8_t> shader, bool usesPushConstants,
+		bool dontRemoveDuplicates);
 
 	const Target* m_target;
 
 	// Use a map to ensure consistent ordering.
 	std::map<std::string, compile::Pipeline> m_pipelines;
-	std::vector<std::vector<std::uint8_t>> m_shaders;
+	std::vector<ShaderData> m_shaders;
 	std::vector<std::uint8_t> m_sharedData;
+	std::array<std::uint32_t, 3> m_computeLocalSize = {1, 1, 1};
 };
 
 inline const std::map<std::string, compile::Pipeline>& CompiledResult::getPipelines() const
@@ -118,7 +142,7 @@ inline const std::map<std::string, compile::Pipeline>& CompiledResult::getPipeli
 	return m_pipelines;
 }
 
-inline const std::vector<std::vector<uint8_t>>& CompiledResult::getShaders() const
+inline const std::vector<CompiledResult::ShaderData>& CompiledResult::getShaders() const
 {
 	return m_shaders;
 }
@@ -126,6 +150,11 @@ inline const std::vector<std::vector<uint8_t>>& CompiledResult::getShaders() con
 inline const std::vector<std::uint8_t>& CompiledResult::getSharedData() const
 {
 	return m_sharedData;
+}
+
+inline const std::array<std::uint32_t, 3>& CompiledResult::getComputeLocalSize() const
+{
+	return m_computeLocalSize;
 }
 
 } // namespace msl

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -330,6 +330,15 @@ MSL_CLIENT_EXPORT uint32_t mslModule_shaderSize(const mslModule* module, uint32_
  * @return The data for the shader.
  */
 MSL_CLIENT_EXPORT const void* mslModule_shaderData(const mslModule* module, uint32_t shaderIndex);
+
+/**
+ * @brief Gets whether or not a shader uses push constants
+ * @param module The shader module.
+ * @param shaderIndex The index of the shader.
+ * @return True if the shader uses push constants, false if not.
+ */
+MSL_CLIENT_EXPORT bool mslModule_shaderUsesPushConstants(const mslModule* module,
+	uint32_t shaderIndex);
 
 /**
  * @brief Gets the size of the shared data within the module.

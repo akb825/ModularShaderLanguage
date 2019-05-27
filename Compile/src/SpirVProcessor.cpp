@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -2198,6 +2198,18 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 				}
 				break;
 			}
+
+			// Extract compute local size.
+			case spv::OpExecutionMode:
+				assert(wordCount >= 3);
+				if (spirv[i + 2] == spv::ExecutionModeLocalSize)
+				{
+					assert(wordCount == 6);
+					computeLocalSize[0] = spirv[i + 3];
+					computeLocalSize[1] = spirv[i + 4];
+					computeLocalSize[2] = spirv[i + 5];
+				}
+				break;
 
 			// Don't care once we reach the function section.
 			case spv::OpFunction:

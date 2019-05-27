@@ -13,7 +13,8 @@ add_executable(msl_client_test ${sources})
 
 add_custom_command(TARGET msl_client_test POST_BUILD
 	COMMAND ${CMAKE_COMMAND} ARGS -E copy
-	${CMAKE_CURRENT_SOURCE_DIR}/CompleteShader.mslb $<TARGET_FILE_DIR:msl_client_test>
+	${CMAKE_CURRENT_SOURCE_DIR}/CompleteShader.mslb ${CMAKE_CURRENT_SOURCE_DIR}/ComputeShader.mslb
+	$<TARGET_FILE_DIR:msl_client_test>
 	COMMENT "Copying test shader module." VERBATIM)
 
 target_include_directories(msl_client_test PRIVATE ${GTEST_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -630,7 +630,10 @@ static void writeUniforms(std::ostream& jsonFile, const msl::Module& module,
 	}
 	jsonFile << "\t\t\t],\n";
 
-	jsonFile << "\t\t\t\"pushConstantStruct\": " << pipeline.pushConstantStruct << ",\n";
+	if (pipeline.pushConstantStruct == msl::unknown)
+		jsonFile << "\t\t\t\"pushConstantStruct\": null,\n";
+	else
+		jsonFile << "\t\t\t\"pushConstantStruct\": " << pipeline.pushConstantStruct << ",\n";
 }
 
 static void writeAttributes(std::ostream& jsonFile, const msl::Module& module,
@@ -1128,7 +1131,13 @@ static void writeRenderState(std::ostream& jsonFile, const msl::Module& module, 
 	else
 		jsonFile << "\t\t\t\t\"patchControlPoints\": " << renderState.patchControlPoints << "\n";
 
-	jsonFile << "\t\t\t}\n";
+	jsonFile << "\t\t\t},\n";
+}
+
+static void writeComputeLocalSize(std::ostream& jsonFile, const msl::Pipeline& pipeline)
+{
+	jsonFile << "\t\t\t\"computeLocalSize\": [" << pipeline.computeLocalSize[0] << ", " <<
+		pipeline.computeLocalSize[1] << ", " << pipeline.computeLocalSize[2] << "]\n";
 }
 
 int main(int argc, char** argv)
@@ -1137,6 +1146,7 @@ int main(int argc, char** argv)
 	options_description mainOptions("options");
 	mainOptions.add_options()
 		("help,h", "display this help message")
+		("version,v", "print the version number and exit")
 		("input,i", value<std::string>()->required(),
 			"input shader module file to extract")
 		("output,o", value<std::string>()->required(), "output directory to extract to. This will "
@@ -1155,7 +1165,7 @@ int main(int argc, char** argv)
 	}
 	catch (std::exception& e)
 	{
-		if (!options.count("help"))
+		if (!options.count("help") && !options.count("version"))
 		{
 			std::cerr << "error: " << e.what() << std::endl << std::endl;
 			exitCode = 1;
@@ -1165,6 +1175,8 @@ int main(int argc, char** argv)
 	if (options.count("help") || exitCode != 0)
 	{
 		std::cout << "Usage: mslb-extract -o output file" << std::endl << std::endl;
+		std::cout << "Version " << MSL_MAJOR_VERSION << "." << MSL_MINOR_VERSION << "." <<
+			MSL_PATCH_VERSION << std::endl;
 		std::cout << "Extract a compiled shader module into its components." << std::endl <<
 			std::endl;
 		std::cout <<
@@ -1185,6 +1197,12 @@ int main(int argc, char** argv)
 			std::endl << std::endl;
 
 		std::cout << mainOptions;
+		return exitCode;
+	}
+	else if (options.count("version"))
+	{
+		std::cout << "mslb-extract version " << MSL_MAJOR_VERSION << "." << MSL_MINOR_VERSION <<
+			"." << MSL_PATCH_VERSION << std::endl;
 		return exitCode;
 	}
 
@@ -1263,6 +1281,7 @@ int main(int argc, char** argv)
 		writeAttributes(jsonFile, module, pipeline, i);
 		writeFragmentOutputs(jsonFile, module, pipeline, i);
 		writeRenderState(jsonFile, module, i);
+		writeComputeLocalSize(jsonFile, pipeline);
 
 		if (i == pipelineCount - 1)
 			jsonFile << "\t\t}\n";

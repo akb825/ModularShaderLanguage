@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2019 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -839,6 +839,9 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			// Proces the SPIR-V.
 			spirv[i] = processors[i].process(strip, m_dummyBindings || m_adjustableBindings);
 			lastStage = &processors[i];
+
+			if (stage == Stage::Compute)
+				result.m_computeLocalSize = processors[i].computeLocalSize;
 		}
 
 		// Make sure all of the uniform ID vectors are the same size.
@@ -939,7 +942,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			}
 
 			addedPipeline.shaders[i].shader = result.addShader(std::move(shaderData),
-				m_adjustableBindings);
+				processors[i].pushConstantStruct != unknown, m_adjustableBindings);
 		}
 
 		// Set the render and sampler states.

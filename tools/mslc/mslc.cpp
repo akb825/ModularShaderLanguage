@@ -442,6 +442,7 @@ int main(int argc, char** argv)
 	options_description mainOptions("main options");
 	mainOptions.add_options()
 		("help,h", "display this help message")
+		("version,v", "print the version number and exit")
 		("config,c", value<std::string>()->required(), "configuration file describing the target")
 		("input,i", value<std::vector<std::string>>()->required(), "input file to compile. "
 			"Multiple inputs may be provided to compile into a single module.")
@@ -544,7 +545,7 @@ int main(int argc, char** argv)
 	}
 	catch (std::exception& e)
 	{
-		if (!options.count("help"))
+		if (!options.count("help") && !options.count("version"))
 		{
 			std::cerr << "error: " << e.what() << std::endl << std::endl;
 			exitCode = 1;
@@ -552,11 +553,12 @@ int main(int argc, char** argv)
 	}
 
 	bool printHelp = options.count("help") > 0;
+	bool printVersion = options.count("version") > 0;
 
 	// Parse the config file.
 	variables_map config;
 	std::string configFilePath;
-	if (exitCode == 0 && !printHelp)
+	if (exitCode == 0 && !printHelp && !printVersion)
 	{
 		configFilePath = options["config"].as<std::string>();
 		try
@@ -573,7 +575,7 @@ int main(int argc, char** argv)
 
 	// Create the target and set the options.
 	std::unique_ptr<msl::Target> target;
-	if (!printHelp && exitCode == 0)
+	if (exitCode == 0 && !printHelp && !printVersion)
 	{
 		std::string targetName = config["target"].as<std::string>();
 		if (targetName == "spirv")
@@ -596,6 +598,8 @@ int main(int argc, char** argv)
 	{
 		std::cout << "Usage: mslc [options] -c config -o output file1 [file2...]" << std::endl <<
 			std::endl;
+		std::cout << "Version " << MSL_MAJOR_VERSION << "." << MSL_MINOR_VERSION << "." <<
+			MSL_PATCH_VERSION << std::endl;
 		std::cout << "Compile one or more shader source files into a shader module." << std::endl <<
 			std::endl;
 		std::cout <<
@@ -627,6 +631,12 @@ int main(int argc, char** argv)
 		std::string featuresStr = strstream.str();
 		boost::algorithm::replace_all(featuresStr, "--", "  ");
 		std::cout << featuresStr;
+		return exitCode;
+	}
+	else if (printVersion)
+	{
+		std::cout << "mslc version " << MSL_MAJOR_VERSION << "." << MSL_MINOR_VERSION << "." <<
+			MSL_PATCH_VERSION << std::endl;
 		return exitCode;
 	}
 

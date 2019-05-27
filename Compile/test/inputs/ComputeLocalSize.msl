@@ -1,0 +1,17 @@
+layout(local_size_x = 2, local_size_y = 3, local_size_z = 4) in;
+
+buffer Output
+{
+	uint data;
+} outInfo;
+
+void computeFunc()
+{
+	outInfo.data = gl_LocalInvocationID[0] + gl_LocalInvocationID[1]*10 +
+		gl_LocalInvocationID[2]*100;
+}
+
+pipeline TestCompute
+{
+	compute = computeFunc;
+}
