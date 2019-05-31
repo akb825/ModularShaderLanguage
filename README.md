@@ -23,7 +23,7 @@ The core of the language is GLSL 450 for Vulkan with the following changes:
 
 Not all language features will be available on all targets. The targets will pre-define macros to determine their capabilities, allowing for conditional compiling can be used to switch between implementations when differences arise.
 
-After the initial processing is done on the shader to transform it into standard GLSL, it gets passed into [glslang](https://github.com/KhronosGroup/glslang) to convert it to SPIR-V. From there, [SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross) is used to convert from SPIR-V to other targets, including various flavors of GLSL (including ES) and Metal. (HLSL support will hopefully come later)
+After the initial processing is done on the shader to transform it into standard GLSL, it gets passed into [glslang](https://github.com/KhronosGroup/glslang) to convert it to SPIR-V. From there, [SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross) is used to convert from SPIR-V to other targets, including various flavors of GLSL (including ES) and Metal.
 
 After translating the individual entry points to the target language, it may additionally go through an additional tool to process the file. For example, another shader compiler (such as the HLSL or Metal compilers) or an optimizer. (such as GLSL Optimizer)
 

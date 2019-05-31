@@ -68,7 +68,7 @@ For example:
 * **glsl-command-frag = _arg_**: external command to run on GLSL targets for the fragment stage. The string $input will be replaced by the input file path, while the string $output will be replaced by the output file path.
 * **glsl-command-comp = _arg_**: external command to run on GLSL targets for the compute stage. The string $input will be replaced by the input file path, while the string $output will be replaced by the output file path.
 
-> **Note:** When defining GLSL headers, `@` character will be interpreted as `#`. This way if you want to add a `#define` to use for the output, you can use `@deifne` instead.
+> **Note:** When defining GLSL headers, `@` character will be interpreted as `#`. This way if you want to add a `#define` to use for the output, you can use `@define` instead.
 
 ## Features available for force-enable and force-disable
 

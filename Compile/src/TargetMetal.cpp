@@ -229,10 +229,14 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 		}
 	}
 
+	std::string extraOptions;
+	if (!getStripDebug())
+		extraOptions += " -gline-tables-only -MO";
+
 	ExecuteCommand compile(".metal");
 	compile.getInput().write(metal.data(), metal.size());
 	if (!compile.execute(output, "xcrun -sdk " + getSDK() + " metal -c $input " + versionStr +
-		" -o $output"))
+		" -o $output" + extraOptions))
 	{
 		return false;
 	}
