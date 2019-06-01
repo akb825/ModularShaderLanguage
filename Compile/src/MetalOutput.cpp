@@ -22,14 +22,15 @@ namespace msl
 {
 
 std::string MetalOutput::disassemble(Output& output, const Compiler::SpirV& spirv,
-	std::uint32_t version, bool ios, const std::string& fileName, std::size_t line,
-	std::size_t column)
+	std::uint32_t version, bool ios, bool outputToBuffer, const std::string& fileName,
+	std::size_t line, std::size_t column)
 {
 	spirv_cross::CompilerMSL::Options options;
 	options.platform = ios ? spirv_cross::CompilerMSL::Options::iOS :
 		spirv_cross::CompilerMSL::Options::macOS;
 	options.msl_version = spirv_cross::CompilerMSL::Options::make_msl_version(version/10,
 		version%10);
+	options.capture_output_to_buffer = outputToBuffer;
 	spirv_cross::CompilerMSL compiler(spirv);
 	compiler.set_msl_options(options);
 	try

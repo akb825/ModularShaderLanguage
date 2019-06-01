@@ -74,7 +74,8 @@ public:
 protected:
 	void willCompile() override;
 	bool crossCompile(std::vector<std::uint8_t>& data, Output& output, const std::string& fileName,
-		std::size_t line, std::size_t column, compile::Stage stage,
+		std::size_t line, std::size_t column,
+		const std::array<bool, compile::stageCount>& pipelineStages, compile::Stage stage,
 		const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
 		const std::vector<compile::Uniform>& uniforms,
 		std::vector<std::uint32_t>& uniformIds) override;

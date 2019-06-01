@@ -804,6 +804,8 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 		}
 
 		// Link the SPIR-V stages and process them.
+		std::array<bool, compile::stageCount> pipelineStages;
+		pipelineStages.fill(false);
 		const SpirVProcessor* lastStage = nullptr;
 		addedPipeline.pushConstantStruct = unknown;
 		for (unsigned int i = 0; i < stageCount; ++i)
@@ -847,6 +849,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			// Proces the SPIR-V.
 			spirv[i] = processors[i].process(strip, m_dummyBindings || m_adjustableBindings);
 			lastStage = &processors[i];
+			pipelineStages[i] = true;
 
 			if (stage == Stage::Compute)
 				result.m_computeLocalSize = processors[i].computeLocalSize;
@@ -944,8 +947,8 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			shaderData.clear();
 			const Token& entryPoint = pipeline.entryPoints[i];
 			if (!crossCompile(shaderData, output, entryPoint.fileName, entryPoint.line,
-					entryPoint.column, stage, spirv[i], entryPoint.value, addedPipeline.uniforms,
-					addedPipeline.shaders[i].uniformIds))
+					entryPoint.column, pipelineStages, stage, spirv[i], entryPoint.value,
+					addedPipeline.uniforms, addedPipeline.shaders[i].uniformIds))
 			{
 				return false;
 			}

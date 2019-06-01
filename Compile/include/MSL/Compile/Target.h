@@ -445,6 +445,7 @@ protected:
 	 * @param fileName The file name for the message of any output message.
 	 * @param line The line number for the message of any output message.
 	 * @param column The column number for the message of any output message.
+	 * @param pipelineStages The stages that are available in the full pipeline.
 	 * @param stage The stage being compiled.
 	 * @param spirv The SPIR-V input.
 	 * @param entryPoint The name of the entry point. This can be used to rename main back to the
@@ -455,7 +456,8 @@ protected:
 	 * @return False if the compilation failed.
 	 */
 	virtual bool crossCompile(std::vector<std::uint8_t>& data, Output& output,
-		const std::string& fileName, std::size_t line, std::size_t column, compile::Stage stage,
+		const std::string& fileName, std::size_t line, std::size_t column,
+		const std::array<bool, compile::stageCount>& pipelineStages, compile::Stage stage,
 		const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
 		const std::vector<compile::Uniform>& uniforms, std::vector<std::uint32_t>& uniformIds) = 0;
 

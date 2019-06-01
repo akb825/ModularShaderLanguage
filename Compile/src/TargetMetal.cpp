@@ -161,13 +161,17 @@ void TargetMetal::willCompile()
 }
 
 bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
-	const std::string& fileName, std::size_t line, std::size_t column, compile::Stage,
+	const std::string& fileName, std::size_t line, std::size_t column,
+	const std::array<bool, compile::stageCount>& pipelineStages, compile::Stage stage,
 	const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
 	const std::vector<compile::Uniform>& uniforms, std::vector<std::uint32_t>& uniformIds)
 {
 	std::vector<std::uint32_t> adjustedSpirv = setBindingIndices(spirv, uniforms, uniformIds);
-	std::string metal = MetalOutput::disassemble(output, adjustedSpirv, m_version, m_ios, fileName,
-		line, column);
+	bool outputToBuffer = stage == compile::Stage::Vertex &&
+		(pipelineStages[static_cast<int>(compile::Stage::TessellationControl)] ||
+			pipelineStages[static_cast<int>(compile::Stage::TessellationEvaluation)]);
+	std::string metal = MetalOutput::disassemble(output, adjustedSpirv, m_version, m_ios,
+		outputToBuffer, fileName, line, column);
 	if (metal.empty())
 		return false;
 
