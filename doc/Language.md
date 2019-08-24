@@ -17,7 +17,8 @@ The shader file is first run through a C99 preprocessor. The following \#defines
 * `SPIRV_VERSION`: (SPIR-V target only) The SPIR-V version number. (e.g. 1)
 * `GLSL_VERSION`: (Desktop GLSL target only) The GLSL version. (e.g. 120, 450)
 * `GLSLES_VERSION`: (GLSL ES target only) The GLSL version. (e.g. 100, 300)
-* `METAL_OSX_VERSION`: (OS X Metal target only) The metal version times 10. (e.g. 10)
+* `METAL_VERSION`: (OS X or iOS Metal target only) The metal version times 10. (e.g. 10, 11)
+* `METAL_OSX_VERSION`: (OS X Metal target only) The metal version times 10. (e.g. 11, 12)
 * `METAL_IOS_VERSION`: (iOS Metal target only) The metal version times 10. (e.g. 10, 11)
 
 ## Feature defines

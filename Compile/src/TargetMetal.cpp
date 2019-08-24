@@ -148,10 +148,12 @@ std::vector<std::pair<std::string, std::string>> TargetMetal::getExtraDefines() 
 {
 	std::stringstream stream;
 	stream << getVersion();
+	std::vector<std::pair<std::string, std::string>> defines = {{"METAL_VERSION", stream.str()}};
 	if (m_ios)
-		return {{"METAL_IOS_VERSION", stream.str()}};
+		defines.emplace_back("METAL_IOS_VERSION", stream.str());
 	else
-		return {{"METAL_OSX_VERSION", stream.str()}};
+		defines.emplace_back("METAL_OSX_VERSION", stream.str());
+	return defines;
 }
 
 void TargetMetal::willCompile()
