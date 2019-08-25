@@ -238,22 +238,27 @@ static std::unique_ptr<msl::Target> createMetalTarget(const std::string& targetN
 	if (config.count("version"))
 	{
 		std::string versionStr = config["version"].as<std::string>();
-		if (versionStr == "1.0")
-			version = 10;
-		else if (versionStr == "1.1")
-			version = 11;
-		else if (versionStr == "1.2")
-			version = 12;
-		else if (versionStr == "2.0")
-			version = 20;
-		else if (versionStr == "2.1")
-			version = 21;
-		else
+		std::size_t dot = versionStr.find('.');
+		if (dot == std::string::npos)
 		{
 			std::cerr << configFilePath << " error: invalid version: " << versionStr <<
 				std::endl << std::endl;
 			return nullptr;
 		}
+
+		unsigned int majorVersion, minorVersion;
+		try
+		{
+			majorVersion = boost::lexical_cast<unsigned int>(versionStr.substr(0, dot));
+			minorVersion = boost::lexical_cast<unsigned int>(versionStr.substr(dot + 1));
+		}
+		catch (...)
+		{
+			std::cerr << configFilePath << " error: invalid version: " << versionStr <<
+				std::endl << std::endl;
+			return nullptr;
+		}
+		version = majorVersion*100 + minorVersion;
 	}
 	else
 	{

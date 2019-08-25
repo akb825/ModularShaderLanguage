@@ -27,7 +27,7 @@ static void testContents(Module& module)
 {
 	EXPECT_EQ(moduleVersion, module.version());
 	EXPECT_EQ(MSL_CREATE_ID('S', 'P', 'R', 'V'), module.targetId());
-	EXPECT_EQ(1U, module.targetVersion());
+	EXPECT_LE(100U, module.targetVersion());
 
 	ASSERT_EQ(1U, module.pipelineCount());
 	Pipeline pipeline;
@@ -177,7 +177,7 @@ static void testContents(const mslModule* module)
 {
 	EXPECT_EQ(MSL_MODULE_VERSION, mslModule_version(module));
 	EXPECT_EQ(MSL_CREATE_ID('S', 'P', 'R', 'V'), mslModule_targetId(module));
-	EXPECT_EQ(1U, mslModule_targetVersion(module));
+	EXPECT_LE(100U, mslModule_targetVersion(module));
 
 	ASSERT_EQ(1U, mslModule_pipelineCount(module));
 	mslPipeline pipeline;
@@ -336,7 +336,7 @@ static void testComputeContents(Module& module)
 {
 	EXPECT_EQ(moduleVersion, module.version());
 	EXPECT_EQ(MSL_CREATE_ID('S', 'P', 'R', 'V'), module.targetId());
-	EXPECT_EQ(1U, module.targetVersion());
+	EXPECT_LE(100U, module.targetVersion());
 
 	ASSERT_EQ(1U, module.pipelineCount());
 	Pipeline pipeline;
@@ -460,7 +460,7 @@ TEST(ModuleTest, SetUniformBinding)
 
 	EXPECT_EQ(moduleVersion, module.version());
 	EXPECT_EQ(MSL_CREATE_ID('S', 'P', 'R', 'V'), module.targetId());
-	EXPECT_EQ(1U, module.targetVersion());
+	EXPECT_LE(100U, module.targetVersion());
 
 	EXPECT_TRUE(module.setUniformBinding(0, 0, 1, 2));
 	Uniform transformUniform;
@@ -485,7 +485,7 @@ TEST(ModuleTest, SetUniformBindingCopy)
 
 	EXPECT_EQ(moduleVersion, module.version());
 	EXPECT_EQ(MSL_CREATE_ID('S', 'P', 'R', 'V'), module.targetId());
-	EXPECT_EQ(1U, module.targetVersion());
+	EXPECT_LE(100U, module.targetVersion());
 
 	ASSERT_EQ(1U, module.pipelineCount());
 	Pipeline pipeline;

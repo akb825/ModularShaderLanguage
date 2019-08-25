@@ -139,7 +139,7 @@ bool TargetMetal::featureSupported(Feature feature) const
 		case Feature::CullDistance:
 			return false;
 		case Feature::TessellationStages:
-			return m_version >= 12;
+			return m_version >= 102;
 		default:
 			return true;
 	}
@@ -182,59 +182,12 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 	boost::algorithm::replace_all(metal, "main0", entryPoint);
 
 	// Compile this entry point.
-	std::string versionStr;
+	std::stringstream versionStr;
 	if (m_ios)
-	{
-		switch (getVersion())
-		{
-			case 10:
-				versionStr = "-std=ios-metal1.0";
-				break;
-			case 11:
-				versionStr = "-std=ios-metal1.1";
-				break;
-			case 12:
-				versionStr = "-std=ios-metal1.2";
-				break;
-			case 20:
-				versionStr = "-std=ios-metal2.0";
-				break;
-			case 21:
-				versionStr = "-std=ios-metal2.1";
-				break;
-			default:
-			{
-				std::stringstream stream;
-				stream << "invalid version number for iOS Metal: " << getVersion();
-				output.addMessage(Output::Level::Error, "", 0, 0, false, stream.str());
-				return false;
-			}
-		}
-	}
+		versionStr << "-std=ios-metal";
 	else
-	{
-		switch (getVersion())
-		{
-			case 11:
-				versionStr = "-std=osx-metal1.1";
-				break;
-			case 12:
-				versionStr = "-std=osx-metal1.2";
-				break;
-			case 20:
-				versionStr = "-std=osx-metal2.0";
-				break;
-			case 21:
-				versionStr = "-std=osx-metal2.1";
-			default:
-			{
-				std::stringstream stream;
-				stream << "invalid version number for OS X Metal: " << getVersion();
-				output.addMessage(Output::Level::Error, "", 0, 0, false, stream.str());
-				return false;
-			}
-		}
-	}
+		versionStr << "-std=osx-metal";
+	versionStr << m_version/100 << m_version % 100;
 
 	std::string extraOptions;
 	if (!getStripDebug())
@@ -242,7 +195,7 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 
 	ExecuteCommand compile(".metal");
 	compile.getInput().write(metal.data(), metal.size());
-	if (!compile.execute(output, "xcrun -sdk " + getSDK() + " metal -c $input " + versionStr +
+	if (!compile.execute(output, "xcrun -sdk " + getSDK() + " metal -c $input " + versionStr.str() +
 		" -o $output" + extraOptions))
 	{
 		return false;

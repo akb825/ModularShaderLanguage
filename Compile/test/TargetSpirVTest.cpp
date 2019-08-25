@@ -322,7 +322,7 @@ TEST(TargetSpirVTest, CombineReflection)
 TEST(TargetSpirVTest, VersionNumber)
 {
 	std::stringstream stream(
-		"#if SPIRV_VERSION == 1\n"
+		"#if SPIRV_VERSION >= 100\n"
 		"#error Version correctly set.\n"
 		"#endif");
 	TargetSpirV target;

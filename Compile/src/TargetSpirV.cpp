@@ -15,6 +15,7 @@
  */
 
 #include <MSL/Compile/TargetSpirV.h>
+#include <SPIRV/spirv.hpp>
 #include <cstring>
 #include <sstream>
 
@@ -28,7 +29,8 @@ std::uint32_t TargetSpirV::getId() const
 
 std::uint32_t TargetSpirV::getVersion() const
 {
-	return 1;
+	return ((SPV_VERSION & 0xF0000) >> 16)*100 + ((SPV_VERSION & 0xF000) >> 12)*10 +
+		((SPV_VERSION & 0xF00) >> 8);
 }
 
 bool TargetSpirV::featureSupported(Feature) const
