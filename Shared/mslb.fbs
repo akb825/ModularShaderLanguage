@@ -663,6 +663,16 @@ table RenderState
 	 * The number of control points for each patch for tessellation.
 	 */
 	patchControlPoints : uint;
+
+	/*
+	 * The number of clip distances.
+	 */
+	clipDistanceCount : uint;
+
+	/*
+	 * The number of cull distances.
+	 */
+	cullDistanceCount : uint;
 }
 
 /*
@@ -1023,7 +1033,7 @@ table ShaderData
 	 * The data for the shader.
 	 */
 	data : [ubyte] (required);
-	
+
 	/*
 	 * Whether or not the shader uses push constants.
 	 */

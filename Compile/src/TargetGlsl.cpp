@@ -309,6 +309,10 @@ bool TargetGlsl::featureSupported(Feature feature) const
 				return m_version >= 300;
 			else
 				return m_version >= 410;
+		case Feature::ClipDistance:
+			return !m_es && m_version >= 130;
+		case Feature::CullDistance:
+			return !m_es && m_version >= 450;
 	}
 
 	return false;

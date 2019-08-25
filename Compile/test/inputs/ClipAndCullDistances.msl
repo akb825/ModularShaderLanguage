@@ -1,0 +1,17 @@
+in vec3 position;
+out float gl_ClipDistance[3];
+out float gl_CullDistance[4];
+
+void vertexFunc()
+{
+	for (int i = 0; i < 3; ++i)
+		gl_ClipDistance[i] = 0.0;
+	for (int i = 0; i < 4; ++i)
+		gl_CullDistance[i] = 0.0;
+	gl_Position = vec4(position, 1.0);
+}
+
+pipeline TestClipAndCullDistances
+{
+	vertex = vertexFunc;
+}

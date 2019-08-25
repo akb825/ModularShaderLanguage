@@ -294,8 +294,8 @@ bool CompiledResult::save(std::ostream& stream) const
 			}
 		}
 
-		mslb::ComputeLocalSize computeLocalSize = {m_computeLocalSize[0], m_computeLocalSize[1],
-			m_computeLocalSize[2]};
+		mslb::ComputeLocalSize computeLocalSize = {pipeline.second.computeLocalSize[0],
+			pipeline.second.computeLocalSize[1], pipeline.second.computeLocalSize[2]};
 
 		assert(pipeline.second.pushConstantStruct == unknown ||
 			pipeline.second.pushConstantStruct < structs.size());
@@ -308,7 +308,8 @@ bool CompiledResult::save(std::ostream& stream) const
 			builder.CreateVector(fragmentOutputs),
 			pipeline.second.pushConstantStruct,
 			mslb::CreateRenderState(builder, &rasterizationState, &multisampleState,
-				&depthStencilState, blendState, renderState.patchControlPoints),
+				&depthStencilState, blendState, renderState.patchControlPoints,
+				renderState.clipDistanceCount, renderState.cullDistanceCount),
 			builder.CreateVector(shaders),
 			&computeLocalSize);
 

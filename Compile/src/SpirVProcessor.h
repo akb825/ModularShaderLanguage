@@ -79,6 +79,8 @@ public:
 	std::vector<std::uint32_t> outputIds;
 	std::uint32_t pushConstantStruct = unknown;
 	std::array<std::uint32_t, 3> computeLocalSize = {{1, 1, 1}};
+	std::uint32_t clipDistanceCount = 0;
+	std::uint32_t cullDistanceCount = 0;
 };
 
 } // namespace msl

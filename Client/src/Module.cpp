@@ -1065,6 +1065,8 @@ bool mslModule_renderState(mslRenderState* outRenderState, const mslModule* modu
 		outRenderState->blendState.blendConstants[i] = blendConstants[i];
 
 	outRenderState->patchControlPoints = renderState->patchControlPoints();
+	outRenderState->clipDistanceCount = renderState->clipDistanceCount();
+	outRenderState->cullDistanceCount = renderState->cullDistanceCount();
 	return true;
 }
 

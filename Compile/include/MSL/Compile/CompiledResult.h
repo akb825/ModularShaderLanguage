@@ -103,12 +103,6 @@ public:
 	inline const std::vector<std::uint8_t>& getSharedData() const;
 
 	/**
-	 * @brief Gets the compute local size for the compute stage, if available.
-	 * @return The compute local size.
-	 */
-	inline const std::array<std::uint32_t, 3>& getComputeLocalSize() const;
-
-	/**
 	 * @brief Saves the compiled shader to a stream.
 	 * @param stream The stream to save to.
 	 * @return False if nothing was compiled.
@@ -134,7 +128,6 @@ private:
 	std::map<std::string, compile::Pipeline> m_pipelines;
 	std::vector<ShaderData> m_shaders;
 	std::vector<std::uint8_t> m_sharedData;
-	std::array<std::uint32_t, 3> m_computeLocalSize = {{1, 1, 1}};
 };
 
 inline const std::map<std::string, compile::Pipeline>& CompiledResult::getPipelines() const
@@ -150,11 +143,6 @@ inline const std::vector<CompiledResult::ShaderData>& CompiledResult::getShaders
 inline const std::vector<std::uint8_t>& CompiledResult::getSharedData() const
 {
 	return m_sharedData;
-}
-
-inline const std::array<std::uint32_t, 3>& CompiledResult::getComputeLocalSize() const
-{
-	return m_computeLocalSize;
 }
 
 } // namespace msl

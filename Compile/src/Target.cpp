@@ -97,7 +97,9 @@ static Target::FeatureInfo featureInfos[] =
 	{"PackingFunctions", "HAS_PACKING_FUNCTIONS",
 		"Packing and unpacking functions such as packUnorm2x16()."},
 	{"SubpassInputs", "HAS_SUBPASS_INPUTS",
-		"Subpass inputs for reading directly from framebuffers."}
+		"Subpass inputs for reading directly from framebuffers."},
+	{"ClipDistance", "HAS_CLIP_DISTANCE", "Support for gl_ClipDistance array."},
+	{"CullDistance", "HAS_CULL_DISTANCE", "Support for gl_CullDistance array."},
 };
 
 static_assert(sizeof(featureInfos)/sizeof(*featureInfos) == Target::featureCount,
@@ -852,7 +854,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			pipelineStages[i] = true;
 
 			if (stage == Stage::Compute)
-				result.m_computeLocalSize = processors[i].computeLocalSize;
+				addedPipeline.computeLocalSize = processors[i].computeLocalSize;
 		}
 
 		// Make sure all of the uniform ID vectors are the same size.
@@ -959,6 +961,13 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 
 		// Set the render and sampler states.
 		addedPipeline.renderState = pipeline.renderState;
+		for (const SpirVProcessor& processor : processors)
+		{
+			addedPipeline.renderState.clipDistanceCount = std::max(
+				addedPipeline.renderState.clipDistanceCount, processor.clipDistanceCount);
+			addedPipeline.renderState.cullDistanceCount = std::max(
+				addedPipeline.renderState.cullDistanceCount, processor.cullDistanceCount);
+		}
 		for (std::size_t i = 0; i < addedPipeline.uniforms.size(); ++i)
 		{
 			if (addedPipeline.uniforms[i].uniformType != UniformType::SampledImage)

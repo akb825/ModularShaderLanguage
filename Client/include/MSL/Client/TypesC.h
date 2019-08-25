@@ -763,6 +763,16 @@ typedef struct mslRenderState
 	 * @brief The number of control points for each patch for tessellation.
 	 */
 	uint32_t patchControlPoints;
+
+	/**
+	 * @brief The number of clip distances.
+	 */
+	uint32_t clipDistanceCount;
+
+	/**
+	 * @brief The number of cull distances.
+	 */
+	uint32_t cullDistanceCount;
 } mslRenderState;
 
 /**

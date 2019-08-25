@@ -142,6 +142,8 @@ struct IntermediateData
 	std::map<std::uint32_t, std::uint32_t> outputVars;
 	std::map<std::uint32_t, std::uint32_t> imageVars;
 	std::pair<std::uint32_t, std::uint32_t> pushConstantPointer = std::make_pair(unknown, unknown);
+	std::pair<std::uint32_t, std::uint32_t> clipDistanceMember = std::make_pair(unknown, unknown);
+	std::pair<std::uint32_t, std::uint32_t> cullDistanceMember = std::make_pair(unknown, unknown);
 };
 
 bool inputIsArray(Stage stage)
@@ -1837,6 +1839,68 @@ void addMemberComponent(std::vector<std::uint32_t>& spirv, std::uint32_t id,
 	spirv.push_back(index);
 }
 
+void areOutputMembersReferenced(const IntermediateData& data,
+	const std::vector<std::uint32_t>& spirv, std::size_t firstFunction,
+	const std::vector<std::pair<std::uint32_t, std::uint32_t>>& structMembers,
+	std::vector<bool>& referenced)
+{
+	assert(structMembers.size() == referenced.size());
+	for (std::size_t i = firstFunction; i < spirv.size();)
+	{
+		spv::Op op = getOp(spirv[i]);
+		unsigned int wordCount = getWordCount(spirv[i]);
+		assert(wordCount > 0 && wordCount + i <= spirv.size());
+		switch (op)
+		{
+			case spv::OpAccessChain:
+			{
+				if (wordCount < 5)
+					break;
+
+				std::uint32_t pointer = spirv[i + 3];
+				auto foundOutput = data.outputVars.find(pointer);
+				if (foundOutput == data.outputVars.end())
+					break;
+
+				std::uint32_t constant = spirv[i + 4];
+				auto foundConstant = data.intConstants.find(constant);
+				if (foundConstant == data.intConstants.end())
+					break;
+
+				for (std::size_t j = 0; j < structMembers.size(); ++j)
+				{
+					if (structMembers[j].first == foundOutput->second &&
+						structMembers[j].second == foundConstant->second)
+					{
+						referenced[j] = true;
+						break;
+					}
+				}
+				break;
+			}
+			default:
+				break;
+		}
+
+		i += wordCount;
+	}
+}
+
+std::uint32_t getMemberArraySize(const IntermediateData& data,
+	const std::pair<std::uint32_t, std::uint32_t>& structMember)
+{
+	auto foundStruct = data.structTypes.find(structMember.first);
+	if (foundStruct == data.structTypes.end())
+		return 0;
+
+	assert(structMember.second < foundStruct->second.size());
+	auto foundArray = data.arrayTypes.find(foundStruct->second[structMember.second]);
+	if (foundArray == data.arrayTypes.end())
+		return 0;
+
+	return foundArray->second.length;
+}
+
 } // namespace
 
 namespace compile
@@ -1873,6 +1937,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 
 	// Grab the metadata we want out of the SPIR-V.
 	bool done = false;
+	std::size_t firstFunction = 0;
 	for (std::size_t i = firstInstruction; i < spirv.size() && !done;)
 	{
 		spv::Op op = getOp(spirv[i]);
@@ -1941,6 +2006,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 						data.patchVars.insert(id);
 						break;
 					case spv::DecorationBuiltIn:
+						assert(wordCount == 4);
 						data.builtinVars.insert(id);
 						break;
 				}
@@ -1992,7 +2058,16 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 					}
 					case spv::DecorationBuiltIn:
 					{
+						assert(wordCount == 5);
 						memberInfo[member].builtin = true;
+
+						// Store the clip and cull distance members to extract the sizes of the
+						// arrays after the type info has been read.
+						std::uint32_t builtin = spirv[i + 4];
+						if (builtin == spv::BuiltInClipDistance)
+							data.clipDistanceMember = std::make_pair(id, member);
+						else if (builtin == spv::BuiltInCullDistance)
+							data.cullDistanceMember = std::make_pair(id, member);
 						break;
 					}
 				}
@@ -2214,6 +2289,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 			// Don't care once we reach the function section.
 			case spv::OpFunction:
 				done = true;
+				firstFunction = i;
 				break;
 
 			default:
@@ -2230,6 +2306,17 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 	if (!addOutputs(output, *this, data))
 		return false;
 	addPushConstants(*this, data);
+
+	// Get the clip and cull distance counts. Check if they are actually referenced, otherwise it
+	// will always have size 1 by default.
+	std::vector<std::pair<std::uint32_t, std::uint32_t>> checkMembers =
+		{data.clipDistanceMember, data.cullDistanceMember};
+	std::vector<bool> membersReferenced(checkMembers.size(), false);
+	areOutputMembersReferenced(data, spirv, firstFunction, checkMembers, membersReferenced);
+	if (membersReferenced[0])
+		clipDistanceCount = getMemberArraySize(data, data.clipDistanceMember);
+	if (membersReferenced[1])
+		cullDistanceCount = getMemberArraySize(data, data.cullDistanceMember);
 
 	// Sanity checks:
 	const char* builtinPrefix = "gl_";

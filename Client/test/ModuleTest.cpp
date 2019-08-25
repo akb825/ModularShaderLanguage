@@ -61,20 +61,6 @@ static void testContents(Module& module)
 	EXPECT_EQ(0U, structMember.arrayElementCount);
 	EXPECT_FALSE(structMember.rowMajor);
 
-	EXPECT_TRUE(module.pipelineStruct(pipelineStruct, 0, 1));
-	EXPECT_STREQ("Uniforms", pipelineStruct.name);
-	EXPECT_EQ(4*sizeof(float), pipelineStruct.size);
-
-	ASSERT_EQ(1U, pipelineStruct.memberCount);
-	EXPECT_TRUE(module.structMember(structMember, 0, 1, 0));
-	EXPECT_STREQ("texCoords", structMember.name);
-	EXPECT_EQ(0U, structMember.offset);
-	EXPECT_EQ(4*sizeof(float), structMember.size);
-	EXPECT_EQ(Type::Vec2, structMember.type);
-	EXPECT_EQ(unknown, structMember.structIndex);
-	ASSERT_EQ(1U, structMember.arrayElementCount);
-	EXPECT_FALSE(structMember.rowMajor);
-
 	ArrayInfo arrayInfo;
 	EXPECT_TRUE(module.structMemberArrayInfo(arrayInfo, 0, 1, 0, 0));
 	EXPECT_EQ(2U, arrayInfo.length);
@@ -171,6 +157,8 @@ static void testContents(Module& module)
 		renderState.blendState.blendAttachments[0].dstColorBlendFactor);
 	EXPECT_EQ(msl::BlendFactor::Zero,
 		renderState.blendState.blendAttachments[0].dstAlphaBlendFactor);
+	EXPECT_EQ(3U, renderState.clipDistanceCount);
+	EXPECT_EQ(4U, renderState.cullDistanceCount);
 
 	ASSERT_EQ(2U, module.shaderCount());
 	EXPECT_LT(0U, module.shaderSize(0));
@@ -328,6 +316,8 @@ static void testContents(const mslModule* module)
 		renderState.blendState.blendAttachments[0].dstColorBlendFactor);
 	EXPECT_EQ(mslBlendFactor_Zero,
 		renderState.blendState.blendAttachments[0].dstAlphaBlendFactor);
+	EXPECT_EQ(3U, renderState.clipDistanceCount);
+	EXPECT_EQ(4U, renderState.cullDistanceCount);
 
 	ASSERT_EQ(2U, mslModule_shaderCount(module));
 	EXPECT_LT(0U, mslModule_shaderSize(module, 0));

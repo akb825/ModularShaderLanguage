@@ -72,6 +72,8 @@ The shader file is first run through a C99 preprocessor. The following \#defines
 * `HAS_BIT_FUNCTIONS`: Set to 1 if integer functions such as bitfieldInsert() and findMSB() are available, 0 if not.
 * `HAS_PACKING_FUNCTIONS`: Set to 1 if packing and unpacking functions such as packUnorm2x16() are available, 0 if not.
 * `HAS_SUBPASS_INPUTS`: Set to 1 if subpass inputs for reading directly from framebuffers are available, 0 if not.
+* `HAS_CLIP_DISTANCE`: Set to 1 if the gl_ClipDistance array is supported, 0 if not. Note that even if the shader language supports clip distances, the target itself may not, so additional runtime checks may be required.
+* `HAS_CULL_DISTANCE`: Set to 1 if the gl_CullDistance array is supported, 0 if not. Note that even if the shader language supports cull distances, the target itself may not, so additional runtime checks may be required.
 
 # Filtering
 

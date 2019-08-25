@@ -2216,6 +2216,47 @@ TEST_F(SpirVProcessorTest, ComputeLocalSize)
 	EXPECT_EQ(4U, computeProcessor.computeLocalSize[2]);
 }
 
+TEST_F(SpirVProcessorTest, ClipAndCullDistances)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"ClipAndCullDistances.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].value.empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			Compiler::getDefaultResources()));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	Compiler::Program program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
+
+	SpirVProcessor vertexProcessor;
+	EXPECT_TRUE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, vertexSpirv, Stage::Vertex));
+
+	EXPECT_EQ(3U, vertexProcessor.clipDistanceCount);
+	EXPECT_EQ(4U, vertexProcessor.cullDistanceCount);
+}
+
 TEST_F(SpirVProcessorTest, LinkDifferentType)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";

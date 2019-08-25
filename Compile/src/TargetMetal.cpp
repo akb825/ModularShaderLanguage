@@ -136,6 +136,7 @@ bool TargetMetal::featureSupported(Feature feature) const
 		case Feature::BindingPoints:
 		case Feature::DescriptorSets:
 		case Feature::GeometryStage:
+		case Feature::CullDistance:
 			return false;
 		case Feature::TessellationStages:
 			return m_version >= 12;

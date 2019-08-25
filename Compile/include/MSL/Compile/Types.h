@@ -732,6 +732,16 @@ struct RenderState
 	 * @brief The number of control points for each patch for tessellation.
 	 */
 	std::uint32_t patchControlPoints = unknown;
+
+	/**
+	 * @brief The number of clip distances.
+	 */
+	std::uint32_t clipDistanceCount = 0;
+
+	/**
+	 * @brief The number of cull distances.
+	 */
+	std::uint32_t cullDistanceCount = 0;
 };
 
 /**
@@ -1062,6 +1072,11 @@ struct Pipeline
 	 * @brief The render state to apply to the pipeline.
 	 */
 	RenderState renderState;
+
+	/**
+	 * @brief The local size for the compute stage, if present.
+	 */
+	std::array<std::uint32_t, 3> computeLocalSize = {{1, 1, 1}};
 
 	/**
 	 * @brief The shaders for the different pipeline stages.

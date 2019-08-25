@@ -17,6 +17,8 @@ uniform vec2[2] texCoords;
 
 [[vertex]] in vec3 position;
 [[vertex]] in vec4 color;
+[[vertex]] out float gl_ClipDistance[3];
+[[vertex]] out float gl_CullDistance[4];
 
 varying(vertex, fragment)
 {
@@ -29,6 +31,10 @@ varying(vertex, fragment)
 void vertShader()
 {
 	gl_Position = INSTANCE(block).transform*vec4(position, 1.0);
+	for (int i = 0; i < 3; ++i)
+		gl_ClipDistance[i] = 0.0;
+	for (int i = 0; i < 4; ++i)
+		gl_CullDistance[i] = 0.0;
 	vfColor = color;
 }
 

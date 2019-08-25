@@ -1811,7 +1811,9 @@ struct RenderState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_MULTISAMPLESTATE = 6,
     VT_DEPTHSTENCILSTATE = 8,
     VT_BLENDSTATE = 10,
-    VT_PATCHCONTROLPOINTS = 12
+    VT_PATCHCONTROLPOINTS = 12,
+    VT_CLIPDISTANCECOUNT = 14,
+    VT_CULLDISTANCECOUNT = 16
   };
   const RasterizationState *rasterizationState() const {
     return GetStruct<const RasterizationState *>(VT_RASTERIZATIONSTATE);
@@ -1843,6 +1845,18 @@ struct RenderState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_patchControlPoints(uint32_t _patchControlPoints) {
     return SetField<uint32_t>(VT_PATCHCONTROLPOINTS, _patchControlPoints, 0);
   }
+  uint32_t clipDistanceCount() const {
+    return GetField<uint32_t>(VT_CLIPDISTANCECOUNT, 0);
+  }
+  bool mutate_clipDistanceCount(uint32_t _clipDistanceCount) {
+    return SetField<uint32_t>(VT_CLIPDISTANCECOUNT, _clipDistanceCount, 0);
+  }
+  uint32_t cullDistanceCount() const {
+    return GetField<uint32_t>(VT_CULLDISTANCECOUNT, 0);
+  }
+  bool mutate_cullDistanceCount(uint32_t _cullDistanceCount) {
+    return SetField<uint32_t>(VT_CULLDISTANCECOUNT, _cullDistanceCount, 0);
+  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyFieldRequired<RasterizationState>(verifier, VT_RASTERIZATIONSTATE) &&
@@ -1851,6 +1865,8 @@ struct RenderState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyOffsetRequired(verifier, VT_BLENDSTATE) &&
            verifier.VerifyTable(blendState()) &&
            VerifyField<uint32_t>(verifier, VT_PATCHCONTROLPOINTS) &&
+           VerifyField<uint32_t>(verifier, VT_CLIPDISTANCECOUNT) &&
+           VerifyField<uint32_t>(verifier, VT_CULLDISTANCECOUNT) &&
            verifier.EndTable();
   }
 };
@@ -1872,6 +1888,12 @@ struct RenderStateBuilder {
   }
   void add_patchControlPoints(uint32_t patchControlPoints) {
     fbb_.AddElement<uint32_t>(RenderState::VT_PATCHCONTROLPOINTS, patchControlPoints, 0);
+  }
+  void add_clipDistanceCount(uint32_t clipDistanceCount) {
+    fbb_.AddElement<uint32_t>(RenderState::VT_CLIPDISTANCECOUNT, clipDistanceCount, 0);
+  }
+  void add_cullDistanceCount(uint32_t cullDistanceCount) {
+    fbb_.AddElement<uint32_t>(RenderState::VT_CULLDISTANCECOUNT, cullDistanceCount, 0);
   }
   explicit RenderStateBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -1895,8 +1917,12 @@ inline flatbuffers::Offset<RenderState> CreateRenderState(
     const MultisampleState *multisampleState = 0,
     const DepthStencilState *depthStencilState = 0,
     flatbuffers::Offset<BlendState> blendState = 0,
-    uint32_t patchControlPoints = 0) {
+    uint32_t patchControlPoints = 0,
+    uint32_t clipDistanceCount = 0,
+    uint32_t cullDistanceCount = 0) {
   RenderStateBuilder builder_(_fbb);
+  builder_.add_cullDistanceCount(cullDistanceCount);
+  builder_.add_clipDistanceCount(clipDistanceCount);
   builder_.add_patchControlPoints(patchControlPoints);
   builder_.add_blendState(blendState);
   builder_.add_depthStencilState(depthStencilState);

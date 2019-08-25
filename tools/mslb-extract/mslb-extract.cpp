@@ -1127,10 +1127,12 @@ static void writeRenderState(std::ostream& jsonFile, const msl::Module& module, 
 	writeBlendState(jsonFile, renderState.blendState);
 
 	if (renderState.patchControlPoints == msl::unknown)
-		jsonFile << "\t\t\t\t\"patchControlPoints\": null\n";
+		jsonFile << "\t\t\t\t\"patchControlPoints\": null,\n";
 	else
-		jsonFile << "\t\t\t\t\"patchControlPoints\": " << renderState.patchControlPoints << "\n";
+		jsonFile << "\t\t\t\t\"patchControlPoints\": " << renderState.patchControlPoints << ",\n";
 
+	jsonFile << "\t\t\t\t\"clipDistanceCount\": " << renderState.clipDistanceCount << ",\n";
+	jsonFile << "\t\t\t\t\"cullDistanceCount\": " << renderState.cullDistanceCount << "\n";
 	jsonFile << "\t\t\t},\n";
 }
 
