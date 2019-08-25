@@ -15,10 +15,23 @@
  */
 
 #include <MSL/Client/ModuleCpp.h>
-#include <boost/filesystem.hpp>
-#include <boost/program_options.hpp>
 #include <fstream>
 #include <iostream>
+
+#if MSL_GCC || MSL_CLANG
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#if MSL_CLANG
+#pragma GCC diagnostic ignored "-Wshorten-64-to-32"
+#endif
+#endif
+
+#include <boost/filesystem.hpp>
+#include <boost/program_options.hpp>
+
+#if MSL_GCC || MSL_CLANG
+#pragma GCC diagnostic pop
+#endif
 
 using namespace boost::program_options;
 using namespace boost::filesystem;

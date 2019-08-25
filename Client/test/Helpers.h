@@ -16,7 +16,21 @@
 
 #pragma once
 
+#include <MSL/Config.h>
+
+#if MSL_GCC || MSL_CLANG
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#if MSL_CLANG
+#pragma GCC diagnostic ignored "-Wshorten-64-to-32"
+#endif
+#endif
+
 #include <boost/filesystem.hpp>
+
+#if MSL_GCC || MSL_CLANG
+#pragma GCC diagnostic pop
+#endif
 
 extern boost::filesystem::path exeDir;
 

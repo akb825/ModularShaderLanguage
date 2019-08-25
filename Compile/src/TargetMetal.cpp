@@ -18,10 +18,23 @@
 #include <MSL/Compile/Output.h>
 #include "ExecuteCommand.h"
 #include "MetalOutput.h"
-#include <boost/algorithm/string/replace.hpp>
-#include <boost/filesystem.hpp>
 #include <fstream>
 #include <sstream>
+
+#if MSL_GCC || MSL_CLANG
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#if MSL_CLANG
+#pragma GCC diagnostic ignored "-Wshorten-64-to-32"
+#endif
+#endif
+
+#include <boost/algorithm/string/replace.hpp>
+#include <boost/filesystem.hpp>
+
+#if MSL_GCC || MSL_CLANG
+#pragma GCC diagnostic pop
+#endif
 
 namespace msl
 {

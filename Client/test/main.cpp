@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+#include "Helpers.h"
 #include <gtest/gtest.h>
-#include <boost/filesystem.hpp>
 
 boost::filesystem::path exeDir;
 
