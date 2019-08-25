@@ -39,7 +39,8 @@
 namespace msl
 {
 
-static void setBinding(std::vector<uint32_t>& spirv, std::uint32_t id, std::uint32_t index)
+static void setBinding(std::vector<uint32_t>& spirv, std::uint32_t id, std::uint32_t set,
+	std::uint32_t binding)
 {
 	const unsigned int firstInstruction = 5;
 	const std::uint32_t opCodeMask = 0xFFFF;
@@ -47,7 +48,9 @@ static void setBinding(std::vector<uint32_t>& spirv, std::uint32_t id, std::uint
 	const std::uint32_t opFunction = 54;
 	const std::uint32_t opDecorate = 71;
 	const std::uint32_t decorationBinding = 33;
+	const std::uint32_t decorationDescriptorSet = 34;
 
+	bool descriptorSet = false, bindingSet = false;
 	for (uint32_t i = firstInstruction; i < spirv.size();)
 	{
 		uint32_t op = spirv[i] & opCodeMask;
@@ -57,10 +60,21 @@ static void setBinding(std::vector<uint32_t>& spirv, std::uint32_t id, std::uint
 		if (op == opFunction)
 			break;
 
-		if (op == opDecorate && spirv[i + 1] == id && spirv[i + 2] == decorationBinding)
+		if (op == opDecorate && spirv[i + 1] == id)
 		{
-			spirv[i + 3] = index;
-			break;
+			if (spirv[i + 2] == decorationDescriptorSet)
+			{
+				spirv[i + 3] = set;
+				descriptorSet = true;
+			}
+			else if (spirv[i + 2] == decorationBinding)
+			{
+				spirv[i + 3] = binding;
+				bindingSet = true;
+			}
+
+			if (bindingSet && descriptorSet)
+				break;
 		}
 
 		i += wordCount;
@@ -68,11 +82,12 @@ static void setBinding(std::vector<uint32_t>& spirv, std::uint32_t id, std::uint
 }
 
 static std::vector<std::uint32_t> setBindingIndices(const std::vector<std::uint32_t>& spirv,
-	const std::vector<compile::Uniform>& uniforms, std::vector<std::uint32_t>& uniformIds)
+	const std::vector<compile::Uniform>& uniforms, std::vector<std::uint32_t>& uniformIds,
+	bool& hasPushConstant, std::uint32_t& bufferCount, std::uint32_t& textureCount)
 {
 	std::vector<std::uint32_t> adjustedSpirv = spirv;
 
-	bool hasPushConstant = false;
+	hasPushConstant = false;
 	for (std::size_t i = 0; i < uniforms.size(); ++i)
 	{
 		if (uniformIds[i] != unknown && uniforms[i].uniformType == UniformType::PushConstant)
@@ -96,18 +111,20 @@ static std::vector<std::uint32_t> setBindingIndices(const std::vector<std::uint3
 				break;
 			case UniformType::Block:
 			case UniformType::BlockBuffer:
-				setBinding(adjustedSpirv, uniformIds[i], bufferIndex);
+				setBinding(adjustedSpirv, uniformIds[i], 0, bufferIndex);
 				uniformIds[i] = bufferIndex++;
 				break;
 			case UniformType::Image:
 			case UniformType::SampledImage:
 			case UniformType::SubpassInput:
-				setBinding(adjustedSpirv, uniformIds[i], textureIndex);
+				setBinding(adjustedSpirv, uniformIds[i], 1, textureIndex);
 				uniformIds[i] = textureIndex++;
 				break;
 		}
 	}
 
+	bufferCount = bufferIndex;
+	textureCount = textureIndex;
 	return adjustedSpirv;
 }
 
@@ -182,12 +199,17 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 	const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
 	const std::vector<compile::Uniform>& uniforms, std::vector<std::uint32_t>& uniformIds)
 {
-	std::vector<std::uint32_t> adjustedSpirv = setBindingIndices(spirv, uniforms, uniformIds);
 	bool outputToBuffer = stage == compile::Stage::Vertex &&
 		(pipelineStages[static_cast<int>(compile::Stage::TessellationControl)] ||
 			pipelineStages[static_cast<int>(compile::Stage::TessellationEvaluation)]);
-	std::string metal = MetalOutput::disassemble(output, adjustedSpirv, m_version, m_ios,
-		outputToBuffer, fileName, line, column);
+
+	bool hasPushConstant;
+	std::uint32_t bufferCount, textureCount;
+	std::vector<std::uint32_t> adjustedSpirv = setBindingIndices(spirv, uniforms, uniformIds,
+		hasPushConstant, bufferCount, textureCount);
+
+	std::string metal = MetalOutput::disassemble(output, adjustedSpirv, stage, m_version, m_ios,
+		outputToBuffer, hasPushConstant, bufferCount, textureCount, fileName, line, column);
 	if (metal.empty())
 		return false;
 

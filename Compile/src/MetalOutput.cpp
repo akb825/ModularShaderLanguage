@@ -21,8 +21,9 @@
 namespace msl
 {
 
-std::string MetalOutput::disassemble(Output& output, const Compiler::SpirV& spirv,
-	std::uint32_t version, bool ios, bool outputToBuffer, const std::string& fileName,
+std::string MetalOutput::disassemble(Output& output, const Compiler::SpirV& spirv, Stage stage,
+	std::uint32_t version, bool ios, bool outputToBuffer, bool hasPushConstant,
+	std::uint32_t bufferCount, std::uint32_t textureCount, const std::string& fileName,
 	std::size_t line, std::size_t column)
 {
 	spirv_cross::CompilerMSL::Options options;
@@ -31,8 +32,54 @@ std::string MetalOutput::disassemble(Output& output, const Compiler::SpirV& spir
 	options.msl_version = spirv_cross::CompilerMSL::Options::make_msl_version(version/10,
 		version%10);
 	options.capture_output_to_buffer = outputToBuffer;
+
 	spirv_cross::CompilerMSL compiler(spirv);
 	compiler.set_msl_options(options);
+
+	spv::ExecutionModel executionModel = spv::ExecutionModelMax;
+	switch (stage)
+	{
+		case Stage::Vertex:
+			executionModel = spv::ExecutionModelVertex;
+			break;
+		case Stage::TessellationControl:
+			executionModel = spv::ExecutionModelTessellationControl;
+			break;
+		case Stage::TessellationEvaluation:
+			executionModel = spv::ExecutionModelTessellationEvaluation;
+			break;
+		case Stage::Geometry:
+			executionModel = spv::ExecutionModelGeometry;
+			break;
+		case Stage::Fragment:
+			executionModel = spv::ExecutionModelFragment;
+			break;
+		case Stage::Compute:
+			executionModel = spv::ExecutionModelGLCompute;
+			break;
+	}
+
+	for (std::uint32_t i = hasPushConstant ? 1 : 0; i < bufferCount; ++i)
+	{
+		spirv_cross::MSLResourceBinding binding;
+		binding.stage = executionModel;
+		binding.desc_set = 0;
+		binding.binding = i;
+		binding.msl_buffer = i;
+		compiler.add_msl_resource_binding(binding);
+	}
+
+	for (std::uint32_t i = 0; i < textureCount; ++i)
+	{
+		spirv_cross::MSLResourceBinding binding;
+		binding.stage = executionModel;
+		binding.desc_set = 1;
+		binding.binding = i;
+		binding.msl_texture = i;
+		binding.msl_sampler = i;
+		compiler.add_msl_resource_binding(binding);
+	}
+
 	try
 	{
 		return compiler.compile();
