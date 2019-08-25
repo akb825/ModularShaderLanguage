@@ -7,11 +7,11 @@
 #	error
 #	endif
 #elif defined(METAL_OSX)
-#	if METAL_OSX_VERSION != 11
+#	if METAL_OSX_VERSION != 101
 #	error
 #	endif
 #elif defined(METAL_IOS)
-#	if METAL_IOS_VERSION != 10
+#	if METAL_IOS_VERSION != 100
 #	error
 #	endif
 #else

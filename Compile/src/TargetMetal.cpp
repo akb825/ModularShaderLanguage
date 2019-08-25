@@ -187,7 +187,7 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 		versionStr << "-std=ios-metal";
 	else
 		versionStr << "-std=osx-metal";
-	versionStr << m_version/100 << m_version % 100;
+	versionStr << m_version/100 << '.' << m_version % 100;
 
 	std::string extraOptions;
 	if (!getStripDebug())
