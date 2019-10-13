@@ -35,7 +35,7 @@ extern "C"
 /**
  * @brief Constant for the current module file version.
  */
-#define MSL_MODULE_VERSION 0
+#define MSL_MODULE_VERSION 0U
 
 /**
  * @brief Constant for no known value.

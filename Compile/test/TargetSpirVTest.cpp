@@ -42,7 +42,7 @@ TEST(TargetSpirVTest, CompleteShader)
 	EXPECT_TRUE(target.compile(result, output, shaderName));
 	EXPECT_TRUE(target.finish(result, output));
 
-	EXPECT_EQ(0, output.getMessages().size());
+	EXPECT_EQ(0U, output.getMessages().size());
 
 	auto unknown = msl::compile::unknown;
 	EXPECT_EQ(2U, result.getPipelines().size());
@@ -63,7 +63,7 @@ TEST(TargetSpirVTest, CompleteShader)
 
 	ASSERT_EQ(1U, pipeline->second.structs[0].members.size());
 	EXPECT_EQ("transform", pipeline->second.structs[0].members[0].name);
-	EXPECT_EQ(0, pipeline->second.structs[0].members[0].offset);
+	EXPECT_EQ(0U, pipeline->second.structs[0].members[0].offset);
 	EXPECT_EQ(16*sizeof(float), pipeline->second.structs[0].members[0].size);
 	EXPECT_EQ(Type::Mat4, pipeline->second.structs[0].members[0].type);
 	EXPECT_EQ(unknown, pipeline->second.structs[0].members[0].structIndex);
@@ -75,7 +75,7 @@ TEST(TargetSpirVTest, CompleteShader)
 	EXPECT_EQ(Type::Struct, pipeline->second.uniforms[0].type);
 	EXPECT_EQ(0U, pipeline->second.uniforms[0].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[0].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[0].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[0].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].samplerIndex);
 
@@ -84,7 +84,7 @@ TEST(TargetSpirVTest, CompleteShader)
 	EXPECT_EQ(Type::Sampler2D, pipeline->second.uniforms[1].type);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[1].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
 	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
@@ -138,7 +138,7 @@ TEST(TargetSpirVTest, CompleteShader)
 
 	ASSERT_EQ(1U, pipeline->second.structs[0].members.size());
 	EXPECT_EQ("transform", pipeline->second.structs[0].members[0].name);
-	EXPECT_EQ(0, pipeline->second.structs[0].members[0].offset);
+	EXPECT_EQ(0U, pipeline->second.structs[0].members[0].offset);
 	EXPECT_EQ(16*sizeof(float), pipeline->second.structs[0].members[0].size);
 	EXPECT_EQ(Type::Mat4, pipeline->second.structs[0].members[0].type);
 	EXPECT_EQ(unknown, pipeline->second.structs[0].members[0].structIndex);
@@ -150,7 +150,7 @@ TEST(TargetSpirVTest, CompleteShader)
 	EXPECT_EQ(Type::Struct, pipeline->second.uniforms[0].type);
 	EXPECT_EQ(0U, pipeline->second.uniforms[0].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[0].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[0].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[0].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].samplerIndex);
 
@@ -159,7 +159,7 @@ TEST(TargetSpirVTest, CompleteShader)
 	EXPECT_EQ(Type::Sampler2D, pipeline->second.uniforms[1].type);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[1].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
 	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
@@ -212,7 +212,7 @@ TEST(TargetSpirVTest, CombineReflection)
 	EXPECT_TRUE(target.compile(result, output, shaderName));
 	EXPECT_TRUE(target.finish(result, output));
 
-	EXPECT_EQ(0, output.getMessages().size());
+	EXPECT_EQ(0U, output.getMessages().size());
 
 	auto unknown = msl::compile::unknown;
 	EXPECT_EQ(1U, result.getPipelines().size());
@@ -233,7 +233,7 @@ TEST(TargetSpirVTest, CombineReflection)
 
 	ASSERT_EQ(2U, pipeline->second.structs[0].members.size());
 	EXPECT_EQ("member", pipeline->second.structs[0].members[0].name);
-	EXPECT_EQ(0, pipeline->second.structs[0].members[0].offset);
+	EXPECT_EQ(0U, pipeline->second.structs[0].members[0].offset);
 	EXPECT_EQ(4*sizeof(float), pipeline->second.structs[0].members[0].size);
 	EXPECT_EQ(Type::Struct, pipeline->second.structs[0].members[0].type);
 	EXPECT_EQ(1U, pipeline->second.structs[0].members[0].structIndex);
@@ -251,7 +251,7 @@ TEST(TargetSpirVTest, CombineReflection)
 
 	ASSERT_EQ(1U, pipeline->second.structs[1].members.size());
 	EXPECT_EQ("value", pipeline->second.structs[1].members[0].name);
-	EXPECT_EQ(0, pipeline->second.structs[1].members[0].offset);
+	EXPECT_EQ(0U, pipeline->second.structs[1].members[0].offset);
 	EXPECT_EQ(4*sizeof(float), pipeline->second.structs[1].members[0].size);
 	EXPECT_EQ(Type::Vec4, pipeline->second.structs[1].members[0].type);
 	EXPECT_EQ(unknown, pipeline->second.structs[1].members[0].structIndex);
@@ -262,7 +262,7 @@ TEST(TargetSpirVTest, CombineReflection)
 
 	ASSERT_EQ(1U, pipeline->second.structs[2].members.size());
 	EXPECT_EQ("value", pipeline->second.structs[2].members[0].name);
-	EXPECT_EQ(0, pipeline->second.structs[2].members[0].offset);
+	EXPECT_EQ(0U, pipeline->second.structs[2].members[0].offset);
 	EXPECT_EQ(3*sizeof(float), pipeline->second.structs[2].members[0].size);
 	EXPECT_EQ(Type::Vec3, pipeline->second.structs[2].members[0].type);
 	EXPECT_EQ(unknown, pipeline->second.structs[2].members[0].structIndex);
@@ -273,7 +273,7 @@ TEST(TargetSpirVTest, CombineReflection)
 
 	ASSERT_EQ(2U, pipeline->second.structs[3].members.size());
 	EXPECT_EQ("member", pipeline->second.structs[3].members[0].name);
-	EXPECT_EQ(0, pipeline->second.structs[3].members[0].offset);
+	EXPECT_EQ(0U, pipeline->second.structs[3].members[0].offset);
 	EXPECT_EQ(4*sizeof(float), pipeline->second.structs[3].members[0].size);
 	EXPECT_EQ(Type::Struct, pipeline->second.structs[3].members[0].type);
 	EXPECT_EQ(1U, pipeline->second.structs[3].members[0].structIndex);
@@ -291,7 +291,7 @@ TEST(TargetSpirVTest, CombineReflection)
 
 	ASSERT_EQ(1U, pipeline->second.structs[4].members.size());
 	EXPECT_EQ("value", pipeline->second.structs[4].members[0].name);
-	EXPECT_EQ(0, pipeline->second.structs[4].members[0].offset);
+	EXPECT_EQ(0U, pipeline->second.structs[4].members[0].offset);
 	EXPECT_EQ(2*sizeof(float), pipeline->second.structs[4].members[0].size);
 	EXPECT_EQ(Type::Vec2, pipeline->second.structs[4].members[0].type);
 	EXPECT_EQ(unknown, pipeline->second.structs[4].members[0].structIndex);
@@ -303,7 +303,7 @@ TEST(TargetSpirVTest, CombineReflection)
 	EXPECT_EQ(Type::Struct, pipeline->second.uniforms[0].type);
 	EXPECT_EQ(0U, pipeline->second.uniforms[0].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[0].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[0].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[0].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].samplerIndex);
 
@@ -312,7 +312,7 @@ TEST(TargetSpirVTest, CombineReflection)
 	EXPECT_EQ(Type::Struct, pipeline->second.uniforms[1].type);
 	EXPECT_EQ(3U, pipeline->second.uniforms[1].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[1].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].samplerIndex);
 

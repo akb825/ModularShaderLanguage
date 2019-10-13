@@ -27,18 +27,18 @@ TEST(OutputTest, AddMessage)
 	output.addMessage(Output::Level::Error, "test2", 3, 4, true, "message 2");
 
 	const std::vector<Output::Message>& messages = output.getMessages();
-	ASSERT_EQ(2, messages.size());
+	ASSERT_EQ(2U, messages.size());
 	EXPECT_EQ(Output::Level::Warning, messages[0].level);
 	EXPECT_EQ("test1", messages[0].file);
-	EXPECT_EQ(1, messages[0].line);
-	EXPECT_EQ(2, messages[0].column);
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(2U, messages[0].column);
 	EXPECT_FALSE(messages[0].continued);
 	EXPECT_EQ("message 1", messages[0].message);
 
 	EXPECT_EQ(Output::Level::Error, messages[1].level);
 	EXPECT_EQ("test2", messages[1].file);
-	EXPECT_EQ(3, messages[1].line);
-	EXPECT_EQ(4, messages[1].column);
+	EXPECT_EQ(3U, messages[1].line);
+	EXPECT_EQ(4U, messages[1].column);
 	EXPECT_TRUE(messages[1].continued);
 	EXPECT_EQ("message 2", messages[1].message);
 }

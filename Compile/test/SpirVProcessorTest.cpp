@@ -1471,7 +1471,7 @@ TEST_F(SpirVProcessorTest, ExplicitInputsOutputsVarying)
 	EXPECT_TRUE(fragmentProcessor.inputs[4].arrayElements.empty());
 	ASSERT_EQ(2U, fragmentProcessor.inputs[4].memberLocations.size());
 	EXPECT_FALSE(fragmentProcessor.inputs[4].patch);
-	EXPECT_EQ(2, fragmentProcessor.inputs[4].location);
+	EXPECT_EQ(2U, fragmentProcessor.inputs[4].location);
 	EXPECT_EQ(unknown, fragmentProcessor.inputs[4].component);
 
 	ASSERT_EQ(1U, fragmentProcessor.structs.size());

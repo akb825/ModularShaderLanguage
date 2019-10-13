@@ -159,7 +159,7 @@ TEST(ParserMultisampleStateTest, SampleMask)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(0xABCD,
+		EXPECT_EQ(0xABCDU,
 			pipelines[0].renderState.multisampleState.sampleMask);
 	}
 

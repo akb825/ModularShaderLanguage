@@ -631,9 +631,9 @@ TEST(ParserDepthStencilStateTest, StencilCompareMask)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(0xABCD,
+		EXPECT_EQ(0xABCDU,
 			pipelines[0].renderState.depthStencilState.frontStencil.compareMask);
-		EXPECT_EQ(0xABCD,
+		EXPECT_EQ(0xABCDU,
 			pipelines[0].renderState.depthStencilState.backStencil.compareMask);
 	}
 
@@ -683,9 +683,9 @@ TEST(ParserDepthStencilStateTest, StencilWriteMask)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(0xABCD,
+		EXPECT_EQ(0xABCDU,
 			pipelines[0].renderState.depthStencilState.frontStencil.writeMask);
-		EXPECT_EQ(0xABCD,
+		EXPECT_EQ(0xABCDU,
 			pipelines[0].renderState.depthStencilState.backStencil.writeMask);
 	}
 
@@ -735,9 +735,9 @@ TEST(ParserDepthStencilStateTest, StencilReference)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(0xABCD,
+		EXPECT_EQ(0xABCDU,
 			pipelines[0].renderState.depthStencilState.frontStencil.reference);
-		EXPECT_EQ(0xABCD,
+		EXPECT_EQ(0xABCDU,
 			pipelines[0].renderState.depthStencilState.backStencil.reference);
 	}
 
@@ -943,7 +943,7 @@ TEST(ParserDepthStencilStateTest, FrontStencilCompareMask)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(0xABCD,
+		EXPECT_EQ(0xABCDU,
 			pipelines[0].renderState.depthStencilState.frontStencil.compareMask);
 		EXPECT_EQ(unsetInt,
 			pipelines[0].renderState.depthStencilState.backStencil.compareMask);
@@ -995,7 +995,7 @@ TEST(ParserDepthStencilStateTest, FrontStencilWriteMask)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(0xABCD,
+		EXPECT_EQ(0xABCDU,
 			pipelines[0].renderState.depthStencilState.frontStencil.writeMask);
 		EXPECT_EQ(unsetInt,
 			pipelines[0].renderState.depthStencilState.backStencil.writeMask);
@@ -1047,7 +1047,7 @@ TEST(ParserDepthStencilStateTest, FrontStencilReference)
 
 		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
 		ASSERT_EQ(1U, pipelines.size());
-		EXPECT_EQ(0xABCD,
+		EXPECT_EQ(0xABCDU,
 			pipelines[0].renderState.depthStencilState.frontStencil.reference);
 		EXPECT_EQ(unsetInt,
 			pipelines[0].renderState.depthStencilState.backStencil.reference);
@@ -1257,7 +1257,7 @@ TEST(ParserDepthStencilStateTest, BackStencilCompareMask)
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(unsetInt,
 			pipelines[0].renderState.depthStencilState.frontStencil.compareMask);
-		EXPECT_EQ(0xABCD,
+		EXPECT_EQ(0xABCDU,
 			pipelines[0].renderState.depthStencilState.backStencil.compareMask);
 	}
 
@@ -1309,7 +1309,7 @@ TEST(ParserDepthStencilStateTest, BackStencilWriteMask)
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(unsetInt,
 			pipelines[0].renderState.depthStencilState.frontStencil.writeMask);
-		EXPECT_EQ(0xABCD,
+		EXPECT_EQ(0xABCDU,
 			pipelines[0].renderState.depthStencilState.backStencil.writeMask);
 	}
 
@@ -1361,7 +1361,7 @@ TEST(ParserDepthStencilStateTest, BackStencilReference)
 		ASSERT_EQ(1U, pipelines.size());
 		EXPECT_EQ(unsetInt,
 			pipelines[0].renderState.depthStencilState.frontStencil.reference);
-		EXPECT_EQ(0xABCD,
+		EXPECT_EQ(0xABCDU,
 			pipelines[0].renderState.depthStencilState.backStencil.reference);
 	}
 

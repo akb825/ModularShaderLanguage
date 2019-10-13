@@ -1418,7 +1418,7 @@ bool addComponents(std::vector<std::uint8_t>& locations, std::size_t curLocation
 	if (locations[curLocation] & componentMask)
 		return false;
 
-	locations[curLocation] |= static_cast<std::uint8_t>(componentMask);
+	locations[curLocation] = static_cast<std::uint8_t>(locations[curLocation] | componentMask);
 	return true;
 }
 

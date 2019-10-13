@@ -43,7 +43,7 @@ TEST(TargetGlslTest, Glsl450)
 	EXPECT_TRUE(target.compile(result, output, shaderName));
 	EXPECT_TRUE(target.finish(result, output));
 
-	EXPECT_EQ(0, output.getMessages().size());
+	EXPECT_EQ(0U, output.getMessages().size());
 
 	auto unknown = msl::compile::unknown;
 	EXPECT_EQ(2U, result.getPipelines().size());
@@ -64,7 +64,7 @@ TEST(TargetGlslTest, Glsl450)
 
 	ASSERT_EQ(1U, pipeline->second.structs[0].members.size());
 	EXPECT_EQ("transform", pipeline->second.structs[0].members[0].name);
-	EXPECT_EQ(0, pipeline->second.structs[0].members[0].offset);
+	EXPECT_EQ(0U, pipeline->second.structs[0].members[0].offset);
 	EXPECT_EQ(16*sizeof(float), pipeline->second.structs[0].members[0].size);
 	EXPECT_EQ(Type::Mat4, pipeline->second.structs[0].members[0].type);
 	EXPECT_EQ(unknown, pipeline->second.structs[0].members[0].structIndex);
@@ -76,7 +76,7 @@ TEST(TargetGlslTest, Glsl450)
 	EXPECT_EQ(Type::Struct, pipeline->second.uniforms[0].type);
 	EXPECT_EQ(0U, pipeline->second.uniforms[0].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[0].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[0].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[0].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].samplerIndex);
 
@@ -85,7 +85,7 @@ TEST(TargetGlslTest, Glsl450)
 	EXPECT_EQ(Type::Sampler2D, pipeline->second.uniforms[1].type);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[1].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
 	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
@@ -139,7 +139,7 @@ TEST(TargetGlslTest, Glsl450)
 
 	ASSERT_EQ(1U, pipeline->second.structs[0].members.size());
 	EXPECT_EQ("transform", pipeline->second.structs[0].members[0].name);
-	EXPECT_EQ(0, pipeline->second.structs[0].members[0].offset);
+	EXPECT_EQ(0U, pipeline->second.structs[0].members[0].offset);
 	EXPECT_EQ(16*sizeof(float), pipeline->second.structs[0].members[0].size);
 	EXPECT_EQ(Type::Mat4, pipeline->second.structs[0].members[0].type);
 	EXPECT_EQ(unknown, pipeline->second.structs[0].members[0].structIndex);
@@ -151,7 +151,7 @@ TEST(TargetGlslTest, Glsl450)
 	EXPECT_EQ(Type::Struct, pipeline->second.uniforms[0].type);
 	EXPECT_EQ(0U, pipeline->second.uniforms[0].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[0].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[0].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[0].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].samplerIndex);
 
@@ -160,7 +160,7 @@ TEST(TargetGlslTest, Glsl450)
 	EXPECT_EQ(Type::Sampler2D, pipeline->second.uniforms[1].type);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[1].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
 	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
@@ -247,7 +247,7 @@ TEST(TargetGlslTest, Glsl120)
 	EXPECT_TRUE(target.compile(result, output, shaderName));
 	EXPECT_TRUE(target.finish(result, output));
 
-	EXPECT_EQ(0, output.getMessages().size());
+	EXPECT_EQ(0U, output.getMessages().size());
 
 	auto unknown = msl::compile::unknown;
 	EXPECT_EQ(2U, result.getPipelines().size());
@@ -268,7 +268,7 @@ TEST(TargetGlslTest, Glsl120)
 
 	ASSERT_EQ(1U, pipeline->second.structs[0].members.size());
 	EXPECT_EQ("transform", pipeline->second.structs[0].members[0].name);
-	EXPECT_EQ(0, pipeline->second.structs[0].members[0].offset);
+	EXPECT_EQ(0U, pipeline->second.structs[0].members[0].offset);
 	EXPECT_EQ(16*sizeof(float), pipeline->second.structs[0].members[0].size);
 	EXPECT_EQ(Type::Mat4, pipeline->second.structs[0].members[0].type);
 	EXPECT_EQ(unknown, pipeline->second.structs[0].members[0].structIndex);
@@ -289,7 +289,7 @@ TEST(TargetGlslTest, Glsl120)
 	EXPECT_EQ(Type::Sampler2D, pipeline->second.uniforms[1].type);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[1].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
 	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
@@ -343,7 +343,7 @@ TEST(TargetGlslTest, Glsl120)
 
 	ASSERT_EQ(1U, pipeline->second.structs[0].members.size());
 	EXPECT_EQ("transform", pipeline->second.structs[0].members[0].name);
-	EXPECT_EQ(0, pipeline->second.structs[0].members[0].offset);
+	EXPECT_EQ(0U, pipeline->second.structs[0].members[0].offset);
 	EXPECT_EQ(16*sizeof(float), pipeline->second.structs[0].members[0].size);
 	EXPECT_EQ(Type::Mat4, pipeline->second.structs[0].members[0].type);
 	EXPECT_EQ(unknown, pipeline->second.structs[0].members[0].structIndex);
@@ -364,7 +364,7 @@ TEST(TargetGlslTest, Glsl120)
 	EXPECT_EQ(Type::Sampler2D, pipeline->second.uniforms[1].type);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[1].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
 	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
@@ -439,7 +439,7 @@ TEST(TargetGlslTest, GlslEs300)
 	EXPECT_TRUE(target.compile(result, output, shaderName));
 	EXPECT_TRUE(target.finish(result, output));
 
-	EXPECT_EQ(0, output.getMessages().size());
+	EXPECT_EQ(0U, output.getMessages().size());
 
 	auto unknown = msl::compile::unknown;
 	EXPECT_EQ(2U, result.getPipelines().size());
@@ -460,7 +460,7 @@ TEST(TargetGlslTest, GlslEs300)
 
 	ASSERT_EQ(1U, pipeline->second.structs[0].members.size());
 	EXPECT_EQ("transform", pipeline->second.structs[0].members[0].name);
-	EXPECT_EQ(0, pipeline->second.structs[0].members[0].offset);
+	EXPECT_EQ(0U, pipeline->second.structs[0].members[0].offset);
 	EXPECT_EQ(16*sizeof(float), pipeline->second.structs[0].members[0].size);
 	EXPECT_EQ(Type::Mat4, pipeline->second.structs[0].members[0].type);
 	EXPECT_EQ(unknown, pipeline->second.structs[0].members[0].structIndex);
@@ -472,7 +472,7 @@ TEST(TargetGlslTest, GlslEs300)
 	EXPECT_EQ(Type::Struct, pipeline->second.uniforms[0].type);
 	EXPECT_EQ(0U, pipeline->second.uniforms[0].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[0].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[0].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[0].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].samplerIndex);
 
@@ -481,7 +481,7 @@ TEST(TargetGlslTest, GlslEs300)
 	EXPECT_EQ(Type::Sampler2D, pipeline->second.uniforms[1].type);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[1].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
 	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
@@ -535,7 +535,7 @@ TEST(TargetGlslTest, GlslEs300)
 
 	ASSERT_EQ(1U, pipeline->second.structs[0].members.size());
 	EXPECT_EQ("transform", pipeline->second.structs[0].members[0].name);
-	EXPECT_EQ(0, pipeline->second.structs[0].members[0].offset);
+	EXPECT_EQ(0U, pipeline->second.structs[0].members[0].offset);
 	EXPECT_EQ(16*sizeof(float), pipeline->second.structs[0].members[0].size);
 	EXPECT_EQ(Type::Mat4, pipeline->second.structs[0].members[0].type);
 	EXPECT_EQ(unknown, pipeline->second.structs[0].members[0].structIndex);
@@ -547,7 +547,7 @@ TEST(TargetGlslTest, GlslEs300)
 	EXPECT_EQ(Type::Struct, pipeline->second.uniforms[0].type);
 	EXPECT_EQ(0U, pipeline->second.uniforms[0].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[0].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[0].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[0].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].binding);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[0].samplerIndex);
 
@@ -556,7 +556,7 @@ TEST(TargetGlslTest, GlslEs300)
 	EXPECT_EQ(Type::Sampler2D, pipeline->second.uniforms[1].type);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[1].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
 	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
@@ -631,7 +631,7 @@ TEST(TargetGlslTest, GlslEs100)
 	EXPECT_TRUE(target.compile(result, output, shaderName));
 	EXPECT_TRUE(target.finish(result, output));
 
-	EXPECT_EQ(0, output.getMessages().size());
+	EXPECT_EQ(0U, output.getMessages().size());
 
 	auto unknown = msl::compile::unknown;
 	EXPECT_EQ(2U, result.getPipelines().size());
@@ -652,7 +652,7 @@ TEST(TargetGlslTest, GlslEs100)
 
 	ASSERT_EQ(1U, pipeline->second.structs[0].members.size());
 	EXPECT_EQ("transform", pipeline->second.structs[0].members[0].name);
-	EXPECT_EQ(0, pipeline->second.structs[0].members[0].offset);
+	EXPECT_EQ(0U, pipeline->second.structs[0].members[0].offset);
 	EXPECT_EQ(16*sizeof(float), pipeline->second.structs[0].members[0].size);
 	EXPECT_EQ(Type::Mat4, pipeline->second.structs[0].members[0].type);
 	EXPECT_EQ(unknown, pipeline->second.structs[0].members[0].structIndex);
@@ -673,7 +673,7 @@ TEST(TargetGlslTest, GlslEs100)
 	EXPECT_EQ(Type::Sampler2D, pipeline->second.uniforms[1].type);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[1].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
 	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
@@ -727,7 +727,7 @@ TEST(TargetGlslTest, GlslEs100)
 
 	ASSERT_EQ(1U, pipeline->second.structs[0].members.size());
 	EXPECT_EQ("transform", pipeline->second.structs[0].members[0].name);
-	EXPECT_EQ(0, pipeline->second.structs[0].members[0].offset);
+	EXPECT_EQ(0U, pipeline->second.structs[0].members[0].offset);
 	EXPECT_EQ(16*sizeof(float), pipeline->second.structs[0].members[0].size);
 	EXPECT_EQ(Type::Mat4, pipeline->second.structs[0].members[0].type);
 	EXPECT_EQ(unknown, pipeline->second.structs[0].members[0].structIndex);
@@ -748,7 +748,7 @@ TEST(TargetGlslTest, GlslEs100)
 	EXPECT_EQ(Type::Sampler2D, pipeline->second.uniforms[1].type);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].structIndex);
 	EXPECT_TRUE(pipeline->second.uniforms[1].arrayElements.empty());
-	EXPECT_EQ(0, pipeline->second.uniforms[1].descriptorSet);
+	EXPECT_EQ(0U, pipeline->second.uniforms[1].descriptorSet);
 	EXPECT_EQ(unknown, pipeline->second.uniforms[1].binding);
 	EXPECT_EQ(0U, pipeline->second.uniforms[1].samplerIndex);
 
