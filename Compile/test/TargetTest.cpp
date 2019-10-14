@@ -113,6 +113,7 @@ TEST(TargetTest, FeatureList)
 	TEST_FEATURE(SubpassInputs, counter);
 	TEST_FEATURE(ClipDistance, counter);
 	TEST_FEATURE(CullDistance, counter);
+	TEST_FEATURE(EarlyFragmentTests, counter);
 
 	unsigned int featureCount = Target::featureCount;
 	EXPECT_EQ(featureCount, counter);

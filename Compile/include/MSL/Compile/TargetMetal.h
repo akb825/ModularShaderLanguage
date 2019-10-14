@@ -48,23 +48,32 @@ namespace msl
 class MSL_COMPILE_EXPORT TargetMetal : public Target
 {
 public:
+	/**
+	 * @brief Enum for the platform to target.
+	 */
+	enum class Platform
+	{
+		MacOS,       ///< Target macOS.
+		iOS,         ///< Target iOS.
+		iOSSimulator ///< Target iOS simulator.
+	};
 
 	/**
 	 * @brief Constructs this with the version number.
 	 * @param version The Metal version number.
-	 * @param isIos True if this is Metal for iOS.
+	 * @param platform The platform to target.
 	 */
-	TargetMetal(std::uint32_t version, bool isIos);
+	TargetMetal(std::uint32_t version, Platform platform);
 
 	~TargetMetal();
 	TargetMetal(const TargetMetal&) = delete;
 	TargetMetal& operator=(const TargetMetal&) = delete;
 
 	/**
-	 * @brief Returns whether or not this is for iOS.
-	 * @return True if for iOS.
+	 * @brief Gets the platform that's targetd.
+	 * @return The targeted platform.
 	 */
-	bool isIos() const;
+	Platform getPlatform() const;
 
 	std::uint32_t getId() const override;
 	std::uint32_t getVersion() const override;
@@ -84,7 +93,7 @@ private:
 	std::string getSDK() const;
 
 	std::uint32_t m_version;
-	bool m_ios;
+	Platform m_platform;
 };
 
 } // namespace msl

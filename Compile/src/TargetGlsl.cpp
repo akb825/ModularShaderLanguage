@@ -313,6 +313,11 @@ bool TargetGlsl::featureSupported(Feature feature) const
 			return !m_es && m_version >= 130;
 		case Feature::CullDistance:
 			return !m_es && m_version >= 450;
+		case Feature::EarlyFragmentTests:
+			if (m_es)
+				return m_version >= 310;
+			else
+				return m_version >= 420;
 	}
 
 	return false;

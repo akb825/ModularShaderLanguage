@@ -61,7 +61,8 @@ TEST_F(CompilerTest, CompleteShader)
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
+		std::string glsl =
+			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 			Compiler::getDefaultResources()));
 		compiledStage = true;
@@ -102,7 +103,40 @@ TEST_F(CompilerTest, CompileError)
 
 	auto stage = Stage::Fragment;
 	std::vector<Parser::LineMapping> lineMappings;
-	std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
+	std::string glsl =
+		parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
+	EXPECT_FALSE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+		Compiler::getDefaultResources()));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_LE(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file),
+		pathStr(inputDir/"CompileError.mslh")));
+	EXPECT_EQ(15U, messages[0].line);
+	EXPECT_EQ("'inputss' : undeclared identifier", messages[0].message);
+}
+
+TEST_F(CompilerTest, CompileErrorWithEarlyFragmentTests)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"CompileError.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	preprocessor.addIncludePath(pathStr(inputDir));
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+
+	auto stage = Stage::Fragment;
+	std::vector<Parser::LineMapping> lineMappings;
+	std::string glsl =
+		parser.createShaderString(lineMappings, output, pipeline, stage, false, true);
 	EXPECT_FALSE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 		Compiler::getDefaultResources()));
 
@@ -133,7 +167,8 @@ TEST_F(CompilerTest, CompileWarning)
 
 	auto stage = Stage::Fragment;
 	std::vector<Parser::LineMapping> lineMappings;
-	std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
+	std::string glsl =
+		parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 	EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
 		Compiler::getDefaultResources()));
 
@@ -169,7 +204,8 @@ TEST_F(CompilerTest, MissingEntryPoint)
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
+		std::string glsl =
+			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		if (stage == Stage::Fragment)
 			EXPECT_TRUE(glsl.empty());
 		else
@@ -210,7 +246,8 @@ TEST_F(CompilerTest, DuplicateEntryPoint)
 
 		auto stage = static_cast<Stage>(i);
 		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
+		std::string glsl =
+			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		if (stage == Stage::Fragment)
 			EXPECT_TRUE(glsl.empty());
 		else

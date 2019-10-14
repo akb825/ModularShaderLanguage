@@ -233,7 +233,16 @@ static std::unique_ptr<msl::Target> createGlslTarget(const std::string& targetNa
 static std::unique_ptr<msl::Target> createMetalTarget(const std::string& targetName,
 	const variables_map& config, const std::string& configFilePath)
 {
-	bool ios = targetName == "metal-ios";
+	msl::TargetMetal::Platform platform;
+	if (targetName == "metal-osx")
+		platform = msl::TargetMetal::Platform::MacOS;
+	else if (targetName == "metal-ios")
+		platform = msl::TargetMetal::Platform::iOS;
+	else if (targetName == "metal-ios-simulator")
+		platform = msl::TargetMetal::Platform::iOSSimulator;
+	else
+		return nullptr;
+
 	unsigned int version;
 	if (config.count("version"))
 	{
@@ -267,7 +276,7 @@ static std::unique_ptr<msl::Target> createMetalTarget(const std::string& targetN
 		return nullptr;
 	}
 
-	std::unique_ptr<msl::TargetMetal> target(new msl::TargetMetal(version, ios));
+	std::unique_ptr<msl::TargetMetal> target(new msl::TargetMetal(version, platform));
 
 	return std::move(target);
 }
@@ -463,7 +472,7 @@ int main(int argc, char** argv)
 	options_description configOptions("options in target configuration file");
 	configOptions.add_options()
 		("target", value<std::string>()->required(), "the target to compile for. "
-			"Possible values are: spirv, glsl, glsl-es, metal-osx, metal-ios")
+			"Possible values are: spirv, glsl, glsl-es, metal-osx, metal-ios, metal-ios-simulator")
 		("version", value<std::string>(), "the version of the target. Required for GLSL and "
 			"Metal.")
 		("define", value<std::vector<std::string>>(), "add a define for the preprocessor. A value "
@@ -587,8 +596,11 @@ int main(int argc, char** argv)
 			target.reset(new msl::TargetSpirV);
 		else if (targetName == "glsl" || targetName== "glsl-es")
 			target = createGlslTarget(targetName, config, configFilePath);
-		else if (targetName == "metal-osx" || targetName == "metal-ios")
+		else if (targetName == "metal-osx" || targetName == "metal-ios" ||
+			targetName == "metal-ios-simulator")
+		{
 			target = createMetalTarget(targetName, config, configFilePath);
+		}
 		else
 		{
 			std::cerr << "error: unkown target: " << targetName << std::endl << std::endl;

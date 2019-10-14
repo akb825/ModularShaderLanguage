@@ -43,20 +43,20 @@ TEST(ParserTest, StageFilters)
 
 	Parser::Pipeline pipeline;
 	std::vector<Parser::LineMapping> lineMappings;
-	EXPECT_EQ(readFile(outputDir/"StageFilters.vert"),
-		parser.createShaderString(lineMappings, output, pipeline, Stage::Vertex, true) + '\n');
+	EXPECT_EQ(readFile(outputDir/"StageFilters.vert"), parser.createShaderString(lineMappings,
+		output, pipeline, Stage::Vertex, true, false) + '\n');
 	EXPECT_EQ(readFile(outputDir/"StageFilters.tessc"),
 		parser.createShaderString(lineMappings, output, pipeline,
-			Stage::TessellationControl, true) + '\n');
+			Stage::TessellationControl, true, false) + '\n');
 	EXPECT_EQ(readFile(outputDir/"StageFilters.tesse"),
 		parser.createShaderString(lineMappings, output, pipeline,
-			Stage::TessellationEvaluation, true) + '\n');
-	EXPECT_EQ(readFile(outputDir/"StageFilters.geom"),
-		parser.createShaderString(lineMappings, output, pipeline, Stage::Geometry, true) + '\n');
-	EXPECT_EQ(readFile(outputDir/"StageFilters.frag"),
-		parser.createShaderString(lineMappings, output, pipeline, Stage::Fragment, true) + '\n');
-	EXPECT_EQ(readFile(outputDir/"StageFilters.comp"),
-		parser.createShaderString(lineMappings, output, pipeline, Stage::Compute, true) + '\n');
+			Stage::TessellationEvaluation, true, false) + '\n');
+	EXPECT_EQ(readFile(outputDir/"StageFilters.geom"), parser.createShaderString(lineMappings,
+		output, pipeline, Stage::Geometry, true, false) + '\n');
+	EXPECT_EQ(readFile(outputDir/"StageFilters.frag"), parser.createShaderString(lineMappings,
+		output, pipeline, Stage::Fragment, true, false) + '\n');
+	EXPECT_EQ(readFile(outputDir/"StageFilters.comp"), parser.createShaderString(lineMappings,
+		output, pipeline, Stage::Compute, true, false) + '\n');
 }
 
 TEST(ParserTest, InvalidStageName)
@@ -279,8 +279,35 @@ TEST(ParserTest, Pipeline)
 	EXPECT_EQ("computeEntry", pipeline.entryPoints[5].value);
 
 	std::vector<Parser::LineMapping> lineMappings;
-	EXPECT_EQ(readFile(outputDir/"Pipeline.frag"),
-		parser.createShaderString(lineMappings, output, pipeline, Stage::Fragment) + '\n');
+	EXPECT_EQ(readFile(outputDir/"Pipeline.frag"), parser.createShaderString(lineMappings, output,
+		pipeline, Stage::Fragment, false, false) + '\n');
+}
+
+TEST(ParserTest, PipelineEarlyFragmentTests)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	boost::filesystem::path outputDir = exeDir/"outputs";
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output,
+		pathStr(inputDir/"PipelineEarlyFragmentTests.msl")));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	EXPECT_EQ("Foo", pipeline.name);
+	EXPECT_EQ("vertEntry", pipeline.entryPoints[0].value);
+	EXPECT_EQ("tessControlEntry", pipeline.entryPoints[1].value);
+	EXPECT_EQ("tessEvaluationEntry", pipeline.entryPoints[2].value);
+	EXPECT_EQ("geometryEntry", pipeline.entryPoints[3].value);
+	EXPECT_EQ("fragEntry", pipeline.entryPoints[4].value);
+	EXPECT_EQ("computeEntry", pipeline.entryPoints[5].value);
+
+	std::vector<Parser::LineMapping> lineMappings;
+	EXPECT_EQ(readFile(outputDir/"PipelineEarlyFragmentTests.frag"), parser.createShaderString(
+		lineMappings, output, pipeline, Stage::Fragment, false, true) + '\n');
 }
 
 TEST(ParserTest, UnnamedPipeline)
@@ -455,19 +482,17 @@ TEST(ParserTest, Varying)
 	EXPECT_EQ("fragEntry", pipeline.entryPoints[4].value);
 
 	std::vector<Parser::LineMapping> lineMappings;
-	EXPECT_EQ(readFile(outputDir/"Varying.vert"),
-		parser.createShaderString(lineMappings, output, pipeline, Stage::Vertex) + '\n');
+	EXPECT_EQ(readFile(outputDir/"Varying.vert"), parser.createShaderString(lineMappings, output,
+		pipeline, Stage::Vertex, false, false) + '\n');
 
-	EXPECT_EQ(readFile(outputDir/"Varying.tesc"),
-		parser.createShaderString(lineMappings, output, pipeline, Stage::TessellationControl) +
-		'\n');
+	EXPECT_EQ(readFile(outputDir/"Varying.tesc"), parser.createShaderString(lineMappings, output,
+		pipeline, Stage::TessellationControl, false, false) + '\n');
 
-	EXPECT_EQ(readFile(outputDir/"Varying.tese"),
-		parser.createShaderString(lineMappings, output, pipeline, Stage::TessellationEvaluation) +
-		'\n');
+	EXPECT_EQ(readFile(outputDir/"Varying.tese"), parser.createShaderString(lineMappings, output,
+		pipeline, Stage::TessellationEvaluation, false, false) + '\n');
 
-	EXPECT_EQ(readFile(outputDir/"Varying.frag"),
-		parser.createShaderString(lineMappings, output, pipeline, Stage::Fragment) + '\n');
+	EXPECT_EQ(readFile(outputDir/"Varying.frag"), parser.createShaderString(lineMappings, output,
+		pipeline, Stage::Fragment, false, false) + '\n');
 }
 
 TEST(ParserTest, VaryingMissingOpenParen)
@@ -726,6 +751,52 @@ TEST(ParserTest, PatchControlPoints)
 	}
 }
 
+TEST(ParserTest, EarlyFragmentTests)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	{
+		std::stringstream stream("pipeline Test {early_fragment_tests = true ;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_TRUE(parser.parse(output));
+
+		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		ASSERT_EQ(1U, pipelines.size());
+		EXPECT_EQ(Bool::True, pipelines[0].renderState.earlyFragmentTests);
+	}
+
+	{
+		std::stringstream stream("pipeline Test {early_fragment_tests = false;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_TRUE(parser.parse(output));
+
+		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		ASSERT_EQ(1U, pipelines.size());
+		EXPECT_EQ(Bool::False, pipelines[0].renderState.earlyFragmentTests);
+	}
+
+	{
+		std::stringstream stream("pipeline Test {early_fragment_tests = asdf;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_FALSE(parser.parse(output));
+
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(39U, messages[0].column);
+		EXPECT_EQ("invalid boolean value: 'asdf'", messages[0].message);
+	}
+}
+
 TEST(ParserTest, UnnamedSamplerState)
 {
 	std::string path = pathStr(exeDir/"test.msl");
@@ -891,8 +962,8 @@ TEST(ParserTest, RemoveUniformBlocks)
 
 	std::vector<Parser::LineMapping> lineMappings;
 	Parser::Pipeline pipeline;
-	EXPECT_EQ(readFile(outputDir/"RemoveUniformBlocks.vert"),
-		parser.createShaderString(lineMappings, output, pipeline, Stage::Vertex, true) + '\n');
+	EXPECT_EQ(readFile(outputDir/"RemoveUniformBlocks.vert"), parser.createShaderString(
+			lineMappings, output, pipeline, Stage::Vertex, true, false) + '\n');
 }
 
 TEST(ParserTest, LineNumbers)
@@ -953,7 +1024,7 @@ TEST(ParserTest, LineNumbers)
 
 	std::vector<Parser::LineMapping> lineMappings;
 	Parser::Pipeline pipeline;
-	parser.createShaderString(lineMappings, output, pipeline, Stage::Vertex, true);
+	parser.createShaderString(lineMappings, output, pipeline, Stage::Vertex, true, false);
 
 	ASSERT_EQ(expectedMappings.size(), lineMappings.size());
 	for (std::size_t i = 0; i < expectedMappings.size(); ++i)
@@ -1015,7 +1086,7 @@ TEST(ParserTest, LineNumbersRemoveUniformBlocks)
 
 	std::vector<Parser::LineMapping> lineMappings;
 	Parser::Pipeline pipeline;
-	parser.createShaderString(lineMappings, output, pipeline, Stage::Vertex, true);
+	parser.createShaderString(lineMappings, output, pipeline, Stage::Vertex, true, false);
 
 	ASSERT_EQ(expectedMappings.size(), lineMappings.size());
 	for (std::size_t i = 0; i < expectedMappings.size(); ++i)

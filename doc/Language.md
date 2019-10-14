@@ -39,8 +39,8 @@ The shader file is first run through a C99 preprocessor. The following \#defines
 
 * `HAS_UNIFORM_BUFFERS`: Set to 1 if uniform buffers are available, 0 if not. If disabled, uniform buffers will be converted to push constants.(equivalent to individual uniforms)
 * `HAS_BUFFERS`: Set to 1 if shader storage buffers are available, 0 if not.
-* `HAS_STD140`: Set to 1 if the std140 block layout is available, 0 if not.
-* `HAS_STD430`: Set to 1 if the std430 block layout is available, 0 if not.
+* `HAS_STD140`: Set to 1 if the `std140` block layout is available, 0 if not.
+* `HAS_STD430`: Set to 1 if the `std430` block layout is available, 0 if not.
 * `HAS_BINDING_POINTS`: Set to 1 if binding point layout is available, 0 if not.
 * `HAS_DESCRIPTOR_SETS`: Set to 1 if descriptor set layout is available, 0 if not.
 
@@ -58,22 +58,23 @@ The shader file is first run through a C99 preprocessor. The following \#defines
 
 ### Other functionality
 
-* `HAS_DERIVATIVES`: Set to 1 if the dFdx() an dFdy() functions are available, 0 if not.
-* `HAS_ADVANCED_DERIVATIVES`: Set to 1 if the coarse and fine versions of dFdx() and dFdy() are available, 0 if not.
+* `HAS_DERIVATIVES`: Set to 1 if the `dFdx()` an `dFdy()` functions are available, 0 if not.
+* `HAS_ADVANCED_DERIVATIVES`: Set to 1 if the coarse and fine versions of `dFdx()` and `dFdy()` are available, 0 if not.
 * `HAS_MEMORY_BARRIERS`: Set to 1 if memory barrier functions are available, 0 if not.
 * `HAS_PRIMITIVE_STREAMS`: Set to 1 if primitive streams are available for geometry shaders, 0 if not.
 * `HAS_INTERPOLATION_FUNCTIONS`: Set to 1 if interpolation functions for centroid, sample, and offset are available, 0 if not.
-* `HAS_TEXTURE_GATHER`: Set to 1 if textureGather() functions are available, 0 if not.
-* `HAS_TEXEL_FETCH`: Set to 1 if texelFetch() functions are available, 0 if not.
-* `HAS_TEXTURE_SIZE`: Set to 1 if textureSize() functions are available, 0 if not.
-* `HAS_TEXTURE_QUERY_LOD`: Set to 1 if texureQueryLod() functions are available, 0 if not.
-* `HAS_TEXTURE_QUERY_LEVELS`: Set to 1 if textureQueryLevels() functions are available, 0 if not.
-* `HAS_TEXTURE_SAMPLES`: Set to 1 if textureSamples() functions are available, 0 if not.
-* `HAS_BIT_FUNCTIONS`: Set to 1 if integer functions such as bitfieldInsert() and findMSB() are available, 0 if not.
-* `HAS_PACKING_FUNCTIONS`: Set to 1 if packing and unpacking functions such as packUnorm2x16() are available, 0 if not.
+* `HAS_TEXTURE_GATHER`: Set to 1 if `textureGather()` functions are available, 0 if not.
+* `HAS_TEXEL_FETCH`: Set to 1 if `texelFetch()` functions are available, 0 if not.
+* `HAS_TEXTURE_SIZE`: Set to 1 if `textureSize()` functions are available, 0 if not.
+* `HAS_TEXTURE_QUERY_LOD`: Set to 1 if `texureQueryLod()` functions are available, 0 if not.
+* `HAS_TEXTURE_QUERY_LEVELS`: Set to 1 if `textureQueryLevels()` functions are available, 0 if not.
+* `HAS_TEXTURE_SAMPLES`: Set to 1 if `textureSamples()` functions are available, 0 if not.
+* `HAS_BIT_FUNCTIONS`: Set to 1 if integer functions such as `bitfieldInsert()` and `findMSB()` are available, 0 if not.
+* `HAS_PACKING_FUNCTIONS`: Set to 1 if packing and unpacking functions such as `packUnorm2x16()` are available, 0 if not.
 * `HAS_SUBPASS_INPUTS`: Set to 1 if subpass inputs for reading directly from framebuffers are available, 0 if not.
-* `HAS_CLIP_DISTANCE`: Set to 1 if the gl_ClipDistance array is supported, 0 if not. Note that even if the shader language supports clip distances, the target itself may not, so additional runtime checks may be required.
-* `HAS_CULL_DISTANCE`: Set to 1 if the gl_CullDistance array is supported, 0 if not. Note that even if the shader language supports cull distances, the target itself may not, so additional runtime checks may be required.
+* `HAS_CLIP_DISTANCE`: Set to 1 if the `gl_ClipDistance` array is supported, 0 if not. Note that even if the shader language supports clip distances, the target itself may not, so additional runtime checks may be required.
+* `HAS_CULL_DISTANCE`: Set to 1 if the `gl_CullDistance` array is supported, 0 if not. Note that even if the shader language supports cull distances, the target itself may not, so additional runtime checks may be required.
+* `HAS_EARLY_FRAGMENT_TESTS`: Set to 1 if early fragment tests may be explicitly enabled with the `early_fragment_tests` render state.
 
 # Filtering
 
@@ -457,3 +458,4 @@ The blend attachment states may be prefixed with `attachment#_` to apply to a sp
 ### Other render states
 
 * `patch_control_points`: set to an integer value of the number of control points for tessellation patches.
+* `early_fragment_tests`: set to `true` to enable running of depth/stencil tests before running the fragment shader. This will also write the depth value before running the shader, so any modifications of the depth within the shader will be ignored. Similarly, if the fragment is discarded the depth value will not be discarded.

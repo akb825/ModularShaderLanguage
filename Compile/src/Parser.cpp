@@ -1268,10 +1268,16 @@ static ParseResult readRenderState(Output& output, Parser::Pipeline& pipeline, c
 		}
 		return ParseResult::Success;
 	}
-	// Patch control points
-	else if (isAttachment(attachmentIndex, key.value, "patch_control_points"))
+	// Other states
+	else if (key.value == "patch_control_points")
 	{
 		if (!getInt(output, pipeline.renderState.patchControlPoints, value))
+			return ParseResult::Error;
+		return ParseResult::Success;
+	}
+	else if (key.value == "early_fragment_tests")
+	{
+		if (!getBool(output, pipeline.renderState.earlyFragmentTests, value))
 			return ParseResult::Error;
 		return ParseResult::Success;
 	}
@@ -1540,7 +1546,8 @@ bool Parser::parse(Output& output, int options)
 }
 
 std::string Parser::createShaderString(std::vector<LineMapping>& lineMappings, Output& output,
-	const Pipeline& pipeline, Stage stage, bool ignoreEntryPoint) const
+	const Pipeline& pipeline, Stage stage, bool ignoreEntryPoint,
+	bool earlyFragmentTests) const
 {
 	lineMappings.clear();
 	std::string shaderString;
@@ -1553,6 +1560,15 @@ std::string Parser::createShaderString(std::vector<LineMapping>& lineMappings, O
 	{
 		needsPushConstants |=
 			!m_elements[static_cast<unsigned int>(Element::UniformBlock)][stageIndex].empty();
+	}
+
+	// Add line for early fragment tests if enabled.
+	if (stage == Stage::Fragment && earlyFragmentTests)
+	{
+		shaderString += "layout(early_fragment_tests) in;\n";
+		lineMappings.emplace_back();
+		lineMappings.back().fileName = "<internal>";
+		lineMappings.back().line = 0;
 	}
 
 	// Add precision and struct elements first. This ensures that any type declarations are present
@@ -2155,6 +2171,7 @@ bool Parser::removeUniformBlock(std::string& str, std::vector<LineMapping>& line
 	if (!(m_options & RemoveUniformBlocks))
 		return false;
 
+	// Add the contents of the uniform block, stripping the block itself.
 	bool newline = true;
 	bool processed = false;
 	unsigned int braceCount = 0;

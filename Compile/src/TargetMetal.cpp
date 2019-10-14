@@ -128,9 +128,9 @@ static std::vector<std::uint32_t> setBindingIndices(const std::vector<std::uint3
 	return adjustedSpirv;
 }
 
-TargetMetal::TargetMetal(std::uint32_t version, bool isIos)
+TargetMetal::TargetMetal(std::uint32_t version, Platform platform)
 	: m_version(version)
-	, m_ios(isIos)
+	, m_platform(platform)
 {
 }
 
@@ -138,17 +138,17 @@ TargetMetal::~TargetMetal()
 {
 }
 
-bool TargetMetal::isIos() const
+TargetMetal::Platform TargetMetal::getPlatform() const
 {
-	return m_ios;
+	return m_platform;
 }
 
 std::uint32_t TargetMetal::getId() const
 {
-	if (m_ios)
-		return MSL_CREATE_ID('M', 'T', 'L', 'I');
-	else
+	if (m_platform == Platform::MacOS)
 		return MSL_CREATE_ID('M', 'T', 'L', 'X');
+	else
+		return MSL_CREATE_ID('M', 'T', 'L', 'I');
 }
 
 std::uint32_t TargetMetal::getVersion() const
@@ -170,6 +170,8 @@ bool TargetMetal::featureSupported(Feature feature) const
 			return false;
 		case Feature::TessellationStages:
 			return m_version >= 102;
+		case Feature::EarlyFragmentTests:
+			return m_version >= 102;
 		default:
 			return true;
 	}
@@ -180,10 +182,10 @@ std::vector<std::pair<std::string, std::string>> TargetMetal::getExtraDefines() 
 	std::stringstream stream;
 	stream << getVersion();
 	std::vector<std::pair<std::string, std::string>> defines = {{"METAL_VERSION", stream.str()}};
-	if (m_ios)
-		defines.emplace_back("METAL_IOS_VERSION", stream.str());
-	else
+	if (m_platform == Platform::MacOS)
 		defines.emplace_back("METAL_OSX_VERSION", stream.str());
+	else
+		defines.emplace_back("METAL_IOS_VERSION", stream.str());
 	return defines;
 }
 
@@ -208,7 +210,8 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 	std::vector<std::uint32_t> adjustedSpirv = setBindingIndices(spirv, uniforms, uniformIds,
 		hasPushConstant, bufferCount, textureCount);
 
-	std::string metal = MetalOutput::disassemble(output, adjustedSpirv, stage, m_version, m_ios,
+	bool ios = m_platform != Platform::MacOS;
+	std::string metal = MetalOutput::disassemble(output, adjustedSpirv, stage, m_version, ios,
 		outputToBuffer, hasPushConstant, bufferCount, textureCount, fileName, line, column);
 	if (metal.empty())
 		return false;
@@ -218,7 +221,7 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 
 	// Compile this entry point.
 	std::stringstream versionStr;
-	if (m_ios)
+	if (ios)
 		versionStr << "-std=ios-metal";
 	else
 		versionStr << "-std=osx-metal";
@@ -253,10 +256,16 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 
 std::string TargetMetal::getSDK() const
 {
-	if (m_ios)
-		return "iphoneos";
-	else
-		return "macosx";
+	switch (m_platform)
+	{
+		case Platform::MacOS:
+			return "macosx";
+		case Platform::iOS:
+			return "iphoneos";
+		case Platform::iOSSimulator:
+			return "iphonesimulator";
+	}
+	return "";
 }
 
 } // namespace msl

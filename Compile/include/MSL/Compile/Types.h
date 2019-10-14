@@ -742,6 +742,11 @@ struct RenderState
 	 * @brief The number of cull distances.
 	 */
 	std::uint32_t cullDistanceCount = 0;
+
+	/**
+	 * @brief Whether or not to enable early fragment tests.
+	 */
+	Bool earlyFragmentTests = Bool::Unset;
 };
 
 /**

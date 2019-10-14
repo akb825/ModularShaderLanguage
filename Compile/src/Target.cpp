@@ -100,6 +100,8 @@ static Target::FeatureInfo featureInfos[] =
 		"Subpass inputs for reading directly from framebuffers."},
 	{"ClipDistance", "HAS_CLIP_DISTANCE", "Support for gl_ClipDistance array."},
 	{"CullDistance", "HAS_CULL_DISTANCE", "Support for gl_CullDistance array."},
+	{"EarlyFragmentTests", "HAS_EARLY_FRAGMENT_TESTS",
+		"Support for explicitly enabling early fragment tests."},
 };
 
 static_assert(sizeof(featureInfos)/sizeof(*featureInfos) == Target::featureCount,
@@ -685,6 +687,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 	int options = 0;
 	if (!featureEnabled(Feature::UniformBlocks))
 		options |= Parser::RemoveUniformBlocks;
+	bool hasEarlyFragmentTests = featureEnabled(Feature::EarlyFragmentTests);
 
 	if (!parser.parse(output, options))
 		return false;
@@ -770,7 +773,9 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			if (pipeline.entryPoints[i].value.empty())
 				continue;
 
-			std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage);
+			std::string glsl = parser.createShaderString(lineMappings, output, pipeline, stage,
+				false, hasEarlyFragmentTests &&
+					pipeline.renderState.earlyFragmentTests == Bool::True);
 			if (glsl.empty())
 				return false;
 			if (!Compiler::compile(stages, output, fileName, glsl, lineMappings, stage, resources))

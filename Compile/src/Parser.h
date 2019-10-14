@@ -82,7 +82,8 @@ public:
 
 	bool parse(Output& output, int options = 0);
 	std::string createShaderString(std::vector<LineMapping>& lineMappings, Output& output,
-		const Pipeline& pipeline, Stage stage, bool ignoreEntryPoint = false) const;
+		const Pipeline& pipeline, Stage stage, bool ignoreEntryPoint,
+		bool earlyFragmentTests) const;
 
 private:
 	enum class Element

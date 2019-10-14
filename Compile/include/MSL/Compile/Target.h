@@ -108,13 +108,14 @@ public:
 		SubpassInputs,          ///< Subpass inputs for reading directly from framebuffers.
 		ClipDistance,           ///< Support for gl_ClipDistance array.
 		CullDistance,           ///< Support for gl_CullDistance array.
+		EarlyFragmentTests,     ///< Support for explicitly enabling early fragment tests.
 	};
 
 	/**
 	 * @brief The number of feature enum elements.
 	 */
 	static const unsigned int featureCount =
-		static_cast<unsigned int>(Feature::CullDistance) + 1;
+		static_cast<unsigned int>(Feature::EarlyFragmentTests) + 1;
 
 	/**
 	 * @brief Information about a feature.

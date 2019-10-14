@@ -33,7 +33,7 @@ For example:
 
 ## Options in target configuration file
 
-* **target = _arg_**: the target to compile for. Possible values are: spirv, glsl, glsl-es, metal-osx, metal-ios
+* **target = _arg_**: the target to compile for. Possible values are: spirv, glsl, glsl-es, metal-osx, metal-ios, metal-ios-simulator
 * **version = _arg_**: the version of the target. Required for GLSL and Metal.
 * **define = _arg_**: add a define for the preprocessor. A value may optionally be assigned with =. (i.e. DEFINE=val)
 * **force-enable = _arg_**: force a feature to be enabled
