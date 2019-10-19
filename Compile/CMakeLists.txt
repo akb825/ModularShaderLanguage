@@ -37,6 +37,14 @@ file(GLOB spirvCrossSources ${SPIRV_CROSS_DIR}/spirv_*.cpp ${SPIRV_CROSS_DIR}/sp
 set(externalSources
 	${glslangSources} ${glslangOsSources} ${glslResourceSources} ${spirvCrossSources})
 
+# SPIRV-Tools has too complex of a build configuration to just embed the source in this library,
+# but the CMakeLists.txt is set up to properly manage library exports. Only need to install the
+# libraries if a static build, though.
+set(SPIRV_SKIP_EXECUTABLES ON CACHE BOOL "")
+set(SPIRV_SKIP_TESTS ON CACHE BOOL "")
+set(SKIP_SPIRV_TOOLS_INSTALL ${MSL_SHARED} CACHE BOOL "")
+add_subdirectory(SPIRV-Tools)
+
 # Don't care about warnings for external files.
 if (MSVC)
 	set_source_files_properties(${externalSources} PROPERTIES COMPILE_FLAGS /w)
@@ -55,7 +63,7 @@ target_include_directories(msl_compile
 			${SHARED_DIR}
 			src)
 target_link_libraries(msl_compile
-	PRIVATE ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+	PRIVATE SPIRV-Tools-opt ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 msl_set_folder(msl_compile libs)
 msl_setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
@@ -63,7 +71,14 @@ msl_setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
 	FILES ${sources})
 msl_setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR} FILES ${externalSources})
 
-msl_install_library(TARGET msl_compile MODULE Compile)
+if (NOT MSL_SHARED)
+    # Only need to include the external dependencies for static library build so it can be linked.
+	set(externalDepends EXTERNAL_DEPENDS SPIRV-Tools-opt BOOST_DEPENDS system thread filesystem
+		wave)
+else()
+	set(externalDepends)
+endif()
+msl_install_library(TARGET msl_compile MODULE Compile ${externalDepends})
 set(MSL_DOC_PROJECTS ${MSL_DOC_PROJECTS} Compile PARENT_SCOPE)
 
 add_subdirectory(test)

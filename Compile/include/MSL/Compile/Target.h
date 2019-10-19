@@ -118,6 +118,16 @@ public:
 		static_cast<unsigned int>(Feature::EarlyFragmentTests) + 1;
 
 	/**
+	 * @brief Enum for the optimization passes to run.
+	 */
+	enum class Optimize
+	{
+		None,    ///< Don't perform any optimizations.
+		Minimal, ///< Minimal optimizations such as dead-code removal.
+		Full     ///< Full optimization passes.
+	};
+
+	/**
 	 * @brief Information about a feature.
 	 *
 	 * This can be used for configuration files and generation of help documentation.
@@ -308,24 +318,16 @@ public:
 	void setRemapVariables(bool remap);
 
 	/**
-	 * @brief Retruns whether or not to optimize the output.
-	 *
-	 * This will do some simple optimizations on the SPIR-V code. This can also be used for targets
-	 * when passing through other tools.
-	 *
-	 * @return True to optimize.
+	 * @brief Retruns the optimization mode.
+	 * @return The optimization mode.
 	 */
-	bool getOptimize() const;
+	Optimize getOptimize() const;
 
 	/**
-	 * @brief Sets whether or not to optimize the output.
-	 *
-	 * This will do some simple optimizations on the SPIR-V code. This can also be used for targets
-	 * when passing through other tools.
-	 *
-	 * @param optimize True to optimize.
+	 * @brief Sets the optimization mode.
+	 * @param optimize The optimization mode.
 	 */
-	void setOptimize(bool optimize);
+	void setOptimize(Optimize optimize);
 
 	/**
 	 * @brief Returns whether or not to strip the debug symbols from SPIR-V.
@@ -491,10 +493,10 @@ private:
 	std::string m_spirVToolCommand;
 
 	bool m_remapVariables;
-	bool m_optimize;
 	bool m_stripDebug;
 	bool m_dummyBindings;
 	bool m_adjustableBindings;
+	Optimize m_optimize;
 	std::string m_resourcesFile;
 };
 

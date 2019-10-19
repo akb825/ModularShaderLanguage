@@ -1,6 +1,8 @@
 trigger:
   - master
 variables:
+  - name: cmake.commonArgs
+    value: -DCMAKE_FIND_ROOT_PATH=$(dependency.location) -DCMAKE_PREFIX_PATH=$(dependency.location)
   - group: Common
 jobs:
   - job: Linux
@@ -8,10 +10,18 @@ jobs:
         vmImage: ubuntu-16.04
     workspace:
         clean: all
+    strategy:
+        matrix:
+            # Force system version of boost.
+            static:
+                lib.type: Static
+                cmake.args: -DMSL_SHARED=OFF -DBOOST_ROOT=/usr
+            shared:
+                lib.type: Shared
+                cmake.args: -DMSL_SHARED=ON -DBOOST_ROOT=/usr
     steps:
       - script: |
-            git submodule init
-            git submodule update
+            ./update-submodules.sh
             # Need system boost for static libs.
             sudo apt-get -y install libboost-all-dev
         displayName: Download submodules
@@ -22,46 +32,82 @@ jobs:
             git checkout $(gtest.version)
             mkdir build
             cd build
-            cmake .. -DCMAKE_BUILD_TYPE=Release \
-                -DCMAKE_INSTALL_PREFIX=$(dependency.location)
+            cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=$(dependency.location)
             cmake --build . -j $(cores.count)
             cmake --build . --target install
         displayName: Build gtest
         workingDirectory: $(Build.BinariesDirectory)
       - task: CMake@1
         inputs:
-            workingDirectory: $(Build.BinariesDirectory)
-            # Force system version of boost.
+            workingDirectory: $(Build.BinariesDirectory)/Debug
             cmakeArgs: >
-                -DCMAKE_BUILD_TYPE=Debug -DCMAKE_FIND_ROOT_PATH=$(dependency.location)
-                -DBOOST_ROOT=/usr $(Build.SourcesDirectory)
-        displayName: Run CMake
+                -DCMAKE_BUILD_TYPE=Debug $(cmake.commonArgs) $(cmake.args) $(Build.SourcesDirectory)
+        displayName: Run CMake debug
       - task: CMake@1
         inputs:
-            workingDirectory: $(Build.BinariesDirectory)
+            workingDirectory: $(Build.BinariesDirectory)/Debug
             cmakeArgs: --build . -j $(cores.count)
-        displayName: Build
+        displayName: Build debug
       - task: CMake@1
         inputs:
-            workingDirectory: $(Build.BinariesDirectory)
+            workingDirectory: $(Build.BinariesDirectory)/Debug
             cmakeArgs: --build . --target test
-        displayName: Run tests
+        displayName: Run tests debug
         timeoutInMinutes: 5
       - task: PublishTestResults@2
         inputs:
             testResultsFormat: JUnit
             testResultsFiles: '*.xml'
             searchFolder: $(Common.TestResultsDirectory)
-        displayName: Publish test results
+            failTaskOnFailedTests: true
+            testRunTitle: Linux-$(lib.type)-Debug
+            buildConfiguration: $(lib.type)-Debug
+        displayName: Publish test results debug
+      - script: rm -r $(Common.TestResultsDirectory)/*
+        displayName: Clear test results
+      - task: CMake@1
+        inputs:
+            workingDirectory: $(Build.BinariesDirectory)/Release
+            cmakeArgs: >
+                -DCMAKE_BUILD_TYPE=Release $(cmake.commonArgs) $(cmake.args)
+                $(Build.SourcesDirectory)
+        displayName: Run CMake release
+      - task: CMake@1
+        inputs:
+            workingDirectory: $(Build.BinariesDirectory)/Release
+            cmakeArgs: --build . -j $(cores.count)
+        displayName: Build release
+      - task: CMake@1
+        inputs:
+            workingDirectory: $(Build.BinariesDirectory)/Release
+            cmakeArgs: --build . --target test
+        displayName: Run tests release
+        timeoutInMinutes: 5
+      - task: PublishTestResults@2
+        inputs:
+            testResultsFormat: JUnit
+            testResultsFiles: '*.xml'
+            searchFolder: $(Common.TestResultsDirectory)
+            failTaskOnFailedTests: true
+            testRunTitle: Linux-$(lib.type)-Release
+            buildConfiguration: $(lib.type)-Release
+        displayName: Publish test results release
   - job: Mac
     pool:
         vmImage: macOS-10.13
     workspace:
         clean: all
+    strategy:
+        matrix:
+            static:
+                lib.type: Static
+                cmake.args: -DMSL_SHARED=OFF
+            shared:
+                lib.type: Shared
+                cmake.args: -DMSL_SHARED=ON
     steps:
       - script: |
-            git submodule init
-            git submodule update
+            ./update-submodules.sh
             brew install boost
         displayName: Download submodules
         workingDirectory: $(Build.SourcesDirectory)
@@ -79,37 +125,85 @@ jobs:
         workingDirectory: $(Build.BinariesDirectory)
       - task: CMake@1
         inputs:
-            workingDirectory: $(Build.BinariesDirectory)
+            workingDirectory: $(Build.BinariesDirectory)/Debug
             cmakeArgs: >
-                -DCMAKE_BUILD_TYPE=Debug -DCMAKE_FIND_ROOT_PATH=$(dependency.location)
-                $(Build.SourcesDirectory)
-        displayName: Run CMake
+                -DCMAKE_BUILD_TYPE=Debug $(cmake.commonArgs) $(cmake.args) $(Build.SourcesDirectory)
+        displayName: Run CMake debug
       - task: CMake@1
         inputs:
-            workingDirectory: $(Build.BinariesDirectory)
+            workingDirectory: $(Build.BinariesDirectory)/Debug
             cmakeArgs: --build . -j $(cores.count)
-        displayName: Build
+        displayName: Build debug
       - task: CMake@1
         inputs:
-            workingDirectory: $(Build.BinariesDirectory)
+            workingDirectory: $(Build.BinariesDirectory)/Debug
             cmakeArgs: --build . --target test
-        displayName: Run tests
+        displayName: Run tests debug
         timeoutInMinutes: 5
       - task: PublishTestResults@2
         inputs:
             testResultsFormat: JUnit
             testResultsFiles: '*.xml'
             searchFolder: $(Common.TestResultsDirectory)
-        displayName: Publish test results
+            failTaskOnFailedTests: true
+            testRunTitle: Mac-$(lib.type)-Debug
+            buildConfiguration: $(lib.type)-Debug
+        displayName: Publish test results debug
+      - script: rm -r $(Common.TestResultsDirectory)/*
+        displayName: Clear test results
+      - task: CMake@1
+        inputs:
+            workingDirectory: $(Build.BinariesDirectory)/Release
+            cmakeArgs: >
+                -DCMAKE_BUILD_TYPE=Release $(cmake.commonArgs) $(cmake.args)
+                $(Build.SourcesDirectory)
+        displayName: Run CMake release
+      - task: CMake@1
+        inputs:
+            workingDirectory: $(Build.BinariesDirectory)/Release
+            cmakeArgs: --build . -j $(cores.count)
+        displayName: Build release
+      - task: CMake@1
+        inputs:
+            workingDirectory: $(Build.BinariesDirectory)/Release
+            cmakeArgs: --build . --target test
+        displayName: Run tests release
+        timeoutInMinutes: 5
+      - task: PublishTestResults@2
+        inputs:
+            testResultsFormat: JUnit
+            testResultsFiles: '*.xml'
+            searchFolder: $(Common.TestResultsDirectory)
+            failTaskOnFailedTests: true
+            testRunTitle: Mac-$(lib.type)-Release
+            buildConfiguration: $(lib.type)-Release
+        displayName: Publish test results release
   - job: Windows
     pool:
         vmImage: vs2017-win2016
     workspace:
         clean: all
+    strategy:
+        matrix:
+            win32_static:
+                arch: Win32
+                lib.type: Static
+                cmake.args: -DMSL_SHARED=OFF
+            win32_shared:
+                arch: Win32
+                lib.type: Shared
+                cmake.args: -DMSL_SHARED=ON
+            win64_static:
+                arch: x64
+                lib.type: Static
+                cmake.args: -DMSL_SHARED=OFF
+            win64_shared:
+                arch: x64
+                lib.type: Shared
+                cmake.args: -DMSL_SHARED=ON
     steps:
       - bash: |
-            git submodule init
-            git submodule update
+            ./update-submodules.sh
         displayName: Download submodules
         workingDirectory: $(Build.SourcesDirectory)
       - bash: |
@@ -120,7 +214,8 @@ jobs:
         displayName: Checkout gtest
         workingDirectory: $(Build.BinariesDirectory)
       - script: |
-            cmake .. -DCMAKE_INSTALL_PREFIX=$(dependency.location) -Dgtest_force_shared_crt=ON
+            cmake .. -DCMAKE_INSTALL_PREFIX=$(dependency.location) -Dgtest_force_shared_crt=ON ^
+                -A $(arch)
             cmake --build . --config Debug
             cmake --build . --config Debug --target install
             REM Need to also install release build to see the debug version.
@@ -131,25 +226,56 @@ jobs:
       - task: CMake@1
         inputs:
             workingDirectory: $(Build.BinariesDirectory)
-            cmakeArgs: >
-                -DCMAKE_PREFIX_PATH=$(dependency.location) $(Build.SourcesDirectory)
+            cmakeArgs: $(cmake.commonArgs) $(cmake.args) -A $(arch) $(Build.SourcesDirectory)
         displayName: Run CMake
       - task: CMake@1
         inputs:
             workingDirectory: $(Build.BinariesDirectory)
             cmakeArgs: --build . --config Debug
-        displayName: Build
+        displayName: Build debug
       - task: CMake@1
         inputs:
             workingDirectory: $(Build.BinariesDirectory)
             cmakeArgs: --build . --config Debug --target run_tests
-        displayName: Run tests
+        displayName: Run tests debug
         timeoutInMinutes: 5
+        env:
+            PATH: $(PATH);$(BOOST_ROOT)\lib
       - task: PublishTestResults@2
         inputs:
             testResultsFormat: JUnit
             testResultsFiles: '*.xml'
             searchFolder: $(Common.TestResultsDirectory)
-        displayName: Publish test results
+            failTaskOnFailedTests: true
+            testRunTitle: Windows-$(arch)-$(lib.type)
+            buildPlatform: $(arch)
+            buildConfiguration: $(lib.type)-Debug
+        displayName: Publish test results debug
+      - bash: rm -r *
+        displayName: Clear test results
+        workingDirectory: $(Common.TestResultsDirectory)
+      - task: CMake@1
+        inputs:
+            workingDirectory: $(Build.BinariesDirectory)
+            cmakeArgs: --build . --config Release
+        displayName: Build release
+      - task: CMake@1
+        inputs:
+            workingDirectory: $(Build.BinariesDirectory)
+            cmakeArgs: --build . --config Release --target run_tests
+        displayName: Run tests release
+        timeoutInMinutes: 5
+        env:
+            PATH: $(PATH);$(BOOST_ROOT)\lib
+      - task: PublishTestResults@2
+        inputs:
+            testResultsFormat: JUnit
+            testResultsFiles: '*.xml'
+            searchFolder: $(Common.TestResultsDirectory)
+            failTaskOnFailedTests: true
+            testRunTitle: Windows-$(arch)-$(lib.type)
+            buildPlatform: $(arch)
+            buildConfiguration: $(lib.type)-Release
+        displayName: Publish test results release
 
 # vim: ts=4 sts=4 sw=4 et

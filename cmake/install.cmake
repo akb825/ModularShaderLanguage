@@ -15,7 +15,7 @@
 function(msl_install_library)
 	set(options)
 	set(oneValueArgs TARGET MODULE)
-	set(multiValueArgs DEPENDENCIES)
+	set(multiValueArgs DEPENDS EXTERNAL_DEPENDS BOOST_DEPENDS)
 	cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
 	set(moduleName MSL${ARGS_MODULE})
@@ -91,9 +91,16 @@ function(msl_install_library)
 		FILE ${MSL_EXPORTS_DIR}/${moduleName}Targets.cmake)
 
 	set(dependencies "include(CMakeFindDependencyMacro)")
-	foreach (dependency ${ARGS_DEPENDENCIES})
+	foreach (dependency ${ARGS_DEPENDS})
 		set(dependencies "${dependencies}\nfind_dependency(MSL${dependency} ${MSL_VERSION} EXACT)")
 	endforeach()
+	foreach (dependency ${ARGS_EXTERNAL_DEPENDS})
+		set(dependencies "${dependencies}\nfind_dependency(${dependency})")
+	endforeach()
+	if (ARGS_BOOST_DEPENDS)
+		string(REPLACE ";" " " boostDepends "${ARGS_BOOST_DEPENDS}")
+		set(dependencies "${dependencies}\nfind_dependency(Boost COMPONENTS ${boostDepends})")
+	endif()
 
 	set(configPath ${MSL_EXPORTS_DIR}/${moduleName}Config.cmake)
 	file(WRITE ${configPath}

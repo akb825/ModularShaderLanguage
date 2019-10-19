@@ -22,6 +22,8 @@
 #include <atomic>
 #include <cstring>
 
+#include <spirv-tools/optimizer.hpp>
+
 #if MSL_GCC || MSL_CLANG
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
@@ -338,13 +340,20 @@ void Compiler::process(SpirV& spirv, int processOptions)
 		options |= spv::spirvbin_t::MAP_ALL;
 	if (processOptions & DeadCodeElimination)
 		options |= spv::spirvbin_t::DCE_ALL;
-	if (processOptions & Optimize)
-		options |= spv::spirvbin_t::OPT_ALL;
 	if (processOptions & StripDebug)
 		options |= spv::spirvbin_t::STRIP;
 
 	spv::spirvbin_t remapper;
 	remapper.remap(spirv, options);
+
+	if (processOptions & Optimize)
+	{
+		spvtools::Optimizer optimizer(SPV_ENV_VULKAN_1_0);
+		optimizer.RegisterPerformancePasses();
+		SpirV optimizedSpirV;
+		if (optimizer.Run(spirv.data(), spirv.size()*sizeof(std::uint32_t), &optimizedSpirV))
+			spirv = std::move(optimizedSpirV);
+	}
 }
 
 } // namespace msl

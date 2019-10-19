@@ -43,6 +43,7 @@ The following software is required to build MSL:
 * [boost](http://www.boost.org/) (required unless only building client library without tests)
 * [glslang](https://github.com/KhronosGroup/glslang) (required for compiler, provided as submodule)
 * [SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross) (required for compiler, provided as submodule)
+* [SPIRV-Tools](https://github.com/KhronosGroup/SPIRV-Tools) (required for compiler, provided as submodule)
 * [FlatBuffers](https://google.github.io/flatbuffers/) (required if changing the schema)
 * [doxygen](http://www.stack.nl/~dimitri/doxygen/) (optional)
 * [gtest](https://github.com/google/googletest) (optional)
@@ -51,10 +52,7 @@ The following software is required to build MSL:
 
 > **Note:** When Boost is manually installed, the appropriate variables should be set. In the case of Windows, the `BOOST_LIBRARYDIR` and `BOOST_ROOT` variables should be set. (examples: `BOOST_LIBRARYDIR=C:\local\boost_1_64_0\lib64-msvc-14.1` and `BOOST_ROOT=C:\local\boost_1_64_0`) In Windows, the value of `BOOST_LIBRARYDIR` should also be on `PATH` to ensure the DLLs can be loaded.
 
-The glslang and SPIRV-Cross submodules can be grabbed by running the commands
-
-	ModularShaderLanguage$ git submodule init
-	ModularShaderLanguage$ git submodule update
+The glslang, SPIRV-Cross, and SPIRV-Tools submodules can be grabbed by running script `update-submodules.sh`.
 
 Additionally, additional tools such as Microsoft's HLSL compiler and Apple's Metal compiler will be required when compiling shaders for certain platforms.
 

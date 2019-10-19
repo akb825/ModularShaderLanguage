@@ -4,3 +4,6 @@
 [submodule "SPIRV-Cross"]
 	path = Compile/SPIRV-Cross
 	url = https://github.com/KhronosGroup/SPIRV-Cross
+[submodule "Compile/SPIRV-Tools"]
+	path = Compile/SPIRV-Tools
+	url = https://github.com/akb825/SPIRV-Tools.git

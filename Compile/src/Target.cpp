@@ -440,10 +440,10 @@ const Target::FeatureInfo& Target::getFeatureInfo(Target::Feature feature)
 
 Target::Target()
 	: m_remapVariables(false)
-	, m_optimize(false)
 	, m_stripDebug(false)
 	, m_dummyBindings(false)
 	, m_adjustableBindings(false)
+	, m_optimize(Optimize::None)
 {
 	Compiler::initialize();
 	m_featureStates.fill(State::Default);
@@ -550,12 +550,12 @@ void Target::setRemapVariables(bool remap)
 	m_remapVariables = remap;
 }
 
-bool Target::getOptimize() const
+Target::Optimize Target::getOptimize() const
 {
 	return m_optimize;
 }
 
-void Target::setOptimize(bool optimize)
+void Target::setOptimize(Optimize optimize)
 {
 	m_optimize = optimize;
 }
@@ -724,12 +724,16 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 	int processOptions = 0;
 	if (m_remapVariables)
 		processOptions |= Compiler::RemapVariables;
-	if (m_optimize)
+	switch (m_optimize)
 	{
-		// NOTE: Optimization may end up renaming interface variables.
-		if (!needsReflectionNames())
-			processOptions |= Compiler::Optimize;
-		processOptions |= Compiler::DeadCodeElimination;
+		case Optimize::None:
+			break;
+		case Optimize::Minimal:
+			processOptions |= Compiler::DeadCodeElimination;
+			break;
+		case Optimize::Full:
+			processOptions |= Compiler::DeadCodeElimination | Compiler::Optimize;
+			break;
 	}
 
 	SpirVProcessor::Strip strip;
