@@ -474,9 +474,9 @@ int main(int argc, char** argv)
 		("warn-none,w", "disable all warnings")
 		("warn-error,W", "treat warnings as errors")
 		("strip,s", "strip debug symbols")
-		("optimize,O", value<unsigned int>()->default_value(2), "optimize the compiled result. "
-			"An integer value (1, 2) determines the optimization level. If not provided, the "
-			"maximum level will be used.");
+		("optimize,O", value<unsigned int>(), "optimize the compiled result. An integer value "
+			"(1, 2) determines the optimization level. If not provided, the maximum level will be "
+			"used.");
 
 	options_description configOptions("options in target configuration file");
 	configOptions.add_options()

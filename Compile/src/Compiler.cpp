@@ -348,11 +348,16 @@ void Compiler::process(SpirV& spirv, int processOptions)
 
 	if (processOptions & Optimize)
 	{
+		// NOTE: We have some known invalid code, such as missing bindings. Therefore we need to
+		// skip validation.
+		spv_optimizer_options options = spvOptimizerOptionsCreate();
+		spvOptimizerOptionsSetRunValidator(options, false);
 		spvtools::Optimizer optimizer(SPV_ENV_VULKAN_1_0);
 		optimizer.RegisterPerformancePasses();
 		SpirV optimizedSpirV;
-		if (optimizer.Run(spirv.data(), spirv.size()*sizeof(std::uint32_t), &optimizedSpirV))
+		if (optimizer.Run(spirv.data(), spirv.size(), &optimizedSpirV, options))
 			spirv = std::move(optimizedSpirV);
+		spvOptimizerOptionsDestroy(options);
 	}
 }
 
