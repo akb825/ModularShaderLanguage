@@ -23,6 +23,7 @@ jobs:
       - script: |
             ./update-submodules.sh
             # Need system boost for static libs.
+            sudo apt-get update
             sudo apt-get -y install libboost-all-dev
         displayName: Download submodules
         workingDirectory: $(Build.SourcesDirectory)
