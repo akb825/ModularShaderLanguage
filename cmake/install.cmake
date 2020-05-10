@@ -1,4 +1,4 @@
-# Copyright 2018 Aaron Barany
+# Copyright 2018-2020 Aaron Barany
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -47,26 +47,12 @@ function(msl_install_library)
 		if (MSVC)
 			set_property(TARGET ${ARGS_TARGET} APPEND PROPERTY COMPILE_DEFINITIONS
 				MSL_${moduleUpper}_BUILD)
-			file(WRITE ${exportPath}
-				"#pragma once\n\n"
-				"#ifdef MSL_${moduleUpper}_BUILD\n"
-				"#define MSL_${moduleUpper}_EXPORT __declspec(dllexport)\n"
-				"#else\n"
-				"#define MSL_${moduleUpper}_EXPORT __declspec(dllimport)\n"
-				"#endif\n")
-		elseif (CMAKE_C_COMPILER_ID MATCHES "GNU" OR CMAKE_C_COMPILER_ID MATCHES "Clang")
-			file(WRITE ${exportPath}
-				"#pragma once\n\n"
-				"#define MSL_${moduleUpper}_EXPORT __attribute__((visibility(\"default\")))\n")
+			configure_file(${MSL_SOURCE_DIR}/cmake/templates/WindowsExport.h.in ${exportPath} @ONLY)
 		else()
-			file(WRITE ${exportPath}
-				"#pragma once\n\n"
-				"#define MSL_${moduleUpper}_EXPORT\n")
+			configure_file(${MSL_SOURCE_DIR}/cmake/templates/UnixExport.h.in ${exportPath} @ONLY)
 		endif()
 	else()
-		file(WRITE ${exportPath}
-			"#pragma once\n\n"
-			"#define MSL_${moduleUpper}_EXPORT\n")
+		configure_file(${MSL_SOURCE_DIR}/cmake/templates/NoExport.h.in ${exportPath} @ONLY)
 	endif()
 
 	if (NOT MSL_INSTALL)
@@ -135,8 +121,7 @@ function(msl_install_master_config)
 	else()
 		set(configPackageDir lib/cmake/MSL)
 	endif()
-	file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/cmake/MSLConfig.cmake
-		DESTINATION ${MSL_EXPORTS_DIR})
-	install(FILES ${CMAKE_CURRENT_SOURCE_DIR}/cmake/MSLConfig.cmake ${versionPath}
+	file(COPY ${MSL_SOURCE_DIR}/cmake/templates/MSLConfig.cmake DESTINATION ${MSL_EXPORTS_DIR})
+	install(FILES ${MSL_SOURCE_DIR}/cmake/templates/MSLConfig.cmake ${versionPath}
 		DESTINATION ${configPackageDir} COMPONENT dev)
 endfunction()

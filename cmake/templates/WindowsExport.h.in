@@ -1,0 +1,6 @@
+#pragma once
+#ifdef MSL_@moduleUpper@_BUILD
+#define MSL_@moduleUpper@_EXPORT __declspec(dllexport)
+#else
+#define MSL_@moduleUpper@_EXPORT __declspec(dllimport)
+#endif

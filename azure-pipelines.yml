@@ -3,6 +3,8 @@ trigger:
 variables:
   - name: cmake.commonArgs
     value: -DCMAKE_FIND_ROOT_PATH=$(dependency.location) -DCMAKE_PREFIX_PATH=$(dependency.location)
+  - name: boost.winVer
+    value: $(BOOST_ROOT_1_72_0)
   - group: Common
 jobs:
   - job: Linux
@@ -193,19 +195,19 @@ jobs:
             win32_static:
                 arch: Win32
                 lib.type: Static
-                cmake.args: -DMSL_SHARED=OFF
+                cmake.args: -DMSL_SHARED=OFF -DBOOST_ROOT=$(boost.winVer)
             win32_shared:
                 arch: Win32
                 lib.type: Shared
-                cmake.args: -DMSL_SHARED=ON
+                cmake.args: -DMSL_SHARED=ON -DBOOST_ROOT=$(boost.winVer)
             win64_static:
                 arch: x64
                 lib.type: Static
-                cmake.args: -DMSL_SHARED=OFF
+                cmake.args: -DMSL_SHARED=OFF -DBOOST_ROOT=$(boost.winVer)
             win64_shared:
                 arch: x64
                 lib.type: Shared
-                cmake.args: -DMSL_SHARED=ON
+                cmake.args: -DMSL_SHARED=ON -DBOOST_ROOT=$(boost.winVer)
     steps:
       - bash: |
             ./update-submodules.sh
@@ -246,7 +248,7 @@ jobs:
         continueOnError: true
         timeoutInMinutes: 5
         env:
-            PATH: $(PATH);$(BOOST_ROOT)\lib
+            PATH: $(PATH);$(boost.winVer)\lib
       - task: PublishTestResults@2
         inputs:
             testResultsFormat: JUnit
@@ -273,7 +275,7 @@ jobs:
         continueOnError: true
         timeoutInMinutes: 5
         env:
-            PATH: $(PATH);$(BOOST_ROOT)\lib
+            PATH: $(PATH);$(boost.winVer)\lib
       - task: PublishTestResults@2
         inputs:
             testResultsFormat: JUnit

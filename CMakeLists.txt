@@ -58,8 +58,10 @@ endif()
 
 set(MSL_MAJOR_VERSION 1)
 set(MSL_MINOR_VERSION 4)
-set(MSL_PATCH_VERSION 0)
+set(MSL_PATCH_VERSION 1)
 set(MSL_VERSION ${MSL_MAJOR_VERSION}.${MSL_MINOR_VERSION}.${MSL_PATCH_VERSION})
+
+set(MSL_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(cmake/config.cmake)
 include(cmake/install.cmake)
