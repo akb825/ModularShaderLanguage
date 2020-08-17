@@ -40,7 +40,8 @@ Multiple shader files may be compiled into a module. Examples for combining modu
 The following software is required to build MSL:
 
 * [cmake](https://cmake.org/) 3.1 or later
-* [boost](http://www.boost.org/) (required unless only building client library without tests)
+* [boost](https://www.boost.org/) (required unless only building client library without tests)
+* [Python](https://www.python.org/) 3 or later (required unless only building client library)
 * [glslang](https://github.com/KhronosGroup/glslang) (required for compiler, provided as submodule)
 * [SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross) (required for compiler, provided as submodule)
 * [SPIRV-Tools](https://github.com/KhronosGroup/SPIRV-Tools) (required for compiler, provided as submodule)
