@@ -1,6 +1,3 @@
-if (NOT MSL_SHARED)
-	set(Boost_USE_STATIC_LIBS ON)
-endif()
 find_package(Boost COMPONENTS system program_options)
 
 file(GLOB_RECURSE sources *.cpp *.h)
@@ -8,8 +5,9 @@ add_executable(mslc ${sources})
 
 target_include_directories(mslc PRIVATE ${Boost_INCLUDE_DIRS})
 target_link_libraries(mslc PRIVATE msl_compile ${Boost_LIBRARIES})
-target_compile_definitions(mslc PRIVATE MSL_MAJOR_VERSION=${MSL_MAJOR_VERSION}
-	MSL_MINOR_VERSION=${MSL_MINOR_VERSION} MSL_PATCH_VERSION=${MSL_PATCH_VERSION})
+target_compile_definitions(mslc PRIVATE BOOST_ALL_NO_LIB
+	MSL_MAJOR_VERSION=${MSL_MAJOR_VERSION} MSL_MINOR_VERSION=${MSL_MINOR_VERSION}
+	MSL_PATCH_VERSION=${MSL_PATCH_VERSION})
 
 msl_set_folder(mslc tools)
 

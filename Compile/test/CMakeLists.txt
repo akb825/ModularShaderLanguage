@@ -21,6 +21,7 @@ target_include_directories(msl_compile_test
 	PRIVATE ${GTEST_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} ${GLSLANG_DIR} ${SPIRV_CROSS_DIR} ../src)
 target_link_libraries(msl_compile_test
 	PRIVATE msl_compile ${Boost_LIBRARIES} ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_compile_definitions(msl_compile_test PRIVATE BOOST_ALL_NO_LIB)
 
 msl_set_folder(msl_compile_test tests)
 add_test(NAME MSLCompileTest COMMAND msl_compile_test)

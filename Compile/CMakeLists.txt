@@ -1,6 +1,3 @@
-if (NOT MSL_SHARED)
-	set(Boost_USE_STATIC_LIBS ON)
-endif()
 find_package(Boost COMPONENTS system thread filesystem wave REQUIRED)
 find_package(Threads)
 
@@ -64,6 +61,7 @@ target_include_directories(msl_compile
 			src)
 target_link_libraries(msl_compile
 	PRIVATE SPIRV-Tools-opt ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_compile_definitions(msl_compile PRIVATE BOOST_ALL_NO_LIB)
 
 msl_set_folder(msl_compile libs)
 msl_setup_filters(SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src
