@@ -19,10 +19,10 @@ jobs:
             # Force system version of boost.
             static:
                 lib.type: Static
-                cmake.args: -DMSL_SHARED=OFF -DBOOST_ROOT=/usr
+                cmake.args: -DMSL_SHARED=OFF
             shared:
                 lib.type: Shared
-                cmake.args: -DMSL_SHARED=ON -DBOOST_ROOT=/usr
+                cmake.args: -DMSL_SHARED=ON
     steps:
       - script: |
             ./update-submodules.sh
