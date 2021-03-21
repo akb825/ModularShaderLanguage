@@ -28,6 +28,9 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
 #pragma GCC diagnostic ignored "-Wsign-compare"
+#elif MSL_MSC
+#pragma warning(push)
+#pragma warning(disable: 4018)
 #endif
 
 #include "SPIRV/GlslangToSpv.h"
@@ -37,6 +40,8 @@
 
 #if MSL_GCC || MSL_CLANG
 #pragma GCC diagnostic pop
+#elif MSL_MSC
+#pragma warning(pop)
 #endif
 
 namespace msl

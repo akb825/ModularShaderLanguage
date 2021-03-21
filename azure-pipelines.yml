@@ -3,8 +3,10 @@ trigger:
 variables:
   - name: cmake.commonArgs
     value: -DCMAKE_FIND_ROOT_PATH=$(dependency.location) -DCMAKE_PREFIX_PATH=$(dependency.location)
-  - name: boost.winVer
-    value: $(BOOST_ROOT_1_72_0)
+  - name: msvc.version
+    value: 14.1
+  - name: win.boostDir
+    value: C:\hostedtoolcache\windows\Boost
   - group: Common
 jobs:
   - job: Linux
@@ -194,25 +196,35 @@ jobs:
         matrix:
             win32_static:
                 arch: Win32
+                bits: 32
                 lib.type: Static
-                cmake.args: -DMSL_SHARED=OFF -DBOOST_ROOT=$(boost.winVer)
+                cmake.args: -DMSL_SHARED=OFF -DBOOST_ROOT=$(win.boostDir)
             win32_shared:
                 arch: Win32
+                bits: 32
                 lib.type: Shared
-                cmake.args: -DMSL_SHARED=ON -DBOOST_ROOT=$(boost.winVer)
+                cmake.args: -DMSL_SHARED=ON -DBOOST_ROOT=$(win.boostDir)
             win64_static:
                 arch: x64
+                bits: 64
                 lib.type: Static
-                cmake.args: -DMSL_SHARED=OFF -DBOOST_ROOT=$(boost.winVer)
+                cmake.args: -DMSL_SHARED=OFF -DBOOST_ROOT=$(win.boostDir)
             win64_shared:
                 arch: x64
+                bits: 64
                 lib.type: Shared
-                cmake.args: -DMSL_SHARED=ON -DBOOST_ROOT=$(boost.winVer)
+                cmake.args: -DMSL_SHARED=ON -DBOOST_ROOT=$(win.boostDir)
     steps:
       - bash: |
             ./update-submodules.sh
         displayName: Download submodules
         workingDirectory: $(Build.SourcesDirectory)
+      - powershell: |
+            $underscoreVersion = "$(boost.version)".replace(".", "_")
+            $url = "https://sourceforge.net/projects/boost/files/boost-binaries/$(boost.version)/boost_$underscoreVersion-msvc-$(msvc.version)-$(bits).exe"
+            (New-Object System.Net.WebClient).DownloadFile($url, "$env:TEMP\boost.exe")
+            Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=$(win.boostDir)"
+        displayName: Download boost
       - bash: |
             git clone https://github.com/google/googletest.git googletest-code
             cd googletest-code
@@ -248,7 +260,7 @@ jobs:
         continueOnError: true
         timeoutInMinutes: 5
         env:
-            PATH: $(PATH);$(boost.winVer)\lib
+            PATH: $(PATH);$(win.boostDir)\lib$(bits)-msvc-$(msvc.version)
       - task: PublishTestResults@2
         inputs:
             testResultsFormat: JUnit
@@ -275,7 +287,7 @@ jobs:
         continueOnError: true
         timeoutInMinutes: 5
         env:
-            PATH: $(PATH);$(boost.winVer)\lib
+            PATH: $(PATH);$(win.boostDir)\lib$(bits)-msvc-$(msvc.version)
       - task: PublishTestResults@2
         inputs:
             testResultsFormat: JUnit
