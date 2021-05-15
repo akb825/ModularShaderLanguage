@@ -1150,8 +1150,19 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) RasterizationState FLATBUFFERS_FINAL_CLAS
   float lineWidth_;
 
  public:
-  RasterizationState() {
-    memset(static_cast<void *>(this), 0, sizeof(RasterizationState));
+  RasterizationState()
+      : depthClampEnable_(0),
+        rasterizerDiscardEnable_(0),
+        polygonMode_(0),
+        cullMode_(0),
+        frontFace_(0),
+        depthBiasEnable_(0),
+        padding0__(0),
+        depthBiasConstantFactor_(0),
+        depthBiasClamp_(0),
+        depthBiasSlopeFactor_(0),
+        lineWidth_(0) {
+    (void)padding0__;
   }
   RasterizationState(mslb::Bool _depthClampEnable, mslb::Bool _rasterizerDiscardEnable, mslb::PolygonMode _polygonMode, mslb::CullMode _cullMode, mslb::FrontFace _frontFace, mslb::Bool _depthBiasEnable, float _depthBiasConstantFactor, float _depthBiasClamp, float _depthBiasSlopeFactor, float _lineWidth)
       : depthClampEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthClampEnable))),
@@ -1241,8 +1252,18 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) MultisampleState FLATBUFFERS_FINAL_CLASS 
   int16_t padding2__;
 
  public:
-  MultisampleState() {
-    memset(static_cast<void *>(this), 0, sizeof(MultisampleState));
+  MultisampleState()
+      : sampleShadingEnable_(0),
+        padding0__(0),
+        padding1__(0),
+        minSampleShading_(0),
+        sampleMask_(0),
+        alphaToCoverageEnable_(0),
+        alphaToOneEnable_(0),
+        padding2__(0) {
+    (void)padding0__;
+    (void)padding1__;
+    (void)padding2__;
   }
   MultisampleState(mslb::Bool _sampleShadingEnable, float _minSampleShading, uint32_t _sampleMask, mslb::Bool _alphaToCoverageEnable, mslb::Bool _alphaToOneEnable)
       : sampleShadingEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_sampleShadingEnable))),
@@ -1253,7 +1274,8 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) MultisampleState FLATBUFFERS_FINAL_CLASS 
         alphaToCoverageEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_alphaToCoverageEnable))),
         alphaToOneEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_alphaToOneEnable))),
         padding2__(0) {
-    (void)padding0__;    (void)padding1__;
+    (void)padding0__;
+    (void)padding1__;
     (void)padding2__;
   }
   mslb::Bool sampleShadingEnable() const {
@@ -1300,8 +1322,14 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) StencilOpState FLATBUFFERS_FINAL_CLASS {
   uint32_t reference_;
 
  public:
-  StencilOpState() {
-    memset(static_cast<void *>(this), 0, sizeof(StencilOpState));
+  StencilOpState()
+      : failOp_(0),
+        passOp_(0),
+        depthFailOp_(0),
+        compareOp_(0),
+        compareMask_(0),
+        writeMask_(0),
+        reference_(0) {
   }
   StencilOpState(mslb::StencilOp _failOp, mslb::StencilOp _passOp, mslb::StencilOp _depthFailOp, mslb::CompareOp _compareOp, uint32_t _compareMask, uint32_t _writeMask, uint32_t _reference)
       : failOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_failOp))),
@@ -1371,8 +1399,20 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) DepthStencilState FLATBUFFERS_FINAL_CLASS
   float maxDepthBounds_;
 
  public:
-  DepthStencilState() {
-    memset(static_cast<void *>(this), 0, sizeof(DepthStencilState));
+  DepthStencilState()
+      : depthTestEnable_(0),
+        depthWriteEnable_(0),
+        depthCompareOp_(0),
+        depthBoundsTestEnable_(0),
+        stencilTestEnable_(0),
+        padding0__(0),
+        padding1__(0),
+        frontStencil_(),
+        backStencil_(),
+        minDepthBounds_(0),
+        maxDepthBounds_(0) {
+    (void)padding0__;
+    (void)padding1__;
   }
   DepthStencilState(mslb::Bool _depthTestEnable, mslb::Bool _depthWriteEnable, mslb::CompareOp _depthCompareOp, mslb::Bool _depthBoundsTestEnable, mslb::Bool _stencilTestEnable, const mslb::StencilOpState &_frontStencil, const mslb::StencilOpState &_backStencil, float _minDepthBounds, float _maxDepthBounds)
       : depthTestEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthTestEnable))),
@@ -1386,7 +1426,8 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) DepthStencilState FLATBUFFERS_FINAL_CLASS
         backStencil_(_backStencil),
         minDepthBounds_(flatbuffers::EndianScalar(_minDepthBounds)),
         maxDepthBounds_(flatbuffers::EndianScalar(_maxDepthBounds)) {
-    (void)padding0__;    (void)padding1__;
+    (void)padding0__;
+    (void)padding1__;
   }
   mslb::Bool depthTestEnable() const {
     return static_cast<mslb::Bool>(flatbuffers::EndianScalar(depthTestEnable_));
@@ -1457,8 +1498,15 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(1) BlendAttachmentState FLATBUFFERS_FINAL_CL
   int8_t colorWriteMask_;
 
  public:
-  BlendAttachmentState() {
-    memset(static_cast<void *>(this), 0, sizeof(BlendAttachmentState));
+  BlendAttachmentState()
+      : blendEnable_(0),
+        srcColorBlendFactor_(0),
+        dstColorBlendFactor_(0),
+        colorBlendOp_(0),
+        srcAlphaBlendFactor_(0),
+        dstAlphaBlendFactor_(0),
+        alphaBlendOp_(0),
+        colorWriteMask_(0) {
   }
   BlendAttachmentState(mslb::Bool _blendEnable, mslb::BlendFactor _srcColorBlendFactor, mslb::BlendFactor _dstColorBlendFactor, mslb::BlendOp _colorBlendOp, mslb::BlendFactor _srcAlphaBlendFactor, mslb::BlendFactor _dstAlphaBlendFactor, mslb::BlendOp _alphaBlendOp, mslb::ColorMask _colorWriteMask)
       : blendEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_blendEnable))),
@@ -1539,8 +1587,23 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) SamplerState FLATBUFFERS_FINAL_CLASS {
   int16_t padding1__;
 
  public:
-  SamplerState() {
-    memset(static_cast<void *>(this), 0, sizeof(SamplerState));
+  SamplerState()
+      : minFilter_(0),
+        magFilter_(0),
+        mipFilter_(0),
+        addressModeU_(0),
+        addressModeV_(0),
+        addressModeW_(0),
+        padding0__(0),
+        mipLodBias_(0),
+        maxAnisotropy_(0),
+        minLod_(0),
+        maxLod_(0),
+        borderColor_(0),
+        compareOp_(0),
+        padding1__(0) {
+    (void)padding0__;
+    (void)padding1__;
   }
   SamplerState(mslb::Filter _minFilter, mslb::Filter _magFilter, mslb::MipFilter _mipFilter, mslb::AddressMode _addressModeU, mslb::AddressMode _addressModeV, mslb::AddressMode _addressModeW, float _mipLodBias, float _maxAnisotropy, float _minLod, float _maxLod, mslb::BorderColor _borderColor, mslb::CompareOp _compareOp)
       : minFilter_(flatbuffers::EndianScalar(static_cast<int8_t>(_minFilter))),
@@ -1641,8 +1704,9 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) ArrayInfo FLATBUFFERS_FINAL_CLASS {
   uint32_t stride_;
 
  public:
-  ArrayInfo() {
-    memset(static_cast<void *>(this), 0, sizeof(ArrayInfo));
+  ArrayInfo()
+      : length_(0),
+        stride_(0) {
   }
   ArrayInfo(uint32_t _length, uint32_t _stride)
       : length_(flatbuffers::EndianScalar(_length)),
@@ -1670,8 +1734,10 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) ComputeLocalSize FLATBUFFERS_FINAL_CLASS 
   uint32_t z_;
 
  public:
-  ComputeLocalSize() {
-    memset(static_cast<void *>(this), 0, sizeof(ComputeLocalSize));
+  ComputeLocalSize()
+      : x_(0),
+        y_(0),
+        z_(0) {
   }
   ComputeLocalSize(uint32_t _x, uint32_t _y, uint32_t _z)
       : x_(flatbuffers::EndianScalar(_x)),
@@ -1774,7 +1840,6 @@ struct BlendStateBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  BlendStateBuilder &operator=(const BlendStateBuilder &);
   flatbuffers::Offset<BlendState> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<BlendState>(end);
@@ -1914,7 +1979,6 @@ struct RenderStateBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  RenderStateBuilder &operator=(const RenderStateBuilder &);
   flatbuffers::Offset<RenderState> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<RenderState>(end);
@@ -2043,7 +2107,6 @@ struct StructMemberBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  StructMemberBuilder &operator=(const StructMemberBuilder &);
   flatbuffers::Offset<StructMember> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<StructMember>(end);
@@ -2148,7 +2211,6 @@ struct StructBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  StructBuilder &operator=(const StructBuilder &);
   flatbuffers::Offset<Struct> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Struct>(end);
@@ -2303,7 +2365,6 @@ struct UniformBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  UniformBuilder &operator=(const UniformBuilder &);
   flatbuffers::Offset<Uniform> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Uniform>(end);
@@ -2437,7 +2498,6 @@ struct AttributeBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  AttributeBuilder &operator=(const AttributeBuilder &);
   flatbuffers::Offset<Attribute> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Attribute>(end);
@@ -2521,7 +2581,6 @@ struct FragmentOutputBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  FragmentOutputBuilder &operator=(const FragmentOutputBuilder &);
   flatbuffers::Offset<FragmentOutput> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<FragmentOutput>(end);
@@ -2592,7 +2651,6 @@ struct ShaderBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  ShaderBuilder &operator=(const ShaderBuilder &);
   flatbuffers::Offset<Shader> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Shader>(end);
@@ -2762,7 +2820,6 @@ struct PipelineBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  PipelineBuilder &operator=(const PipelineBuilder &);
   flatbuffers::Offset<Pipeline> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Pipeline>(end);
@@ -2878,7 +2935,6 @@ struct ShaderDataBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  ShaderDataBuilder &operator=(const ShaderDataBuilder &);
   flatbuffers::Offset<ShaderData> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<ShaderData>(end);
@@ -3008,7 +3064,6 @@ struct ModuleBuilder {
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  ModuleBuilder &operator=(const ModuleBuilder &);
   flatbuffers::Offset<Module> Finish() {
     const auto end = fbb_.EndTable(start_);
     auto o = flatbuffers::Offset<Module>(end);
