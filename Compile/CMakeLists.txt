@@ -3,10 +3,11 @@ find_package(Threads)
 
 set(GLSLANG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/glslang)
 set(SPIRV_CROSS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/SPIRV-Cross)
-if (NOT EXISTS ${GLSLANG_DIR} OR NOT EXISTS ${SPIRV_CROSS_DIR})
+set(SPIRV_TOOLS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/SPIRV-Tools)
+if (NOT EXISTS ${GLSLANG_DIR} OR NOT EXISTS ${SPIRV_CROSS_DIR} OR NOT EXISTS ${SPIRV_TOOLS_DIR})
 	message(FATAL_ERROR
-		"glslang or SPIRV-Cross not found. Run 'git submodule init' and "
-		"'git submodule update' to pull the submodules.")
+		"glslang, SPIRV-Cross, or SPIRV-Tools not found. Run 'git submodule update --init' to pull "
+		"the submodules.")
 endif()
 
 file(GLOB_RECURSE sources src/*.cpp src/*.h include/*.h)
@@ -31,18 +32,18 @@ file(GLOB_RECURSE glslangSources
 set(glslResourceSources
 	${GLSLANG_DIR}/StandAlone/ResourceLimits.cpp ${GLSLANG_DIR}/StandAlone/ResourceLimits.h)
 file(GLOB spirvCrossSources ${SPIRV_CROSS_DIR}/spirv_*.cpp ${SPIRV_CROSS_DIR}/spirv_*.hpp)
-set(externalSources
-	${glslangSources} ${glslangOsSources} ${glslResourceSources} ${spirvCrossSources})
 
 # SPIRV-Tools has too complex of a build configuration to just embed the source in this library,
 # but the CMakeLists.txt is set up to properly manage library exports. Only need to install the
 # libraries if a static build, though.
-set(SPIRV_SKIP_EXECUTABLES ON CACHE BOOL "")
-set(SPIRV_SKIP_TESTS ON CACHE BOOL "")
-set(SKIP_SPIRV_TOOLS_INSTALL ${MSL_SHARED} CACHE BOOL "")
+set(SPIRV_SKIP_EXECUTABLES ON CACHE BOOL "" FORCE)
+set(SPIRV_SKIP_TESTS ON CACHE BOOL "" FORCE)
+set(SKIP_SPIRV_TOOLS_INSTALL ${MSL_SHARED} CACHE BOOL "" FORCE)
 add_subdirectory(SPIRV-Tools)
 
 # Don't care about warnings for external files.
+set(externalSources
+	${glslangSources} ${glslangOsSources} ${glslResourceSources} ${spirvCrossSources})
 if (MSVC)
 	set_source_files_properties(${externalSources} PROPERTIES COMPILE_FLAGS /w)
 else()

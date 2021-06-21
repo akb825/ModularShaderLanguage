@@ -1154,7 +1154,7 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 		++i;
 	}
 
-	for (const std::pair<std::uint32_t, std::uint32_t>& uniformIndices : data.uniformVars)
+	for (const auto& uniformIndices : data.uniformVars)
 	{
 		processor.uniformIds[i] = uniformIndices.first;
 		std::uint32_t typeId = uniformIndices.second;
@@ -1197,7 +1197,7 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 		++i;
 	}
 
-	for (const std::pair<std::uint32_t, std::uint32_t>& imageIndices : data.imageVars)
+	for (const auto& imageIndices : data.imageVars)
 	{
 		processor.uniformIds[i] = imageIndices.first;
 		std::uint32_t typeId = imageIndices.second;
@@ -1250,7 +1250,7 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 	inputOutputs.reserve(inputOutputVars.size());
 	inputOutputIds.reserve(inputOutputVars.size());
 	std::vector<ArrayInfo> arrayElements;
-	for (const std::pair<std::uint32_t, std::uint32_t>& inputOutputIndices : inputOutputVars)
+	for (const auto& inputOutputIndices : inputOutputVars)
 	{
 		inputOutputs.emplace_back();
 		inputOutputIds.emplace_back();
