@@ -29,7 +29,7 @@ The shader file is first run through a C99 preprocessor. The following \#defines
 * `HAS_DOUBLES`: Set to 1 if double types are available, 0 if not.
 * `HAS_NON_SQUARE_MATRICES`: Set to 1 if non-square matrices, such as mat3x4, are available 0 if not.
 * `HAS_TEXTURE3D`: Set to 1 if 3D textures are available, 0 if not.
-* `HAS_TEXTURE_ARRAY`: Set to 1 if texture arrays are available, 0 if not.
+* `HAS_TEXTURE_ARRAYS`: Set to 1 if texture arrays are available, 0 if not.
 * `HAS_SHADOW_SAMPLERS`: Set to 1 if shadow texture samplers are available, 0 if not.
 * `HAS_MULTISAMPLED_TEXTURES`: Set to 1 if multisampled texture samplersare available, 0 if not.
 * `HAS_INTEGER_TEXTURES`: Set to 1 if integer texture samplers are available, 0 if not.

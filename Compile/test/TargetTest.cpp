@@ -80,7 +80,7 @@ TEST(TargetTest, FeatureList)
 	TEST_FEATURE(Doubles, counter);
 	TEST_FEATURE(NonSquareMatrices, counter);
 	TEST_FEATURE(Texture3D, counter);
-	TEST_FEATURE(TextureArray, counter);
+	TEST_FEATURE(TextureArrays, counter);
 	TEST_FEATURE(ShadowSamplers, counter);
 	TEST_FEATURE(MultisampledTextures, counter);
 	TEST_FEATURE(IntegerTextures, counter);

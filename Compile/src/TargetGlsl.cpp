@@ -160,7 +160,7 @@ bool TargetGlsl::featureSupported(Feature feature) const
 				return m_version >= 300;
 			else
 				return true;
-		case Feature::TextureArray:
+		case Feature::TextureArrays:
 			if (m_es)
 				return m_version >= 300;
 			else

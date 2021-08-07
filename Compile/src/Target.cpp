@@ -48,7 +48,7 @@ static Target::FeatureInfo featureInfos[] =
 	{"Doubles", "HAS_DOUBLES", "Double types."},
 	{"NonSquareMatrices", "HAS_NON_SQUARE_MATRICES", "Non-square matrices, such as mat3x4."},
 	{"Texture3D", "HAS_TEXTURE3D", "3D textures."},
-	{"TextureArray", "HAS_TEXTURE_ARRAY", "Texture arrays."},
+	{"TextureArrays", "HAS_TEXTURE_ARRAYS", "Texture arrays."},
 	{"ShadowSamplers", "HAS_SHADOW_SAMPLERS", "Shadow texture samplers."},
 	{"MultisampledTextures", "HAS_MULTISAMPLED_TEXTURES", "Multisampled texture samplers."},
 	{"IntegerTextures", "HAS_INTEGER_TEXTURES", "Integer texture samplers."},

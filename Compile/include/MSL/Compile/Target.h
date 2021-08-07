@@ -66,7 +66,7 @@ public:
 		Doubles,              ///< Double types.
 		NonSquareMatrices,    ///< Non-square matrices, such as Mat3x4.
 		Texture3D,            ///< 3D textures.
-		TextureArray,         ///< Texture arrays.
+		TextureArrays,        ///< Texture arrays.
 		ShadowSamplers,       ///< Shadow texture samplers.
 		MultisampledTextures, ///< Multisampled texture samplers.
 		IntegerTextures,      ///< Integer texture samplers.
