@@ -453,7 +453,7 @@ The blend attachment states may be prefixed with `attachment#_` to apply to a sp
 * `src_blend_factor`: set to the factor to use for both the source color and alpha. Possible values are the same as `src_color_blend_factor`.
 * `dst_blend_factor`: set to the factor to use for both the destination color and alpha. Possible values are the same as `src_color_blend_factor`.
 * `blend_op`: the operation to apply for both the color and alpha blending. Possible values are the same as `color_blend_op`.
-* `color_mask`: mask for the color channels to write to. This may be set to 0 to disable writing to the color buffer, or a combination of `R`, `G`, `B`, and `A` for writing to the red, green, blue, and alpha colors. For example: `RGB` to write to all channels except for alpha.
+* `color_write_mask`: mask for the color channels to write to. This may be set to 0 to disable writing to the color buffer, or a combination of `R`, `G`, `B`, and `A` for writing to the red, green, blue, and alpha colors. For example: `RGB` to write to all channels except for alpha.
 
 ### Other render states
 
