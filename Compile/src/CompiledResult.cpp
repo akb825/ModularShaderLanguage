@@ -16,7 +16,18 @@
 
 #include <MSL/Compile/CompiledResult.h>
 #include <MSL/Compile/Target.h>
+
+#if MSL_GCC || MSL_CLANG
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+
 #include "mslb_generated.h"
+
+#if MSL_GCC || MSL_CLANG
+#pragma GCC diagnostic pop
+#endif
+
 #include <fstream>
 
 namespace msl

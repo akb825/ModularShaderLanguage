@@ -1777,19 +1777,19 @@ struct BlendState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   mslb::Bool logicalOpEnable() const {
     return static_cast<mslb::Bool>(GetField<int8_t>(VT_LOGICALOPENABLE, 0));
   }
-  bool mutate_logicalOpEnable(mslb::Bool _logicalOpEnable) {
+  bool mutate_logicalOpEnable(mslb::Bool _logicalOpEnable = static_cast<mslb::Bool>(0)) {
     return SetField<int8_t>(VT_LOGICALOPENABLE, static_cast<int8_t>(_logicalOpEnable), 0);
   }
   mslb::LogicOp logicalOp() const {
     return static_cast<mslb::LogicOp>(GetField<int8_t>(VT_LOGICALOP, 0));
   }
-  bool mutate_logicalOp(mslb::LogicOp _logicalOp) {
+  bool mutate_logicalOp(mslb::LogicOp _logicalOp = static_cast<mslb::LogicOp>(0)) {
     return SetField<int8_t>(VT_LOGICALOP, static_cast<int8_t>(_logicalOp), 0);
   }
   mslb::Bool separateAttachmentBlendingEnable() const {
     return static_cast<mslb::Bool>(GetField<int8_t>(VT_SEPARATEATTACHMENTBLENDINGENABLE, 0));
   }
-  bool mutate_separateAttachmentBlendingEnable(mslb::Bool _separateAttachmentBlendingEnable) {
+  bool mutate_separateAttachmentBlendingEnable(mslb::Bool _separateAttachmentBlendingEnable = static_cast<mslb::Bool>(0)) {
     return SetField<int8_t>(VT_SEPARATEATTACHMENTBLENDINGENABLE, static_cast<int8_t>(_separateAttachmentBlendingEnable), 0);
   }
   const flatbuffers::Vector<const mslb::BlendAttachmentState *> *blendAttachments() const {
@@ -1921,19 +1921,19 @@ struct RenderState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint32_t patchControlPoints() const {
     return GetField<uint32_t>(VT_PATCHCONTROLPOINTS, 0);
   }
-  bool mutate_patchControlPoints(uint32_t _patchControlPoints) {
+  bool mutate_patchControlPoints(uint32_t _patchControlPoints = 0) {
     return SetField<uint32_t>(VT_PATCHCONTROLPOINTS, _patchControlPoints, 0);
   }
   uint32_t clipDistanceCount() const {
     return GetField<uint32_t>(VT_CLIPDISTANCECOUNT, 0);
   }
-  bool mutate_clipDistanceCount(uint32_t _clipDistanceCount) {
+  bool mutate_clipDistanceCount(uint32_t _clipDistanceCount = 0) {
     return SetField<uint32_t>(VT_CLIPDISTANCECOUNT, _clipDistanceCount, 0);
   }
   uint32_t cullDistanceCount() const {
     return GetField<uint32_t>(VT_CULLDISTANCECOUNT, 0);
   }
-  bool mutate_cullDistanceCount(uint32_t _cullDistanceCount) {
+  bool mutate_cullDistanceCount(uint32_t _cullDistanceCount = 0) {
     return SetField<uint32_t>(VT_CULLDISTANCECOUNT, _cullDistanceCount, 0);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
@@ -1992,9 +1992,9 @@ struct RenderStateBuilder {
 
 inline flatbuffers::Offset<RenderState> CreateRenderState(
     flatbuffers::FlatBufferBuilder &_fbb,
-    const mslb::RasterizationState *rasterizationState = 0,
-    const mslb::MultisampleState *multisampleState = 0,
-    const mslb::DepthStencilState *depthStencilState = 0,
+    const mslb::RasterizationState *rasterizationState = nullptr,
+    const mslb::MultisampleState *multisampleState = nullptr,
+    const mslb::DepthStencilState *depthStencilState = nullptr,
     flatbuffers::Offset<mslb::BlendState> blendState = 0,
     uint32_t patchControlPoints = 0,
     uint32_t clipDistanceCount = 0,
@@ -2030,25 +2030,25 @@ struct StructMember FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint32_t offset() const {
     return GetField<uint32_t>(VT_OFFSET, 0);
   }
-  bool mutate_offset(uint32_t _offset) {
+  bool mutate_offset(uint32_t _offset = 0) {
     return SetField<uint32_t>(VT_OFFSET, _offset, 0);
   }
   uint32_t size() const {
     return GetField<uint32_t>(VT_SIZE, 0);
   }
-  bool mutate_size(uint32_t _size) {
+  bool mutate_size(uint32_t _size = 0) {
     return SetField<uint32_t>(VT_SIZE, _size, 0);
   }
   mslb::Type type() const {
     return static_cast<mslb::Type>(GetField<uint8_t>(VT_TYPE, 0));
   }
-  bool mutate_type(mslb::Type _type) {
+  bool mutate_type(mslb::Type _type = static_cast<mslb::Type>(0)) {
     return SetField<uint8_t>(VT_TYPE, static_cast<uint8_t>(_type), 0);
   }
   uint32_t structIndex() const {
     return GetField<uint32_t>(VT_STRUCTINDEX, 0);
   }
-  bool mutate_structIndex(uint32_t _structIndex) {
+  bool mutate_structIndex(uint32_t _structIndex = 0) {
     return SetField<uint32_t>(VT_STRUCTINDEX, _structIndex, 0);
   }
   const flatbuffers::Vector<const mslb::ArrayInfo *> *arrayElements() const {
@@ -2060,7 +2060,7 @@ struct StructMember FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool rowMajor() const {
     return GetField<uint8_t>(VT_ROWMAJOR, 0) != 0;
   }
-  bool mutate_rowMajor(bool _rowMajor) {
+  bool mutate_rowMajor(bool _rowMajor = 0) {
     return SetField<uint8_t>(VT_ROWMAJOR, static_cast<uint8_t>(_rowMajor), 0);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
@@ -2173,7 +2173,7 @@ struct Struct FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint32_t size() const {
     return GetField<uint32_t>(VT_SIZE, 0);
   }
-  bool mutate_size(uint32_t _size) {
+  bool mutate_size(uint32_t _size = 0) {
     return SetField<uint32_t>(VT_SIZE, _size, 0);
   }
   const flatbuffers::Vector<flatbuffers::Offset<mslb::StructMember>> *members() const {
@@ -2268,19 +2268,19 @@ struct Uniform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   mslb::UniformType uniformType() const {
     return static_cast<mslb::UniformType>(GetField<uint8_t>(VT_UNIFORMTYPE, 0));
   }
-  bool mutate_uniformType(mslb::UniformType _uniformType) {
+  bool mutate_uniformType(mslb::UniformType _uniformType = static_cast<mslb::UniformType>(0)) {
     return SetField<uint8_t>(VT_UNIFORMTYPE, static_cast<uint8_t>(_uniformType), 0);
   }
   mslb::Type type() const {
     return static_cast<mslb::Type>(GetField<uint8_t>(VT_TYPE, 0));
   }
-  bool mutate_type(mslb::Type _type) {
+  bool mutate_type(mslb::Type _type = static_cast<mslb::Type>(0)) {
     return SetField<uint8_t>(VT_TYPE, static_cast<uint8_t>(_type), 0);
   }
   uint32_t structIndex() const {
     return GetField<uint32_t>(VT_STRUCTINDEX, 0);
   }
-  bool mutate_structIndex(uint32_t _structIndex) {
+  bool mutate_structIndex(uint32_t _structIndex = 0) {
     return SetField<uint32_t>(VT_STRUCTINDEX, _structIndex, 0);
   }
   const flatbuffers::Vector<const mslb::ArrayInfo *> *arrayElements() const {
@@ -2292,25 +2292,25 @@ struct Uniform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint32_t descriptorSet() const {
     return GetField<uint32_t>(VT_DESCRIPTORSET, 0);
   }
-  bool mutate_descriptorSet(uint32_t _descriptorSet) {
+  bool mutate_descriptorSet(uint32_t _descriptorSet = 0) {
     return SetField<uint32_t>(VT_DESCRIPTORSET, _descriptorSet, 0);
   }
   uint32_t binding() const {
     return GetField<uint32_t>(VT_BINDING, 0);
   }
-  bool mutate_binding(uint32_t _binding) {
+  bool mutate_binding(uint32_t _binding = 0) {
     return SetField<uint32_t>(VT_BINDING, _binding, 0);
   }
   uint32_t inputAttachmentIndex() const {
     return GetField<uint32_t>(VT_INPUTATTACHMENTINDEX, 0);
   }
-  bool mutate_inputAttachmentIndex(uint32_t _inputAttachmentIndex) {
+  bool mutate_inputAttachmentIndex(uint32_t _inputAttachmentIndex = 0) {
     return SetField<uint32_t>(VT_INPUTATTACHMENTINDEX, _inputAttachmentIndex, 0);
   }
   uint32_t samplerIndex() const {
     return GetField<uint32_t>(VT_SAMPLERINDEX, 0);
   }
-  bool mutate_samplerIndex(uint32_t _samplerIndex) {
+  bool mutate_samplerIndex(uint32_t _samplerIndex = 0) {
     return SetField<uint32_t>(VT_SAMPLERINDEX, _samplerIndex, 0);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
@@ -2441,7 +2441,7 @@ struct Attribute FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   mslb::Type type() const {
     return static_cast<mslb::Type>(GetField<uint8_t>(VT_TYPE, 0));
   }
-  bool mutate_type(mslb::Type _type) {
+  bool mutate_type(mslb::Type _type = static_cast<mslb::Type>(0)) {
     return SetField<uint8_t>(VT_TYPE, static_cast<uint8_t>(_type), 0);
   }
   const flatbuffers::Vector<uint32_t> *arrayElements() const {
@@ -2453,13 +2453,13 @@ struct Attribute FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint32_t location() const {
     return GetField<uint32_t>(VT_LOCATION, 0);
   }
-  bool mutate_location(uint32_t _location) {
+  bool mutate_location(uint32_t _location = 0) {
     return SetField<uint32_t>(VT_LOCATION, _location, 0);
   }
   uint32_t component() const {
     return GetField<uint32_t>(VT_COMPONENT, 0);
   }
-  bool mutate_component(uint32_t _component) {
+  bool mutate_component(uint32_t _component = 0) {
     return SetField<uint32_t>(VT_COMPONENT, _component, 0);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
@@ -2555,7 +2555,7 @@ struct FragmentOutput FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint32_t location() const {
     return GetField<uint32_t>(VT_LOCATION, 0);
   }
-  bool mutate_location(uint32_t _location) {
+  bool mutate_location(uint32_t _location = 0) {
     return SetField<uint32_t>(VT_LOCATION, _location, 0);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
@@ -2619,7 +2619,7 @@ struct Shader FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint32_t shader() const {
     return GetField<uint32_t>(VT_SHADER, 0);
   }
-  bool mutate_shader(uint32_t _shader) {
+  bool mutate_shader(uint32_t _shader = 0) {
     return SetField<uint32_t>(VT_SHADER, _shader, 0);
   }
   const flatbuffers::Vector<uint32_t> *uniformIds() const {
@@ -2732,7 +2732,7 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint32_t pushConstantStruct() const {
     return GetField<uint32_t>(VT_PUSHCONSTANTSTRUCT, 0);
   }
-  bool mutate_pushConstantStruct(uint32_t _pushConstantStruct) {
+  bool mutate_pushConstantStruct(uint32_t _pushConstantStruct = 0) {
     return SetField<uint32_t>(VT_PUSHCONSTANTSTRUCT, _pushConstantStruct, 0);
   }
   const mslb::RenderState *renderState() const {
@@ -2846,7 +2846,7 @@ inline flatbuffers::Offset<Pipeline> CreatePipeline(
     uint32_t pushConstantStruct = 0,
     flatbuffers::Offset<mslb::RenderState> renderState = 0,
     flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::Shader>>> shaders = 0,
-    const mslb::ComputeLocalSize *computLocalSize = 0) {
+    const mslb::ComputeLocalSize *computLocalSize = nullptr) {
   PipelineBuilder builder_(_fbb);
   builder_.add_computLocalSize(computLocalSize);
   builder_.add_shaders(shaders);
@@ -2872,7 +2872,7 @@ inline flatbuffers::Offset<Pipeline> CreatePipelineDirect(
     uint32_t pushConstantStruct = 0,
     flatbuffers::Offset<mslb::RenderState> renderState = 0,
     const std::vector<flatbuffers::Offset<mslb::Shader>> *shaders = nullptr,
-    const mslb::ComputeLocalSize *computLocalSize = 0) {
+    const mslb::ComputeLocalSize *computLocalSize = nullptr) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
   auto structs__ = structs ? _fbb.CreateVector<flatbuffers::Offset<mslb::Struct>>(*structs) : 0;
   auto samplerStates__ = samplerStates ? _fbb.CreateVectorOfStructs<mslb::SamplerState>(*samplerStates) : 0;
@@ -2909,7 +2909,7 @@ struct ShaderData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool usesPushConstants() const {
     return GetField<uint8_t>(VT_USESPUSHCONSTANTS, 1) != 0;
   }
-  bool mutate_usesPushConstants(bool _usesPushConstants) {
+  bool mutate_usesPushConstants(bool _usesPushConstants = 1) {
     return SetField<uint8_t>(VT_USESPUSHCONSTANTS, static_cast<uint8_t>(_usesPushConstants), 1);
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
@@ -2978,25 +2978,25 @@ struct Module FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   uint32_t version() const {
     return GetField<uint32_t>(VT_VERSION, 0);
   }
-  bool mutate_version(uint32_t _version) {
+  bool mutate_version(uint32_t _version = 0) {
     return SetField<uint32_t>(VT_VERSION, _version, 0);
   }
   uint32_t targetId() const {
     return GetField<uint32_t>(VT_TARGETID, 0);
   }
-  bool mutate_targetId(uint32_t _targetId) {
+  bool mutate_targetId(uint32_t _targetId = 0) {
     return SetField<uint32_t>(VT_TARGETID, _targetId, 0);
   }
   uint32_t targetVersion() const {
     return GetField<uint32_t>(VT_TARGETVERSION, 0);
   }
-  bool mutate_targetVersion(uint32_t _targetVersion) {
+  bool mutate_targetVersion(uint32_t _targetVersion = 0) {
     return SetField<uint32_t>(VT_TARGETVERSION, _targetVersion, 0);
   }
   bool adjustableBindings() const {
     return GetField<uint8_t>(VT_ADJUSTABLEBINDINGS, 0) != 0;
   }
-  bool mutate_adjustableBindings(bool _adjustableBindings) {
+  bool mutate_adjustableBindings(bool _adjustableBindings = 0) {
     return SetField<uint8_t>(VT_ADJUSTABLEBINDINGS, static_cast<uint8_t>(_adjustableBindings), 0);
   }
   const flatbuffers::Vector<flatbuffers::Offset<mslb::Pipeline>> *pipelines() const {
@@ -3127,6 +3127,10 @@ inline const mslb::Module *GetSizePrefixedModule(const void *buf) {
 
 inline Module *GetMutableModule(void *buf) {
   return flatbuffers::GetMutableRoot<Module>(buf);
+}
+
+inline mslb::Module *GetMutableSizePrefixedModule(void *buf) {
+  return flatbuffers::GetMutableSizePrefixedRoot<mslb::Module>(buf);
 }
 
 inline bool VerifyModuleBuffer(
