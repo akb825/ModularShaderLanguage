@@ -25,7 +25,7 @@ jobs:
                 cmake.args: -DMSL_SHARED=ON
     steps:
       - script: |
-            ./update-submodules.sh
+            git submodule update --init --recursive
             # Need system boost for static libs.
             sudo apt-get update
             sudo apt-get -y install libboost-all-dev
@@ -114,7 +114,7 @@ jobs:
                 cmake.args: -DMSL_SHARED=ON
     steps:
       - script: |
-            ./update-submodules.sh
+            git submodule update --init --recursive
             brew install boost
         displayName: Download submodules
         workingDirectory: $(Build.SourcesDirectory)
@@ -216,7 +216,7 @@ jobs:
                 cmake.args: -DMSL_SHARED=ON -DBOOST_ROOT=$(win.boostDir)
     steps:
       - bash: |
-            ./update-submodules.sh
+            git submodule update --init --recursive
         displayName: Download submodules
         workingDirectory: $(Build.SourcesDirectory)
       - powershell: |
