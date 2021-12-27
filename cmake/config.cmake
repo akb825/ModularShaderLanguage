@@ -16,7 +16,7 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if (MSVC)
-	add_compile_options(/W3 /WX /wd4200 /MP)
+	add_compile_options(/W3 /WX /wd4200 /MP /bigobj)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS -D _SCL_SECURE_NO_WARNINGS
 		-D_CRT_NONSTDC_NO_WARNINGS -DBOOST_ALL_NO_LIB)
 	if (MSL_SHARED)

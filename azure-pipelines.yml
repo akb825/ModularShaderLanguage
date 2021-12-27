@@ -4,7 +4,7 @@ variables:
   - name: cmake.commonArgs
     value: -DCMAKE_FIND_ROOT_PATH=$(dependency.location) -DCMAKE_PREFIX_PATH=$(dependency.location)
   - name: msvc.version
-    value: 14.1
+    value: 14.0
   - name: win.boostDir
     value: C:\hostedtoolcache\windows\Boost
   - group: Common
@@ -101,7 +101,7 @@ jobs:
         displayName: Publish test results release
   - job: Mac
     pool:
-        vmImage: macOS-1015
+        vmImage: macOS-latest
     workspace:
         clean: all
     strategy:
@@ -189,7 +189,7 @@ jobs:
         displayName: Publish test results release
   - job: Windows
     pool:
-        vmImage: windows-2019
+        vmImage: windows-latest
     workspace:
         clean: all
     strategy:
@@ -234,7 +234,7 @@ jobs:
         workingDirectory: $(Build.BinariesDirectory)
       - script: |
             cmake .. -DCMAKE_INSTALL_PREFIX=$(dependency.location) -Dgtest_force_shared_crt=ON ^
-                -A $(arch)
+                -A $(arch) -T v140
             cmake --build . --config Debug
             cmake --build . --config Debug --target install
             REM Need to also install release build to see the debug version.
@@ -245,7 +245,7 @@ jobs:
       - task: CMake@1
         inputs:
             workingDirectory: $(Build.BinariesDirectory)
-            cmakeArgs: $(cmake.commonArgs) $(cmake.args) -A $(arch) $(Build.SourcesDirectory)
+            cmakeArgs: $(cmake.commonArgs) $(cmake.args) -A $(arch) -T v140 $(Build.SourcesDirectory)
         displayName: Run CMake
       - task: CMake@1
         inputs:
