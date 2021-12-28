@@ -20,7 +20,7 @@ set(MSL_ROOT_FOLDER MSL CACHE STRING
 	"Root folder for the MSL projects. Usefull when embedding in other projects.")
 set(MSL_INSTALL ON CACHE BOOL "Allow installation for MSL components.")
 
-set(CMAKE_OSX_DEPLOYMENT_TARGET "10.11" CACHE STRING "Minimum macOS deployment version.")
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.11 CACHE STRING "Minimum macOS deployment version.")
 
 if (MSL_BUILD_TESTS)
 	find_package(GTest QUIET)
