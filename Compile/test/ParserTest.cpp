@@ -748,11 +748,11 @@ TEST(ParserTest, FragmentInputs)
 	ASSERT_EQ(2U, fragmentInputs[0].inputs.size());
 	EXPECT_EQ("vec4", fragmentInputs[0].inputs[0].type);
 	EXPECT_EQ("first", fragmentInputs[0].inputs[0].name);
-	EXPECT_EQ(0U, fragmentInputs[0].inputs[0].attachmentIndex);
+	EXPECT_EQ(0U, fragmentInputs[0].inputs[0].location);
 	EXPECT_EQ(1U, fragmentInputs[0].inputs[0].fragmentGroup);
 	EXPECT_EQ("vec4", fragmentInputs[0].inputs[1].type);
 	EXPECT_EQ("second", fragmentInputs[0].inputs[1].name);
-	EXPECT_EQ(1U, fragmentInputs[0].inputs[1].attachmentIndex);
+	EXPECT_EQ(1U, fragmentInputs[0].inputs[1].location);
 	EXPECT_EQ(0U, fragmentInputs[0].inputs[1].fragmentGroup);
 
 	EXPECT_EQ("SecondInput", fragmentInputs[1].type);
@@ -760,7 +760,7 @@ TEST(ParserTest, FragmentInputs)
 	ASSERT_EQ(1U, fragmentInputs[1].inputs.size());
 	EXPECT_EQ("float", fragmentInputs[1].inputs[0].type);
 	EXPECT_EQ("third", fragmentInputs[1].inputs[0].name);
-	EXPECT_EQ(2U, fragmentInputs[1].inputs[0].attachmentIndex);
+	EXPECT_EQ(2U, fragmentInputs[1].inputs[0].location);
 	EXPECT_EQ(3U, fragmentInputs[1].inputs[0].fragmentGroup);
 }
 
@@ -1137,6 +1137,60 @@ TEST(ParserTest, FragmentInputsMissingSemicolon)
 	EXPECT_EQ(72U, messages[0].column);
 	EXPECT_FALSE(messages[0].continued);
 	EXPECT_EQ("unexpected token: 'bar', expected ';'", messages[0].message);
+}
+
+TEST(ParserTest, FragmentInputsDuplicateTypes)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream(
+		"fragment Foo {layout(location = 0, fragment_group = 1) vec4 asdf;} foo;"
+		"fragment Foo {layout(location = 0, fragment_group = 1) vec4 asdf;} bar;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(2U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(81U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("fragment inputs of type 'Foo' already declared", messages[0].message);
+
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[1].file), path));
+	EXPECT_EQ(1U, messages[1].line);
+	EXPECT_EQ(10U, messages[1].column);
+	EXPECT_TRUE(messages[1].continued);
+	EXPECT_EQ("see other declaration of fragment inputs type 'Foo'", messages[1].message);
+}
+
+TEST(ParserTest, FragmentInputsDuplicateNames)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream(
+		"fragment Foo {layout(location = 0, fragment_group = 1) vec4 asdf;} foo;"
+		"fragment Bar {layout(location = 0, fragment_group = 1) vec4 asdf;} foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(2U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(139U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("fragment inputs of name 'foo' already declared", messages[0].message);
+
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[1].file), path));
+	EXPECT_EQ(1U, messages[1].line);
+	EXPECT_EQ(68U, messages[1].column);
+	EXPECT_TRUE(messages[1].continued);
+	EXPECT_EQ("see other declaration of fragment inputs 'foo'", messages[1].message);
 }
 
 TEST(ParserTest, PatchControlPoints)

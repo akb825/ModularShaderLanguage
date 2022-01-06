@@ -61,7 +61,7 @@ public:
 		const Token* nameToken = nullptr;
 		std::string type;
 		std::string name;
-		std::uint32_t attachmentIndex = unknown;
+		std::uint32_t location = unknown;
 		std::uint32_t fragmentGroup = unknown;
 	};
 

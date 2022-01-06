@@ -6,7 +6,7 @@ sampler_state tex
 	min_filter = linear;
 	mag_filter = linear;
 	mip_filter = anisotropic;
-};
+}
 
 uniform Transform
 {
@@ -23,7 +23,7 @@ uniform vec2[2] texCoords;
 varying(vertex, fragment)
 {
 	vec4 vfColor;
-};
+}
 
 [[fragment]] out vec4 color;
 

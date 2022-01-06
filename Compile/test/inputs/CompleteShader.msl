@@ -12,7 +12,7 @@ sampler_state tex
 	min_filter = linear;
 	mag_filter = linear;
 	mip_filter = anisotropic;
-};
+}
 
 [[vertex]] in vec3 position;
 [[vertex]] in vec4 color;

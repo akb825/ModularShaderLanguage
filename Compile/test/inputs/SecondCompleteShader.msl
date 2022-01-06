@@ -12,7 +12,7 @@ sampler_state tex
 	min_filter = nearest;
 	mag_filter = nearest;
 	mip_filter = none;
-};
+}
 
 [[vertex]] in vec3 position;
 [[vertex]] in vec4 color;

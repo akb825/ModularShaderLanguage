@@ -314,8 +314,7 @@ static KeyValueResult readKeyValue(Output& output, const Token*& key, Token& val
 		}
 		else if (tokens[i].value == "}")
 		{
-			// End of declaration block
-			++i;
+			// End of declaration block. Don't increment i for the very last token.
 			return KeyValueResult::End;
 		}
 		else
@@ -1299,7 +1298,7 @@ static bool readFragmentInput(Parser::FragmentInput& outInput, Output& output,
 		return false;
 	}
 
-	const Token* attachmentIndexToken = nullptr;
+	const Token* locationToken = nullptr;
 	const Token* fragmentGroupToken = nullptr;
 	while (tokens[i].value != ")")
 	{
@@ -1320,19 +1319,19 @@ static bool readFragmentInput(Parser::FragmentInput& outInput, Output& output,
 
 			if (isLocation)
 			{
-				if (outInput.attachmentIndex != unknown)
+				if (outInput.location != unknown)
 				{
 					output.addMessage(Output::Level::Error, layoutToken->fileName,
 						layoutToken->line, layoutToken->column, false,
 						"fragment input layout 'location' already declared");
-					output.addMessage(Output::Level::Error, attachmentIndexToken->fileName,
-						attachmentIndexToken->line, attachmentIndexToken->column, true,
+					output.addMessage(Output::Level::Error, locationToken->fileName,
+						locationToken->line, locationToken->column, true,
 						"see other declaration of layout 'location'");
 					return false;
 				}
 
-				attachmentIndexToken = layoutToken;
-				outInput.attachmentIndex = value;
+				locationToken = layoutToken;
+				outInput.location = value;
 			}
 			else if (isFragmentGroup)
 			{
@@ -1375,7 +1374,7 @@ static bool readFragmentInput(Parser::FragmentInput& outInput, Output& output,
 		}
 	}
 
-	if (outInput.attachmentIndex == unknown || outInput.fragmentGroup == unknown)
+	if (outInput.location == unknown || outInput.fragmentGroup == unknown)
 	{
 		output.addMessage(Output::Level::Error, layoutToken.fileName, layoutToken.line,
 			layoutToken.column, false,
@@ -1488,9 +1487,6 @@ bool Parser::parse(Output& output, int options)
 			if (!readPipeline(output, tokens, ++i))
 				return false;
 
-			if (i >= tokens.size())
-				break;
-			lastToken = &tokens[i];
 			endMetaElement(tokenRange, i);
 		}
 		else if (elementStart && token.value == "sampler_state")
@@ -1498,9 +1494,6 @@ bool Parser::parse(Output& output, int options)
 			if (!readSampler(output, tokens, ++i))
 				return false;
 
-			if (i >= tokens.size())
-				break;
-			lastToken = &tokens[i];
 			endMetaElement(tokenRange, i);
 		}
 		else if (elementStart && token.value == "varying")
@@ -1508,9 +1501,6 @@ bool Parser::parse(Output& output, int options)
 			if (!readVarying(output, tokens, ++i))
 				return false;
 
-			if (i >= tokens.size())
-				break;
-			lastToken = &tokens[i];
 			endMetaElement(tokenRange, i);
 		}
 		else if (elementStart && token.value == "fragment")
@@ -1525,9 +1515,6 @@ bool Parser::parse(Output& output, int options)
 			if (!readFragmentInputs(output, tokens, ++i))
 				return false;
 
-			if (i >= tokens.size())
-				break;
-			lastToken = &tokens[i];
 			endMetaElement(tokenRange, i);
 		}
 		else if (token.value == "[")
@@ -2232,7 +2219,7 @@ bool Parser::readVarying(Output& output, const std::vector<Token>& tokens, std::
 		anyToken = false;
 	} while(true);
 
-	++i;
+	// Don't increment the very last token so it can continue properly with the outer loop.
 	return true;
 }
 
@@ -2249,14 +2236,14 @@ bool Parser::readFragmentInputs(Output& output, const std::vector<Token>& tokens
 	fragmentInputs.typeToken = &tokens[i];
 	fragmentInputs.type = tokens[i].value;
 
-	for (std::size_t j = 0; j < m_fragmentInputs.size(); ++j)
+	for (const FragmentInputGroup& otherFragmentInputs : m_fragmentInputs)
 	{
-		if (m_fragmentInputs[j].type == fragmentInputs.type)
+		if (otherFragmentInputs.type == fragmentInputs.type)
 		{
 			output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
 				tokens[i].column, false, "fragment inputs of type '" + fragmentInputs.type +
 				"' already declared");
-			const Token* otherToken = m_fragmentInputs[j].typeToken;
+			const Token* otherToken = otherFragmentInputs.typeToken;
 			output.addMessage(Output::Level::Error, otherToken->fileName, otherToken->line,
 				otherToken->column, true,
 				"see other declaration of fragment inputs type '" + fragmentInputs.type + "'");
@@ -2305,14 +2292,14 @@ bool Parser::readFragmentInputs(Output& output, const std::vector<Token>& tokens
 	fragmentInputs.name = tokens[i].value;
 	fragmentInputs.nameToken = &tokens[i];
 
-	for (std::size_t j = 0; j < m_fragmentInputs.size(); ++j)
+	for (const FragmentInputGroup& otherFragmentInputs : m_fragmentInputs)
 	{
-		if (m_fragmentInputs[j].name == fragmentInputs.name)
+		if (otherFragmentInputs.name == fragmentInputs.name)
 		{
 			output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
-				tokens[i].column, false, "fragment inputs '" + fragmentInputs.name +
+				tokens[i].column, false, "fragment inputs of name '" + fragmentInputs.name +
 				"' already declared");
-			const Token* otherToken = m_fragmentInputs[j].nameToken;
+			const Token* otherToken = otherFragmentInputs.nameToken;
 			output.addMessage(Output::Level::Error, otherToken->fileName, otherToken->line,
 				otherToken->column, true, "see other declaration of fragment inputs '" +
 				fragmentInputs.name + "'");
@@ -2323,7 +2310,7 @@ bool Parser::readFragmentInputs(Output& output, const std::vector<Token>& tokens
 	if (!skipWhitespace(output, tokens, ++i) || !isToken(output, tokens[i], ";"))
 		return false;
 
-	++i;
+	// Don't increment the very last token so it can continue properly with the outer loop.
 	m_fragmentInputs.push_back(std::move(fragmentInputs));
 	return true;
 }
