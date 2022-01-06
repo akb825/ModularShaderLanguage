@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Aaron Barany
+ * Copyright 2016-2022 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -761,7 +761,7 @@ static void writeRasterizationState(std::ostream& jsonFile,
 		jsonFile << "\t\t\t\t\t\"depthBiasEnable\": null,\n";
 
 	if (rasterizationState.depthBiasConstantFactor == msl::unknownFloat)
-		jsonFile << "\t\t\t\t\t\"depthBiasEnable\": null,\n";
+		jsonFile << "\t\t\t\t\t\"depthBiasConstantFactor\": null,\n";
 	else
 	{
 		jsonFile << "\t\t\t\t\t\"depthBiasConstantFactor\": " <<
@@ -1145,7 +1145,13 @@ static void writeRenderState(std::ostream& jsonFile, const msl::Module& module, 
 		jsonFile << "\t\t\t\t\"patchControlPoints\": " << renderState.patchControlPoints << ",\n";
 
 	jsonFile << "\t\t\t\t\"clipDistanceCount\": " << renderState.clipDistanceCount << ",\n";
-	jsonFile << "\t\t\t\t\"cullDistanceCount\": " << renderState.cullDistanceCount << "\n";
+	jsonFile << "\t\t\t\t\"cullDistanceCount\": " << renderState.cullDistanceCount << ",\n";
+
+	if (renderState.fragmentGroup == msl::unknown)
+		jsonFile << "\t\t\t\t\"fragmentGroup\": null\n";
+	else
+		jsonFile << "\t\t\t\t\"fragmentGroup\": " << renderState.fragmentGroup << "\n";
+
 	jsonFile << "\t\t\t},\n";
 }
 
@@ -1189,7 +1195,8 @@ int main(int argc, char** argv)
 
 	if (options.count("help") || exitCode != 0)
 	{
-		std::cout << "Usage: mslb-extract -o output file" << std::endl << std::endl;
+		std::cout << "Usage: mslb-extract -i input -o output" << std::endl <<
+			std::endl;
 		std::cout << "Version " << MSL_MAJOR_VERSION << "." << MSL_MINOR_VERSION << "." <<
 			MSL_PATCH_VERSION << std::endl;
 		std::cout << "Extract a compiled shader module into its components." << std::endl <<

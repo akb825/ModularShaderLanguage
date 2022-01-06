@@ -775,6 +775,11 @@ struct RenderState
 	 * @brief The number of cull distances.
 	 */
 	uint32_t cullDistanceCount;
+
+	/**
+	 * @brief The fragment group for the pipeline.
+	 */
+	uint32_t fragmentGroup;
 };
 
 /**

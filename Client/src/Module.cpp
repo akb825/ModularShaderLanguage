@@ -1078,6 +1078,7 @@ bool mslModule_renderState(mslRenderState* outRenderState, const mslModule* modu
 	outRenderState->patchControlPoints = renderState->patchControlPoints();
 	outRenderState->clipDistanceCount = renderState->clipDistanceCount();
 	outRenderState->cullDistanceCount = renderState->cullDistanceCount();
+	outRenderState->fragmentGroup = renderState->fragmentGroup();
 	return true;
 }
 

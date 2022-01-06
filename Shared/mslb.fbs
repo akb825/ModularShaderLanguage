@@ -689,6 +689,13 @@ table RenderState
 	 * The number of cull distances.
 	 */
 	cullDistanceCount : uint;
+
+	/*
+	 * The fragment group for the pipeline.
+	 *
+	 * This is a new field, so give it a default value corresponding to 'unknown'.
+	 */
+	fragmentGroup : uint = 0xFFFFFFFF;
 }
 
 /*

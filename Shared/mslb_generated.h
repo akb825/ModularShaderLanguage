@@ -1892,7 +1892,8 @@ struct RenderState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_BLENDSTATE = 10,
     VT_PATCHCONTROLPOINTS = 12,
     VT_CLIPDISTANCECOUNT = 14,
-    VT_CULLDISTANCECOUNT = 16
+    VT_CULLDISTANCECOUNT = 16,
+    VT_FRAGMENTGROUP = 18
   };
   const mslb::RasterizationState *rasterizationState() const {
     return GetStruct<const mslb::RasterizationState *>(VT_RASTERIZATIONSTATE);
@@ -1936,6 +1937,12 @@ struct RenderState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_cullDistanceCount(uint32_t _cullDistanceCount = 0) {
     return SetField<uint32_t>(VT_CULLDISTANCECOUNT, _cullDistanceCount, 0);
   }
+  uint32_t fragmentGroup() const {
+    return GetField<uint32_t>(VT_FRAGMENTGROUP, 4294967295);
+  }
+  bool mutate_fragmentGroup(uint32_t _fragmentGroup = 4294967295) {
+    return SetField<uint32_t>(VT_FRAGMENTGROUP, _fragmentGroup, 4294967295);
+  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyFieldRequired<mslb::RasterizationState>(verifier, VT_RASTERIZATIONSTATE) &&
@@ -1946,6 +1953,7 @@ struct RenderState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<uint32_t>(verifier, VT_PATCHCONTROLPOINTS) &&
            VerifyField<uint32_t>(verifier, VT_CLIPDISTANCECOUNT) &&
            VerifyField<uint32_t>(verifier, VT_CULLDISTANCECOUNT) &&
+           VerifyField<uint32_t>(verifier, VT_FRAGMENTGROUP) &&
            verifier.EndTable();
   }
 };
@@ -1975,6 +1983,9 @@ struct RenderStateBuilder {
   void add_cullDistanceCount(uint32_t cullDistanceCount) {
     fbb_.AddElement<uint32_t>(RenderState::VT_CULLDISTANCECOUNT, cullDistanceCount, 0);
   }
+  void add_fragmentGroup(uint32_t fragmentGroup) {
+    fbb_.AddElement<uint32_t>(RenderState::VT_FRAGMENTGROUP, fragmentGroup, 4294967295);
+  }
   explicit RenderStateBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
@@ -1998,8 +2009,10 @@ inline flatbuffers::Offset<RenderState> CreateRenderState(
     flatbuffers::Offset<mslb::BlendState> blendState = 0,
     uint32_t patchControlPoints = 0,
     uint32_t clipDistanceCount = 0,
-    uint32_t cullDistanceCount = 0) {
+    uint32_t cullDistanceCount = 0,
+    uint32_t fragmentGroup = 4294967295) {
   RenderStateBuilder builder_(_fbb);
+  builder_.add_fragmentGroup(fragmentGroup);
   builder_.add_cullDistanceCount(cullDistanceCount);
   builder_.add_clipDistanceCount(clipDistanceCount);
   builder_.add_patchControlPoints(patchControlPoints);
