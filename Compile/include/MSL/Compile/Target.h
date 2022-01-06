@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Aaron Barany
+ * Copyright 2016-2022 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,13 +109,14 @@ public:
 		ClipDistance,           ///< Support for gl_ClipDistance array.
 		CullDistance,           ///< Support for gl_CullDistance array.
 		EarlyFragmentTests,     ///< Support for explicitly enabling early fragment tests.
+		FragmentInputs,         ///< Support for reading results of other fragment shaders.
 	};
 
 	/**
 	 * @brief The number of feature enum elements.
 	 */
 	static const unsigned int featureCount =
-		static_cast<unsigned int>(Feature::EarlyFragmentTests) + 1;
+		static_cast<unsigned int>(Feature::FragmentInputs) + 1;
 
 	/**
 	 * @brief Enum for the optimization passes to run.

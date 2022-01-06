@@ -705,6 +705,440 @@ TEST(ParserTest, VaryingWrongOrder)
 		messages[0].message);
 }
 
+TEST(ParserTest, FragmentInputs)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	boost::filesystem::path outputDir = exeDir/"outputs";
+
+	std::string path = pathStr(inputDir/"FragmentInputs.msl");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, path));
+
+	EXPECT_FALSE(parser.parse(output));
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(1U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("fragment inputs not supported by current target", messages[0].message);
+
+	output.clear();
+	EXPECT_TRUE(parser.parse(output, Parser::Options::SupportsFragmentInputs));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	EXPECT_EQ("Foo", pipeline.name);
+	EXPECT_EQ("vertEntry", pipeline.entryPoints[0].value);
+	EXPECT_EQ("fragEntry", pipeline.entryPoints[4].value);
+
+	std::vector<Parser::LineMapping> lineMappings;
+	EXPECT_EQ(readFile(outputDir/"FragmentInputs.vert"), parser.createShaderString(lineMappings,
+		output, pipeline, Stage::Vertex, false, false) + '\n');
+
+	EXPECT_EQ(readFile(outputDir/"FragmentInputs.frag"), parser.createShaderString(lineMappings,
+		output, pipeline, Stage::Fragment, false, false) + '\n');
+
+	const std::vector<Parser::FragmentInputGroup>& fragmentInputs = parser.getFragmentInputs();
+	ASSERT_EQ(2U, fragmentInputs.size());
+	EXPECT_EQ("FirstInput", fragmentInputs[0].type);
+	EXPECT_EQ("firstInput", fragmentInputs[0].name);
+	ASSERT_EQ(2U, fragmentInputs[0].inputs.size());
+	EXPECT_EQ("vec4", fragmentInputs[0].inputs[0].type);
+	EXPECT_EQ("first", fragmentInputs[0].inputs[0].name);
+	EXPECT_EQ(0U, fragmentInputs[0].inputs[0].attachmentIndex);
+	EXPECT_EQ(1U, fragmentInputs[0].inputs[0].fragmentGroup);
+	EXPECT_EQ("vec4", fragmentInputs[0].inputs[1].type);
+	EXPECT_EQ("second", fragmentInputs[0].inputs[1].name);
+	EXPECT_EQ(1U, fragmentInputs[0].inputs[1].attachmentIndex);
+	EXPECT_EQ(0U, fragmentInputs[0].inputs[1].fragmentGroup);
+
+	EXPECT_EQ("SecondInput", fragmentInputs[1].type);
+	EXPECT_EQ("secondInput", fragmentInputs[1].name);
+	ASSERT_EQ(1U, fragmentInputs[1].inputs.size());
+	EXPECT_EQ("float", fragmentInputs[1].inputs[0].type);
+	EXPECT_EQ("third", fragmentInputs[1].inputs[0].name);
+	EXPECT_EQ(2U, fragmentInputs[1].inputs[0].attachmentIndex);
+	EXPECT_EQ(3U, fragmentInputs[1].inputs[0].fragmentGroup);
+}
+
+TEST(ParserTest, FragmentInputMissingTypeName)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("fragment {} foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(10U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected token: '{', expected identifier", messages[0].message);
+}
+
+TEST(ParserTest, FragmentInputsMissingOpenBracket)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("fragment Foo } foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(14U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected token: '}', expected '{'", messages[0].message);
+}
+
+TEST(ParserTest, FragmentInputsMissingLayout)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("fragment Foo {vec4 asdf;} foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(15U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected token: 'vec4', expected 'layout'", messages[0].message);
+}
+
+TEST(ParserTest, FragmentInputsNoLayoutQualifiers)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("fragment Foo {layout() vec4 asdf;} foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(15U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("fragment input layout must contain 'layout' and 'fragment_group' qualifiers",
+		messages[0].message);
+}
+
+TEST(ParserTest, FragmentInputsInvalidLayoutQualifier)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("fragment Foo {layout(bla) vec4 asdf;} foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(22U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected layout specifier: 'bla'", messages[0].message);
+}
+
+TEST(ParserTest, FragmentInputsMissingLayoutEquals)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("fragment Foo {layout(location 4) vec4 asdf;} foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(31U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected token: '4', expected '='", messages[0].message);
+}
+
+TEST(ParserTest, FragmentInputsInvalidInt)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream("fragment Foo {layout(location = bla) vec4 asdf;} foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(33U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("invalid int value: 'bla'", messages[0].message);
+}
+
+TEST(ParserTest, FragmentInputsMissingLayoutComma)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream(
+		"fragment Foo {layout(location = 0 fragment_group = 1) vec4 asdf;} foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(35U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected token: 'fragment_group', expected ',' or ')'", messages[0].message);
+}
+
+TEST(ParserTest, FragmentInputsDuplicateLocation)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream(
+		"fragment Foo {layout(location = 0, location = 1) vec4 asdf;} foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(2U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(36U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("fragment input layout 'location' already declared", messages[0].message);
+
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[1].file), path));
+	EXPECT_EQ(1U, messages[1].line);
+	EXPECT_EQ(22U, messages[1].column);
+	EXPECT_TRUE(messages[1].continued);
+	EXPECT_EQ("see other declaration of layout 'location'", messages[1].message);
+}
+
+TEST(ParserTest, FragmentInputsDuplicateFragmentGroup)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream(
+		"fragment Foo {layout(fragment_group = 0, fragment_group = 1) vec4 asdf;} foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(2U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(42U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("fragment input layout 'fragment_group' already declared", messages[0].message);
+
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[1].file), path));
+	EXPECT_EQ(1U, messages[1].line);
+	EXPECT_EQ(22U, messages[1].column);
+	EXPECT_TRUE(messages[1].continued);
+	EXPECT_EQ("see other declaration of layout 'fragment_group'", messages[1].message);
+}
+
+TEST(ParserTest, FragmentInputsMissingLocation)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream(
+		"fragment Foo {layout(fragment_group = 0) vec4 asdf;} foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(15U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("fragment input layout must contain 'layout' and 'fragment_group' qualifiers",
+		messages[0].message);
+}
+
+TEST(ParserTest, FragmentInputsMissingFragmentGroup)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream(
+		"fragment Foo {layout(location = 0) vec4 asdf;} foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(15U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("fragment input layout must contain 'layout' and 'fragment_group' qualifiers",
+		messages[0].message);
+}
+
+TEST(ParserTest, FragmentInputsMissingElementTypeOrName)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream(
+		"fragment Foo {layout(location = 0, fragment_group = 1) asdf;} foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(60U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected token: ';', expected identifier", messages[0].message);
+}
+
+TEST(ParserTest, FragmentInputsMissingElementSemicolon)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream(
+		"fragment Foo {layout(location = 0, fragment_group = 1) vec4 asdf} foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(65U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected token: '}', expected ';'", messages[0].message);
+}
+
+TEST(ParserTest, FragmentInputsMissingEndBrace)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream(
+		"fragment Foo {layout(location = 0, fragment_group = 1) vec4 asdf; foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(67U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected token: 'foo', expected 'layout'", messages[0].message);
+}
+
+TEST(ParserTest, FragmentInputsDuplicateEntries)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream(
+		"fragment Foo {layout(location = 0, fragment_group = 1) vec4 asdf;"
+		"layout(location = 0, fragment_group = 1) vec4 asdf;} foo;");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(2U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(112U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("fragment input member 'asdf' already declared", messages[0].message);
+
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[1].file), path));
+	EXPECT_EQ(1U, messages[1].line);
+	EXPECT_EQ(61U, messages[1].column);
+	EXPECT_TRUE(messages[1].continued);
+	EXPECT_EQ("see other declaration of fragment input member 'asdf'", messages[1].message);
+}
+
+TEST(ParserTest, FragmentInputsMissingGroupName)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream(
+		"fragment Foo {layout(location = 0, fragment_group = 1) vec4 asdf;};");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(67U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected token: ';', expected identifier", messages[0].message);
+}
+
+TEST(ParserTest, FragmentInputsMissingSemicolon)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	std::stringstream stream(
+		"fragment Foo {layout(location = 0, fragment_group = 1) vec4 asdf;} foo bar");
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+	EXPECT_FALSE(parser.parse(output, Parser::SupportsFragmentInputs));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+	EXPECT_EQ(1U, messages[0].line);
+	EXPECT_EQ(72U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ("unexpected token: 'bar', expected ';'", messages[0].message);
+}
+
 TEST(ParserTest, PatchControlPoints)
 {
 	std::string path = pathStr(exeDir/"test.msl");
@@ -794,6 +1228,39 @@ TEST(ParserTest, EarlyFragmentTests)
 		EXPECT_EQ(1U, messages[0].line);
 		EXPECT_EQ(39U, messages[0].column);
 		EXPECT_EQ("invalid boolean value: 'asdf'", messages[0].message);
+	}
+}
+
+TEST(ParserTest, FragmentGroup)
+{
+	std::string path = pathStr(exeDir/"test.msl");
+	{
+		std::stringstream stream("pipeline Test {fragment_group = 2 ;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_TRUE(parser.parse(output));
+
+		const std::vector<Parser::Pipeline>& pipelines = parser.getPipelines();
+		ASSERT_EQ(1U, pipelines.size());
+		EXPECT_EQ(2U, pipelines[0].renderState.fragmentGroup);
+	}
+
+	{
+		std::stringstream stream("pipeline Test {fragment_group = asdf;}");
+		Parser parser;
+		Preprocessor preprocessor;
+		Output output;
+		EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, stream, path));
+		EXPECT_FALSE(parser.parse(output));
+
+		const std::vector<Output::Message>& messages = output.getMessages();
+		ASSERT_EQ(1U, messages.size());
+		EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), path));
+		EXPECT_EQ(1U, messages[0].line);
+		EXPECT_EQ(33U, messages[0].column);
+		EXPECT_EQ("invalid int value: 'asdf'", messages[0].message);
 	}
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2022 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -747,6 +747,11 @@ struct RenderState
 	 * @brief Whether or not to enable early fragment tests.
 	 */
 	Bool earlyFragmentTests = Bool::Unset;
+
+	/**
+	 * @brief The fragment group for the pipeline.
+	 */
+	std::uint32_t fragmentGroup = unknown;
 };
 
 /**

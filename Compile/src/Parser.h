@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Aaron Barany
+ * Copyright 2016-2022 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,8 @@ class MSL_COMPILE_EXPORT Parser
 public:
 	enum Options
 	{
-		RemoveUniformBlocks = 0x1
+		RemoveUniformBlocks = 0x1,
+		SupportsFragmentInputs = 0x2
 	};
 
 	struct Pipeline
@@ -49,9 +50,28 @@ public:
 
 	struct Sampler
 	{
-		const Token* token;
+		const Token* token = nullptr;
 		std::string name;
 		SamplerState state;
+	};
+
+	struct FragmentInput
+	{
+		const Token* typeToken = nullptr;
+		const Token* nameToken = nullptr;
+		std::string type;
+		std::string name;
+		std::uint32_t attachmentIndex = unknown;
+		std::uint32_t fragmentGroup = unknown;
+	};
+
+	struct FragmentInputGroup
+	{
+		const Token* typeToken = nullptr;
+		const Token* nameToken = nullptr;;
+		std::string type;
+		std::string name;
+		std::vector<FragmentInput> inputs;
 	};
 
 	struct LineMapping
@@ -78,6 +98,11 @@ public:
 	const std::vector<Sampler>& getSamplers() const
 	{
 		return m_samplers;
+	}
+
+	const std::vector<FragmentInputGroup>& getFragmentInputs() const
+	{
+		return m_fragmentInputs;
 	}
 
 	bool parse(Output& output, int options = 0);
@@ -125,6 +150,7 @@ private:
 	bool readPipeline(Output& output, const std::vector<Token>& tokens, std::size_t& i);
 	bool readSampler(Output& output, const std::vector<Token>& tokens, std::size_t& i);
 	bool readVarying(Output& output, const std::vector<Token>& tokens, std::size_t& i);
+	bool readFragmentInputs(Output& output, const std::vector<Token>& tokens, std::size_t& i);
 	EntryPointState addElementString(std::string& str, std::vector<LineMapping>& lineMappings,
 		const TokenRange& tokenRange, const Token* entryPoint = nullptr) const;
 	bool removeUniformBlock(std::string& str, std::vector<LineMapping>& lineMappings,
@@ -136,6 +162,7 @@ private:
 	std::array<std::array<std::vector<TokenRange>, stageCount>, elementCount> m_elements;
 	std::vector<Pipeline> m_pipelines;
 	std::vector<Sampler> m_samplers;
+	std::vector<FragmentInputGroup> m_fragmentInputs;
 };
 
 } // namespace msl

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Aaron Barany
+ * Copyright 2016-2022 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,6 +102,8 @@ static Target::FeatureInfo featureInfos[] =
 	{"CullDistance", "HAS_CULL_DISTANCE", "Support for gl_CullDistance array."},
 	{"EarlyFragmentTests", "HAS_EARLY_FRAGMENT_TESTS",
 		"Support for explicitly enabling early fragment tests."},
+	{"FragmentInputs", "HAS_FRAGMENT_INPUTS",
+		"Support for reading results of other fragment shaders."},
 };
 
 static_assert(sizeof(featureInfos)/sizeof(*featureInfos) == Target::featureCount,
@@ -687,6 +689,8 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 	int options = 0;
 	if (!featureEnabled(Feature::UniformBlocks))
 		options |= Parser::RemoveUniformBlocks;
+	if (featureEnabled(Feature::FragmentInputs))
+		options |= Parser::SupportsFragmentInputs;
 	bool hasEarlyFragmentTests = featureEnabled(Feature::EarlyFragmentTests);
 
 	if (!parser.parse(output, options))

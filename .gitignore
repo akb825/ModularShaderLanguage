@@ -3,5 +3,6 @@
 .cmake
 .idea
 .vscode
+.DS_Store
 *.swp
 *.user

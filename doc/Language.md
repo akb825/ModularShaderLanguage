@@ -75,6 +75,7 @@ The shader file is first run through a C99 preprocessor. The following \#defines
 * `HAS_CLIP_DISTANCE`: Set to 1 if the `gl_ClipDistance` array is supported, 0 if not. Note that even if the shader language supports clip distances, the target itself may not, so additional runtime checks may be required.
 * `HAS_CULL_DISTANCE`: Set to 1 if the `gl_CullDistance` array is supported, 0 if not. Note that even if the shader language supports cull distances, the target itself may not, so additional runtime checks may be required.
 * `HAS_EARLY_FRAGMENT_TESTS`: Set to 1 if early fragment tests may be explicitly enabled with the `early_fragment_tests` render state.
+* `HAS_FRAGMENT_INPUTS`: Set to 1 if fragment inputs are supported, 0 if not. See "Fragment Inputs" section below.
 
 # Filtering
 
@@ -179,6 +180,26 @@ Inputs for tessellation control and geometry shader stages that are declared in 
 When structs are used for inputs and outputs, that struct may only be used for a single output/input pair. During linking the location information is embedded in the struct itself, which can only be used once. Additionally, you may not have nested structs (i.e. a struct member variable) for an input or output.
 
 When linking, inputs and outputs are matched based on their undecorated names. In other words, it will look for members of any interface blocks as well as member variables. As a result, if multiple interface blocks are used, they may not share member names.
+
+## Fragment Inputs
+
+Fragment inputs expose Tile Based Deferred Rendering features in Metal 2.0 for Apple silicon. (Apple GPU Family 4 or higher, starting with A11 for iOS devices and any Apple silicon Mac) This provides features very similar to subpasses in Vulkan, where the render target output of one subpass can be read in a later subpass at a significantly reduced performance cost. As with subpass inputs with Vulkan, this only applies for the value at the same pixel. This will give the best results when using textures with a memoryless storage mode. See the "Single-Pass Deferred Lighting" section in the [Apple deferred lighting sample](https://developer.apple.com/documentation/metal/rendering_a_scene_with_deferred_lighting_in_objective-c) for more information.
+
+In order to take advantage of this feature, there are two steps you must take:
+
+1. Use the `fragment_group` render state to the ordering for the pipeline. For example, when performing deferred lighting you would set the GBuffer pass to `fragment_group = 0` and the lighting pass to `fragment_group = 1`.
+2. Declare a `fragment` block for the input values to read. Each element should have a `layout()` specification with `location` setting the attachment index and `fragment_group` for the fragment group it was written to. For example, the GBuffer inputs for a deferred lighting pass may be declared as:
+
+	```
+	fragment GBuffers
+	{
+		layout (location = 0, fragment_group = 0) vec4 materialColor;
+		layout (location = 1, fragment_group = 0) vec3 normal;
+		layout (location = 2, fragment_group = 0) float depth;
+	} gBuffers;
+	```
+
+	In this example, if you want to access the material color you can with `gBuffers.materialColor`.
 
 ## Input/output variables for older versions of GLSL
 
@@ -459,3 +480,4 @@ The blend attachment states may be prefixed with `attachment#_` to apply to a sp
 
 * `patch_control_points`: set to an integer value of the number of control points for tessellation patches.
 * `early_fragment_tests`: set to `true` to enable running of depth/stencil tests before running the fragment shader. This will also write the depth value before running the shader, so any modifications of the depth within the shader will be ignored. Similarly, if the fragment is discarded the depth value will not be discarded.
+* `fragment_group`: set to an integer value for the grouping of fragments when used in conjunction with fragment inputs. (See the "Fragment Inputs" section above)

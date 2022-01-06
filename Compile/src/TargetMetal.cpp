@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2022 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -158,7 +158,6 @@ std::uint32_t TargetMetal::getVersion() const
 
 bool TargetMetal::featureSupported(Feature feature) const
 {
-	// TODO: determine supported feature based on version.
 	switch (feature)
 	{
 		case Feature::Std140:
@@ -172,6 +171,8 @@ bool TargetMetal::featureSupported(Feature feature) const
 			return m_version >= 102;
 		case Feature::EarlyFragmentTests:
 			return m_version >= 102;
+		case Feature::FragmentInputs:
+			return (m_platform == Platform::iOS && m_version >= 200) || m_version >= 203;
 		default:
 			return true;
 	}

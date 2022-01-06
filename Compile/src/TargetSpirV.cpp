@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2022 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,9 +33,15 @@ std::uint32_t TargetSpirV::getVersion() const
 		((SPV_VERSION & 0xF00) >> 8);
 }
 
-bool TargetSpirV::featureSupported(Feature) const
+bool TargetSpirV::featureSupported(Feature feature) const
 {
-	return true;
+	switch (feature)
+	{
+		case Feature::FragmentInputs:
+			return false;
+		default:
+			return true;
+	}
 }
 
 std::vector<std::pair<std::string, std::string>> TargetSpirV::getExtraDefines() const

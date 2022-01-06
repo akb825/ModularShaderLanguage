@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Aaron Barany
+ * Copyright 2016-2022 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -326,14 +326,11 @@ static KeyValueResult readKeyValue(Output& output, const Token*& key, Token& val
 
 			key = &tokens[i];
 
-			if (!skipWhitespace(output, tokens, ++i))
+			if (!skipWhitespace(output, tokens, ++i) || !isToken(output, tokens[i], "=") ||
+				!skipWhitespace(output, tokens, ++i))
+			{
 				return KeyValueResult::Error;
-
-			if (!isToken(output, tokens[i], "="))
-				return KeyValueResult::Error;
-
-			if (!skipWhitespace(output, tokens, ++i))
-				return KeyValueResult::Error;
+			}
 
 			if (tokens[i].value == ";" || tokens[i].value == "}")
 			{
@@ -1281,13 +1278,133 @@ static ParseResult readRenderState(Output& output, Parser::Pipeline& pipeline, c
 			return ParseResult::Error;
 		return ParseResult::Success;
 	}
+	else if (key.value == "fragment_group")
+	{
+		if (!getInt(output, pipeline.renderState.fragmentGroup, value))
+			return ParseResult::Error;
+		return ParseResult::Success;
+	}
 	else
 		return ParseResult::NotThisType;
 }
 
+static bool readFragmentInput(Parser::FragmentInput& outInput, Output& output,
+	const std::vector<Token>& tokens, std::size_t& i)
+{
+	/// Read layout.
+	const Token& layoutToken = tokens[i];
+	if (!isToken(output, tokens[i], "layout") || !skipWhitespace(output, tokens, ++i) ||
+		!isToken(output, tokens[i], "(") || !skipWhitespace(output, tokens, ++i))
+	{
+		return false;
+	}
+
+	const Token* attachmentIndexToken = nullptr;
+	const Token* fragmentGroupToken = nullptr;
+	while (tokens[i].value != ")")
+	{
+		const Token* layoutToken = &tokens[i];
+		bool isLocation = tokens[i].value == "location";
+		bool isFragmentGroup = tokens[i].value == "fragment_group";
+		if (isLocation || isFragmentGroup)
+		{
+			if (!skipWhitespace(output, tokens, ++i) || !isToken(output, tokens[i], "=") ||
+				!skipWhitespace(output, tokens, ++i))
+			{
+				return false;
+			}
+
+			std::uint32_t value;
+			if (!getInt(output, value, tokens[i]))
+				return false;
+
+			if (isLocation)
+			{
+				if (outInput.attachmentIndex != unknown)
+				{
+					output.addMessage(Output::Level::Error, layoutToken->fileName,
+						layoutToken->line, layoutToken->column, false,
+						"fragment input layout 'location' already declared");
+					output.addMessage(Output::Level::Error, attachmentIndexToken->fileName,
+						attachmentIndexToken->line, attachmentIndexToken->column, true,
+						"see other declaration of layout 'location'");
+					return false;
+				}
+
+				attachmentIndexToken = layoutToken;
+				outInput.attachmentIndex = value;
+			}
+			else if (isFragmentGroup)
+			{
+				if (outInput.fragmentGroup != unknown)
+				{
+					output.addMessage(Output::Level::Error, layoutToken->fileName,
+						layoutToken->line, layoutToken->column, false,
+						"fragment input layout 'fragment_group' already declared");
+					output.addMessage(Output::Level::Error, fragmentGroupToken->fileName,
+						fragmentGroupToken->line, fragmentGroupToken->column, true,
+						"see other declaration of layout 'fragment_group'");
+					return false;
+				}
+
+				fragmentGroupToken = layoutToken;
+				outInput.fragmentGroup = value;
+			}
+		}
+		else
+		{
+			output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+				tokens[i].column, false, "unexpected layout specifier: '" + tokens[i].value + "'");
+			return false;
+		}
+
+		if (!skipWhitespace(output, tokens, ++i))
+			return false;
+
+		if (tokens[i].value == ",")
+		{
+			if (!skipWhitespace(output, tokens, ++i))
+				return false;
+		}
+		else if (tokens[i].value != ")")
+		{
+			output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+				tokens[i].column, false, "unexpected token: '" + tokens[i].value +
+				"', expected ',' or ')'");
+			return false;
+		}
+	}
+
+	if (outInput.attachmentIndex == unknown || outInput.fragmentGroup == unknown)
+	{
+		output.addMessage(Output::Level::Error, layoutToken.fileName, layoutToken.line,
+			layoutToken.column, false,
+			"fragment input layout must contain 'layout' and 'fragment_group' qualifiers");
+		return false;
+	}
+
+	if (!skipWhitespace(output, tokens, ++i) || !isIdentifier(output, tokens[i]))
+		return false;
+
+	outInput.typeToken = &tokens[i];
+	outInput.type = tokens[i].value;
+
+	if (!skipWhitespace(output, tokens, ++i) || !isIdentifier(output, tokens[i]))
+		return false;
+
+	outInput.nameToken = &tokens[i];
+	outInput.name = tokens[i].value;
+
+	if (!skipWhitespace(output, tokens, ++i) || !isToken(output, tokens[i], ";"))
+		return false;
+
+	++i;
+	return true;
+}
+
 bool Parser::parse(Output& output, int options)
 {
-	enum class Element
+	enum class ParseElement
 	{
 		Unknown,
 		Uniform,
@@ -1304,13 +1421,15 @@ bool Parser::parse(Output& output, int options)
 			elements.clear();
 	}
 	m_pipelines.clear();
+	m_samplers.clear();
+	m_fragmentInputs.clear();
 
 	unsigned int parenCount = 0;
 	unsigned int braceCount = 0;
 	unsigned int squareCount = 0;
 	bool elementStart = true;
 	bool inStageDecl = false;
-	Element element = Element::Unknown;
+	ParseElement element = ParseElement::Unknown;
 
 	const Token* lastToken = nullptr;
 	const Token* startParenToken = nullptr;
@@ -1362,8 +1481,8 @@ bool Parser::parse(Output& output, int options)
 			}
 		}
 
-		// Declarations that must be in the start: pipeline, sampler_state, varying, and [ for stage
-		// declaration.
+		// Declarations that must be in the start: pipeline, sampler_state, varying, fragment, and [
+		// for stage declaration.
 		if (elementStart && token.value == "pipeline")
 		{
 			if (!readPipeline(output, tokens, ++i))
@@ -1387,6 +1506,23 @@ bool Parser::parse(Output& output, int options)
 		else if (elementStart && token.value == "varying")
 		{
 			if (!readVarying(output, tokens, ++i))
+				return false;
+
+			if (i >= tokens.size())
+				break;
+			lastToken = &tokens[i];
+			endMetaElement(tokenRange, i);
+		}
+		else if (elementStart && token.value == "fragment")
+		{
+			if (!(m_options & SupportsFragmentInputs))
+			{
+				output.addMessage(Output::Level::Error, token.fileName, token.line, token.column,
+					false, "fragment inputs not supported by current target");
+				return false;
+			}
+
+			if (!readFragmentInputs(output, tokens, ++i))
 				return false;
 
 			if (i >= tokens.size())
@@ -1448,11 +1584,11 @@ bool Parser::parse(Output& output, int options)
 				}
 
 				--braceCount;
-				if (braceCount == 0 && element == Element::Unknown)
+				if (braceCount == 0 && element == ParseElement::Unknown)
 				{
 					// End element on last } for elements like functions.
 					endElement(stages, tokenRange, i);
-					element = Element::Unknown;
+					element = ParseElement::Unknown;
 					elementStart = true;
 				}
 			}
@@ -1478,19 +1614,19 @@ bool Parser::parse(Output& output, int options)
 				{
 					// End element ; outside of (, {, and [ block.
 					endElement(stages, tokenRange, i);
-					element = Element::Unknown;
+					element = ParseElement::Unknown;
 					elementStart = true;
 				}
 				else if (token.value == "uniform")
-					element = Element::Uniform;
+					element = ParseElement::Uniform;
 				else if (token.value == "buffer")
-					element = Element::Buffer;
+					element = ParseElement::Buffer;
 				else if (token.value == "struct")
-					element = Element::Struct;
+					element = ParseElement::Struct;
 				else if (token.value == "in")
-					element = Element::In;
+					element = ParseElement::In;
 				else if (token.value == "out")
-					element = Element::Out;
+					element = ParseElement::Out;
 			}
 		}
 
@@ -1546,8 +1682,7 @@ bool Parser::parse(Output& output, int options)
 }
 
 std::string Parser::createShaderString(std::vector<LineMapping>& lineMappings, Output& output,
-	const Pipeline& pipeline, Stage stage, bool ignoreEntryPoint,
-	bool earlyFragmentTests) const
+	const Pipeline& pipeline, Stage stage, bool ignoreEntryPoint, bool earlyFragmentTests) const
 {
 	lineMappings.clear();
 	std::string shaderString;
@@ -1618,7 +1753,7 @@ std::string Parser::createShaderString(std::vector<LineMapping>& lineMappings, O
 		}
 
 		// Add the end. of the block.
-		if (!shaderString.empty() && shaderString.back() != '\n')
+		if (shaderString.back() != '\n')
 			shaderString += '\n';
 
 		shaderString += "} uniforms;";
@@ -1634,6 +1769,53 @@ std::string Parser::createShaderString(std::vector<LineMapping>& lineMappings, O
 			m_elements[static_cast<unsigned int>(Element::UniformBlock)][stageIndex])
 		{
 			addElementString(shaderString, lineMappings, tokenRange);
+		}
+	}
+
+	// Add fragment inputs as uniform blocks.
+	if (stage == Stage::Fragment)
+	{
+		for (const FragmentInputGroup& fragmentInputs : m_fragmentInputs)
+		{
+			if (!shaderString.empty() && shaderString.back() != '\n')
+				shaderString += '\n';
+
+			// Add two lines at the start for the declaration.
+			shaderString += "uniform ";
+			shaderString += fragmentInputs.type;
+			shaderString += "\n{\n";
+			for (unsigned int i = 0; i < 2; ++i)
+			{
+				lineMappings.emplace_back();
+				lineMappings.back().fileName = fragmentInputs.typeToken->fileName;
+				lineMappings.back().line = fragmentInputs.typeToken->line;
+			}
+
+			// Add each input member as a separate member of the dummy uniform block.
+			for (const FragmentInput& input : fragmentInputs.inputs)
+			{
+				shaderString += input.type;
+				shaderString += '\n';
+
+				lineMappings.emplace_back();
+				lineMappings.back().fileName = input.typeToken->fileName;
+				lineMappings.back().line = input.typeToken->line;
+
+				shaderString += input.name;
+				shaderString += ";\n";
+
+				lineMappings.emplace_back();
+				lineMappings.back().fileName = input.nameToken->fileName;
+				lineMappings.back().line = input.nameToken->line;
+			}
+
+			shaderString += "} ";
+			shaderString += fragmentInputs.name;
+			shaderString += ";\n";
+
+			lineMappings.emplace_back();
+			lineMappings.back().fileName = fragmentInputs.nameToken->fileName;
+			lineMappings.back().line = fragmentInputs.nameToken->line;
 		}
 	}
 
@@ -1751,11 +1933,8 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 	// target GLSL.
 	Pipeline pipeline;
 
-	if (!skipWhitespace(output, tokens, i))
-		return false;
-
 	// Read the name
-	if (!isIdentifier(output, tokens[i]))
+	if (!skipWhitespace(output, tokens, i) || !isIdentifier(output, tokens[i]))
 		return false;
 
 	pipeline.token = &tokens[i];
@@ -1774,10 +1953,7 @@ bool Parser::readPipeline(Output& output, const std::vector<Token>& tokens, std:
 		}
 	}
 
-	if (!skipWhitespace(output, tokens, ++i))
-		return false;
-
-	if (!isToken(output, tokens[i], "{"))
+	if (!skipWhitespace(output, tokens, ++i) || !isToken(output, tokens[i], "{"))
 		return false;
 
 	++i;
@@ -1821,11 +1997,8 @@ bool Parser::readSampler(Output& output, const std::vector<Token>& tokens, std::
 	// target GLSL.
 	Sampler sampler;
 
-	if (!skipWhitespace(output, tokens, i))
-		return false;
-
 	// Read the name
-	if (!isIdentifier(output, tokens[i]))
+	if (!skipWhitespace(output, tokens, i) || !isIdentifier(output, tokens[i]))
 		return false;
 
 	sampler.token = &tokens[i];
@@ -1844,10 +2017,7 @@ bool Parser::readSampler(Output& output, const std::vector<Token>& tokens, std::
 		}
 	}
 
-	if (!skipWhitespace(output, tokens, ++i))
-		return false;
-
-	if (!isToken(output, tokens[i], "{"))
+	if (!skipWhitespace(output, tokens, ++i) || !isToken(output, tokens[i], "{"))
 		return false;
 
 	++i;
@@ -1937,18 +2107,15 @@ bool Parser::readSampler(Output& output, const std::vector<Token>& tokens, std::
 
 bool Parser::readVarying(Output& output, const std::vector<Token>& tokens, std::size_t& i)
 {
-	// Handle all parsing of the pipeline here. This will not be output for any part of the
-	// target GLSL.
+	// Handle all parsing of the pipeline here. This will not be output for any part of the target
+	// GLSL.
 	std::size_t varyingIndex = i - 1;
-	if (!skipWhitespace(output, tokens, i))
-		return false;
-
 	// Read the stages
-	if (!isToken(output, tokens[i], "("))
+	if (!skipWhitespace(output, tokens, i) || !isToken(output, tokens[i], "(") ||
+		!skipWhitespace(output, tokens, ++i))
+	{
 		return false;
-
-	if (!skipWhitespace(output, tokens, ++i))
-		return false;
+	}
 
 	auto foundOutputStage = stageMap.find(tokens[i].value);
 	if (foundOutputStage == stageMap.end())
@@ -1967,14 +2134,11 @@ bool Parser::readVarying(Output& output, const std::vector<Token>& tokens, std::
 		return false;
 	}
 
-	if (!skipWhitespace(output, tokens, ++i))
+	if (!skipWhitespace(output, tokens, ++i) || !isToken(output, tokens[i], ",") ||
+		!skipWhitespace(output, tokens, ++i))
+	{
 		return false;
-
-	if (!isToken(output, tokens[i], ","))
-		return false;
-
-	if (!skipWhitespace(output, tokens, ++i))
-		return false;
+	}
 
 	auto foundInputStage = stageMap.find(tokens[i].value);
 	if (foundInputStage == stageMap.end())
@@ -2002,17 +2166,11 @@ bool Parser::readVarying(Output& output, const std::vector<Token>& tokens, std::
 		return false;
 	}
 
-	if (!skipWhitespace(output, tokens, ++i))
+	if (!skipWhitespace(output, tokens, ++i) || !isToken(output, tokens[i], ")") ||
+		!skipWhitespace(output, tokens, ++i) || !isToken(output, tokens[i], "{"))
+	{
 		return false;
-
-	if (!isToken(output, tokens[i], ")"))
-		return false;
-
-	if (!skipWhitespace(output, tokens, ++i))
-		return false;
-
-	if (!isToken(output, tokens[i], "{"))
-		return false;
+	}
 
 	std::uint32_t braceCount = 0;
 	bool isBlock = false;
@@ -2075,6 +2233,98 @@ bool Parser::readVarying(Output& output, const std::vector<Token>& tokens, std::
 	} while(true);
 
 	++i;
+	return true;
+}
+
+bool Parser::readFragmentInputs(Output& output, const std::vector<Token>& tokens, std::size_t& i)
+{
+	// Handle all parsing of fragment inputs. This will be written to GLSL as a uniform block to
+	// add the proper attributes to the final cross-compiled output.
+	FragmentInputGroup fragmentInputs;
+
+	// Read the type name.
+	if (!skipWhitespace(output, tokens, i) || !isIdentifier(output, tokens[i]))
+		return false;
+
+	fragmentInputs.typeToken = &tokens[i];
+	fragmentInputs.type = tokens[i].value;
+
+	for (std::size_t j = 0; j < m_fragmentInputs.size(); ++j)
+	{
+		if (m_fragmentInputs[j].type == fragmentInputs.type)
+		{
+			output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+				tokens[i].column, false, "fragment inputs of type '" + fragmentInputs.type +
+				"' already declared");
+			const Token* otherToken = m_fragmentInputs[j].typeToken;
+			output.addMessage(Output::Level::Error, otherToken->fileName, otherToken->line,
+				otherToken->column, true,
+				"see other declaration of fragment inputs type '" + fragmentInputs.type + "'");
+			return false;
+		}
+	}
+
+	// Read the elements.
+	if (!skipWhitespace(output, tokens, ++i) || !isToken(output, tokens[i], "{"))
+		return false;
+
+	++i;
+	do
+	{
+		if (!skipWhitespace(output, tokens, i))
+			return false;
+
+		if (tokens[i].value == "}")
+			break;
+
+		FragmentInput input;
+		if (!readFragmentInput(input, output, tokens, i))
+			return false;
+
+		for (std::size_t j = 0; j < fragmentInputs.inputs.size(); ++j)
+		{
+			if (fragmentInputs.inputs[j].name == input.name)
+			{
+				const Token* token = input.nameToken;
+				output.addMessage(Output::Level::Error, token->fileName, token->line, token->column,
+					false, "fragment input member '" + input.name + "' already declared");
+				token = fragmentInputs.inputs[j].nameToken;
+				output.addMessage(Output::Level::Error, token->fileName, token->line, token->column,
+					true, "see other declaration of fragment input member '" + input.name + "'");
+				return false;
+			}
+		}
+
+		fragmentInputs.inputs.push_back(std::move(input));
+	} while (true);
+
+	// Read the name.
+	if (!skipWhitespace(output, tokens, ++i) || !isIdentifier(output, tokens[i]))
+		return false;
+
+	fragmentInputs.name = tokens[i].value;
+	fragmentInputs.nameToken = &tokens[i];
+
+	for (std::size_t j = 0; j < m_fragmentInputs.size(); ++j)
+	{
+		if (m_fragmentInputs[j].name == fragmentInputs.name)
+		{
+			output.addMessage(Output::Level::Error, tokens[i].fileName, tokens[i].line,
+				tokens[i].column, false, "fragment inputs '" + fragmentInputs.name +
+				"' already declared");
+			const Token* otherToken = m_fragmentInputs[j].nameToken;
+			output.addMessage(Output::Level::Error, otherToken->fileName, otherToken->line,
+				otherToken->column, true, "see other declaration of fragment inputs '" +
+				fragmentInputs.name + "'");
+			return false;
+		}
+	}
+
+	if (!skipWhitespace(output, tokens, ++i) || !isToken(output, tokens[i], ";"))
+		return false;
+
+	++i;
+	m_fragmentInputs.push_back(std::move(fragmentInputs));
 	return true;
 }
 

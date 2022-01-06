@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2022 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -114,6 +114,7 @@ TEST(TargetTest, FeatureList)
 	TEST_FEATURE(ClipDistance, counter);
 	TEST_FEATURE(CullDistance, counter);
 	TEST_FEATURE(EarlyFragmentTests, counter);
+	TEST_FEATURE(FragmentInputs, counter);
 
 	unsigned int featureCount = Target::featureCount;
 	EXPECT_EQ(featureCount, counter);

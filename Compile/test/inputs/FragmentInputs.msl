@@ -1,0 +1,26 @@
+fragment FirstInput
+{
+	layout(location = 0, fragment_group = 1) vec4 first;
+	layout( fragment_group = 0 ,location=1 ) vec4 second ;
+} firstInput;
+
+fragment SecondInput
+{
+	layout(location = 2, fragment_group = 3) float third;
+} secondInput;
+
+[[vertex]]
+void vertEntry()
+{
+}
+
+[[fragment]]
+void fragEntry()
+{
+}
+
+pipeline Foo
+{
+	vertex = vertEntry;
+	fragment = fragEntry;
+}
