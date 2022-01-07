@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2022 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@
 #elif defined(linux)
 #	define MSL_LINUX 1
 #elif defined(__APPLE__)
-#	define MSL_APPLE
+#	define MSL_APPLE 1
 #endif
 
 #if defined(_MSC_VER)

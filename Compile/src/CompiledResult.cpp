@@ -295,7 +295,7 @@ bool CompiledResult::save(std::ostream& stream) const
 		for (unsigned int j = 0; j < stageCount; ++j)
 		{
 			const Shader& shader = pipeline.second.shaders[j];
-			if (shader.shader == unknown)
+			if (shader.shader == noShader)
 				shaders[j] = mslb::CreateShader(builder, unknown, 0);
 			else
 			{

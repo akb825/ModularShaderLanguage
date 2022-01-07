@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2022 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,13 +81,32 @@ public:
 	std::vector<std::pair<std::string, std::string>> getExtraDefines() const override;
 
 protected:
+	/**
+	 * @brief Compiles the metal shader.
+	 *
+	 * The base implementation will call into Xcode to perform the compilation. This is virtual
+	 * primarily to implement unit tests, which can:
+	 * 1. Get access to the metal string for verification.
+	 * 2. Skip the actual compilation so the tests can be run across all platforms.
+	 *
+	 * This isn't expected to be overridden in any non-testing situation.
+	 *
+	 * @param[out] data The compiled metal data.
+	 * @param output The output to add errors and warnings.
+	 * @param metal The metal shader string.
+	 * @return False if the compilation failed.
+	 */
+	virtual bool compileMetal(std::vector<std::uint8_t>& data, Output& output,
+		const std::string& metal);
+
 	void willCompile() override;
 	bool crossCompile(std::vector<std::uint8_t>& data, Output& output, const std::string& fileName,
 		std::size_t line, std::size_t column,
 		const std::array<bool, compile::stageCount>& pipelineStages, compile::Stage stage,
 		const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
-		const std::vector<compile::Uniform>& uniforms,
-		std::vector<std::uint32_t>& uniformIds) override;
+		const std::vector<compile::Uniform>& uniforms, std::vector<std::uint32_t>& uniformIds,
+		const std::vector<compile::FragmentInputGroup>& fragmentInputs,
+		std::uint32_t fragmentGroup) override;
 
 private:
 	std::string getSDK() const;

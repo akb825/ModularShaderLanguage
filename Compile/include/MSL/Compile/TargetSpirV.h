@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2022 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,8 +50,9 @@ protected:
 		const std::string& fileName, std::size_t line, std::size_t column,
 		const std::array<bool, compile::stageCount>& pipelineStages, compile::Stage stage,
 		const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
-		const std::vector<compile::Uniform>& uniforms,
-		std::vector<std::uint32_t>& uniformIds) override;
+		const std::vector<compile::Uniform>& uniforms, std::vector<std::uint32_t>& uniformIds,
+		const std::vector<compile::FragmentInputGroup>& fragmentInputs,
+		std::uint32_t fragmentGroup) override;
 };
 
 } // namespace msl

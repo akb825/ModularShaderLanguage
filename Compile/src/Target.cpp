@@ -29,6 +29,7 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <algorithm>
 #include <cassert>
 #include <cstdio>
 #include <cstring>
@@ -373,13 +374,26 @@ static std::uint32_t addStruct(Pipeline& pipeline, const std::vector<Struct>& st
 	return structIndex;
 }
 
-static void addUniforms(Pipeline& pipeline, Stage stage, const SpirVProcessor& processor)
+static bool isFragmentInput(const std::vector<compile::FragmentInputGroup>& fragmentInputs,
+	const std::string& name)
+{
+	return std::find_if(fragmentInputs.begin(), fragmentInputs.end(),
+		[&name](const FragmentInputGroup& input) {return name == input.type;}) !=
+		fragmentInputs.end();
+}
+
+static void addUniforms(Pipeline& pipeline, Stage stage, const SpirVProcessor& processor,
+	const std::vector<compile::FragmentInputGroup>& fragmentInputs)
 {
 	std::vector<std::uint32_t>& uniformIds =
 		pipeline.shaders[static_cast<unsigned int>(stage)].uniformIds;
 	const std::size_t notFound = std::size_t(-1);
 	for (std::size_t i = 0; i < processor.uniforms.size(); ++i)
 	{
+		// Skip fragment inputs, which were added as uniforms to the GLSL.
+		if (stage == Stage::Fragment && isFragmentInput(fragmentInputs, processor.uniforms[i].name))
+			continue;
+
 		std::size_t foundIndex = notFound;
 		for (std::size_t j = 0; j < pipeline.uniforms.size(); ++j)
 		{
@@ -751,6 +765,29 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 	else
 		strip = SpirVProcessor::Strip::None;
 
+	// Convert the fragment input groups.
+	const std::vector<Parser::FragmentInputGroup>& parsedFragmentInputs =
+		parser.getFragmentInputs();
+	std::vector<compile::FragmentInputGroup> fragmentInputs;
+	fragmentInputs.reserve(fragmentInputs.size());
+	for (const Parser::FragmentInputGroup& parsedInputGroup : parsedFragmentInputs)
+	{
+		fragmentInputs.emplace_back();
+		compile::FragmentInputGroup& inputGroup = fragmentInputs.back();
+		inputGroup.type = parsedInputGroup.type;
+		inputGroup.name = parsedInputGroup.name;
+		inputGroup.inputs.reserve(parsedInputGroup.inputs.size());
+		for (const Parser::FragmentInput& parsedInput : parsedInputGroup.inputs)
+		{
+			inputGroup.inputs.emplace_back();
+			compile::FragmentInput& input = inputGroup.inputs.back();
+			input.name = parsedInput.name;
+			input.location = parsedInput.location;
+			input.fragmentGroup = parsedInput.fragmentGroup;
+		}
+	}
+
+	// Compile each of the pipelines.
 	std::vector<char> tempData;
 	std::vector<std::uint8_t> shaderData;
 	std::vector<Parser::LineMapping> lineMappings;
@@ -853,7 +890,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 				return false;
 
 			// Add uniforms.
-			addUniforms(addedPipeline, stage, processors[i]);
+			addUniforms(addedPipeline, stage, processors[i], fragmentInputs);
 			if (addedPipeline.pushConstantStruct == unknown &&
 				processors[i].pushConstantStruct != unknown)
 			{
@@ -933,7 +970,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			auto stage = static_cast<Stage>(i);
 			if (!stages.shaders[i])
 			{
-				addedPipeline.shaders[i].shader = unknown;
+				addedPipeline.shaders[i].shader = noShader;
 				continue;
 			}
 
@@ -963,7 +1000,8 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 			const Token& entryPoint = pipeline.entryPoints[i];
 			if (!crossCompile(shaderData, output, entryPoint.fileName, entryPoint.line,
 					entryPoint.column, pipelineStages, stage, spirv[i], entryPoint.value,
-					addedPipeline.uniforms, addedPipeline.shaders[i].uniformIds))
+					addedPipeline.uniforms, addedPipeline.shaders[i].uniformIds, fragmentInputs,
+					pipeline.renderState.fragmentGroup))
 			{
 				return false;
 			}

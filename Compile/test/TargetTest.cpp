@@ -46,8 +46,9 @@ public:
 
 	bool crossCompile(std::vector<std::uint8_t>&, Output&, const std::string&, std::size_t,
 		std::size_t, const std::array<bool, compile::stageCount>&, compile::Stage,
-		const std::vector<std::uint32_t>&, const std::string&,
-		const std::vector<compile::Uniform>&, std::vector<std::uint32_t>&) override
+		const std::vector<std::uint32_t>&, const std::string&, const std::vector<compile::Uniform>&,
+		std::vector<std::uint32_t>&, const std::vector<compile::FragmentInputGroup>&,
+		std::uint32_t) override
 	{
 		return true;
 	}

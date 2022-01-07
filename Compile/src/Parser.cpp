@@ -20,6 +20,7 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/lexical_cast.hpp>
+#include <cassert>
 #include <cstring>
 #include <unordered_map>
 #include <unordered_set>
@@ -1487,6 +1488,7 @@ bool Parser::parse(Output& output, int options)
 			if (!readPipeline(output, tokens, ++i))
 				return false;
 
+			assert(i < tokens.size());
 			endMetaElement(tokenRange, i);
 		}
 		else if (elementStart && token.value == "sampler_state")
@@ -1494,6 +1496,7 @@ bool Parser::parse(Output& output, int options)
 			if (!readSampler(output, tokens, ++i))
 				return false;
 
+			assert(i < tokens.size());
 			endMetaElement(tokenRange, i);
 		}
 		else if (elementStart && token.value == "varying")
@@ -1501,6 +1504,7 @@ bool Parser::parse(Output& output, int options)
 			if (!readVarying(output, tokens, ++i))
 				return false;
 
+			assert(i < tokens.size());
 			endMetaElement(tokenRange, i);
 		}
 		else if (elementStart && token.value == "fragment")
@@ -1515,6 +1519,7 @@ bool Parser::parse(Output& output, int options)
 			if (!readFragmentInputs(output, tokens, ++i))
 				return false;
 
+			assert(i < tokens.size());
 			endMetaElement(tokenRange, i);
 		}
 		else if (token.value == "[")

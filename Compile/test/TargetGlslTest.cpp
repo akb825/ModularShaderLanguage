@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2022 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,13 +50,13 @@ TEST(TargetGlslTest, Glsl450)
 	auto pipeline = result.getPipelines().find("Test");
 	ASSERT_NE(pipeline, result.getPipelines().end());
 	EXPECT_EQ(0U, pipeline->second.shaders[static_cast<int>(Stage::Vertex)].shader);
-	EXPECT_EQ(unknown,
+	EXPECT_EQ(noShader,
 		pipeline->second.shaders[static_cast<int>(Stage::TessellationControl)].shader);
-	EXPECT_EQ(unknown,
+	EXPECT_EQ(noShader,
 		pipeline->second.shaders[static_cast<int>(Stage::TessellationEvaluation)].shader);
-	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
+	EXPECT_EQ(noShader, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
 	EXPECT_EQ(1U, pipeline->second.shaders[static_cast<int>(Stage::Fragment)].shader);
-	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
+	EXPECT_EQ(noShader, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
 
 	ASSERT_EQ(1U, pipeline->second.structs.size());
 	EXPECT_EQ("Transform", pipeline->second.structs[0].name);
@@ -125,13 +125,13 @@ TEST(TargetGlslTest, Glsl450)
 	pipeline = result.getPipelines().find("Test2");
 	ASSERT_NE(pipeline, result.getPipelines().end());
 	EXPECT_EQ(0U, pipeline->second.shaders[static_cast<int>(Stage::Vertex)].shader);
-	EXPECT_EQ(unknown,
+	EXPECT_EQ(noShader,
 		pipeline->second.shaders[static_cast<int>(Stage::TessellationControl)].shader);
-	EXPECT_EQ(unknown,
+	EXPECT_EQ(noShader,
 		pipeline->second.shaders[static_cast<int>(Stage::TessellationEvaluation)].shader);
-	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
+	EXPECT_EQ(noShader, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
 	EXPECT_EQ(2U, pipeline->second.shaders[static_cast<int>(Stage::Fragment)].shader);
-	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
+	EXPECT_EQ(noShader, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
 
 	ASSERT_EQ(1U, pipeline->second.structs.size());
 	EXPECT_EQ("Transform", pipeline->second.structs[0].name);
@@ -254,13 +254,13 @@ TEST(TargetGlslTest, Glsl120)
 	auto pipeline = result.getPipelines().find("Test");
 	ASSERT_NE(pipeline, result.getPipelines().end());
 	EXPECT_EQ(0U, pipeline->second.shaders[static_cast<int>(Stage::Vertex)].shader);
-	EXPECT_EQ(unknown,
+	EXPECT_EQ(noShader,
 		pipeline->second.shaders[static_cast<int>(Stage::TessellationControl)].shader);
-	EXPECT_EQ(unknown,
+	EXPECT_EQ(noShader,
 		pipeline->second.shaders[static_cast<int>(Stage::TessellationEvaluation)].shader);
-	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
+	EXPECT_EQ(noShader, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
 	EXPECT_EQ(1U, pipeline->second.shaders[static_cast<int>(Stage::Fragment)].shader);
-	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
+	EXPECT_EQ(noShader, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
 
 	ASSERT_EQ(1U, pipeline->second.structs.size());
 	EXPECT_EQ("Uniforms", pipeline->second.structs[0].name);
@@ -329,13 +329,13 @@ TEST(TargetGlslTest, Glsl120)
 	pipeline = result.getPipelines().find("Test2");
 	ASSERT_NE(pipeline, result.getPipelines().end());
 	EXPECT_EQ(0U, pipeline->second.shaders[static_cast<int>(Stage::Vertex)].shader);
-	EXPECT_EQ(unknown,
+	EXPECT_EQ(noShader,
 		pipeline->second.shaders[static_cast<int>(Stage::TessellationControl)].shader);
-	EXPECT_EQ(unknown,
+	EXPECT_EQ(noShader,
 		pipeline->second.shaders[static_cast<int>(Stage::TessellationEvaluation)].shader);
-	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
+	EXPECT_EQ(noShader, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
 	EXPECT_EQ(2U, pipeline->second.shaders[static_cast<int>(Stage::Fragment)].shader);
-	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
+	EXPECT_EQ(noShader, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
 
 	ASSERT_EQ(1U, pipeline->second.structs.size());
 	EXPECT_EQ("Uniforms", pipeline->second.structs[0].name);
@@ -446,13 +446,13 @@ TEST(TargetGlslTest, GlslEs300)
 	auto pipeline = result.getPipelines().find("Test");
 	ASSERT_NE(pipeline, result.getPipelines().end());
 	EXPECT_EQ(0U, pipeline->second.shaders[static_cast<int>(Stage::Vertex)].shader);
-	EXPECT_EQ(unknown,
+	EXPECT_EQ(noShader,
 		pipeline->second.shaders[static_cast<int>(Stage::TessellationControl)].shader);
-	EXPECT_EQ(unknown,
+	EXPECT_EQ(noShader,
 		pipeline->second.shaders[static_cast<int>(Stage::TessellationEvaluation)].shader);
-	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
+	EXPECT_EQ(noShader, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
 	EXPECT_EQ(1U, pipeline->second.shaders[static_cast<int>(Stage::Fragment)].shader);
-	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
+	EXPECT_EQ(noShader, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
 
 	ASSERT_EQ(1U, pipeline->second.structs.size());
 	EXPECT_EQ("Transform", pipeline->second.structs[0].name);
@@ -521,13 +521,13 @@ TEST(TargetGlslTest, GlslEs300)
 	pipeline = result.getPipelines().find("Test2");
 	ASSERT_NE(pipeline, result.getPipelines().end());
 	EXPECT_EQ(0U, pipeline->second.shaders[static_cast<int>(Stage::Vertex)].shader);
-	EXPECT_EQ(unknown,
+	EXPECT_EQ(noShader,
 		pipeline->second.shaders[static_cast<int>(Stage::TessellationControl)].shader);
-	EXPECT_EQ(unknown,
+	EXPECT_EQ(noShader,
 		pipeline->second.shaders[static_cast<int>(Stage::TessellationEvaluation)].shader);
-	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
+	EXPECT_EQ(noShader, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
 	EXPECT_EQ(2U, pipeline->second.shaders[static_cast<int>(Stage::Fragment)].shader);
-	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
+	EXPECT_EQ(noShader, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
 
 	ASSERT_EQ(1U, pipeline->second.structs.size());
 	EXPECT_EQ("Transform", pipeline->second.structs[0].name);
@@ -638,13 +638,13 @@ TEST(TargetGlslTest, GlslEs100)
 	auto pipeline = result.getPipelines().find("Test");
 	ASSERT_NE(pipeline, result.getPipelines().end());
 	EXPECT_EQ(0U, pipeline->second.shaders[static_cast<int>(Stage::Vertex)].shader);
-	EXPECT_EQ(unknown,
+	EXPECT_EQ(noShader,
 		pipeline->second.shaders[static_cast<int>(Stage::TessellationControl)].shader);
-	EXPECT_EQ(unknown,
+	EXPECT_EQ(noShader,
 		pipeline->second.shaders[static_cast<int>(Stage::TessellationEvaluation)].shader);
-	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
+	EXPECT_EQ(noShader, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
 	EXPECT_EQ(1U, pipeline->second.shaders[static_cast<int>(Stage::Fragment)].shader);
-	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
+	EXPECT_EQ(noShader, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
 
 	ASSERT_EQ(1U, pipeline->second.structs.size());
 	EXPECT_EQ("Uniforms", pipeline->second.structs[0].name);
@@ -713,13 +713,13 @@ TEST(TargetGlslTest, GlslEs100)
 	pipeline = result.getPipelines().find("Test2");
 	ASSERT_NE(pipeline, result.getPipelines().end());
 	EXPECT_EQ(0U, pipeline->second.shaders[static_cast<int>(Stage::Vertex)].shader);
-	EXPECT_EQ(unknown,
+	EXPECT_EQ(noShader,
 		pipeline->second.shaders[static_cast<int>(Stage::TessellationControl)].shader);
-	EXPECT_EQ(unknown,
+	EXPECT_EQ(noShader,
 		pipeline->second.shaders[static_cast<int>(Stage::TessellationEvaluation)].shader);
-	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
+	EXPECT_EQ(noShader, pipeline->second.shaders[static_cast<int>(Stage::Geometry)].shader);
 	EXPECT_EQ(2U, pipeline->second.shaders[static_cast<int>(Stage::Fragment)].shader);
-	EXPECT_EQ(unknown, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
+	EXPECT_EQ(noShader, pipeline->second.shaders[static_cast<int>(Stage::Compute)].shader);
 
 	ASSERT_EQ(1U, pipeline->second.structs.size());
 	EXPECT_EQ("Uniforms", pipeline->second.structs[0].name);

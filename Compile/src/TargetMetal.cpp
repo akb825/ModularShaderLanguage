@@ -18,6 +18,7 @@
 #include <MSL/Compile/Output.h>
 #include "ExecuteCommand.h"
 #include "MetalOutput.h"
+#include <cassert>
 #include <fstream>
 #include <sstream>
 
@@ -38,6 +39,8 @@
 
 namespace msl
 {
+
+using namespace compile;
 
 static void setBinding(std::vector<uint32_t>& spirv, std::uint32_t id, std::uint32_t set,
 	std::uint32_t binding)
@@ -82,7 +85,7 @@ static void setBinding(std::vector<uint32_t>& spirv, std::uint32_t id, std::uint
 }
 
 static std::vector<std::uint32_t> setBindingIndices(const std::vector<std::uint32_t>& spirv,
-	const std::vector<compile::Uniform>& uniforms, std::vector<std::uint32_t>& uniformIds,
+	const std::vector<Uniform>& uniforms, std::vector<std::uint32_t>& uniformIds,
 	bool& hasPushConstant, std::uint32_t& bufferCount, std::uint32_t& textureCount)
 {
 	std::vector<std::uint32_t> adjustedSpirv = spirv;
@@ -126,6 +129,89 @@ static std::vector<std::uint32_t> setBindingIndices(const std::vector<std::uint3
 	bufferCount = bufferIndex;
 	textureCount = textureIndex;
 	return adjustedSpirv;
+}
+
+static std::string setFragmentGroup(const std::string& metal, const std::string& entryPoint,
+	std::uint32_t fragmentGroup)
+{
+	std::string structDecl = "struct " + entryPoint + "_out";
+	std::size_t outStructStart = metal.find(structDecl);
+	if (outStructStart == std::string::npos)
+		return metal;
+
+	std::size_t outStructEnd = metal.find('}', outStructStart);
+	assert(outStructEnd != std::string::npos);
+
+	// Add raster order group to all color elements.
+	std::string rasterOrderGroup = ", raster_order_group(" + std::to_string(fragmentGroup) + ")";
+	std::string result = metal.substr(0, outStructStart);
+	std::size_t curPos = outStructStart;
+	do
+	{
+		std::size_t colorStart = metal.find("color(", curPos);
+		if (colorStart > outStructEnd)
+			break;
+
+		std::size_t colorEnd = metal.find(')', colorStart);
+		assert(colorEnd < outStructEnd);
+
+		result += metal.substr(curPos, colorEnd - curPos + 1);
+		result += rasterOrderGroup;
+		curPos = colorEnd + 1;
+	} while (true);
+
+	result += metal.substr(curPos);
+	return result;
+}
+
+static std::string patchEntryPointInputGroup(const std::string& metal,
+	const FragmentInputGroup& inputGroup)
+{
+	// Expect one primary declaration in the entry point.
+	std::string declStart = "constant " + inputGroup.type + "& " + inputGroup.name + " [[buffer(";
+	std::size_t startIdx = metal.find(declStart);
+	if (startIdx == std::string::npos)
+		return metal;
+
+	std::size_t endIdx = metal.find("]]", startIdx);
+	assert(endIdx != std::string::npos);
+	endIdx += 2;
+	std::string result = metal.substr(0, startIdx);
+	result += inputGroup.type;
+	result += ' ';
+	result += inputGroup.name;
+	result += metal.substr(endIdx);
+	return result;
+}
+
+static std::string patchFragmentInputs(const std::string& metal,
+	const FragmentInputGroup& inputGroup)
+{
+	std::string fixedParamResult = patchEntryPointInputGroup(metal, inputGroup);
+	// Need to also replace "constant <type>" with "thread <type>" for other parameters.
+	boost::algorithm::replace_all(fixedParamResult, "constant " + inputGroup.type,
+		"thread " + inputGroup.type);
+
+	// Add [[color(location), raster_order_group(fragmentGroup)]] to each member.
+	std::size_t structStart = fixedParamResult.find("struct " + inputGroup.type);
+	if (structStart == std::string::npos)
+		return fixedParamResult;
+
+	std::size_t structEnd = fixedParamResult.find('}', structStart);
+	assert(structEnd != std::string::npos);
+
+	std::string structText = fixedParamResult.substr(structStart, structEnd - structStart);
+	for (const FragmentInput& input : inputGroup.inputs)
+	{
+		std::string replaceString = input.name + " [[color(" + std::to_string(input.location) +
+			"), raster_order_group(" + std::to_string(input.fragmentGroup) + ")]]";
+		boost::algorithm::replace_first(structText, input.name, replaceString);
+	}
+
+	std::string result = fixedParamResult.substr(0, structStart);
+	result += structText;
+	result += fixedParamResult.substr(structEnd);
+	return result;
 }
 
 TargetMetal::TargetMetal(std::uint32_t version, Platform platform)
@@ -196,33 +282,12 @@ void TargetMetal::willCompile()
 	setDummyBindings(true);
 }
 
-bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
-	const std::string& fileName, std::size_t line, std::size_t column,
-	const std::array<bool, compile::stageCount>& pipelineStages, compile::Stage stage,
-	const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
-	const std::vector<compile::Uniform>& uniforms, std::vector<std::uint32_t>& uniformIds)
+bool TargetMetal::compileMetal(std::vector<std::uint8_t>& data, Output& output,
+	const std::string& metal)
 {
-	bool outputToBuffer = stage == compile::Stage::Vertex &&
-		(pipelineStages[static_cast<int>(compile::Stage::TessellationControl)] ||
-			pipelineStages[static_cast<int>(compile::Stage::TessellationEvaluation)]);
-
-	bool hasPushConstant;
-	std::uint32_t bufferCount, textureCount;
-	std::vector<std::uint32_t> adjustedSpirv = setBindingIndices(spirv, uniforms, uniformIds,
-		hasPushConstant, bufferCount, textureCount);
-
-	bool ios = m_platform != Platform::MacOS;
-	std::string metal = MetalOutput::disassemble(output, adjustedSpirv, stage, m_version, ios,
-		outputToBuffer, hasPushConstant, bufferCount, textureCount, fileName, line, column);
-	if (metal.empty())
-		return false;
-
-	// Set the entry point back to its original value. The function main0 was set by SPIRV-Cross.
-	boost::algorithm::replace_all(metal, "main0", entryPoint);
-
 	// Compile this entry point.
 	std::stringstream versionStr;
-	if (ios)
+	if (m_platform != Platform::MacOS)
 		versionStr << "-std=ios-metal";
 	else
 		versionStr << "-std=osx-metal";
@@ -253,6 +318,45 @@ bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
 	data.assign(std::istreambuf_iterator<char>(createLib.getOutput().rdbuf()),
 		std::istreambuf_iterator<char>());
 	return true;
+}
+
+bool TargetMetal::crossCompile(std::vector<std::uint8_t>& data, Output& output,
+	const std::string& fileName, std::size_t line, std::size_t column,
+	const std::array<bool, compile::stageCount>& pipelineStages, compile::Stage stage,
+	const std::vector<std::uint32_t>& spirv, const std::string& entryPoint,
+	const std::vector<compile::Uniform>& uniforms, std::vector<std::uint32_t>& uniformIds,
+	const std::vector<compile::FragmentInputGroup>& fragmentInputs,
+	std::uint32_t fragmentGroup)
+{
+	bool outputToBuffer = stage == Stage::Vertex &&
+		(pipelineStages[static_cast<int>(Stage::TessellationControl)] ||
+			pipelineStages[static_cast<int>(Stage::TessellationEvaluation)]);
+
+	bool hasPushConstant;
+	std::uint32_t bufferCount, textureCount;
+	std::vector<std::uint32_t> adjustedSpirv = setBindingIndices(spirv, uniforms, uniformIds,
+		hasPushConstant, bufferCount, textureCount);
+
+	bool ios = m_platform != Platform::MacOS;
+	std::string metal = MetalOutput::disassemble(output, adjustedSpirv, stage, m_version, ios,
+		outputToBuffer, hasPushConstant, bufferCount, textureCount, fileName, line, column);
+	if (metal.empty())
+		return false;
+
+	// Set the entry point back to its original value. The function main0 was set by SPIRV-Cross.
+	boost::algorithm::replace_all(metal, "main0", entryPoint);
+
+	// Need to patch the generated Metal source code when using frament inputs.
+	if (stage == Stage::Fragment && featureEnabled(Feature::FragmentInputs))
+	{
+		if (fragmentGroup != unknown)
+			metal = setFragmentGroup(metal, entryPoint, fragmentGroup);
+
+		for (const FragmentInputGroup& inputGroup : fragmentInputs)
+			metal = patchFragmentInputs(metal, inputGroup);
+	}
+
+	return compileMetal(data, output, metal);
 }
 
 std::string TargetMetal::getSDK() const

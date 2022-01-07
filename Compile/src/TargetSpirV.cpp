@@ -59,7 +59,8 @@ bool TargetSpirV::needsReflectionNames() const
 bool TargetSpirV::crossCompile(std::vector<std::uint8_t>& data, Output&, const std::string&,
 	std::size_t, std::size_t, const std::array<bool, compile::stageCount>&, compile::Stage,
 	const std::vector<std::uint32_t>& spirv, const std::string&,
-	const std::vector<compile::Uniform>&, std::vector<std::uint32_t>&)
+	const std::vector<compile::Uniform>&, std::vector<std::uint32_t>&,
+	const std::vector<compile::FragmentInputGroup>&, std::uint32_t)
 {
 	data.resize(spirv.size()*sizeof(std::uint32_t));
 	std::memcpy(data.data(), spirv.data(), data.size());

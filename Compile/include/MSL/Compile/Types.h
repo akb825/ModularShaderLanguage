@@ -33,6 +33,12 @@ namespace msl
 
 class Target;
 
+/**
+ * @brief Namespace containing types used during compilation.
+ *
+ * Many of these types would conflict with the types used in the final compiled result when not in a
+ * separate namespace.
+ */
 namespace compile
 {
 
@@ -1015,6 +1021,48 @@ struct FragmentOutput
 	 * @brief The location of the output.
 	 */
 	std::uint32_t location;
+};
+
+/**
+ * @brief Structure describing a fragment input.
+ */
+struct FragmentInput
+{
+	/**
+	 * @brief The name of the input.
+	 */
+	std::string name;
+
+	/**
+	 * @brief The location of the input.
+	 */
+	std::uint32_t location;
+
+	/**
+	 * @brief The fragment group of the input.
+	 */
+	std::uint32_t fragmentGroup;
+};
+
+/**
+ * @brief Structure describing a group of fragment inputs.
+ */
+struct FragmentInputGroup
+{
+	/**
+	 * @brief The type of this group.
+	 */
+	std::string type;
+
+	/**
+	 * @brief The name of this group.
+	 */
+	std::string name;
+
+	/**
+	 * @brief The list of fragment inputs in the group.
+	 */
+	std::vector<FragmentInput> inputs;
 };
 
 /**
