@@ -290,7 +290,7 @@ bool TargetMetal::compileMetal(std::vector<std::uint8_t>& data, Output& output,
 	if (m_platform != Platform::MacOS)
 		versionStr << "-std=ios-metal";
 	else
-		versionStr << "-std=osx-metal";
+		versionStr << "-std=macos-metal";
 	versionStr << m_version/100 << '.' << m_version % 100;
 
 	std::string extraOptions;

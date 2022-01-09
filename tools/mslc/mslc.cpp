@@ -234,7 +234,7 @@ static std::unique_ptr<msl::Target> createMetalTarget(const std::string& targetN
 	const variables_map& config, const std::string& configFilePath)
 {
 	msl::TargetMetal::Platform platform;
-	if (targetName == "metal-osx")
+	if (targetName == "metal-osx" || targetName == "metal-macos")
 		platform = msl::TargetMetal::Platform::MacOS;
 	else if (targetName == "metal-ios")
 		platform = msl::TargetMetal::Platform::iOS;
@@ -481,7 +481,8 @@ int main(int argc, char** argv)
 	options_description configOptions("options in target configuration file");
 	configOptions.add_options()
 		("target", value<std::string>()->required(), "the target to compile for. "
-			"Possible values are: spirv, glsl, glsl-es, metal-osx, metal-ios, metal-ios-simulator")
+			"Possible values are: spirv, glsl, glsl-es, metal-osx, metal-macos, metal-ios, "
+			"metal-ios-simulator")
 		("version", value<std::string>(), "the version of the target. Required for GLSL and "
 			"Metal.")
 		("define", value<std::vector<std::string>>(), "add a define for the preprocessor. A value "
@@ -605,8 +606,8 @@ int main(int argc, char** argv)
 			target.reset(new msl::TargetSpirV);
 		else if (targetName == "glsl" || targetName== "glsl-es")
 			target = createGlslTarget(targetName, config, configFilePath);
-		else if (targetName == "metal-osx" || targetName == "metal-ios" ||
-			targetName == "metal-ios-simulator")
+		else if (targetName == "metal-osx" || targetName == "metal-macos" ||
+			targetName == "metal-ios" || targetName == "metal-ios-simulator")
 		{
 			target = createMetalTarget(targetName, config, configFilePath);
 		}
