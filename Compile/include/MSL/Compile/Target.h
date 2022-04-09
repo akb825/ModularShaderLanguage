@@ -446,7 +446,7 @@ protected:
 	 *
 	 * If an error occurred, a message should be added to output explaining why.
 	 *
-	 * @param data[out] The data from cross-compiling.
+	 * @param[out] data The data from cross-compiling.
 	 * @param output The output to add errors and warnings.
 	 * @param fileName The file name for the message of any output message.
 	 * @param line The line number for the message of any output message.

@@ -1806,9 +1806,9 @@ struct BlendState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<int8_t>(verifier, VT_LOGICALOPENABLE) &&
-           VerifyField<int8_t>(verifier, VT_LOGICALOP) &&
-           VerifyField<int8_t>(verifier, VT_SEPARATEATTACHMENTBLENDINGENABLE) &&
+           VerifyField<int8_t>(verifier, VT_LOGICALOPENABLE, 1) &&
+           VerifyField<int8_t>(verifier, VT_LOGICALOP, 1) &&
+           VerifyField<int8_t>(verifier, VT_SEPARATEATTACHMENTBLENDINGENABLE, 1) &&
            VerifyOffsetRequired(verifier, VT_BLENDATTACHMENTS) &&
            verifier.VerifyVector(blendAttachments()) &&
            VerifyOffsetRequired(verifier, VT_BLENDCONSTANTS) &&
@@ -1945,15 +1945,15 @@ struct RenderState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyFieldRequired<mslb::RasterizationState>(verifier, VT_RASTERIZATIONSTATE) &&
-           VerifyFieldRequired<mslb::MultisampleState>(verifier, VT_MULTISAMPLESTATE) &&
-           VerifyFieldRequired<mslb::DepthStencilState>(verifier, VT_DEPTHSTENCILSTATE) &&
+           VerifyFieldRequired<mslb::RasterizationState>(verifier, VT_RASTERIZATIONSTATE, 4) &&
+           VerifyFieldRequired<mslb::MultisampleState>(verifier, VT_MULTISAMPLESTATE, 4) &&
+           VerifyFieldRequired<mslb::DepthStencilState>(verifier, VT_DEPTHSTENCILSTATE, 4) &&
            VerifyOffsetRequired(verifier, VT_BLENDSTATE) &&
            verifier.VerifyTable(blendState()) &&
-           VerifyField<uint32_t>(verifier, VT_PATCHCONTROLPOINTS) &&
-           VerifyField<uint32_t>(verifier, VT_CLIPDISTANCECOUNT) &&
-           VerifyField<uint32_t>(verifier, VT_CULLDISTANCECOUNT) &&
-           VerifyField<uint32_t>(verifier, VT_FRAGMENTGROUP) &&
+           VerifyField<uint32_t>(verifier, VT_PATCHCONTROLPOINTS, 4) &&
+           VerifyField<uint32_t>(verifier, VT_CLIPDISTANCECOUNT, 4) &&
+           VerifyField<uint32_t>(verifier, VT_CULLDISTANCECOUNT, 4) &&
+           VerifyField<uint32_t>(verifier, VT_FRAGMENTGROUP, 4) &&
            verifier.EndTable();
   }
 };
@@ -2080,13 +2080,13 @@ struct StructMember FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
-           VerifyField<uint32_t>(verifier, VT_OFFSET) &&
-           VerifyField<uint32_t>(verifier, VT_SIZE) &&
-           VerifyField<uint8_t>(verifier, VT_TYPE) &&
-           VerifyField<uint32_t>(verifier, VT_STRUCTINDEX) &&
+           VerifyField<uint32_t>(verifier, VT_OFFSET, 4) &&
+           VerifyField<uint32_t>(verifier, VT_SIZE, 4) &&
+           VerifyField<uint8_t>(verifier, VT_TYPE, 1) &&
+           VerifyField<uint32_t>(verifier, VT_STRUCTINDEX, 4) &&
            VerifyOffset(verifier, VT_ARRAYELEMENTS) &&
            verifier.VerifyVector(arrayElements()) &&
-           VerifyField<uint8_t>(verifier, VT_ROWMAJOR) &&
+           VerifyField<uint8_t>(verifier, VT_ROWMAJOR, 1) &&
            verifier.EndTable();
   }
 };
@@ -2199,7 +2199,7 @@ struct Struct FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
-           VerifyField<uint32_t>(verifier, VT_SIZE) &&
+           VerifyField<uint32_t>(verifier, VT_SIZE, 4) &&
            VerifyOffsetRequired(verifier, VT_MEMBERS) &&
            verifier.VerifyVector(members()) &&
            verifier.VerifyVectorOfTables(members()) &&
@@ -2330,15 +2330,15 @@ struct Uniform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
-           VerifyField<uint8_t>(verifier, VT_UNIFORMTYPE) &&
-           VerifyField<uint8_t>(verifier, VT_TYPE) &&
-           VerifyField<uint32_t>(verifier, VT_STRUCTINDEX) &&
+           VerifyField<uint8_t>(verifier, VT_UNIFORMTYPE, 1) &&
+           VerifyField<uint8_t>(verifier, VT_TYPE, 1) &&
+           VerifyField<uint32_t>(verifier, VT_STRUCTINDEX, 4) &&
            VerifyOffset(verifier, VT_ARRAYELEMENTS) &&
            verifier.VerifyVector(arrayElements()) &&
-           VerifyField<uint32_t>(verifier, VT_DESCRIPTORSET) &&
-           VerifyField<uint32_t>(verifier, VT_BINDING) &&
-           VerifyField<uint32_t>(verifier, VT_INPUTATTACHMENTINDEX) &&
-           VerifyField<uint32_t>(verifier, VT_SAMPLERINDEX) &&
+           VerifyField<uint32_t>(verifier, VT_DESCRIPTORSET, 4) &&
+           VerifyField<uint32_t>(verifier, VT_BINDING, 4) &&
+           VerifyField<uint32_t>(verifier, VT_INPUTATTACHMENTINDEX, 4) &&
+           VerifyField<uint32_t>(verifier, VT_SAMPLERINDEX, 4) &&
            verifier.EndTable();
   }
 };
@@ -2479,11 +2479,11 @@ struct Attribute FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
-           VerifyField<uint8_t>(verifier, VT_TYPE) &&
+           VerifyField<uint8_t>(verifier, VT_TYPE, 1) &&
            VerifyOffset(verifier, VT_ARRAYELEMENTS) &&
            verifier.VerifyVector(arrayElements()) &&
-           VerifyField<uint32_t>(verifier, VT_LOCATION) &&
-           VerifyField<uint32_t>(verifier, VT_COMPONENT) &&
+           VerifyField<uint32_t>(verifier, VT_LOCATION, 4) &&
+           VerifyField<uint32_t>(verifier, VT_COMPONENT, 4) &&
            verifier.EndTable();
   }
 };
@@ -2575,7 +2575,7 @@ struct FragmentOutput FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
-           VerifyField<uint32_t>(verifier, VT_LOCATION) &&
+           VerifyField<uint32_t>(verifier, VT_LOCATION, 4) &&
            verifier.EndTable();
   }
 };
@@ -2643,7 +2643,7 @@ struct Shader FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<uint32_t>(verifier, VT_SHADER) &&
+           VerifyField<uint32_t>(verifier, VT_SHADER, 4) &&
            VerifyOffset(verifier, VT_UNIFORMIDS) &&
            verifier.VerifyVector(uniformIds()) &&
            verifier.EndTable();
@@ -2784,13 +2784,13 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyOffsetRequired(verifier, VT_FRAGMENTOUTPUTS) &&
            verifier.VerifyVector(fragmentOutputs()) &&
            verifier.VerifyVectorOfTables(fragmentOutputs()) &&
-           VerifyField<uint32_t>(verifier, VT_PUSHCONSTANTSTRUCT) &&
+           VerifyField<uint32_t>(verifier, VT_PUSHCONSTANTSTRUCT, 4) &&
            VerifyOffsetRequired(verifier, VT_RENDERSTATE) &&
            verifier.VerifyTable(renderState()) &&
            VerifyOffsetRequired(verifier, VT_SHADERS) &&
            verifier.VerifyVector(shaders()) &&
            verifier.VerifyVectorOfTables(shaders()) &&
-           VerifyField<mslb::ComputeLocalSize>(verifier, VT_COMPUTLOCALSIZE) &&
+           VerifyField<mslb::ComputeLocalSize>(verifier, VT_COMPUTLOCALSIZE, 4) &&
            verifier.EndTable();
   }
 };
@@ -2929,7 +2929,7 @@ struct ShaderData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_DATA) &&
            verifier.VerifyVector(data()) &&
-           VerifyField<uint8_t>(verifier, VT_USESPUSHCONSTANTS) &&
+           VerifyField<uint8_t>(verifier, VT_USESPUSHCONSTANTS, 1) &&
            verifier.EndTable();
   }
 };
@@ -3032,10 +3032,10 @@ struct Module FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
-           VerifyField<uint32_t>(verifier, VT_VERSION) &&
-           VerifyField<uint32_t>(verifier, VT_TARGETID) &&
-           VerifyField<uint32_t>(verifier, VT_TARGETVERSION) &&
-           VerifyField<uint8_t>(verifier, VT_ADJUSTABLEBINDINGS) &&
+           VerifyField<uint32_t>(verifier, VT_VERSION, 4) &&
+           VerifyField<uint32_t>(verifier, VT_TARGETID, 4) &&
+           VerifyField<uint32_t>(verifier, VT_TARGETVERSION, 4) &&
+           VerifyField<uint8_t>(verifier, VT_ADJUSTABLEBINDINGS, 1) &&
            VerifyOffsetRequired(verifier, VT_PIPELINES) &&
            verifier.VerifyVector(pipelines()) &&
            verifier.VerifyVectorOfTables(pipelines()) &&
