@@ -158,7 +158,7 @@ std::string toString(const FlexStr& str)
 Action getType(Token::Type& type, Output& output, const boost::wave::cpplexer::lex_token<>& token)
 {
 	const auto& position = token.get_position();
-	switch (CATEGORY_FROM_TOKEN(token))
+	switch (static_cast<std::uint32_t>(CATEGORY_FROM_TOKEN(token)))
 	{
 		case CATEGORY_FROM_TOKEN(boost::wave::IntegerLiteralTokenType):
 			type = Token::Type::IntLiteral;
