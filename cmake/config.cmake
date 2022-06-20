@@ -24,6 +24,13 @@ if (MSVC)
 	endif()
 else()
 	add_compile_options(-Wall -Werror -Wconversion -Wno-sign-conversion -fno-strict-aliasing)
+
+	# stringop-overflow gives false positives across various versions.
+	# free-nonheap-object also gets triggered in release builds in Boost Wave.
+	if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION GREATER_EQUAL 11.0)
+		add_compile_options(-Wno-stringop-overflow -Wno-free-nonheap-object)
+	endif()
+
 	# Behavior for VISIBILITY_PRESET variables are inconsistent between CMake versions.
 	if (MSL_SHARED)
 		add_compile_options(-fvisibility=hidden)
