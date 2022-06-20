@@ -59,7 +59,7 @@ jobs:
             cmakeArgs: --build . --target test
         displayName: Run tests debug
         continueOnError: true
-        timeoutInMinutes: 5
+        timeoutInMinutes: 10
       - task: PublishTestResults@2
         inputs:
             testResultsFormat: JUnit
@@ -89,7 +89,7 @@ jobs:
             cmakeArgs: --build . --target test
         displayName: Run tests release
         continueOnError: true
-        timeoutInMinutes: 5
+        timeoutInMinutes: 10
       - task: PublishTestResults@2
         inputs:
             testResultsFormat: JUnit
@@ -147,7 +147,7 @@ jobs:
             cmakeArgs: --build . --target test
         displayName: Run tests debug
         continueOnError: true
-        timeoutInMinutes: 5
+        timeoutInMinutes: 10
       - task: PublishTestResults@2
         inputs:
             testResultsFormat: JUnit
@@ -177,7 +177,7 @@ jobs:
             cmakeArgs: --build . --target test
         displayName: Run tests release
         continueOnError: true
-        timeoutInMinutes: 5
+        timeoutInMinutes: 10
       - task: PublishTestResults@2
         inputs:
             testResultsFormat: JUnit
@@ -189,7 +189,7 @@ jobs:
         displayName: Publish test results release
   - job: Windows
     pool:
-        vmImage: windows-2019
+        vmImage: windows-latest
     workspace:
         clean: all
     strategy:
@@ -234,10 +234,10 @@ jobs:
         workingDirectory: $(Build.BinariesDirectory)
       - script: |
             cmake .. -DCMAKE_INSTALL_PREFIX=$(dependency.location) -Dgtest_force_shared_crt=ON ^
-                -A $(arch) -T v140
+                -A $(arch) -T v141
             cmake --build . --config Debug
             cmake --build . --config Debug --target install
-            REM Need to also install release build to see the debug version.
+            REM Need to also install release build to find the debug version.
             cmake --build . --config Release
             cmake --build . --config Release --target install
         displayName: Build gtest
@@ -245,7 +245,7 @@ jobs:
       - task: CMake@1
         inputs:
             workingDirectory: $(Build.BinariesDirectory)
-            cmakeArgs: $(cmake.commonArgs) $(cmake.args) -A $(arch) -T v140 $(Build.SourcesDirectory)
+            cmakeArgs: $(cmake.commonArgs) $(cmake.args) -A $(arch) -T v141 $(Build.SourcesDirectory)
         displayName: Run CMake
       - task: CMake@1
         inputs:
@@ -258,7 +258,7 @@ jobs:
             cmakeArgs: --build . --config Debug --target run_tests
         displayName: Run tests debug
         continueOnError: true
-        timeoutInMinutes: 5
+        timeoutInMinutes: 10
         env:
             PATH: $(PATH);$(win.boostDir)\lib$(bits)-msvc-$(msvc.version)
       - task: PublishTestResults@2
@@ -285,7 +285,7 @@ jobs:
             cmakeArgs: --build . --config Release --target run_tests
         displayName: Run tests release
         continueOnError: true
-        timeoutInMinutes: 5
+        timeoutInMinutes: 10
         env:
             PATH: $(PATH);$(win.boostDir)\lib$(bits)-msvc-$(msvc.version)
       - task: PublishTestResults@2

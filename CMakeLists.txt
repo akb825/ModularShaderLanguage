@@ -2,7 +2,13 @@ cmake_minimum_required(VERSION 3.1)
 project(MSL)
 
 # Build options
-set(MSL_SHARED OFF CACHE BOOL "Build MSL using shared libraries.")
+# Use if since BUILD_SHARED_LIBS defaults to unset.
+if (BUILD_SHARED_LIBS)
+	set(MSL_SHARED_DEFAULT ON)
+else()
+	set(MSL_SHARED_DEFAULT OFF)
+endif()
+set(MSL_SHARED ${MSL_SHARED_DEFAULT} CACHE BOOL "Build MSL using shared libraries.")
 
 # Options for disabling portions of the build.
 set(MSL_BUILD_TESTS ON CACHE BOOL "Build unit tests.")
@@ -38,12 +44,17 @@ if (MSL_BUILD_DOCS)
 	endif()
 endif()
 
-# This will try to find the include directory on the system, and fall back to the version checked
-# into the repository.
-find_path(FLATBUFFERS_INCLUDE_DIRS flatbuffers/flatbuffers.h)
-if (NOT FLATBUFFERS_INCLUDE_DIRS)
-	set(FLATBUFFERS_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/Shared/external CACHE PATH
-		"FlatBuffers include directory" FORCE)
+# Find flatc and the flatbuffer includes. Only use system flatbuffers and automatic generation if
+# both are found to avoid incompatibilities.
+find_program(FLATC flatc)
+find_path(SYSTEM_FLATBUFFERS_INCLUDE_DIRS flatbuffers/flatbuffers.h)
+if (FLATC AND SYSTEM_FLATBUFFERS_INCLUDE_DIRS)
+	set(FLATBUFFERS_INCLUDE_DIRS ${SYSTEM_FLATBUFFERS_INCLUDE_DIRS})
+	set(MSL_BUILD_FLATBUFFERS ON)
+else()
+	set(FLATBUFFERS_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/Shared/external)
+	set(MSL_BUILD_FLATBUFFERS OFF)
+	message("flatc not installed. Using pre-generated flatbuffers.")
 endif()
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
