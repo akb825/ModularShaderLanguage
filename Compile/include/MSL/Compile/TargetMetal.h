@@ -32,7 +32,7 @@ namespace msl
 /**
  * @brief Target implementation for compiling to Metal, both for Mac OS X and iOS.
  *
- * When compiling for Mac OS X, the following will be set:
+ * When compiling for macOS (or Mac OS X), the following will be set:
  * - ID: MSL_CREATE_ID('M', 'T', 'L', 'X')
  * - Version: the metal version times 10. For example, 10 is version 1.0, 11 is version 1.1.
  * - METAL_OSX_VERSION is defined to the version number when preprocesssing.

@@ -270,7 +270,10 @@ std::vector<std::pair<std::string, std::string>> TargetMetal::getExtraDefines() 
 	stream << getVersion();
 	std::vector<std::pair<std::string, std::string>> defines = {{"METAL_VERSION", stream.str()}};
 	if (m_platform == Platform::MacOS)
+	{
+		defines.emplace_back("METAL_MACOS_VERSION", stream.str());
 		defines.emplace_back("METAL_OSX_VERSION", stream.str());
+	}
 	else
 		defines.emplace_back("METAL_IOS_VERSION", stream.str());
 	return defines;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2022 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -234,7 +234,7 @@ static std::unique_ptr<msl::Target> createMetalTarget(const std::string& targetN
 	const variables_map& config, const std::string& configFilePath)
 {
 	msl::TargetMetal::Platform platform;
-	if (targetName == "metal-osx" || targetName == "metal-macos")
+	if (targetName == "metal-macos" || targetName == "metal-osx")
 		platform = msl::TargetMetal::Platform::MacOS;
 	else if (targetName == "metal-ios")
 		platform = msl::TargetMetal::Platform::iOS;

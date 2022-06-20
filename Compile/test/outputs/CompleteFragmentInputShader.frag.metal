@@ -28,7 +28,7 @@ struct fragShader_out
 
 struct fragShader_in
 {
-    float4 VertexOut_color [[user(locn0)]];
+    float4 inputs_color [[user(locn0)]];
 };
 
 static inline __attribute__((always_inline))
@@ -41,7 +41,7 @@ fragment fragShader_out fragShader(fragShader_in in [[stage_in]], FragmentInput 
 {
     fragShader_out out = {};
     VertexOut inputs = {};
-    inputs.color = in.VertexOut_color;
+    inputs.color = in.inputs_color;
     float4 texResult = tex.sample(texSmplr, float2(0.5));
     float4 param = texResult;
     out.color = inputs.color * adjustValue(param, fragmentInput);
