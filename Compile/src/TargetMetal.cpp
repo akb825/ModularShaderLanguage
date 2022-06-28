@@ -300,6 +300,11 @@ bool TargetMetal::compileMetal(std::vector<std::uint8_t>& data, Output& output,
 	if (!getStripDebug())
 		extraOptions += " -gline-tables-only -MO";
 
+	// Optimized code sometimes creates unused float3 constants.
+	// TODO: Check if future versions of SPIRV-Tools no longer cause this to happen.
+	if (getOptimize() == Optimize::Full)
+		extraOptions += " -Wno-unused-const-variable";
+
 	ExecuteCommand compile(".metal");
 	compile.getInput().write(metal.data(), metal.size());
 	if (!compile.execute(output, "xcrun -sdk " + getSDK() + " metal -c $input " + versionStr.str() +
