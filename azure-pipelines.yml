@@ -4,7 +4,7 @@ variables:
   - name: cmake.commonArgs
     value: -DCMAKE_FIND_ROOT_PATH=$(dependency.location) -DCMAKE_PREFIX_PATH=$(dependency.location)
   - name: msvc.version
-    value: 14.0
+    value: 14.1
   - name: win.boostDir
     value: C:\hostedtoolcache\windows\Boost
   - group: Common
@@ -234,7 +234,7 @@ jobs:
         workingDirectory: $(Build.BinariesDirectory)
       - script: |
             cmake .. -DCMAKE_INSTALL_PREFIX=$(dependency.location) -Dgtest_force_shared_crt=ON ^
-                -A $(arch) -T v141
+                -A $(arch) -T v141 -DCMAKE_DEBUG_POSTFIX=d
             cmake --build . --config Debug
             cmake --build . --config Debug --target install
             REM Need to also install release build to find the debug version.
