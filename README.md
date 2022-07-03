@@ -46,7 +46,7 @@ The following software is required to build MSL:
 * [SPIRV-Cross](https://github.com/KhronosGroup/SPIRV-Cross) (required for compiler, provided as submodule)
 * [SPIRV-Tools](https://github.com/KhronosGroup/SPIRV-Tools) (required for compiler, provided as submodule)
 * [FlatBuffers](https://google.github.io/flatbuffers/) (required if changing the schema)
-* [doxygen](http://www.stack.nl/~dimitri/doxygen/) (optional)
+* [doxygen](https://doxygen.nl/) (optional)
 * [gtest](https://github.com/google/googletest) (optional)
 
 > **Note:** Boost must be built with C++11 support. For example, when building and installing through the b2 bootstrap command: `./b2 "-std=c++11" -j4 install`
