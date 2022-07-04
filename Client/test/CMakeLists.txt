@@ -2,10 +2,7 @@ if (NOT GTEST_FOUND OR NOT MSL_BUILD_TESTS)
 	return()
 endif()
 
-if (NOT MSL_SHARED)
-	set(Boost_USE_STATIC_LIBS ON)
-endif()
-find_package(Boost COMPONENTS system filesystem REQUIRED)
+find_package(Boost COMPONENTS filesystem REQUIRED)
 find_package(Threads)
 
 file(GLOB_RECURSE sources *.cpp *.h)
@@ -17,9 +14,9 @@ add_custom_command(TARGET msl_client_test POST_BUILD
 	$<TARGET_FILE_DIR:msl_client_test>
 	COMMENT "Copying test shader module." VERBATIM)
 
-target_include_directories(msl_client_test PRIVATE ${GTEST_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+target_include_directories(msl_client_test PRIVATE ${GTEST_INCLUDE_DIRS})
 target_link_libraries(msl_client_test
-	PRIVATE msl_client ${GTEST_BOTH_LIBRARIES} ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+	PRIVATE msl_client Boost::filesystem ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 msl_set_folder(msl_client_test tests)
 add_test(NAME MSLClientTest COMMAND msl_client_test)

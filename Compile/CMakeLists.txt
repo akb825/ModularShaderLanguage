@@ -1,4 +1,4 @@
-find_package(Boost COMPONENTS system thread filesystem wave REQUIRED)
+find_package(Boost COMPONENTS filesystem wave REQUIRED)
 find_package(Threads)
 
 set(GLSLANG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/glslang)
@@ -54,14 +54,13 @@ add_library(msl_compile ${MSL_LIB} ${sources} ${externalSources})
 add_dependencies(msl_compile mslb)
 
 target_include_directories(msl_compile
-	PRIVATE ${Boost_INCLUDE_DIRS}
-			${FLATBUFFERS_INCLUDE_DIRS}
+	PRIVATE ${FLATBUFFERS_INCLUDE_DIRS}
 			${GLSLANG_DIR}
 			${SPIRV_CROSS_DIR}
 			${SHARED_DIR}
 			src)
 target_link_libraries(msl_compile
-	PRIVATE SPIRV-Tools-opt ${Boost_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+	PRIVATE SPIRV-Tools-opt Boost::filesystem Boost::wave ${CMAKE_THREAD_LIBS_INIT})
 target_compile_definitions(msl_compile PRIVATE BOOST_ALL_NO_LIB)
 
 msl_set_folder(msl_compile libs)

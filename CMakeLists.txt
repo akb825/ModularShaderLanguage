@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.5)
 project(MSL)
 
 # Build options
@@ -75,7 +75,7 @@ endif()
 
 set(MSL_MAJOR_VERSION 1)
 set(MSL_MINOR_VERSION 5)
-set(MSL_PATCH_VERSION 3)
+set(MSL_PATCH_VERSION 4)
 set(MSL_VERSION ${MSL_MAJOR_VERSION}.${MSL_MINOR_VERSION}.${MSL_PATCH_VERSION})
 
 set(MSL_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})

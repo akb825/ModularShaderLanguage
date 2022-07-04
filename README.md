@@ -39,7 +39,7 @@ Multiple shader files may be compiled into a module. Examples for combining modu
 
 The following software is required to build MSL:
 
-* [cmake](https://cmake.org/) 3.1 or later
+* [cmake](https://cmake.org/) 3.5 or later
 * [boost](https://www.boost.org/) (required unless only building client library without tests)
 * [Python](https://www.python.org/) 3 or later (required unless only building client library)
 * [glslang](https://github.com/KhronosGroup/glslang) (required for compiler, provided as submodule)
