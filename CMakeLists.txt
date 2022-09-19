@@ -25,6 +25,7 @@ set(MSL_EXPORTS_DIR ${CMAKE_BINARY_DIR}/cmake CACHE PATH
 set(MSL_ROOT_FOLDER MSL CACHE STRING
 	"Root folder for the MSL projects. Usefull when embedding in other projects.")
 set(MSL_INSTALL ON CACHE BOOL "Allow installation for MSL components.")
+set(MSL_INSTALL_SET_RPATH ON CACHE BOOL "Set rpath for libraries and tools on installation.")
 
 if (APPLE AND NOT IOS AND NOT CMAKE_OSX_DEPLOYMENT_TARGET)
 	set(CMAKE_OSX_DEPLOYMENT_TARGET 10.11 CACHE STRING "Minimum macOS deployment version." FORCE)

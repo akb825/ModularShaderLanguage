@@ -1,4 +1,4 @@
-# Copyright 2018 Aaron Barany
+# Copyright 2018-2022 Aaron Barany
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,6 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+include(GNUInstallDirs)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -39,6 +41,15 @@ else()
 endif()
 
 enable_testing()
+
+if (MSL_INSTALL AND MSL_INSTALL_SET_RPATH)
+	if (APPLE)
+		set(CMAKE_INSTALL_RPATH "@executable_path;@executable_path/../${CMAKE_INSTALL_LIBDIR}")
+		set(MACOSX_RPATH ON)
+	else()
+		set(CMAKE_INSTALL_RPATH "$ORIGIN;$ORIGIN/../${CMAKE_INSTALL_LIBDIR}")
+	endif()
+endif()
 
 function(msl_set_folder target folderName)
 	if (MSL_ROOT_FOLDER AND folderName)

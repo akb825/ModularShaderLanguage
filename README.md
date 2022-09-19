@@ -100,6 +100,7 @@ The following options may be used when running cmake:
 * `-DMSL_EXPORTS_DIR=directory`: The folder to place the cmake exports when building. This directory can be added to the module path when embedding in other projects to be able to use the `library_find()` cmake function. Defaults to `${CMAKE_BINARY_DIR}/cmake`.
 * `-DMSL_ROOT_FOLDER=folder`: The root folder for the projects in IDEs that support them. (e.g. Visual Studio or XCode) This is useful if embedding MSL in another project. Defaults to MSL.
 * `-DMSL_INSTALL=ON|OFF`: Allow installation for MSL components. This can be useful when embedding in other projects to prevent installations from including MSL. For example, when statically linking into a shared library. Default is `ON`.
+* `-DMSL_INSTALL_SET_RPATH=ON|OFF`: Set rpath during install for the library and tool on installation. Set to `OFF` if including in another project that wants to control the rpath. Default is `ON`.
 * `-DCMAKE_OSX_DEPLOYMENT_TARGET=version`: Minimum version of macOS to target when building for Mac. Defaults to 10.11.
 
 Once you have built and installed MSL, you can find the various modules with the `find_package()` CMake function in `CONFIG` mode. For example:
