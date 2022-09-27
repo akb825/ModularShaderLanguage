@@ -16,7 +16,7 @@ add_custom_command(TARGET msl_client_test POST_BUILD
 
 target_include_directories(msl_client_test PRIVATE ${GTEST_INCLUDE_DIRS})
 target_link_libraries(msl_client_test
-	PRIVATE msl_client Boost::filesystem ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+	PRIVATE MSL::Client Boost::filesystem ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 msl_set_folder(msl_client_test tests)
 add_test(NAME MSLClientTest COMMAND msl_client_test)

@@ -103,13 +103,15 @@ The following options may be used when running cmake:
 * `-DMSL_INSTALL_SET_RPATH=ON|OFF`: Set rpath during install for the library and tool on installation. Set to `OFF` if including in another project that wants to control the rpath. Default is `ON`.
 * `-DCMAKE_OSX_DEPLOYMENT_TARGET=version`: Minimum version of macOS to target when building for Mac. Defaults to 10.11.
 
-Once you have built and installed MSL, you can find the various modules with the `find_package()` CMake function in `CONFIG` mode. For example:
+Once you have built and installed MSL, you can find the various modules with the `find_package()` CMake function. For example:
 
-	find_package(MSL CONFIG COMPONENTS Compile)
+	find_package(MSL COMPONENTS Compile Client)
 
-Libraries and include directories can be found through the `MSLModule_LIBRARIES` and `MSLModule_INCLUDE_DIRS` CMake variables. For example: `MSLCompile_LIBRARIES` and `MSLCompile_INCLUDE_DIRS`.
+In this example both the `Compile` and `Client` modules are found, but you can choose only one if you don't require both.
 
-> **Note:** In order for `find_package()` to succeed, on Windows you will need to add the path to `INSTALL_DIR/lib/cmake` to `CMAKE_PREFIX_PATH`. (e.g. `C:/Program Files/MSL/lib/cmake`) On other systems, if you don't install to a standard location, you will need to add the base installation path to `CMAKE_PREFIX_PATH`.
+You can either link to the `MSL::Module` target or use the `MSLModule_LIBRARIES` and `MSLModule_INCLUDE_DIRS` CMake variables, replacing `Module` with the module name. For example: `MSLCompile_LIBRARIES` and `MSLCompile_INCLUDE_DIRS`. The `MSL::mslc` and `MSL::mslb-extract` targets may also be used for the corresponding tool executables.
+
+> **Note:** In order for `find_package()` to succeed, you will need to add the base installation path to `CMAKE_PREFIX_PATH`.
 
 # Modules
 

@@ -19,10 +19,14 @@ function(msl_install_library)
 	cmake_parse_arguments(ARGS "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
 	set(moduleName MSL${ARGS_MODULE})
+	set(namespacedTarget MSL::${ARGS_MODULE})
 	string(TOUPPER ${ARGS_MODULE} moduleUpper)
 
-	set_property(TARGET ${ARGS_TARGET} PROPERTY VERSION ${MSL_VERSION})
-	set_property(TARGET ${ARGS_TARGET} PROPERTY DEBUG_POSTFIX d)
+	set_target_properties(${ARGS_TARGET} PROPERTIES
+		VERSION ${MSL_VERSION}
+		DEBUG_POSTFIX d
+		EXPORT_NAME ${ARGS_MODULE})
+	add_library(${namespacedTarget} ALIAS ${ARGS_TARGET})
 
 	set(interfaceIncludes
 		$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -69,7 +73,11 @@ function(msl_install_library)
 	export(EXPORT ${moduleName}Targets
 		FILE ${MSL_EXPORTS_DIR}/${moduleName}Targets.cmake)
 
-	set(dependencies "include(CMakeFindDependencyMacro)")
+	if (ARGS_DEPENDS OR ARGS_EXTERNAL_DEPENDS OR ARGS_BOOST_DEPENDS)
+		set(dependencies "include(CMakeFindDependencyMacro)")
+	else()
+		set(dependencies)
+	endif()
 	foreach (dependency ${ARGS_DEPENDS})
 		set(dependencies "${dependencies}\nfind_dependency(MSL${dependency} ${MSL_VERSION} EXACT)")
 	endforeach()
@@ -85,13 +93,27 @@ function(msl_install_library)
 	file(WRITE ${configPath}
 		"${dependencies}\n"
 		"include(\${CMAKE_CURRENT_LIST_DIR}/${moduleName}Targets.cmake)\n"
-		"set(MSL${ARGS_MODULE}_LIBRARIES ${ARGS_TARGET})\n"
-		"get_target_property(MSL${ARGS_MODULE}_INCLUDE_DIRS ${ARGS_TARGET} INTERFACE_INCLUDE_DIRECTORIES)\n")
+		"set(MSL${ARGS_MODULE}_LIBRARIES ${namespacedTarget})\n"
+		"get_target_property(MSL${ARGS_MODULE}_INCLUDE_DIRS ${namespacedTarget} INTERFACE_INCLUDE_DIRECTORIES)\n")
 
 	set(configPackageDir ${CMAKE_INSTALL_LIBDIR}/cmake/${moduleName})
-	install(EXPORT ${moduleName}Targets FILE ${moduleName}Targets.cmake
+	install(EXPORT ${moduleName}Targets NAMESPACE MSL:: FILE ${moduleName}Targets.cmake
 		DESTINATION ${configPackageDir})
 	install(FILES ${configPath} ${versionPath} DESTINATION ${configPackageDir} COMPONENT dev)
+endfunction()
+
+function(msl_install_executable target)
+	add_executable(MSL::${name} ALIAS ${target})
+
+	if (NOT MSL_INSTALL)
+		return()
+	endif()
+
+	install(TARGETS ${target} EXPORT ${target}Targets RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+	export(EXPORT ${target}Targets FILE ${MSL_EXPORTS_DIR}/${target}-targets.cmake)
+	install(EXPORT ${target}Targets NAMESPACE MSL:: FILE ${target}-targets.cmake
+		DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MSL)
+	set_property(GLOBAL APPEND PROPERTY MSL_TOOL_TARGETS ${target}-targets.cmake)
 endfunction()
 
 function(msl_install_master_config)
@@ -105,8 +127,15 @@ function(msl_install_master_config)
 		VERSION ${MSL_VERSION}
 		COMPATIBILITY SameMajorVersion)
 
+	get_property(toolTargets GLOBAL PROPERTY MSL_TOOL_TARGETS)
+	set(toolTargetLines)
+	foreach (toolTarget ${toolTargets})
+		set(toolTargetLines "${toolTargetLines}\ninclude(\${CMAKE_CURRENT_LIST_DIR}/${toolTarget})")
+	endforeach()
+
 	set(configPackageDir ${CMAKE_INSTALL_LIBDIR}/cmake/MSL)
-	file(COPY ${MSL_SOURCE_DIR}/cmake/templates/MSLConfig.cmake DESTINATION ${MSL_EXPORTS_DIR})
-	install(FILES ${MSL_SOURCE_DIR}/cmake/templates/MSLConfig.cmake ${versionPath}
-		DESTINATION ${configPackageDir} COMPONENT dev)
+	configure_file(${MSL_SOURCE_DIR}/cmake/templates/MSLConfig.cmake.in
+		${MSL_EXPORTS_DIR}/MSLConfig.cmake @ONLY)
+	install(FILES ${MSL_EXPORTS_DIR}/MSLConfig.cmake ${versionPath} DESTINATION ${configPackageDir}
+		COMPONENT dev)
 endfunction()

@@ -3,16 +3,13 @@ find_package(Boost COMPONENTS program_options)
 file(GLOB_RECURSE sources *.cpp *.h)
 add_executable(mslc ${sources})
 
-target_link_libraries(mslc PRIVATE msl_compile Boost::program_options)
+target_link_libraries(mslc PRIVATE MSL::Compile Boost::program_options)
 target_compile_definitions(mslc PRIVATE BOOST_ALL_NO_LIB
 	MSL_MAJOR_VERSION=${MSL_MAJOR_VERSION} MSL_MINOR_VERSION=${MSL_MINOR_VERSION}
 	MSL_PATCH_VERSION=${MSL_PATCH_VERSION})
 
 msl_set_folder(mslc tools)
-
-if (MSL_INSTALL)
-	install(TARGETS mslc RUNTIME DESTINATION bin COMPONENT tools)
-endif()
+msl_install_executable(mslc)
 
 set(testPath ${CMAKE_CURRENT_SOURCE_DIR}/test)
 set(mslcPath $<TARGET_FILE:mslc>)
