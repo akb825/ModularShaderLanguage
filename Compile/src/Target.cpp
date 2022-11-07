@@ -24,7 +24,7 @@
 #include "Preprocessor.h"
 #include "SpirVProcessor.h"
 
-#include "StandAlone/ResourceLimits.h"
+#include "glslang/Public/ResourceLimits.h"
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -721,7 +721,7 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 	}
 
 	// Read in the resource limits.
-	TBuiltInResource resources = glslang::DefaultTBuiltInResource;
+	TBuiltInResource resources = *GetDefaultResources();
 	if (!m_resourcesFile.empty())
 	{
 		std::ifstream stream(m_resourcesFile);

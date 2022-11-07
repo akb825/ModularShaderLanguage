@@ -30,7 +30,7 @@ file(GLOB_RECURSE glslangSources
 	${GLSLANG_DIR}/OGLCompilersDLL/*.cpp ${GLSLANG_DIR}/OGLCompilersDLL/*.h
 	${GLSLANG_DIR}/SPIRV/*.cpp ${GLSLANG_DIR}/SPIRV/*.h)
 set(glslResourceSources
-	${GLSLANG_DIR}/StandAlone/ResourceLimits.cpp ${GLSLANG_DIR}/StandAlone/ResourceLimits.h)
+	${GLSLANG_DIR}/StandAlone/ResourceLimits.cpp ${GLSLANG_DIR}/glslang/Public/ResourceLimits.h)
 file(GLOB spirvCrossSources ${SPIRV_CROSS_DIR}/spirv_*.cpp ${SPIRV_CROSS_DIR}/spirv_*.hpp)
 
 # SPIRV-Tools has too complex of a build configuration to just embed the source in this library,

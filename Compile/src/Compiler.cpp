@@ -36,7 +36,7 @@
 #include "SPIRV/GlslangToSpv.h"
 #include "SPIRV/SPVRemapper.h"
 #include "OGLCompilersDLL/InitializeDll.h"
-#include "StandAlone/ResourceLimits.h"
+#include "glslang/Public/ResourceLimits.h"
 
 #if MSL_GCC || MSL_CLANG
 #pragma GCC diagnostic pop
@@ -277,7 +277,7 @@ void Compiler::shutdown()
 
 const TBuiltInResource& Compiler::getDefaultResources()
 {
-	return glslang::DefaultTBuiltInResource;
+	return *GetDefaultResources();;
 }
 
 bool Compiler::compile(Stages& stages, Output &output, const std::string& baseFileName,
