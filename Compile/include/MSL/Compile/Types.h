@@ -840,6 +840,9 @@ struct ArrayInfo
 
 	/**
 	 * @brief The stride of the array.
+	 *
+	 * This will be unknown if not explicitly set by SPIR-V decorations, in which case the standard
+	 * data type will determine the stride.
 	 */
 	std::uint32_t stride;
 };

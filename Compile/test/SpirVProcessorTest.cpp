@@ -20,7 +20,6 @@
 #include "Parser.h"
 #include "Preprocessor.h"
 #include "SpirVProcessor.h"
-#include "StandAlone/ResourceLimits.h"
 #include <boost/algorithm/string/predicate.hpp>
 #include <gtest/gtest.h>
 
@@ -1613,14 +1612,14 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 
 	ASSERT_EQ(3U, vertexProcessor.outputs.size());
 
-	EXPECT_EQ("vertInfo", vertexProcessor.outputs[0].name);
+	EXPECT_EQ("vtcVertInfo", vertexProcessor.outputs[0].name);
 	EXPECT_EQ(Type::Struct, vertexProcessor.outputs[0].type);
 	EXPECT_EQ(1U, vertexProcessor.outputs[0].structIndex);
 	EXPECT_TRUE(vertexProcessor.outputs[0].arrayElements.empty());
-	ASSERT_EQ(4U, vertexProcessor.outputs[0].memberLocations.size());
+	EXPECT_TRUE(vertexProcessor.outputs[0].memberLocations.empty());
 	EXPECT_FALSE(vertexProcessor.outputs[0].patch);
-	EXPECT_EQ(unknown, vertexProcessor.outputs[0].location);
-	EXPECT_EQ(unknown, vertexProcessor.outputs[0].component);
+	EXPECT_EQ(0U, vertexProcessor.outputs[0].location);
+	EXPECT_EQ(0U, vertexProcessor.outputs[0].component);
 
 	EXPECT_EQ("vertShadowPos", vertexProcessor.outputs[1].name);
 	EXPECT_EQ(Type::Vec4, vertexProcessor.outputs[1].type);
@@ -1649,16 +1648,12 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ(unknown, vertexProcessor.structs[1].members[0].structIndex);
 	EXPECT_TRUE(vertexProcessor.structs[1].members[0].arrayElements.empty());
 	EXPECT_FALSE(vertexProcessor.structs[1].members[0].rowMajor);
-	EXPECT_EQ(0U, vertexProcessor.outputs[0].memberLocations[0].first);
-	EXPECT_EQ(0U, vertexProcessor.outputs[0].memberLocations[0].second);
 
 	EXPECT_EQ("normal", vertexProcessor.structs[1].members[1].name);
 	EXPECT_EQ(Type::Vec3, vertexProcessor.structs[1].members[1].type);
 	EXPECT_EQ(unknown, vertexProcessor.structs[1].members[1].structIndex);
 	EXPECT_TRUE(vertexProcessor.structs[1].members[1].arrayElements.empty());
 	EXPECT_FALSE(vertexProcessor.structs[1].members[1].rowMajor);
-	EXPECT_EQ(1U, vertexProcessor.outputs[0].memberLocations[1].first);
-	EXPECT_EQ(0U, vertexProcessor.outputs[0].memberLocations[1].second);
 
 	EXPECT_EQ("texCoords", vertexProcessor.structs[1].members[2].name);
 	EXPECT_EQ(Type::Vec2, vertexProcessor.structs[1].members[2].type);
@@ -1666,8 +1661,6 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}),
 		vertexProcessor.structs[1].members[2].arrayElements);
 	EXPECT_FALSE(vertexProcessor.structs[1].members[2].rowMajor);
-	EXPECT_EQ(2U, vertexProcessor.outputs[0].memberLocations[2].first);
-	EXPECT_EQ(0U, vertexProcessor.outputs[0].memberLocations[2].second);
 
 	EXPECT_EQ("colors", vertexProcessor.structs[1].members[3].name);
 	EXPECT_EQ(Type::Vec4, vertexProcessor.structs[1].members[3].type);
@@ -1675,19 +1668,17 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ((std::vector<ArrayInfo>{{2, unknown}}),
 		vertexProcessor.structs[1].members[3].arrayElements);
 	EXPECT_FALSE(vertexProcessor.structs[1].members[3].rowMajor);
-	EXPECT_EQ(5U, vertexProcessor.outputs[0].memberLocations[3].first);
-	EXPECT_EQ(0U, vertexProcessor.outputs[0].memberLocations[3].second);
 
 	ASSERT_EQ(3U, tessControlProcessor.inputs.size());
 
-	EXPECT_EQ("inVertInfo", tessControlProcessor.inputs[0].name);
+	EXPECT_EQ("vtcVertInfo", tessControlProcessor.inputs[0].name);
 	EXPECT_EQ(Type::Struct, tessControlProcessor.inputs[0].type);
 	EXPECT_EQ(0U, tessControlProcessor.inputs[0].structIndex);
 	EXPECT_EQ(std::vector<std::uint32_t>{32}, tessControlProcessor.inputs[0].arrayElements);
-	ASSERT_EQ(4U, tessControlProcessor.inputs[0].memberLocations.size());
+	EXPECT_TRUE(tessControlProcessor.inputs[0].memberLocations.empty());
 	EXPECT_FALSE(tessControlProcessor.inputs[0].patch);
-	EXPECT_EQ(unknown, tessControlProcessor.inputs[0].location);
-	EXPECT_EQ(unknown, tessControlProcessor.inputs[0].component);
+	EXPECT_EQ(0U, tessControlProcessor.inputs[0].location);
+	EXPECT_EQ(0U, tessControlProcessor.inputs[0].component);
 
 	EXPECT_EQ("vertShadowPos", tessControlProcessor.inputs[1].name);
 	EXPECT_EQ(Type::Vec4, tessControlProcessor.inputs[1].type);
@@ -1708,8 +1699,8 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ(11U, tessControlProcessor.inputs[2].location);
 	EXPECT_EQ(0U, tessControlProcessor.inputs[2].component);
 
-	ASSERT_EQ(2U, tessControlProcessor.structs.size());
-	EXPECT_EQ("InVertInfo", tessControlProcessor.structs[0].name);
+	ASSERT_EQ(1U, tessControlProcessor.structs.size());
+	EXPECT_EQ("VertInfo", tessControlProcessor.structs[0].name);
 	ASSERT_EQ(4U, tessControlProcessor.structs[0].members.size());
 
 	EXPECT_EQ("position", tessControlProcessor.structs[0].members[0].name);
@@ -1717,16 +1708,12 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ(unknown, tessControlProcessor.structs[0].members[0].structIndex);
 	EXPECT_TRUE(tessControlProcessor.structs[0].members[0].arrayElements.empty());
 	EXPECT_FALSE(tessControlProcessor.structs[0].members[0].rowMajor);
-	EXPECT_EQ(0U, tessControlProcessor.inputs[0].memberLocations[0].first);
-	EXPECT_EQ(0U, tessControlProcessor.inputs[0].memberLocations[0].second);
 
 	EXPECT_EQ("normal", tessControlProcessor.structs[0].members[1].name);
 	EXPECT_EQ(Type::Vec3, tessControlProcessor.structs[0].members[1].type);
 	EXPECT_EQ(unknown, tessControlProcessor.structs[0].members[1].structIndex);
 	EXPECT_TRUE(tessControlProcessor.structs[0].members[1].arrayElements.empty());
 	EXPECT_FALSE(tessControlProcessor.structs[0].members[1].rowMajor);
-	EXPECT_EQ(1U, tessControlProcessor.inputs[0].memberLocations[1].first);
-	EXPECT_EQ(0U, tessControlProcessor.inputs[0].memberLocations[1].second);
 
 	EXPECT_EQ("texCoords", tessControlProcessor.structs[0].members[2].name);
 	EXPECT_EQ(Type::Vec2, tessControlProcessor.structs[0].members[2].type);
@@ -1734,8 +1721,6 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}),
 		tessControlProcessor.structs[0].members[2].arrayElements);
 	EXPECT_FALSE(tessControlProcessor.structs[0].members[2].rowMajor);
-	EXPECT_EQ(2U, tessControlProcessor.inputs[0].memberLocations[2].first);
-	EXPECT_EQ(0U, tessControlProcessor.inputs[0].memberLocations[2].second);
 
 	EXPECT_EQ("colors", tessControlProcessor.structs[0].members[3].name);
 	EXPECT_EQ(Type::Vec4, tessControlProcessor.structs[0].members[3].type);
@@ -1743,19 +1728,17 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ((std::vector<ArrayInfo>{{2, unknown}}),
 		tessControlProcessor.structs[0].members[3].arrayElements);
 	EXPECT_FALSE(tessControlProcessor.structs[0].members[3].rowMajor);
-	EXPECT_EQ(5U, tessControlProcessor.inputs[0].memberLocations[3].first);
-	EXPECT_EQ(0U, tessControlProcessor.inputs[0].memberLocations[3].second);
 
 	ASSERT_EQ(4U, tessControlProcessor.outputs.size());
 
-	EXPECT_EQ("outVertInfo", tessControlProcessor.outputs[0].name);
+	EXPECT_EQ("tceVertInfo", tessControlProcessor.outputs[0].name);
 	EXPECT_EQ(Type::Struct, tessControlProcessor.outputs[0].type);
-	EXPECT_EQ(1U, tessControlProcessor.outputs[0].structIndex);
+	EXPECT_EQ(0U, tessControlProcessor.outputs[0].structIndex);
 	EXPECT_EQ(std::vector<std::uint32_t>{4}, tessControlProcessor.outputs[0].arrayElements);
-	ASSERT_EQ(4U, tessControlProcessor.outputs[0].memberLocations.size());
+	EXPECT_TRUE(tessControlProcessor.outputs[0].memberLocations.empty());
 	EXPECT_FALSE(tessControlProcessor.outputs[0].patch);
-	EXPECT_EQ(unknown, tessControlProcessor.outputs[0].location);
-	EXPECT_EQ(unknown, tessControlProcessor.outputs[0].component);
+	EXPECT_EQ(0U, tessControlProcessor.outputs[0].location);
+	EXPECT_EQ(0U, tessControlProcessor.outputs[0].component);
 
 	EXPECT_EQ("basis", tessControlProcessor.outputs[1].name);
 	EXPECT_EQ(Type::Mat4, tessControlProcessor.outputs[1].type);
@@ -1785,54 +1768,16 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ(15U, tessControlProcessor.outputs[3].location);
 	EXPECT_EQ(0U, tessControlProcessor.outputs[3].component);
 
-	ASSERT_EQ(2U, tessControlProcessor.structs.size());
-	EXPECT_EQ("OutVertInfo", tessControlProcessor.structs[1].name);
-	ASSERT_EQ(4U, tessControlProcessor.structs[1].members.size());
-
-	EXPECT_EQ("position", tessControlProcessor.structs[1].members[0].name);
-	EXPECT_EQ(Type::Vec3, tessControlProcessor.structs[1].members[0].type);
-	EXPECT_EQ(unknown, tessControlProcessor.structs[1].members[0].structIndex);
-	EXPECT_TRUE(tessControlProcessor.structs[1].members[0].arrayElements.empty());
-	EXPECT_FALSE(tessControlProcessor.structs[1].members[0].rowMajor);
-	EXPECT_EQ(0U, tessControlProcessor.outputs[0].memberLocations[0].first);
-	EXPECT_EQ(0U, tessControlProcessor.outputs[0].memberLocations[0].second);
-
-	EXPECT_EQ("normal", tessControlProcessor.structs[1].members[1].name);
-	EXPECT_EQ(Type::Vec3, tessControlProcessor.structs[1].members[1].type);
-	EXPECT_EQ(unknown, tessControlProcessor.structs[1].members[1].structIndex);
-	EXPECT_TRUE(tessControlProcessor.structs[1].members[1].arrayElements.empty());
-	EXPECT_FALSE(tessControlProcessor.structs[1].members[1].rowMajor);
-	EXPECT_EQ(1U, tessControlProcessor.outputs[0].memberLocations[1].first);
-	EXPECT_EQ(0U, tessControlProcessor.outputs[0].memberLocations[1].second);
-
-	EXPECT_EQ("texCoords", tessControlProcessor.structs[1].members[2].name);
-	EXPECT_EQ(Type::Vec2, tessControlProcessor.structs[1].members[2].type);
-	EXPECT_EQ(unknown, tessControlProcessor.structs[1].members[2].structIndex);
-	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}),
-		tessControlProcessor.structs[1].members[2].arrayElements);
-	EXPECT_FALSE(tessControlProcessor.structs[1].members[2].rowMajor);
-	EXPECT_EQ(2U, tessControlProcessor.outputs[0].memberLocations[2].first);
-	EXPECT_EQ(0U, tessControlProcessor.outputs[0].memberLocations[2].second);
-
-	EXPECT_EQ("colors", tessControlProcessor.structs[1].members[3].name);
-	EXPECT_EQ(Type::Vec4, tessControlProcessor.structs[1].members[3].type);
-	EXPECT_EQ(unknown, tessControlProcessor.structs[1].members[3].structIndex);
-	EXPECT_EQ((std::vector<ArrayInfo>{{2, unknown}}),
-		tessControlProcessor.structs[1].members[3].arrayElements);
-	EXPECT_FALSE(tessControlProcessor.structs[1].members[3].rowMajor);
-	EXPECT_EQ(5U, tessControlProcessor.outputs[0].memberLocations[3].first);
-	EXPECT_EQ(0U, tessControlProcessor.outputs[0].memberLocations[3].second);
-
 	ASSERT_EQ(4U, tessEvalProcessor.inputs.size());
 
-	EXPECT_EQ("inVertInfo", tessEvalProcessor.inputs[0].name);
+	EXPECT_EQ("tceVertInfo", tessEvalProcessor.inputs[0].name);
 	EXPECT_EQ(Type::Struct, tessEvalProcessor.inputs[0].type);
 	EXPECT_EQ(0U, tessEvalProcessor.inputs[0].structIndex);
 	EXPECT_EQ(std::vector<std::uint32_t>{32}, tessEvalProcessor.inputs[0].arrayElements);
-	ASSERT_EQ(4U, tessEvalProcessor.inputs[0].memberLocations.size());
+	EXPECT_TRUE(tessEvalProcessor.inputs[0].memberLocations.empty());
 	EXPECT_FALSE(tessEvalProcessor.inputs[0].patch);
-	EXPECT_EQ(unknown, tessEvalProcessor.inputs[0].location);
-	EXPECT_EQ(unknown, tessEvalProcessor.inputs[0].component);
+	EXPECT_EQ(0U, tessEvalProcessor.inputs[0].location);
+	EXPECT_EQ(0U, tessEvalProcessor.inputs[0].component);
 
 	EXPECT_EQ("basis", tessEvalProcessor.inputs[1].name);
 	EXPECT_EQ(Type::Mat4, tessEvalProcessor.inputs[1].type);
@@ -1862,8 +1807,8 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ(15U, tessEvalProcessor.inputs[3].location);
 	EXPECT_EQ(0U, tessEvalProcessor.inputs[3].component);
 
-	ASSERT_EQ(2U, tessEvalProcessor.structs.size());
-	EXPECT_EQ("InVertInfo", tessEvalProcessor.structs[0].name);
+	ASSERT_EQ(1U, tessEvalProcessor.structs.size());
+	EXPECT_EQ("VertInfo", tessEvalProcessor.structs[0].name);
 	ASSERT_EQ(4U, tessEvalProcessor.structs[0].members.size());
 
 	EXPECT_EQ("position", tessEvalProcessor.structs[0].members[0].name);
@@ -1871,16 +1816,12 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ(unknown, tessEvalProcessor.structs[0].members[0].structIndex);
 	EXPECT_TRUE(tessEvalProcessor.structs[0].members[0].arrayElements.empty());
 	EXPECT_FALSE(tessEvalProcessor.structs[0].members[0].rowMajor);
-	EXPECT_EQ(0U, tessEvalProcessor.inputs[0].memberLocations[0].first);
-	EXPECT_EQ(0U, tessEvalProcessor.inputs[0].memberLocations[0].second);
 
 	EXPECT_EQ("normal", tessEvalProcessor.structs[0].members[1].name);
 	EXPECT_EQ(Type::Vec3, tessEvalProcessor.structs[0].members[1].type);
 	EXPECT_EQ(unknown, tessEvalProcessor.structs[0].members[1].structIndex);
 	EXPECT_TRUE(tessEvalProcessor.structs[0].members[1].arrayElements.empty());
 	EXPECT_FALSE(tessEvalProcessor.structs[0].members[1].rowMajor);
-	EXPECT_EQ(1U, tessEvalProcessor.inputs[0].memberLocations[1].first);
-	EXPECT_EQ(0U, tessEvalProcessor.inputs[0].memberLocations[1].second);
 
 	EXPECT_EQ("texCoords", tessEvalProcessor.structs[0].members[2].name);
 	EXPECT_EQ(Type::Vec2, tessEvalProcessor.structs[0].members[2].type);
@@ -1888,8 +1829,6 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}),
 		tessEvalProcessor.structs[0].members[2].arrayElements);
 	EXPECT_FALSE(tessEvalProcessor.structs[0].members[2].rowMajor);
-	EXPECT_EQ(2U, tessEvalProcessor.inputs[0].memberLocations[2].first);
-	EXPECT_EQ(0U, tessEvalProcessor.inputs[0].memberLocations[2].second);
 
 	EXPECT_EQ("colors", tessEvalProcessor.structs[0].members[3].name);
 	EXPECT_EQ(Type::Vec4, tessEvalProcessor.structs[0].members[3].type);
@@ -1897,19 +1836,17 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ((std::vector<ArrayInfo>{{2, unknown}}),
 		tessEvalProcessor.structs[0].members[3].arrayElements);
 	EXPECT_FALSE(tessEvalProcessor.structs[0].members[3].rowMajor);
-	EXPECT_EQ(5U, tessEvalProcessor.inputs[0].memberLocations[3].first);
-	EXPECT_EQ(0U, tessEvalProcessor.inputs[0].memberLocations[3].second);
 
 	ASSERT_EQ(3U, tessEvalProcessor.outputs.size());
 
-	EXPECT_EQ("", tessEvalProcessor.outputs[0].name);
+	EXPECT_EQ("tegVertInfo", tessEvalProcessor.outputs[0].name);
 	EXPECT_EQ(Type::Struct, tessEvalProcessor.outputs[0].type);
-	EXPECT_EQ(1U, tessEvalProcessor.outputs[0].structIndex);
+	EXPECT_EQ(0U, tessEvalProcessor.outputs[0].structIndex);
 	EXPECT_TRUE(tessEvalProcessor.outputs[0].arrayElements.empty());
-	ASSERT_EQ(4U, tessEvalProcessor.outputs[0].memberLocations.size());
+	EXPECT_TRUE(tessEvalProcessor.outputs[0].memberLocations.empty());
 	EXPECT_FALSE(tessEvalProcessor.outputs[0].patch);
-	EXPECT_EQ(unknown, tessEvalProcessor.outputs[0].location);
-	EXPECT_EQ(unknown, tessEvalProcessor.outputs[0].component);
+	EXPECT_EQ(0U, tessEvalProcessor.outputs[0].location);
+	EXPECT_EQ(0U, tessEvalProcessor.outputs[0].component);
 
 	EXPECT_EQ("tessEvalShadowPos", tessEvalProcessor.outputs[1].name);
 	EXPECT_EQ(Type::Vec4, tessEvalProcessor.outputs[1].type);
@@ -1929,54 +1866,16 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ(11U, tessEvalProcessor.outputs[2].location);
 	EXPECT_EQ(0U, tessEvalProcessor.outputs[2].component);
 
-	ASSERT_EQ(2U, tessEvalProcessor.structs.size());
-	EXPECT_EQ("OutVertInfo", tessEvalProcessor.structs[1].name);
-	ASSERT_EQ(4U, tessEvalProcessor.structs[1].members.size());
-
-	EXPECT_EQ("position", tessEvalProcessor.structs[1].members[0].name);
-	EXPECT_EQ(Type::Vec3, tessEvalProcessor.structs[1].members[0].type);
-	EXPECT_EQ(unknown, tessEvalProcessor.structs[1].members[0].structIndex);
-	EXPECT_TRUE(tessEvalProcessor.structs[1].members[0].arrayElements.empty());
-	EXPECT_FALSE(tessEvalProcessor.structs[1].members[0].rowMajor);
-	EXPECT_EQ(0U, tessEvalProcessor.outputs[0].memberLocations[0].first);
-	EXPECT_EQ(0U, tessEvalProcessor.outputs[0].memberLocations[0].second);
-
-	EXPECT_EQ("normal", tessEvalProcessor.structs[1].members[1].name);
-	EXPECT_EQ(Type::Vec3, tessEvalProcessor.structs[1].members[1].type);
-	EXPECT_EQ(unknown, tessEvalProcessor.structs[1].members[1].structIndex);
-	EXPECT_TRUE(tessEvalProcessor.structs[1].members[1].arrayElements.empty());
-	EXPECT_FALSE(tessEvalProcessor.structs[1].members[1].rowMajor);
-	EXPECT_EQ(1U, tessEvalProcessor.outputs[0].memberLocations[1].first);
-	EXPECT_EQ(0U, tessEvalProcessor.outputs[0].memberLocations[1].second);
-
-	EXPECT_EQ("texCoords", tessEvalProcessor.structs[1].members[2].name);
-	EXPECT_EQ(Type::Vec2, tessEvalProcessor.structs[1].members[2].type);
-	EXPECT_EQ(unknown, tessEvalProcessor.structs[1].members[2].structIndex);
-	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}),
-		tessEvalProcessor.structs[1].members[2].arrayElements);
-	EXPECT_FALSE(tessEvalProcessor.structs[1].members[2].rowMajor);
-	EXPECT_EQ(2U, tessEvalProcessor.outputs[0].memberLocations[2].first);
-	EXPECT_EQ(0U, tessEvalProcessor.outputs[0].memberLocations[2].second);
-
-	EXPECT_EQ("colors", tessEvalProcessor.structs[1].members[3].name);
-	EXPECT_EQ(Type::Vec4, tessEvalProcessor.structs[1].members[3].type);
-	EXPECT_EQ(unknown, tessEvalProcessor.structs[1].members[3].structIndex);
-	EXPECT_EQ((std::vector<ArrayInfo>{{2, unknown}}),
-		tessEvalProcessor.structs[1].members[3].arrayElements);
-	EXPECT_FALSE(tessEvalProcessor.structs[1].members[3].rowMajor);
-	EXPECT_EQ(5U, tessEvalProcessor.outputs[0].memberLocations[3].first);
-	EXPECT_EQ(0U, tessEvalProcessor.outputs[0].memberLocations[3].second);
-
 	ASSERT_EQ(3U, geometryProcessor.inputs.size());
 
-	EXPECT_EQ("inVertInfo", geometryProcessor.inputs[0].name);
+	EXPECT_EQ("tegVertInfo", geometryProcessor.inputs[0].name);
 	EXPECT_EQ(Type::Struct, geometryProcessor.inputs[0].type);
 	EXPECT_EQ(0U, geometryProcessor.inputs[0].structIndex);
 	EXPECT_EQ(std::vector<std::uint32_t>{3}, geometryProcessor.inputs[0].arrayElements);
-	ASSERT_EQ(4U, geometryProcessor.inputs[0].memberLocations.size());
+	EXPECT_TRUE(geometryProcessor.inputs[0].memberLocations.empty());
 	EXPECT_FALSE(geometryProcessor.inputs[0].patch);
-	EXPECT_EQ(unknown, geometryProcessor.inputs[0].location);
-	EXPECT_EQ(unknown, geometryProcessor.inputs[0].component);
+	EXPECT_EQ(0U, geometryProcessor.inputs[0].location);
+	EXPECT_EQ(0U, geometryProcessor.inputs[0].component);
 
 	EXPECT_EQ("tessEvalShadowPos", geometryProcessor.inputs[1].name);
 	EXPECT_EQ(Type::Vec4, geometryProcessor.inputs[1].type);
@@ -1997,8 +1896,8 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ(11U, geometryProcessor.inputs[2].location);
 	EXPECT_EQ(0U, geometryProcessor.inputs[2].component);
 
-	ASSERT_EQ(2U, geometryProcessor.structs.size());
-	EXPECT_EQ("InVertInfo", geometryProcessor.structs[0].name);
+	ASSERT_EQ(1U, geometryProcessor.structs.size());
+	EXPECT_EQ("VertInfo", geometryProcessor.structs[0].name);
 	ASSERT_EQ(4U, geometryProcessor.structs[0].members.size());
 
 	EXPECT_EQ("position", geometryProcessor.structs[0].members[0].name);
@@ -2006,16 +1905,12 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ(unknown, geometryProcessor.structs[0].members[0].structIndex);
 	EXPECT_TRUE(geometryProcessor.structs[0].members[0].arrayElements.empty());
 	EXPECT_FALSE(geometryProcessor.structs[0].members[0].rowMajor);
-	EXPECT_EQ(0U, geometryProcessor.inputs[0].memberLocations[0].first);
-	EXPECT_EQ(0U, geometryProcessor.inputs[0].memberLocations[0].second);
 
 	EXPECT_EQ("normal", geometryProcessor.structs[0].members[1].name);
 	EXPECT_EQ(Type::Vec3, geometryProcessor.structs[0].members[1].type);
 	EXPECT_EQ(unknown, geometryProcessor.structs[0].members[1].structIndex);
 	EXPECT_TRUE(geometryProcessor.structs[0].members[1].arrayElements.empty());
 	EXPECT_FALSE(geometryProcessor.structs[0].members[1].rowMajor);
-	EXPECT_EQ(1U, geometryProcessor.inputs[0].memberLocations[1].first);
-	EXPECT_EQ(0U, geometryProcessor.inputs[0].memberLocations[1].second);
 
 	EXPECT_EQ("texCoords", geometryProcessor.structs[0].members[2].name);
 	EXPECT_EQ(Type::Vec2, geometryProcessor.structs[0].members[2].type);
@@ -2023,8 +1918,6 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}),
 		geometryProcessor.structs[0].members[2].arrayElements);
 	EXPECT_FALSE(geometryProcessor.structs[0].members[2].rowMajor);
-	EXPECT_EQ(2U, geometryProcessor.inputs[0].memberLocations[2].first);
-	EXPECT_EQ(0U, geometryProcessor.inputs[0].memberLocations[2].second);
 
 	EXPECT_EQ("colors", geometryProcessor.structs[0].members[3].name);
 	EXPECT_EQ(Type::Vec4, geometryProcessor.structs[0].members[3].type);
@@ -2032,19 +1925,17 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ((std::vector<ArrayInfo>{{2, unknown}}),
 		geometryProcessor.structs[0].members[3].arrayElements);
 	EXPECT_FALSE(geometryProcessor.structs[0].members[3].rowMajor);
-	EXPECT_EQ(5U, geometryProcessor.inputs[0].memberLocations[3].first);
-	EXPECT_EQ(0U, geometryProcessor.inputs[0].memberLocations[3].second);
 
 	ASSERT_EQ(3U, geometryProcessor.outputs.size());
 
-	EXPECT_EQ("", geometryProcessor.outputs[0].name);
+	EXPECT_EQ("gfVertInfo", geometryProcessor.outputs[0].name);
 	EXPECT_EQ(Type::Struct, geometryProcessor.outputs[0].type);
-	EXPECT_EQ(1U, geometryProcessor.outputs[0].structIndex);
+	EXPECT_EQ(0U, geometryProcessor.outputs[0].structIndex);
 	EXPECT_TRUE(geometryProcessor.outputs[0].arrayElements.empty());
-	ASSERT_EQ(4U, geometryProcessor.outputs[0].memberLocations.size());
+	EXPECT_TRUE(geometryProcessor.outputs[0].memberLocations.empty());
 	EXPECT_FALSE(geometryProcessor.outputs[0].patch);
-	EXPECT_EQ(unknown, geometryProcessor.outputs[0].location);
-	EXPECT_EQ(unknown, geometryProcessor.outputs[0].component);
+	EXPECT_EQ(0U, geometryProcessor.outputs[0].location);
+	EXPECT_EQ(0U, geometryProcessor.outputs[0].component);
 
 	EXPECT_EQ("geomShadowPos", geometryProcessor.outputs[1].name);
 	EXPECT_EQ(Type::Vec4, geometryProcessor.outputs[1].type);
@@ -2064,54 +1955,16 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ(11U, geometryProcessor.outputs[2].location);
 	EXPECT_EQ(0U, geometryProcessor.outputs[2].component);
 
-	ASSERT_EQ(2U, geometryProcessor.structs.size());
-	EXPECT_EQ("OutVertInfo", geometryProcessor.structs[1].name);
-	ASSERT_EQ(4U, geometryProcessor.structs[1].members.size());
-
-	EXPECT_EQ("position", geometryProcessor.structs[1].members[0].name);
-	EXPECT_EQ(Type::Vec3, geometryProcessor.structs[1].members[0].type);
-	EXPECT_EQ(unknown, geometryProcessor.structs[1].members[0].structIndex);
-	EXPECT_TRUE(geometryProcessor.structs[1].members[0].arrayElements.empty());
-	EXPECT_FALSE(geometryProcessor.structs[1].members[0].rowMajor);
-	EXPECT_EQ(0U, geometryProcessor.outputs[0].memberLocations[0].first);
-	EXPECT_EQ(0U, geometryProcessor.outputs[0].memberLocations[0].second);
-
-	EXPECT_EQ("normal", geometryProcessor.structs[1].members[1].name);
-	EXPECT_EQ(Type::Vec3, geometryProcessor.structs[1].members[1].type);
-	EXPECT_EQ(unknown, geometryProcessor.structs[1].members[1].structIndex);
-	EXPECT_TRUE(geometryProcessor.structs[1].members[1].arrayElements.empty());
-	EXPECT_FALSE(geometryProcessor.structs[1].members[1].rowMajor);
-	EXPECT_EQ(1U, geometryProcessor.outputs[0].memberLocations[1].first);
-	EXPECT_EQ(0U, geometryProcessor.outputs[0].memberLocations[1].second);
-
-	EXPECT_EQ("texCoords", geometryProcessor.structs[1].members[2].name);
-	EXPECT_EQ(Type::Vec2, geometryProcessor.structs[1].members[2].type);
-	EXPECT_EQ(unknown, geometryProcessor.structs[1].members[2].structIndex);
-	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}),
-		geometryProcessor.structs[1].members[2].arrayElements);
-	EXPECT_FALSE(geometryProcessor.structs[1].members[2].rowMajor);
-	EXPECT_EQ(2U, geometryProcessor.outputs[0].memberLocations[2].first);
-	EXPECT_EQ(0U, geometryProcessor.outputs[0].memberLocations[2].second);
-
-	EXPECT_EQ("colors", geometryProcessor.structs[1].members[3].name);
-	EXPECT_EQ(Type::Vec4, geometryProcessor.structs[1].members[3].type);
-	EXPECT_EQ(unknown, geometryProcessor.structs[1].members[3].structIndex);
-	EXPECT_EQ((std::vector<ArrayInfo>{{2, unknown}}),
-		geometryProcessor.structs[1].members[3].arrayElements);
-	EXPECT_FALSE(geometryProcessor.structs[1].members[3].rowMajor);
-	EXPECT_EQ(5U, geometryProcessor.outputs[0].memberLocations[3].first);
-	EXPECT_EQ(0U, geometryProcessor.outputs[0].memberLocations[3].second);
-
 	ASSERT_EQ(3U, fragmentProcessor.inputs.size());
 
-	EXPECT_EQ("inputs", fragmentProcessor.inputs[0].name);
+	EXPECT_EQ("gfVertInfo", fragmentProcessor.inputs[0].name);
 	EXPECT_EQ(Type::Struct, fragmentProcessor.inputs[0].type);
 	EXPECT_EQ(0U, fragmentProcessor.inputs[0].structIndex);
 	EXPECT_TRUE(fragmentProcessor.inputs[0].arrayElements.empty());
-	ASSERT_EQ(4U, fragmentProcessor.inputs[0].memberLocations.size());
+	EXPECT_TRUE(fragmentProcessor.inputs[0].memberLocations.empty());
 	EXPECT_FALSE(fragmentProcessor.inputs[0].patch);
-	EXPECT_EQ(unknown, fragmentProcessor.inputs[0].location);
-	EXPECT_EQ(unknown, fragmentProcessor.inputs[0].component);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[0].location);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[0].component);
 
 	EXPECT_EQ("geomShadowPos", fragmentProcessor.inputs[1].name);
 	EXPECT_EQ(Type::Vec4, fragmentProcessor.inputs[1].type);
@@ -2140,16 +1993,12 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ(unknown, fragmentProcessor.structs[0].members[0].structIndex);
 	EXPECT_TRUE(fragmentProcessor.structs[0].members[0].arrayElements.empty());
 	EXPECT_FALSE(fragmentProcessor.structs[0].members[0].rowMajor);
-	EXPECT_EQ(0U, fragmentProcessor.inputs[0].memberLocations[0].first);
-	EXPECT_EQ(0U, fragmentProcessor.inputs[0].memberLocations[0].second);
 
 	EXPECT_EQ("normal", fragmentProcessor.structs[0].members[1].name);
 	EXPECT_EQ(Type::Vec3, fragmentProcessor.structs[0].members[1].type);
 	EXPECT_EQ(unknown, fragmentProcessor.structs[0].members[1].structIndex);
 	EXPECT_TRUE(fragmentProcessor.structs[0].members[1].arrayElements.empty());
 	EXPECT_FALSE(fragmentProcessor.structs[0].members[1].rowMajor);
-	EXPECT_EQ(1U, fragmentProcessor.inputs[0].memberLocations[1].first);
-	EXPECT_EQ(0U, fragmentProcessor.inputs[0].memberLocations[1].second);
 
 	EXPECT_EQ("texCoords", fragmentProcessor.structs[0].members[2].name);
 	EXPECT_EQ(Type::Vec2, fragmentProcessor.structs[0].members[2].type);
@@ -2157,8 +2006,6 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}),
 		fragmentProcessor.structs[0].members[2].arrayElements);
 	EXPECT_FALSE(fragmentProcessor.structs[0].members[2].rowMajor);
-	EXPECT_EQ(2U, fragmentProcessor.inputs[0].memberLocations[2].first);
-	EXPECT_EQ(0U, fragmentProcessor.inputs[0].memberLocations[2].second);
 
 	EXPECT_EQ("colors", fragmentProcessor.structs[0].members[3].name);
 	EXPECT_EQ(Type::Vec4, fragmentProcessor.structs[0].members[3].type);
@@ -2166,8 +2013,6 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_EQ((std::vector<ArrayInfo>{{2, unknown}}),
 		fragmentProcessor.structs[0].members[3].arrayElements);
 	EXPECT_FALSE(fragmentProcessor.structs[0].members[3].rowMajor);
-	EXPECT_EQ(5U, fragmentProcessor.inputs[0].memberLocations[3].first);
-	EXPECT_EQ(0U, fragmentProcessor.inputs[0].memberLocations[3].second);
 
 	ASSERT_EQ(1U, fragmentProcessor.outputs.size());
 	EXPECT_EQ("color", fragmentProcessor.outputs[0].name);
@@ -2178,6 +2023,422 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 	EXPECT_FALSE(fragmentProcessor.outputs[0].patch);
 	EXPECT_EQ(0U, fragmentProcessor.outputs[0].location);
 	EXPECT_EQ(0U, fragmentProcessor.outputs[0].component);
+}
+
+TEST_F(SpirVProcessorTest, LinkStructArray)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"LinkStructArray.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].value.empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl =
+			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			Compiler::getDefaultResources()));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	Compiler::Program program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
+	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
+
+	SpirVProcessor vertexProcessor;
+	EXPECT_TRUE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, vertexSpirv, Stage::Vertex));
+
+	SpirVProcessor fragmentProcessor;
+	EXPECT_TRUE(fragmentProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, fragmentSpirv, Stage::Fragment));
+
+	EXPECT_TRUE(vertexProcessor.assignOutputs(output));
+	EXPECT_TRUE(fragmentProcessor.linkInputs(output, vertexProcessor));
+
+	std::uint32_t unknown = msl::compile::unknown;
+	ASSERT_EQ(2U, vertexProcessor.outputs.size());
+
+	EXPECT_EQ("inouts", vertexProcessor.outputs[0].name);
+	EXPECT_EQ(Type::Struct, vertexProcessor.outputs[0].type);
+	EXPECT_EQ(1U, vertexProcessor.outputs[0].structIndex);
+	ASSERT_EQ(1U, vertexProcessor.outputs[0].arrayElements.size());
+	EXPECT_EQ(2U, vertexProcessor.outputs[0].arrayElements[0]);
+	EXPECT_TRUE(vertexProcessor.outputs[0].memberLocations.empty());
+	EXPECT_FALSE(vertexProcessor.outputs[0].patch);
+	EXPECT_EQ(0U, vertexProcessor.outputs[0].location);
+	EXPECT_EQ(0U, vertexProcessor.outputs[0].component);
+
+	EXPECT_EQ("otherValue", vertexProcessor.outputs[1].name);
+	EXPECT_EQ(Type::Vec4, vertexProcessor.outputs[1].type);
+	EXPECT_EQ(unknown, vertexProcessor.outputs[1].structIndex);
+	EXPECT_TRUE(vertexProcessor.outputs[1].arrayElements.empty());
+	EXPECT_TRUE(vertexProcessor.outputs[1].memberLocations.empty());
+	EXPECT_FALSE(vertexProcessor.outputs[1].patch);
+	EXPECT_EQ(8U, vertexProcessor.outputs[1].location);
+	EXPECT_EQ(0U, vertexProcessor.outputs[1].component);
+
+	ASSERT_EQ(2U, vertexProcessor.structs.size());
+	EXPECT_EQ("InOuts", vertexProcessor.structs[1].name);
+	ASSERT_EQ(2U, vertexProcessor.structs[1].members.size());
+
+	EXPECT_EQ("vec4Value", vertexProcessor.structs[1].members[0].name);
+	EXPECT_EQ(Type::Vec4, vertexProcessor.structs[1].members[0].type);
+	EXPECT_EQ(unknown, vertexProcessor.structs[1].members[0].structIndex);
+	EXPECT_TRUE(vertexProcessor.structs[1].members[0].arrayElements.empty());
+	EXPECT_FALSE(vertexProcessor.structs[1].members[0].rowMajor);
+
+	EXPECT_EQ("vec3Values", vertexProcessor.structs[1].members[1].name);
+	EXPECT_EQ(Type::Vec3, vertexProcessor.structs[1].members[1].type);
+	EXPECT_EQ(unknown, vertexProcessor.structs[1].members[1].structIndex);
+	ASSERT_EQ(1U, vertexProcessor.structs[1].members[1].arrayElements.size());
+	EXPECT_EQ(3U, vertexProcessor.structs[1].members[1].arrayElements[0].length);
+	EXPECT_EQ(unknown, vertexProcessor.structs[1].members[1].arrayElements[0].stride);
+	EXPECT_FALSE(vertexProcessor.structs[1].members[1].rowMajor);
+
+	ASSERT_EQ(2U, fragmentProcessor.inputs.size());
+
+	EXPECT_EQ("otherValue", fragmentProcessor.inputs[0].name);
+	EXPECT_EQ(Type::Vec4, fragmentProcessor.inputs[0].type);
+	EXPECT_EQ(unknown, fragmentProcessor.inputs[0].structIndex);
+	EXPECT_TRUE(fragmentProcessor.inputs[0].arrayElements.empty());
+	EXPECT_TRUE(fragmentProcessor.inputs[0].memberLocations.empty());
+	EXPECT_FALSE(fragmentProcessor.inputs[0].patch);
+	EXPECT_EQ(8U, fragmentProcessor.inputs[0].location);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[0].component);
+
+	EXPECT_EQ("inouts", fragmentProcessor.inputs[1].name);
+	EXPECT_EQ(Type::Struct, fragmentProcessor.inputs[1].type);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[1].structIndex);
+	ASSERT_EQ(1U, fragmentProcessor.inputs[1].arrayElements.size());
+	EXPECT_EQ(2U, fragmentProcessor.inputs[1].arrayElements[0]);
+	EXPECT_TRUE(fragmentProcessor.inputs[1].memberLocations.empty());
+	EXPECT_FALSE(fragmentProcessor.inputs[1].patch);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[1].location);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[1].component);
+
+	ASSERT_EQ(1U, fragmentProcessor.structs.size());
+	EXPECT_EQ("InOuts", fragmentProcessor.structs[0].name);
+	ASSERT_EQ(2U, fragmentProcessor.structs[0].members.size());
+
+	EXPECT_EQ("vec4Value", fragmentProcessor.structs[0].members[0].name);
+	EXPECT_EQ(Type::Vec4, fragmentProcessor.structs[0].members[0].type);
+	EXPECT_EQ(unknown, fragmentProcessor.structs[0].members[0].structIndex);
+	EXPECT_TRUE(fragmentProcessor.structs[0].members[0].arrayElements.empty());
+	EXPECT_FALSE(fragmentProcessor.structs[0].members[0].rowMajor);
+
+	EXPECT_EQ("vec3Values", fragmentProcessor.structs[0].members[1].name);
+	EXPECT_EQ(Type::Vec3, fragmentProcessor.structs[0].members[1].type);
+	EXPECT_EQ(unknown, fragmentProcessor.structs[0].members[1].structIndex);
+	ASSERT_EQ(1U, fragmentProcessor.structs[0].members[1].arrayElements.size());
+	EXPECT_EQ(3U, fragmentProcessor.structs[0].members[1].arrayElements[0].length);
+	EXPECT_EQ(unknown, fragmentProcessor.structs[0].members[1].arrayElements[0].stride);
+	EXPECT_FALSE(fragmentProcessor.structs[0].members[1].rowMajor);
+}
+
+TEST_F(SpirVProcessorTest, LinkStructWithinOutputBlock)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"LinkStructWithinOutputBlock.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].value.empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl =
+			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			Compiler::getDefaultResources()));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	Compiler::Program program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
+	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
+
+	SpirVProcessor vertexProcessor;
+	EXPECT_TRUE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, vertexSpirv, Stage::Vertex));
+
+	SpirVProcessor fragmentProcessor;
+	EXPECT_TRUE(fragmentProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, fragmentSpirv, Stage::Fragment));
+
+	EXPECT_TRUE(vertexProcessor.assignOutputs(output));
+	EXPECT_TRUE(fragmentProcessor.linkInputs(output, vertexProcessor));
+
+	std::uint32_t unknown = msl::compile::unknown;
+	ASSERT_EQ(1U, vertexProcessor.outputs.size());
+
+	EXPECT_EQ("", vertexProcessor.outputs[0].name);
+	EXPECT_EQ(Type::Struct, vertexProcessor.outputs[0].type);
+	EXPECT_EQ(2U, vertexProcessor.outputs[0].structIndex);
+	EXPECT_TRUE(vertexProcessor.outputs[0].arrayElements.empty());
+	ASSERT_EQ(2U, vertexProcessor.outputs[0].memberLocations.size());
+	EXPECT_FALSE(vertexProcessor.outputs[0].patch);
+	EXPECT_EQ(unknown, vertexProcessor.outputs[0].location);
+	EXPECT_EQ(unknown, vertexProcessor.outputs[0].component);
+
+	ASSERT_EQ(3U, vertexProcessor.structs.size());
+	EXPECT_EQ("OutputStruct", vertexProcessor.structs[1].name);
+	ASSERT_EQ(2U, vertexProcessor.structs[1].members.size());
+
+	EXPECT_EQ("firstValue", vertexProcessor.structs[1].members[0].name);
+	EXPECT_EQ(Type::Vec4, vertexProcessor.structs[1].members[0].type);
+	EXPECT_EQ(unknown, vertexProcessor.structs[1].members[0].structIndex);
+	EXPECT_TRUE(vertexProcessor.structs[1].members[0].arrayElements.empty());
+	EXPECT_FALSE(vertexProcessor.structs[1].members[0].rowMajor);
+
+	EXPECT_EQ("secondValue", vertexProcessor.structs[1].members[1].name);
+	EXPECT_EQ(Type::Vec3, vertexProcessor.structs[1].members[1].type);
+	EXPECT_EQ(unknown, vertexProcessor.structs[1].members[1].structIndex);
+	EXPECT_TRUE(vertexProcessor.structs[1].members[1].arrayElements.empty());
+	EXPECT_FALSE(vertexProcessor.structs[1].members[1].rowMajor);
+
+	EXPECT_EQ("OutValues", vertexProcessor.structs[2].name);
+	ASSERT_EQ(2U, vertexProcessor.structs[2].members.size());
+
+	EXPECT_EQ("structValue", vertexProcessor.structs[2].members[0].name);
+	EXPECT_EQ(Type::Struct, vertexProcessor.structs[2].members[0].type);
+	EXPECT_EQ(1U, vertexProcessor.structs[2].members[0].structIndex);
+	EXPECT_TRUE(vertexProcessor.structs[2].members[0].arrayElements.empty());
+	EXPECT_FALSE(vertexProcessor.structs[2].members[0].rowMajor);
+	EXPECT_EQ(0U, vertexProcessor.outputs[0].memberLocations[0].first);
+	EXPECT_EQ(0U, vertexProcessor.outputs[0].memberLocations[0].second);
+
+	EXPECT_EQ("vec4Value", vertexProcessor.structs[2].members[1].name);
+	EXPECT_EQ(Type::Vec4, vertexProcessor.structs[2].members[1].type);
+	EXPECT_EQ(unknown, vertexProcessor.structs[2].members[1].structIndex);
+	EXPECT_TRUE(vertexProcessor.structs[2].members[1].arrayElements.empty());
+	EXPECT_FALSE(vertexProcessor.structs[2].members[1].rowMajor);
+	EXPECT_EQ(2U, vertexProcessor.outputs[0].memberLocations[1].first);
+	EXPECT_EQ(0U, vertexProcessor.outputs[0].memberLocations[1].second);
+
+	ASSERT_EQ(1U, fragmentProcessor.inputs.size());
+
+	EXPECT_EQ("", fragmentProcessor.inputs[0].name);
+	EXPECT_EQ(Type::Struct, fragmentProcessor.inputs[0].type);
+	EXPECT_EQ(1U, fragmentProcessor.inputs[0].structIndex);
+	EXPECT_TRUE(fragmentProcessor.inputs[0].arrayElements.empty());
+	ASSERT_EQ(2U, fragmentProcessor.inputs[0].memberLocations.size());
+	EXPECT_FALSE(fragmentProcessor.inputs[0].patch);
+	EXPECT_EQ(unknown, fragmentProcessor.inputs[0].location);
+	EXPECT_EQ(unknown, fragmentProcessor.inputs[0].component);
+
+	ASSERT_EQ(2U, fragmentProcessor.structs.size());
+	EXPECT_EQ("OutputStruct", fragmentProcessor.structs[0].name);
+	ASSERT_EQ(2U, fragmentProcessor.structs[0].members.size());
+
+	EXPECT_EQ("firstValue", fragmentProcessor.structs[0].members[0].name);
+	EXPECT_EQ(Type::Vec4, fragmentProcessor.structs[0].members[0].type);
+	EXPECT_EQ(unknown, fragmentProcessor.structs[0].members[0].structIndex);
+	EXPECT_TRUE(fragmentProcessor.structs[0].members[0].arrayElements.empty());
+	EXPECT_FALSE(fragmentProcessor.structs[0].members[0].rowMajor);
+
+	EXPECT_EQ("secondValue", fragmentProcessor.structs[0].members[1].name);
+	EXPECT_EQ(Type::Vec3, fragmentProcessor.structs[0].members[1].type);
+	EXPECT_EQ(unknown, fragmentProcessor.structs[0].members[1].structIndex);
+	EXPECT_TRUE(fragmentProcessor.structs[0].members[1].arrayElements.empty());
+	EXPECT_FALSE(fragmentProcessor.structs[0].members[1].rowMajor);
+
+	EXPECT_EQ("InValues", fragmentProcessor.structs[1].name);
+	ASSERT_EQ(2U, fragmentProcessor.structs[1].members.size());
+
+	EXPECT_EQ("structValue", fragmentProcessor.structs[1].members[0].name);
+	EXPECT_EQ(Type::Struct, fragmentProcessor.structs[1].members[0].type);
+	EXPECT_EQ(0U, fragmentProcessor.structs[1].members[0].structIndex);
+	EXPECT_TRUE(fragmentProcessor.structs[1].members[0].arrayElements.empty());
+	EXPECT_FALSE(fragmentProcessor.structs[1].members[0].rowMajor);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[0].memberLocations[0].first);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[0].memberLocations[0].second);
+
+	EXPECT_EQ("vec4Value", fragmentProcessor.structs[1].members[1].name);
+	EXPECT_EQ(Type::Vec4, fragmentProcessor.structs[1].members[1].type);
+	EXPECT_EQ(unknown, fragmentProcessor.structs[1].members[1].structIndex);
+	EXPECT_TRUE(fragmentProcessor.structs[1].members[1].arrayElements.empty());
+	EXPECT_FALSE(fragmentProcessor.structs[1].members[1].rowMajor);
+	EXPECT_EQ(2U, fragmentProcessor.inputs[0].memberLocations[1].first);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[0].memberLocations[1].second);
+}
+
+TEST_F(SpirVProcessorTest, LinkNestedStructs)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"LinkNestedStructs.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].value.empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl =
+			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			Compiler::getDefaultResources()));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	Compiler::Program program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
+	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
+
+	SpirVProcessor vertexProcessor;
+	EXPECT_TRUE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, vertexSpirv, Stage::Vertex));
+
+	SpirVProcessor fragmentProcessor;
+	EXPECT_TRUE(fragmentProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, fragmentSpirv, Stage::Fragment));
+
+	EXPECT_TRUE(vertexProcessor.assignOutputs(output));
+	EXPECT_TRUE(fragmentProcessor.linkInputs(output, vertexProcessor));
+
+	std::uint32_t unknown = msl::compile::unknown;
+	ASSERT_EQ(2U, vertexProcessor.outputs.size());
+
+	EXPECT_EQ("structValues", vertexProcessor.outputs[0].name);
+	EXPECT_EQ(Type::Struct, vertexProcessor.outputs[0].type);
+	EXPECT_EQ(2U, vertexProcessor.outputs[0].structIndex);
+	EXPECT_TRUE(vertexProcessor.outputs[0].arrayElements.empty());
+	EXPECT_TRUE(vertexProcessor.outputs[0].memberLocations.empty());
+	EXPECT_FALSE(vertexProcessor.outputs[0].patch);
+	EXPECT_EQ(0U, vertexProcessor.outputs[0].location);
+	EXPECT_EQ(0U, vertexProcessor.outputs[0].component);
+
+	EXPECT_EQ("otherValue", vertexProcessor.outputs[1].name);
+	EXPECT_EQ(Type::Vec4, vertexProcessor.outputs[1].type);
+	EXPECT_EQ(unknown, vertexProcessor.outputs[1].structIndex);
+	EXPECT_TRUE(vertexProcessor.outputs[1].arrayElements.empty());
+	EXPECT_TRUE(vertexProcessor.outputs[1].memberLocations.empty());
+	EXPECT_FALSE(vertexProcessor.outputs[1].patch);
+	EXPECT_EQ(3U, vertexProcessor.outputs[1].location);
+	EXPECT_EQ(0U, vertexProcessor.outputs[1].component);
+
+	ASSERT_EQ(3U, vertexProcessor.structs.size());
+	EXPECT_EQ("InnerStruct", vertexProcessor.structs[1].name);
+	ASSERT_EQ(2U, vertexProcessor.structs[1].members.size());
+
+	EXPECT_EQ("firstValue", vertexProcessor.structs[1].members[0].name);
+	EXPECT_EQ(Type::Vec4, vertexProcessor.structs[1].members[0].type);
+	EXPECT_EQ(unknown, vertexProcessor.structs[1].members[0].structIndex);
+	EXPECT_TRUE(vertexProcessor.structs[1].members[0].arrayElements.empty());
+	EXPECT_FALSE(vertexProcessor.structs[1].members[0].rowMajor);
+
+	EXPECT_EQ("secondValue", vertexProcessor.structs[1].members[1].name);
+	EXPECT_EQ(Type::Vec3, vertexProcessor.structs[1].members[1].type);
+	EXPECT_EQ(unknown, vertexProcessor.structs[1].members[1].structIndex);
+	EXPECT_TRUE(vertexProcessor.structs[1].members[1].arrayElements.empty());
+	EXPECT_FALSE(vertexProcessor.structs[1].members[1].rowMajor);
+
+	EXPECT_EQ("OuterStruct", vertexProcessor.structs[2].name);
+	ASSERT_EQ(2U, vertexProcessor.structs[2].members.size());
+
+	EXPECT_EQ("structValue", vertexProcessor.structs[2].members[0].name);
+	EXPECT_EQ(Type::Struct, vertexProcessor.structs[2].members[0].type);
+	EXPECT_EQ(1U, vertexProcessor.structs[2].members[0].structIndex);
+	EXPECT_TRUE(vertexProcessor.structs[2].members[0].arrayElements.empty());
+	EXPECT_FALSE(vertexProcessor.structs[2].members[0].rowMajor);
+
+	EXPECT_EQ("vec4Value", vertexProcessor.structs[2].members[1].name);
+	EXPECT_EQ(Type::Vec4, vertexProcessor.structs[2].members[1].type);
+	EXPECT_EQ(unknown, vertexProcessor.structs[2].members[1].structIndex);
+	EXPECT_TRUE(vertexProcessor.structs[2].members[1].arrayElements.empty());
+	EXPECT_FALSE(vertexProcessor.structs[2].members[1].rowMajor);
+
+	ASSERT_EQ(2U, fragmentProcessor.inputs.size());
+
+	EXPECT_EQ("otherValue", fragmentProcessor.inputs[0].name);
+	EXPECT_EQ(Type::Vec4, fragmentProcessor.inputs[0].type);
+	EXPECT_EQ(unknown, fragmentProcessor.inputs[0].structIndex);
+	EXPECT_TRUE(fragmentProcessor.inputs[0].arrayElements.empty());
+	EXPECT_TRUE(fragmentProcessor.inputs[0].memberLocations.empty());
+	EXPECT_FALSE(fragmentProcessor.inputs[0].patch);
+	EXPECT_EQ(3U, fragmentProcessor.inputs[0].location);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[0].component);
+
+	EXPECT_EQ("structValues", fragmentProcessor.inputs[1].name);
+	EXPECT_EQ(Type::Struct, fragmentProcessor.inputs[1].type);
+	EXPECT_EQ(1U, fragmentProcessor.inputs[1].structIndex);
+	EXPECT_TRUE(fragmentProcessor.inputs[1].arrayElements.empty());
+	EXPECT_TRUE(fragmentProcessor.inputs[1].memberLocations.empty());
+	EXPECT_FALSE(fragmentProcessor.inputs[1].patch);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[1].location);
+	EXPECT_EQ(0U, fragmentProcessor.inputs[1].component);
+
+	ASSERT_EQ(2U, fragmentProcessor.structs.size());
+	EXPECT_EQ("InnerStruct", fragmentProcessor.structs[0].name);
+	ASSERT_EQ(2U, fragmentProcessor.structs[0].members.size());
+
+	EXPECT_EQ("firstValue", fragmentProcessor.structs[0].members[0].name);
+	EXPECT_EQ(Type::Vec4, fragmentProcessor.structs[0].members[0].type);
+	EXPECT_EQ(unknown, fragmentProcessor.structs[0].members[0].structIndex);
+	EXPECT_TRUE(fragmentProcessor.structs[0].members[0].arrayElements.empty());
+	EXPECT_FALSE(fragmentProcessor.structs[0].members[0].rowMajor);
+
+	EXPECT_EQ("secondValue", fragmentProcessor.structs[0].members[1].name);
+	EXPECT_EQ(Type::Vec3, fragmentProcessor.structs[0].members[1].type);
+	EXPECT_EQ(unknown, fragmentProcessor.structs[0].members[1].structIndex);
+	EXPECT_TRUE(fragmentProcessor.structs[0].members[1].arrayElements.empty());
+	EXPECT_FALSE(fragmentProcessor.structs[0].members[1].rowMajor);
+
+	EXPECT_EQ("OuterStruct", fragmentProcessor.structs[1].name);
+	ASSERT_EQ(2U, fragmentProcessor.structs[1].members.size());
+
+	EXPECT_EQ("structValue", fragmentProcessor.structs[1].members[0].name);
+	EXPECT_EQ(Type::Struct, fragmentProcessor.structs[1].members[0].type);
+	EXPECT_EQ(0U, fragmentProcessor.structs[1].members[0].structIndex);
+	EXPECT_TRUE(fragmentProcessor.structs[1].members[0].arrayElements.empty());
+	EXPECT_FALSE(fragmentProcessor.structs[1].members[0].rowMajor);
+
+	EXPECT_EQ("vec4Value", fragmentProcessor.structs[1].members[1].name);
+	EXPECT_EQ(Type::Vec4, fragmentProcessor.structs[1].members[1].type);
+	EXPECT_EQ(unknown, fragmentProcessor.structs[1].members[1].structIndex);
+	EXPECT_TRUE(fragmentProcessor.structs[1].members[1].arrayElements.empty());
+	EXPECT_FALSE(fragmentProcessor.structs[1].members[1].rowMajor);
 }
 
 TEST_F(SpirVProcessorTest, ComputeLocalSize)
@@ -2322,10 +2583,10 @@ TEST_F(SpirVProcessorTest, LinkDifferentType)
 		messages[0].message);
 }
 
-TEST_F(SpirVProcessorTest, LinkDifferentStructType)
+TEST_F(SpirVProcessorTest, LinkDifferentInlineStructType)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = pathStr(inputDir/"LinkDifferentStructType.msl");
+	std::string shaderName = pathStr(inputDir/"LinkDifferentInlineStructType.msl");
 
 	Parser parser;
 	Preprocessor preprocessor;
@@ -2377,6 +2638,64 @@ TEST_F(SpirVProcessorTest, LinkDifferentStructType)
 	EXPECT_FALSE(messages[0].continued);
 	EXPECT_EQ(
 		"linker error: type mismatch when linking input member InValues.value in stage fragment",
+		messages[0].message);
+}
+
+TEST_F(SpirVProcessorTest, LinkDifferentStructType)
+{
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"LinkDifferentStructType.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].value.empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl =
+			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			Compiler::getDefaultResources()));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	Compiler::Program program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
+	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
+
+	SpirVProcessor vertexProcessor;
+	EXPECT_TRUE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, vertexSpirv, Stage::Vertex));
+
+	SpirVProcessor fragmentProcessor;
+	EXPECT_TRUE(fragmentProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, fragmentSpirv, Stage::Fragment));
+
+	EXPECT_TRUE(vertexProcessor.assignOutputs(output));
+	EXPECT_FALSE(fragmentProcessor.linkInputs(output, vertexProcessor));
+
+	const std::vector<Output::Message>& messages = output.getMessages();
+	ASSERT_EQ(1U, messages.size());
+	EXPECT_EQ(Output::Level::Error, messages[0].level);
+	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), shaderName));
+	EXPECT_EQ(41U, messages[0].line);
+	EXPECT_EQ(10U, messages[0].column);
+	EXPECT_FALSE(messages[0].continued);
+	EXPECT_EQ(
+		"linker error: type mismatch when linking input value in stage fragment",
 		messages[0].message);
 }
 
@@ -2492,155 +2811,6 @@ TEST_F(SpirVProcessorTest, LinkStructNotPresent)
 	EXPECT_FALSE(messages[0].continued);
 	EXPECT_EQ("linker error: cannot find output interface block member with name otherValue in "
 		"stage vertex", messages[0].message);
-}
-
-TEST_F(SpirVProcessorTest, LinkStructArray)
-{
-	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = pathStr(inputDir/"LinkStructArray.msl");
-
-	Parser parser;
-	Preprocessor preprocessor;
-	Output output;
-	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
-	EXPECT_TRUE(parser.parse(output));
-
-	ASSERT_EQ(1U, parser.getPipelines().size());
-	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
-	Compiler::Stages stages;
-	bool compiledStage = false;
-	for (unsigned int i = 0; i < stageCount; ++i)
-	{
-		if (pipeline.entryPoints[i].value.empty())
-			continue;
-
-		auto stage = static_cast<Stage>(i);
-		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl =
-			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
-		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
-		compiledStage = true;
-	}
-	EXPECT_TRUE(compiledStage);
-
-	Compiler::Program program;
-	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
-	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
-	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
-
-	SpirVProcessor vertexProcessor;
-	EXPECT_FALSE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
-		pipeline.token->column, vertexSpirv, Stage::Vertex));
-
-	const std::vector<Output::Message>& messages = output.getMessages();
-	ASSERT_EQ(1U, messages.size());
-	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), shaderName));
-	EXPECT_EQ(24U, messages[0].line);
-	EXPECT_EQ(10U, messages[0].column);
-	EXPECT_FALSE(messages[0].continued);
-	EXPECT_EQ("linker error: output interface block InOuts must not be an array",
-		messages[0].message);
-}
-
-TEST_F(SpirVProcessorTest, LinkStructUsedTwice)
-{
-	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = pathStr(inputDir/"LinkStructUsedTwice.msl");
-
-	Parser parser;
-	Preprocessor preprocessor;
-	Output output;
-	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
-	EXPECT_TRUE(parser.parse(output));
-
-	ASSERT_EQ(1U, parser.getPipelines().size());
-	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
-	Compiler::Stages stages;
-	bool compiledStage = false;
-	for (unsigned int i = 0; i < stageCount; ++i)
-	{
-		if (pipeline.entryPoints[i].value.empty())
-			continue;
-
-		auto stage = static_cast<Stage>(i);
-		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl =
-			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
-		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
-		compiledStage = true;
-	}
-	EXPECT_TRUE(compiledStage);
-
-	Compiler::Program program;
-	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
-	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
-	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
-
-	SpirVProcessor vertexProcessor;
-	EXPECT_FALSE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
-		pipeline.token->column, vertexSpirv, Stage::Vertex));
-
-	const std::vector<Output::Message>& messages = output.getMessages();
-	ASSERT_EQ(1U, messages.size());
-	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), shaderName));
-	EXPECT_EQ(25U, messages[0].line);
-	EXPECT_EQ(10U, messages[0].column);
-	EXPECT_FALSE(messages[0].continued);
-	EXPECT_EQ("linker error: struct InOuts is used for multiple inputs and outputs",
-		messages[0].message);
-}
-
-TEST_F(SpirVProcessorTest, StructWithinOutputBlock)
-{
-	boost::filesystem::path inputDir = exeDir/"inputs";
-	std::string shaderName = pathStr(inputDir/"StructWithinOutputBlock.msl");
-
-	Parser parser;
-	Preprocessor preprocessor;
-	Output output;
-	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
-	EXPECT_TRUE(parser.parse(output));
-
-	ASSERT_EQ(1U, parser.getPipelines().size());
-	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
-	Compiler::Stages stages;
-	bool compiledStage = false;
-	for (unsigned int i = 0; i < stageCount; ++i)
-	{
-		if (pipeline.entryPoints[i].value.empty())
-			continue;
-
-		auto stage = static_cast<Stage>(i);
-		std::vector<Parser::LineMapping> lineMappings;
-		std::string glsl =
-			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
-		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
-		compiledStage = true;
-	}
-	EXPECT_TRUE(compiledStage);
-
-	Compiler::Program program;
-	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
-	Compiler::SpirV vertexSpirv = Compiler::assemble(output, program, Stage::Vertex, pipeline);
-	Compiler::SpirV fragmentSpirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
-
-	SpirVProcessor vertexProcessor;
-	EXPECT_FALSE(vertexProcessor.extract(output, pipeline.token->fileName, pipeline.token->line,
-		pipeline.token->column, vertexSpirv, Stage::Vertex));
-
-	const std::vector<Output::Message>& messages = output.getMessages();
-	ASSERT_EQ(1U, messages.size());
-	EXPECT_EQ(Output::Level::Error, messages[0].level);
-	EXPECT_TRUE(boost::algorithm::ends_with(pathStr(messages[0].file), shaderName));
-	EXPECT_EQ(30U, messages[0].line);
-	EXPECT_EQ(10U, messages[0].column);
-	EXPECT_FALSE(messages[0].continued);
-	EXPECT_EQ("linker error: output member OutValues.value is a struct", messages[0].message);
 }
 
 TEST_F(SpirVProcessorTest, MultipleLinkMembers)

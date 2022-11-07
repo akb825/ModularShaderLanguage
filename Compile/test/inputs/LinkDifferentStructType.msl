@@ -1,12 +1,28 @@
-[[vertex]] out OutValues
+[[vertex]] struct InnerStruct
 {
 	vec4 value;
 };
 
-[[fragment]] in InValues
+[[vertex]] struct OuterStruct
+{
+	vec4 vec4Value;
+	InnerStruct structValue;
+};
+
+[[fragment]] struct InnerStruct
 {
 	vec3 value;
 };
+
+[[fragment]] struct OuterStruct
+{
+	vec4 vec4Value;
+	InnerStruct structValue;
+};
+
+[[vertex]] out OuterStruct value;
+
+[[fragment]] in OuterStruct value;
 
 [[vertex]]
 void vertShader()

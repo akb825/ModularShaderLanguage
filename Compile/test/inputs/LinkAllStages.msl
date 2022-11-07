@@ -11,29 +11,17 @@ struct VertInfo
 	vec4[2] colors;
 };
 
-[[vertex]] out VertInfo vertInfo;
+[[vertex]] out VertInfo vtcVertInfo;
 
 [[vertex]] out vec4[4] vertShadowPos;
 [[vertex]] out float vertFogVal;
 
-[[tessellation_control]] in InVertInfo
-{
-	vec3 position;
-	vec3 normal;
-	vec2[3] texCoords;
-	vec4[2] colors;
-} inVertInfo[];
+[[tessellation_control]] in VertInfo vtcVertInfo[];
 
 [[tessellation_control]] in vec4[][4] vertShadowPos;
 [[tessellation_control]] in float[] vertFogVal;
 
-[[tessellation_control]] out OutVertInfo
-{
-	vec3 position;
-	vec3 normal;
-	vec2[3] texCoords;
-	vec4[2] colors;
-} outVertInfo[];
+[[tessellation_control]] out VertInfo tceVertInfo[];
 
 [[tessellation_control]] out patch mat4 basis;
 
@@ -42,50 +30,26 @@ struct VertInfo
 
 [[tessellation_control]] layout(vertices = 4) out;
 
-[[tessellation_evaluation]] in InVertInfo
-{
-	vec3 position;
-	vec3 normal;
-	vec2[3] texCoords;
-	vec4[2] colors;
-} inVertInfo[];
+[[tessellation_evaluation]] in VertInfo tceVertInfo[];
 
 [[tessellation_evaluation]] in patch mat4 basis;
 
 [[tessellation_evaluation]] in vec4[][4] tessControlShadowPos;
 [[tessellation_evaluation]] in float[] tessControlFogVal;
 
-[[tessellation_evaluation]] out OutVertInfo
-{
-	vec3 position;
-	vec3 normal;
-	vec2[3] texCoords;
-	vec4[2] colors;
-};
+[[tessellation_evaluation]] out VertInfo tegVertInfo;
 
 [[tessellation_evaluation]] out vec4[4] tessEvalShadowPos;
 [[tessellation_evaluation]] out float tessEvalFogVal;
 
 [[tessellation_evaluation]] layout(quads) in;
 
-[[geometry]] in InVertInfo
-{
-	vec3 position;
-	vec3 normal;
-	vec2[3] texCoords;
-	vec4[2] colors;
-} inVertInfo[];
+[[geometry]] in VertInfo tegVertInfo[];
 
 [[geometry]] in vec4[][4] tessEvalShadowPos;
 [[geometry]] in float[] tessEvalFogVal;
 
-[[geometry]] out OutVertInfo
-{
-	vec3 position;
-	vec3 normal;
-	vec2[3] texCoords;
-	vec4[2] colors;
-};
+[[geometry]] out VertInfo gfVertInfo;
 
 [[geometry]] out vec4[4] geomShadowPos;
 [[geometry]] out float geomFogVal;
@@ -93,7 +57,7 @@ struct VertInfo
 [[geometry]] layout(triangles) in;
 [[geometry]] layout(triangle_strip, max_vertices = 9) out;
 
-[[fragment]] in VertInfo inputs;
+[[fragment]] in VertInfo gfVertInfo;
 
 [[fragment]] in vec4[4] geomShadowPos;
 [[fragment]] in float geomFogVal;

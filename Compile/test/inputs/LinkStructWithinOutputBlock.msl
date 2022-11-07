@@ -1,16 +1,19 @@
 struct OutputStruct
 {
-	vec4 value;
+	vec4 firstValue;
+	vec3 secondValue;
 };
 
 [[vertex]] out OutValues
 {
-	OutputStruct value;
+	OutputStruct structValue;
+	vec4 vec4Value;
 };
 
 [[fragment]] in InValues
 {
-	OutputStruct value;
+	OutputStruct structValue;
+	vec4 vec4Value;
 };
 
 [[vertex]]

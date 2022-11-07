@@ -1,12 +1,12 @@
-struct InOuts
+[[vertex]] out OutValues
 {
 	vec4 value;
 };
 
-[[vertex]] out InOuts output1;
-[[vertex]] out InOuts output2;
-
-[[fragment]] in InOuts inputs;
+[[fragment]] in InValues
+{
+	vec3 value;
+};
 
 [[vertex]]
 void vertShader()

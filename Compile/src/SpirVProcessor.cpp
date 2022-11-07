@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Aaron Barany
+ * Copyright 2016-2022 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,11 +31,11 @@ namespace msl
 namespace
 {
 
-static const unsigned int minVersion = 0x00010000;
-static const unsigned int firstInstruction = 5;
-static const unsigned int unknownLength = (unsigned int)-1;
+const unsigned int minVersion = 0x00010000;
+const unsigned int firstInstruction = 5;
+const unsigned int unknownLength = (unsigned int)-1;
 
-static const char* stageNames[] =
+const char* stageNames[] =
 {
 	"vertex",
 	"tessellation_control",
@@ -47,7 +47,7 @@ static const char* stageNames[] =
 static_assert(sizeof(stageNames)/sizeof(*stageNames) == stageCount,
 	"stage name array is out of sync with enum");
 
-static std::uint32_t typeSizes[] =
+std::uint32_t typeSizes[] =
 {
 	// Scalars and vectors
 	static_cast<std::uint32_t>(sizeof(float)),    // Float
@@ -1266,9 +1266,10 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 
 		inputOutput.type = getType(arrayElements, inputOutput.structIndex, processor, data, typeId);
 		inputOutput.arrayElements = makeArrayLengths(arrayElements);
+		inputOutput.block = data.blocks.find(underlyingTypeId) != data.blocks.end();
 		inputOutput.patch = data.patchVars.find(inputOutputIndices.first) != data.patchVars.end();
 		inputOutput.autoAssigned = true;
-		if (inputOutput.type == Type::Struct)
+		if (inputOutput.block)
 		{
 			const Struct& structType = processor.structs[inputOutput.structIndex];
 
@@ -1281,19 +1282,6 @@ bool addInputsOutputs(Output& output, std::vector<SpirVProcessor::InputOutput>& 
 				return false;
 			}
 			data.inputOutputStructs.insert(underlyingTypeId);
-
-			// Make sure there's no recursive structs.
-			for (const StructMember& member : structType.members)
-			{
-				if (member.type == Type::Struct)
-				{
-					output.addMessage(Output::Level::Error, processor.fileName, processor.line,
-						processor.column, false,
-						"linker error: " + ioName + " member " + structType.name + "." +
-						member.name + " is a struct");
-					return false;
-				}
-			}
 
 			// Don't allow arbitrary arrays of input/output blocks.
 			bool shouldBeArray = !inputOutput.patch && (&inputOutputs == &processor.inputs ?
@@ -1423,8 +1411,9 @@ bool addComponents(std::vector<std::uint8_t>& locations, std::size_t curLocation
 }
 
 bool fillLocation(std::vector<std::uint8_t>& locations, std::size_t& curLocation,
-	std::uint32_t component, Type type, const std::vector<std::uint32_t>& arrayElements,
-	bool removeFirstArray)
+	std::uint32_t component, Type type, std::uint32_t structIndex,
+	const std::vector<std::uint32_t>& arrayElements, bool removeFirstArray,
+	const std::vector<Struct>& structs)
 {
 	assert(component < 4);
 
@@ -1552,8 +1541,10 @@ bool fillLocation(std::vector<std::uint8_t>& locations, std::size_t& curLocation
 			for (std::uint32_t i = 0; i < elementCount; ++i, ++curLocation)
 			{
 				if (!addComponents(locations, curLocation,
-					(1 << component) | (2 << component) | (4 << component)))
+						(1 << component) | (2 << component) | (4 << component)))
+				{
 					return false;
+				}
 			}
 			break;
 
@@ -1614,6 +1605,25 @@ bool fillLocation(std::vector<std::uint8_t>& locations, std::size_t& curLocation
 			}
 			break;
 
+		case Type::Struct:
+		{
+			if (component != 0)
+				return false;
+			for (std::uint32_t i = 0; i < elementCount; ++i)
+			{
+				for (const StructMember& member : structs[structIndex].members)
+				{
+					if (!fillLocation(locations, curLocation, component, member.type,
+							member.structIndex, makeArrayLengths(member.arrayElements), false,
+							structs))
+					{
+						return false;
+					}
+				}
+			}
+			break;
+		}
+
 		default:
 			assert(false);
 			return false;
@@ -1623,7 +1633,8 @@ bool fillLocation(std::vector<std::uint8_t>& locations, std::size_t& curLocation
 }
 
 bool assignInputsOutputs(Output& output, const SpirVProcessor& processor,
-	std::vector<SpirVProcessor::InputOutput>& inputsOutputs, bool removeFirstArray)
+	std::vector<SpirVProcessor::InputOutput>& inputsOutputs, bool removeFirstArray,
+	const std::vector<Struct>& structs)
 {
 	std::string ioName = &inputsOutputs == &processor.inputs ? "input" : "output";
 	std::size_t curLocation = 0;
@@ -1633,7 +1644,7 @@ bool assignInputsOutputs(Output& output, const SpirVProcessor& processor,
 
 	for (SpirVProcessor::InputOutput& io : inputsOutputs)
 	{
-		if (io.type == Type::Struct)
+		if (io.block)
 		{
 			const Struct& ioStruct = processor.structs[io.structIndex];
 			if (io.memberLocations.empty() || io.memberLocations[0].first == unknown)
@@ -1654,6 +1665,7 @@ bool assignInputsOutputs(Output& output, const SpirVProcessor& processor,
 
 			for (std::size_t i = 0; i < ioStruct.members.size(); ++i)
 			{
+				const StructMember& member = ioStruct.members[i];
 				std::uint32_t component = 0;
 				if (io.memberLocations[i].first == unknown)
 				{
@@ -1666,8 +1678,9 @@ bool assignInputsOutputs(Output& output, const SpirVProcessor& processor,
 					component = io.memberLocations[i].second;
 				}
 
-				if (!fillLocation(locations, curLocation, component, ioStruct.members[i].type,
-					makeArrayLengths(ioStruct.members[i].arrayElements), false))
+				if (!fillLocation(locations, curLocation, component, member.type,
+						member.structIndex, makeArrayLengths(member.arrayElements), false,
+						structs))
 				{
 					output.addMessage(Output::Level::Error, processor.fileName, processor.line,
 						processor.column, false,
@@ -1693,8 +1706,8 @@ bool assignInputsOutputs(Output& output, const SpirVProcessor& processor,
 				hasExplicitLocations = true;
 			}
 
-			if (!fillLocation(locations, curLocation, component, io.type, io.arrayElements,
-				removeFirstArray))
+			if (!fillLocation(locations, curLocation, component, io.type, io.structIndex,
+					io.arrayElements, removeFirstArray, structs))
 			{
 				output.addMessage(Output::Level::Error, processor.fileName, processor.line,
 					processor.column, false,
@@ -1724,7 +1737,7 @@ bool findLinkedMember(Output& output, std::uint32_t& outputIndex, std::uint32_t&
 
 	for (std::uint32_t i = 0; i < processor.outputs.size(); ++i)
 	{
-		if (processor.outputs[i] .type != Type::Struct)
+		if (!processor.outputs[i].block)
 			continue;
 
 		const Struct& outputStruct = processor.structs[processor.outputs[i].structIndex];
@@ -1776,6 +1789,51 @@ bool inputOutputArraysEqual(const std::vector<std::uint32_t>& outputArray, bool 
 	{
 		if (outputArray[i] != inputArray[i - removeFirstOutput + removeFirstInput])
 			return false;
+	}
+
+	return true;
+}
+
+bool inputOutputArraysEqual(const std::vector<ArrayInfo>& outputArray,
+	const std::vector<ArrayInfo>& inputArray)
+{
+	if (outputArray.size() != inputArray.size())
+		return false;
+
+	for (std::size_t i = 0; i < outputArray.size(); ++i)
+	{
+		if (outputArray[i].length != inputArray[i].length ||
+			outputArray[i].stride != inputArray[i].stride)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+bool inputOutputStructsEqual(const Struct& outputStruct,
+	const std::vector<Struct>& outputStructTypes, const Struct& inputStruct,
+	const std::vector<Struct>& inputStructTypes)
+{
+	if (outputStruct.members.size() != inputStruct.members.size())
+		return false;
+
+	for (std::size_t i = 0; i < outputStruct.members.size(); ++i)
+	{
+		const StructMember& outputMember = outputStruct.members[i];
+		const StructMember& inputMember = inputStruct.members[i];
+		if (outputMember.offset != inputMember.offset ||
+			outputMember.size != inputMember.size ||
+			outputMember.type != inputMember.type ||
+			!inputOutputArraysEqual(outputMember.arrayElements, inputMember.arrayElements) ||
+			outputMember.rowMajor != inputMember.rowMajor ||
+			(outputMember.type == Type::Struct && !inputOutputStructsEqual(
+				outputStructTypes[outputMember.structIndex], outputStructTypes,
+				inputStructTypes[inputMember.structIndex], inputStructTypes)))
+		{
+			return false;
+		}
 	}
 
 	return true;
@@ -2351,7 +2409,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 	encounteredNames.clear();
 	for (const InputOutput& stageInput : inputs)
 	{
-		if (stageInput.type == Type::Struct)
+		if (stageInput.block)
 			continue;
 
 		if (!encounteredNames.insert(stageInput.name).second)
@@ -2366,7 +2424,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 	encounteredNames.clear();
 	for (const InputOutput& stageOutput : outputs)
 	{
-		if (stageOutput.type == Type::Struct)
+		if (stageOutput.block)
 			continue;
 
 		if (!encounteredNames.insert(stageOutput.name).second)
@@ -2463,12 +2521,12 @@ bool SpirVProcessor::uniformsCompatible(Output& output, const SpirVProcessor& ot
 
 bool SpirVProcessor::assignInputs(Output& output)
 {
-	return assignInputsOutputs(output, *this, inputs, inputIsArray(stage));
+	return assignInputsOutputs(output, *this, inputs, inputIsArray(stage), structs);
 }
 
 bool SpirVProcessor::assignOutputs(Output& output)
 {
-	return assignInputsOutputs(output, *this, outputs, outputIsArray(stage));
+	return assignInputsOutputs(output, *this, outputs, outputIsArray(stage), structs);
 }
 
 bool SpirVProcessor::linkInputs(Output& output, const SpirVProcessor& prevStage)
@@ -2478,7 +2536,7 @@ bool SpirVProcessor::linkInputs(Output& output, const SpirVProcessor& prevStage)
 	bool outputArrays = outputIsArray(prevStage.stage);
 	for (InputOutput& input : inputs)
 	{
-		if (input.type == Type::Struct)
+		if (input.block)
 		{
 			Struct& inputStruct = structs[input.structIndex];
 			assert(inputStruct.members.size() == input.memberLocations.size());
@@ -2489,7 +2547,7 @@ bool SpirVProcessor::linkInputs(Output& output, const SpirVProcessor& prevStage)
 
 				std::uint32_t otherOutIndex, otherMemberIndex;
 				if (!findLinkedMember(output, otherOutIndex, otherMemberIndex, prevStage,
-					inputStruct.members[i].name))
+						inputStruct.members[i].name))
 				{
 					success = false;
 					continue;
@@ -2500,8 +2558,8 @@ bool SpirVProcessor::linkInputs(Output& output, const SpirVProcessor& prevStage)
 				if (inputStruct.members[i].type != outputStruct.members[otherMemberIndex].type ||
 					input.patch != prevStage.outputs[otherOutIndex].patch ||
 					!inputOutputArraysEqual(
-						makeArrayLengths(outputStruct.members[otherMemberIndex].arrayElements),
-						false, makeArrayLengths(inputStruct.members[i].arrayElements), false))
+						outputStruct.members[otherMemberIndex].arrayElements,
+						inputStruct.members[i].arrayElements))
 				{
 					output.addMessage(Output::Level::Error, fileName, line, column, false,
 						"linker error: type mismatch when linking input member " +
@@ -2529,7 +2587,10 @@ bool SpirVProcessor::linkInputs(Output& output, const SpirVProcessor& prevStage)
 				found = true;
 				if (input.type != out.type || input.patch != out.patch ||
 					!inputOutputArraysEqual(out.arrayElements, outputArrays && !out.patch,
-					input.arrayElements, inputArrays && !input.patch))
+						input.arrayElements, inputArrays && !input.patch) ||
+					(input.type == Type::Struct && !inputOutputStructsEqual(
+						prevStage.structs[out.structIndex], prevStage.structs,
+						structs[input.structIndex], structs)))
 				{
 					output.addMessage(Output::Level::Error, fileName, line, column, false,
 						"linker error: type mismatch when linking input " + input.name +
@@ -2674,7 +2735,7 @@ std::vector<std::uint32_t> SpirVProcessor::process(Strip strip, bool dummyBindin
 					if (!inputs[j].autoAssigned)
 						continue;
 
-					if (inputs[j].type == Type::Struct)
+					if (inputs[j].block)
 					{
 						std::uint32_t typeId = structIds[inputs[j].structIndex];
 						auto foundMember = memberLocations.find(typeId);
@@ -2707,7 +2768,7 @@ std::vector<std::uint32_t> SpirVProcessor::process(Strip strip, bool dummyBindin
 					if (!outputs[j].autoAssigned)
 						continue;
 
-					if (outputs[j].type == Type::Struct)
+					if (outputs[j].block)
 					{
 						std::uint32_t typeId = structIds[outputs[j].structIndex];
 						auto foundMember = memberLocations.find(typeId);

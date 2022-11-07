@@ -49,6 +49,7 @@ public:
 		std::uint32_t structIndex;
 		std::vector<std::uint32_t> arrayElements;
 		std::vector<std::pair<std::uint32_t, std::uint32_t>> memberLocations;
+		bool block;
 		bool patch;
 		bool autoAssigned;
 		std::uint32_t location;
