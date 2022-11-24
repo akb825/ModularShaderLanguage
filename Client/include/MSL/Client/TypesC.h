@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Aaron Barany
+ * Copyright 2016-2022 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ extern "C"
 /**
  * @brief Constant for no known value.
  */
-#define MSL_UNKNOWN (uint32_t)-1
+#define MSL_UNKNOWN ((uint32_t)-1)
 
 /**
  * @brief Constant for no known float value.
