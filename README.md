@@ -1,5 +1,7 @@
 # Introduction
 
+[![ModularShaderLanguage](https://github.com/akb825/ModularShaderLanguage/actions/workflows/main.yml/badge.svg)](https://github.com/akb825/ModularShaderLanguage/actions/workflows/main.yml)
+
 The Modular Shader Language (MSL) is a pre-compiled shader language with multiple targets. It is effectively a wrapper around GLSL and relies on external tools to handle the main work of the compilation. The primary goals are:
 
 * Provide an environment more similar to other compiled languages, such as access to a preprocessor and compile-time errors that point to the file.
@@ -8,8 +10,6 @@ The Modular Shader Language (MSL) is a pre-compiled shader language with multipl
 * Allows all stages of the pipeline to be specified in the same source. This gives more flexibility in how you organize your source.
 * Allows for render states and sampler states to be declared in the shader. This gives more flexibility in client applications by allowing these to be set in the shader without hard-coding them in the application.
 * Pipeline is linked when compiling the shader modules, allowing for earlier checks and easier loading of shaders in the final application.
-
-[![Build Status](https://dev.azure.com/akb825/DeepSea/_apis/build/status/akb825.ModularShaderLanguage?branchName=master)](https://dev.azure.com/akb825/DeepSea/_build/latest?definitionId=2&branchName=master)
 
 # Language and compilation overview
 
