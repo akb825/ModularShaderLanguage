@@ -10,7 +10,7 @@
 // generated, otherwise it may not be compatible.
 static_assert(FLATBUFFERS_VERSION_MAJOR == 23 &&
               FLATBUFFERS_VERSION_MINOR == 1 &&
-              FLATBUFFERS_VERSION_REVISION == 4,
+              FLATBUFFERS_VERSION_REVISION == 21,
              "Non-compatible flatbuffers version included");
 
 namespace mslb {
@@ -101,7 +101,7 @@ inline const char * const *EnumNamesStage() {
 }
 
 inline const char *EnumNameStage(Stage e) {
-  if (flatbuffers::IsOutRange(e, Stage::Vertex, Stage::Compute)) return "";
+  if (::flatbuffers::IsOutRange(e, Stage::Vertex, Stage::Compute)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesStage()[index];
 }
@@ -446,7 +446,7 @@ inline const char * const *EnumNamesType() {
 }
 
 inline const char *EnumNameType(Type e) {
-  if (flatbuffers::IsOutRange(e, Type::Float, Type::Struct)) return "";
+  if (::flatbuffers::IsOutRange(e, Type::Float, Type::Struct)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesType()[index];
 }
@@ -488,7 +488,7 @@ inline const char * const *EnumNamesUniformType() {
 }
 
 inline const char *EnumNameUniformType(UniformType e) {
-  if (flatbuffers::IsOutRange(e, UniformType::PushConstant, UniformType::SubpassInput)) return "";
+  if (::flatbuffers::IsOutRange(e, UniformType::PushConstant, UniformType::SubpassInput)) return "";
   const size_t index = static_cast<size_t>(e);
   return EnumNamesUniformType()[index];
 }
@@ -521,7 +521,7 @@ inline const char * const *EnumNamesBool() {
 }
 
 inline const char *EnumNameBool(Bool e) {
-  if (flatbuffers::IsOutRange(e, Bool::Unset, Bool::True)) return "";
+  if (::flatbuffers::IsOutRange(e, Bool::Unset, Bool::True)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(Bool::Unset);
   return EnumNamesBool()[index];
 }
@@ -557,7 +557,7 @@ inline const char * const *EnumNamesPolygonMode() {
 }
 
 inline const char *EnumNamePolygonMode(PolygonMode e) {
-  if (flatbuffers::IsOutRange(e, PolygonMode::Unset, PolygonMode::Point)) return "";
+  if (::flatbuffers::IsOutRange(e, PolygonMode::Unset, PolygonMode::Point)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(PolygonMode::Unset);
   return EnumNamesPolygonMode()[index];
 }
@@ -596,7 +596,7 @@ inline const char * const *EnumNamesCullMode() {
 }
 
 inline const char *EnumNameCullMode(CullMode e) {
-  if (flatbuffers::IsOutRange(e, CullMode::Unset, CullMode::FrontAndBack)) return "";
+  if (::flatbuffers::IsOutRange(e, CullMode::Unset, CullMode::FrontAndBack)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(CullMode::Unset);
   return EnumNamesCullMode()[index];
 }
@@ -629,7 +629,7 @@ inline const char * const *EnumNamesFrontFace() {
 }
 
 inline const char *EnumNameFrontFace(FrontFace e) {
-  if (flatbuffers::IsOutRange(e, FrontFace::Unset, FrontFace::Clockwise)) return "";
+  if (::flatbuffers::IsOutRange(e, FrontFace::Unset, FrontFace::Clockwise)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(FrontFace::Unset);
   return EnumNamesFrontFace()[index];
 }
@@ -680,7 +680,7 @@ inline const char * const *EnumNamesStencilOp() {
 }
 
 inline const char *EnumNameStencilOp(StencilOp e) {
-  if (flatbuffers::IsOutRange(e, StencilOp::Unset, StencilOp::DecrementAndWrap)) return "";
+  if (::flatbuffers::IsOutRange(e, StencilOp::Unset, StencilOp::DecrementAndWrap)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(StencilOp::Unset);
   return EnumNamesStencilOp()[index];
 }
@@ -731,7 +731,7 @@ inline const char * const *EnumNamesCompareOp() {
 }
 
 inline const char *EnumNameCompareOp(CompareOp e) {
-  if (flatbuffers::IsOutRange(e, CompareOp::Unset, CompareOp::Always)) return "";
+  if (::flatbuffers::IsOutRange(e, CompareOp::Unset, CompareOp::Always)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(CompareOp::Unset);
   return EnumNamesCompareOp()[index];
 }
@@ -815,7 +815,7 @@ inline const char * const *EnumNamesBlendFactor() {
 }
 
 inline const char *EnumNameBlendFactor(BlendFactor e) {
-  if (flatbuffers::IsOutRange(e, BlendFactor::Unset, BlendFactor::OneMinusSrc1Alpha)) return "";
+  if (::flatbuffers::IsOutRange(e, BlendFactor::Unset, BlendFactor::OneMinusSrc1Alpha)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(BlendFactor::Unset);
   return EnumNamesBlendFactor()[index];
 }
@@ -857,7 +857,7 @@ inline const char * const *EnumNamesBlendOp() {
 }
 
 inline const char *EnumNameBlendOp(BlendOp e) {
-  if (flatbuffers::IsOutRange(e, BlendOp::Unset, BlendOp::Max)) return "";
+  if (::flatbuffers::IsOutRange(e, BlendOp::Unset, BlendOp::Max)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(BlendOp::Unset);
   return EnumNamesBlendOp()[index];
 }
@@ -903,7 +903,7 @@ inline const char * const *EnumNamesColorMask() {
 }
 
 inline const char *EnumNameColorMask(ColorMask e) {
-  if (flatbuffers::IsOutRange(e, ColorMask::Unset, ColorMask::Alpha)) return "";
+  if (::flatbuffers::IsOutRange(e, ColorMask::Unset, ColorMask::Alpha)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(ColorMask::Unset);
   return EnumNamesColorMask()[index];
 }
@@ -978,7 +978,7 @@ inline const char * const *EnumNamesLogicOp() {
 }
 
 inline const char *EnumNameLogicOp(LogicOp e) {
-  if (flatbuffers::IsOutRange(e, LogicOp::Unset, LogicOp::Set)) return "";
+  if (::flatbuffers::IsOutRange(e, LogicOp::Unset, LogicOp::Set)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(LogicOp::Unset);
   return EnumNamesLogicOp()[index];
 }
@@ -1011,7 +1011,7 @@ inline const char * const *EnumNamesFilter() {
 }
 
 inline const char *EnumNameFilter(Filter e) {
-  if (flatbuffers::IsOutRange(e, Filter::Unset, Filter::Linear)) return "";
+  if (::flatbuffers::IsOutRange(e, Filter::Unset, Filter::Linear)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(Filter::Unset);
   return EnumNamesFilter()[index];
 }
@@ -1050,7 +1050,7 @@ inline const char * const *EnumNamesMipFilter() {
 }
 
 inline const char *EnumNameMipFilter(MipFilter e) {
-  if (flatbuffers::IsOutRange(e, MipFilter::Unset, MipFilter::Anisotropic)) return "";
+  if (::flatbuffers::IsOutRange(e, MipFilter::Unset, MipFilter::Anisotropic)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(MipFilter::Unset);
   return EnumNamesMipFilter()[index];
 }
@@ -1092,7 +1092,7 @@ inline const char * const *EnumNamesAddressMode() {
 }
 
 inline const char *EnumNameAddressMode(AddressMode e) {
-  if (flatbuffers::IsOutRange(e, AddressMode::Unset, AddressMode::MirrorOnce)) return "";
+  if (::flatbuffers::IsOutRange(e, AddressMode::Unset, AddressMode::MirrorOnce)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(AddressMode::Unset);
   return EnumNamesAddressMode()[index];
 }
@@ -1137,7 +1137,7 @@ inline const char * const *EnumNamesBorderColor() {
 }
 
 inline const char *EnumNameBorderColor(BorderColor e) {
-  if (flatbuffers::IsOutRange(e, BorderColor::Unset, BorderColor::OpaqueIntOne)) return "";
+  if (::flatbuffers::IsOutRange(e, BorderColor::Unset, BorderColor::OpaqueIntOne)) return "";
   const size_t index = static_cast<size_t>(e) - static_cast<size_t>(BorderColor::Unset);
   return EnumNamesBorderColor()[index];
 }
@@ -1172,78 +1172,78 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) RasterizationState FLATBUFFERS_FINAL_CLAS
     (void)padding0__;
   }
   RasterizationState(mslb::Bool _depthClampEnable, mslb::Bool _rasterizerDiscardEnable, mslb::PolygonMode _polygonMode, mslb::CullMode _cullMode, mslb::FrontFace _frontFace, mslb::Bool _depthBiasEnable, float _depthBiasConstantFactor, float _depthBiasClamp, float _depthBiasSlopeFactor, float _lineWidth)
-      : depthClampEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthClampEnable))),
-        rasterizerDiscardEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_rasterizerDiscardEnable))),
-        polygonMode_(flatbuffers::EndianScalar(static_cast<int8_t>(_polygonMode))),
-        cullMode_(flatbuffers::EndianScalar(static_cast<int8_t>(_cullMode))),
-        frontFace_(flatbuffers::EndianScalar(static_cast<int8_t>(_frontFace))),
-        depthBiasEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthBiasEnable))),
+      : depthClampEnable_(::flatbuffers::EndianScalar(static_cast<int8_t>(_depthClampEnable))),
+        rasterizerDiscardEnable_(::flatbuffers::EndianScalar(static_cast<int8_t>(_rasterizerDiscardEnable))),
+        polygonMode_(::flatbuffers::EndianScalar(static_cast<int8_t>(_polygonMode))),
+        cullMode_(::flatbuffers::EndianScalar(static_cast<int8_t>(_cullMode))),
+        frontFace_(::flatbuffers::EndianScalar(static_cast<int8_t>(_frontFace))),
+        depthBiasEnable_(::flatbuffers::EndianScalar(static_cast<int8_t>(_depthBiasEnable))),
         padding0__(0),
-        depthBiasConstantFactor_(flatbuffers::EndianScalar(_depthBiasConstantFactor)),
-        depthBiasClamp_(flatbuffers::EndianScalar(_depthBiasClamp)),
-        depthBiasSlopeFactor_(flatbuffers::EndianScalar(_depthBiasSlopeFactor)),
-        lineWidth_(flatbuffers::EndianScalar(_lineWidth)) {
+        depthBiasConstantFactor_(::flatbuffers::EndianScalar(_depthBiasConstantFactor)),
+        depthBiasClamp_(::flatbuffers::EndianScalar(_depthBiasClamp)),
+        depthBiasSlopeFactor_(::flatbuffers::EndianScalar(_depthBiasSlopeFactor)),
+        lineWidth_(::flatbuffers::EndianScalar(_lineWidth)) {
     (void)padding0__;
   }
   mslb::Bool depthClampEnable() const {
-    return static_cast<mslb::Bool>(flatbuffers::EndianScalar(depthClampEnable_));
+    return static_cast<mslb::Bool>(::flatbuffers::EndianScalar(depthClampEnable_));
   }
   void mutate_depthClampEnable(mslb::Bool _depthClampEnable) {
-    flatbuffers::WriteScalar(&depthClampEnable_, static_cast<int8_t>(_depthClampEnable));
+    ::flatbuffers::WriteScalar(&depthClampEnable_, static_cast<int8_t>(_depthClampEnable));
   }
   mslb::Bool rasterizerDiscardEnable() const {
-    return static_cast<mslb::Bool>(flatbuffers::EndianScalar(rasterizerDiscardEnable_));
+    return static_cast<mslb::Bool>(::flatbuffers::EndianScalar(rasterizerDiscardEnable_));
   }
   void mutate_rasterizerDiscardEnable(mslb::Bool _rasterizerDiscardEnable) {
-    flatbuffers::WriteScalar(&rasterizerDiscardEnable_, static_cast<int8_t>(_rasterizerDiscardEnable));
+    ::flatbuffers::WriteScalar(&rasterizerDiscardEnable_, static_cast<int8_t>(_rasterizerDiscardEnable));
   }
   mslb::PolygonMode polygonMode() const {
-    return static_cast<mslb::PolygonMode>(flatbuffers::EndianScalar(polygonMode_));
+    return static_cast<mslb::PolygonMode>(::flatbuffers::EndianScalar(polygonMode_));
   }
   void mutate_polygonMode(mslb::PolygonMode _polygonMode) {
-    flatbuffers::WriteScalar(&polygonMode_, static_cast<int8_t>(_polygonMode));
+    ::flatbuffers::WriteScalar(&polygonMode_, static_cast<int8_t>(_polygonMode));
   }
   mslb::CullMode cullMode() const {
-    return static_cast<mslb::CullMode>(flatbuffers::EndianScalar(cullMode_));
+    return static_cast<mslb::CullMode>(::flatbuffers::EndianScalar(cullMode_));
   }
   void mutate_cullMode(mslb::CullMode _cullMode) {
-    flatbuffers::WriteScalar(&cullMode_, static_cast<int8_t>(_cullMode));
+    ::flatbuffers::WriteScalar(&cullMode_, static_cast<int8_t>(_cullMode));
   }
   mslb::FrontFace frontFace() const {
-    return static_cast<mslb::FrontFace>(flatbuffers::EndianScalar(frontFace_));
+    return static_cast<mslb::FrontFace>(::flatbuffers::EndianScalar(frontFace_));
   }
   void mutate_frontFace(mslb::FrontFace _frontFace) {
-    flatbuffers::WriteScalar(&frontFace_, static_cast<int8_t>(_frontFace));
+    ::flatbuffers::WriteScalar(&frontFace_, static_cast<int8_t>(_frontFace));
   }
   mslb::Bool depthBiasEnable() const {
-    return static_cast<mslb::Bool>(flatbuffers::EndianScalar(depthBiasEnable_));
+    return static_cast<mslb::Bool>(::flatbuffers::EndianScalar(depthBiasEnable_));
   }
   void mutate_depthBiasEnable(mslb::Bool _depthBiasEnable) {
-    flatbuffers::WriteScalar(&depthBiasEnable_, static_cast<int8_t>(_depthBiasEnable));
+    ::flatbuffers::WriteScalar(&depthBiasEnable_, static_cast<int8_t>(_depthBiasEnable));
   }
   float depthBiasConstantFactor() const {
-    return flatbuffers::EndianScalar(depthBiasConstantFactor_);
+    return ::flatbuffers::EndianScalar(depthBiasConstantFactor_);
   }
   void mutate_depthBiasConstantFactor(float _depthBiasConstantFactor) {
-    flatbuffers::WriteScalar(&depthBiasConstantFactor_, _depthBiasConstantFactor);
+    ::flatbuffers::WriteScalar(&depthBiasConstantFactor_, _depthBiasConstantFactor);
   }
   float depthBiasClamp() const {
-    return flatbuffers::EndianScalar(depthBiasClamp_);
+    return ::flatbuffers::EndianScalar(depthBiasClamp_);
   }
   void mutate_depthBiasClamp(float _depthBiasClamp) {
-    flatbuffers::WriteScalar(&depthBiasClamp_, _depthBiasClamp);
+    ::flatbuffers::WriteScalar(&depthBiasClamp_, _depthBiasClamp);
   }
   float depthBiasSlopeFactor() const {
-    return flatbuffers::EndianScalar(depthBiasSlopeFactor_);
+    return ::flatbuffers::EndianScalar(depthBiasSlopeFactor_);
   }
   void mutate_depthBiasSlopeFactor(float _depthBiasSlopeFactor) {
-    flatbuffers::WriteScalar(&depthBiasSlopeFactor_, _depthBiasSlopeFactor);
+    ::flatbuffers::WriteScalar(&depthBiasSlopeFactor_, _depthBiasSlopeFactor);
   }
   float lineWidth() const {
-    return flatbuffers::EndianScalar(lineWidth_);
+    return ::flatbuffers::EndianScalar(lineWidth_);
   }
   void mutate_lineWidth(float _lineWidth) {
-    flatbuffers::WriteScalar(&lineWidth_, _lineWidth);
+    ::flatbuffers::WriteScalar(&lineWidth_, _lineWidth);
   }
 };
 FLATBUFFERS_STRUCT_END(RasterizationState, 24);
@@ -1273,47 +1273,47 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) MultisampleState FLATBUFFERS_FINAL_CLASS 
     (void)padding2__;
   }
   MultisampleState(mslb::Bool _sampleShadingEnable, float _minSampleShading, uint32_t _sampleMask, mslb::Bool _alphaToCoverageEnable, mslb::Bool _alphaToOneEnable)
-      : sampleShadingEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_sampleShadingEnable))),
+      : sampleShadingEnable_(::flatbuffers::EndianScalar(static_cast<int8_t>(_sampleShadingEnable))),
         padding0__(0),
         padding1__(0),
-        minSampleShading_(flatbuffers::EndianScalar(_minSampleShading)),
-        sampleMask_(flatbuffers::EndianScalar(_sampleMask)),
-        alphaToCoverageEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_alphaToCoverageEnable))),
-        alphaToOneEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_alphaToOneEnable))),
+        minSampleShading_(::flatbuffers::EndianScalar(_minSampleShading)),
+        sampleMask_(::flatbuffers::EndianScalar(_sampleMask)),
+        alphaToCoverageEnable_(::flatbuffers::EndianScalar(static_cast<int8_t>(_alphaToCoverageEnable))),
+        alphaToOneEnable_(::flatbuffers::EndianScalar(static_cast<int8_t>(_alphaToOneEnable))),
         padding2__(0) {
     (void)padding0__;
     (void)padding1__;
     (void)padding2__;
   }
   mslb::Bool sampleShadingEnable() const {
-    return static_cast<mslb::Bool>(flatbuffers::EndianScalar(sampleShadingEnable_));
+    return static_cast<mslb::Bool>(::flatbuffers::EndianScalar(sampleShadingEnable_));
   }
   void mutate_sampleShadingEnable(mslb::Bool _sampleShadingEnable) {
-    flatbuffers::WriteScalar(&sampleShadingEnable_, static_cast<int8_t>(_sampleShadingEnable));
+    ::flatbuffers::WriteScalar(&sampleShadingEnable_, static_cast<int8_t>(_sampleShadingEnable));
   }
   float minSampleShading() const {
-    return flatbuffers::EndianScalar(minSampleShading_);
+    return ::flatbuffers::EndianScalar(minSampleShading_);
   }
   void mutate_minSampleShading(float _minSampleShading) {
-    flatbuffers::WriteScalar(&minSampleShading_, _minSampleShading);
+    ::flatbuffers::WriteScalar(&minSampleShading_, _minSampleShading);
   }
   uint32_t sampleMask() const {
-    return flatbuffers::EndianScalar(sampleMask_);
+    return ::flatbuffers::EndianScalar(sampleMask_);
   }
   void mutate_sampleMask(uint32_t _sampleMask) {
-    flatbuffers::WriteScalar(&sampleMask_, _sampleMask);
+    ::flatbuffers::WriteScalar(&sampleMask_, _sampleMask);
   }
   mslb::Bool alphaToCoverageEnable() const {
-    return static_cast<mslb::Bool>(flatbuffers::EndianScalar(alphaToCoverageEnable_));
+    return static_cast<mslb::Bool>(::flatbuffers::EndianScalar(alphaToCoverageEnable_));
   }
   void mutate_alphaToCoverageEnable(mslb::Bool _alphaToCoverageEnable) {
-    flatbuffers::WriteScalar(&alphaToCoverageEnable_, static_cast<int8_t>(_alphaToCoverageEnable));
+    ::flatbuffers::WriteScalar(&alphaToCoverageEnable_, static_cast<int8_t>(_alphaToCoverageEnable));
   }
   mslb::Bool alphaToOneEnable() const {
-    return static_cast<mslb::Bool>(flatbuffers::EndianScalar(alphaToOneEnable_));
+    return static_cast<mslb::Bool>(::flatbuffers::EndianScalar(alphaToOneEnable_));
   }
   void mutate_alphaToOneEnable(mslb::Bool _alphaToOneEnable) {
-    flatbuffers::WriteScalar(&alphaToOneEnable_, static_cast<int8_t>(_alphaToOneEnable));
+    ::flatbuffers::WriteScalar(&alphaToOneEnable_, static_cast<int8_t>(_alphaToOneEnable));
   }
 };
 FLATBUFFERS_STRUCT_END(MultisampleState, 16);
@@ -1339,55 +1339,55 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) StencilOpState FLATBUFFERS_FINAL_CLASS {
         reference_(0) {
   }
   StencilOpState(mslb::StencilOp _failOp, mslb::StencilOp _passOp, mslb::StencilOp _depthFailOp, mslb::CompareOp _compareOp, uint32_t _compareMask, uint32_t _writeMask, uint32_t _reference)
-      : failOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_failOp))),
-        passOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_passOp))),
-        depthFailOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthFailOp))),
-        compareOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_compareOp))),
-        compareMask_(flatbuffers::EndianScalar(_compareMask)),
-        writeMask_(flatbuffers::EndianScalar(_writeMask)),
-        reference_(flatbuffers::EndianScalar(_reference)) {
+      : failOp_(::flatbuffers::EndianScalar(static_cast<int8_t>(_failOp))),
+        passOp_(::flatbuffers::EndianScalar(static_cast<int8_t>(_passOp))),
+        depthFailOp_(::flatbuffers::EndianScalar(static_cast<int8_t>(_depthFailOp))),
+        compareOp_(::flatbuffers::EndianScalar(static_cast<int8_t>(_compareOp))),
+        compareMask_(::flatbuffers::EndianScalar(_compareMask)),
+        writeMask_(::flatbuffers::EndianScalar(_writeMask)),
+        reference_(::flatbuffers::EndianScalar(_reference)) {
   }
   mslb::StencilOp failOp() const {
-    return static_cast<mslb::StencilOp>(flatbuffers::EndianScalar(failOp_));
+    return static_cast<mslb::StencilOp>(::flatbuffers::EndianScalar(failOp_));
   }
   void mutate_failOp(mslb::StencilOp _failOp) {
-    flatbuffers::WriteScalar(&failOp_, static_cast<int8_t>(_failOp));
+    ::flatbuffers::WriteScalar(&failOp_, static_cast<int8_t>(_failOp));
   }
   mslb::StencilOp passOp() const {
-    return static_cast<mslb::StencilOp>(flatbuffers::EndianScalar(passOp_));
+    return static_cast<mslb::StencilOp>(::flatbuffers::EndianScalar(passOp_));
   }
   void mutate_passOp(mslb::StencilOp _passOp) {
-    flatbuffers::WriteScalar(&passOp_, static_cast<int8_t>(_passOp));
+    ::flatbuffers::WriteScalar(&passOp_, static_cast<int8_t>(_passOp));
   }
   mslb::StencilOp depthFailOp() const {
-    return static_cast<mslb::StencilOp>(flatbuffers::EndianScalar(depthFailOp_));
+    return static_cast<mslb::StencilOp>(::flatbuffers::EndianScalar(depthFailOp_));
   }
   void mutate_depthFailOp(mslb::StencilOp _depthFailOp) {
-    flatbuffers::WriteScalar(&depthFailOp_, static_cast<int8_t>(_depthFailOp));
+    ::flatbuffers::WriteScalar(&depthFailOp_, static_cast<int8_t>(_depthFailOp));
   }
   mslb::CompareOp compareOp() const {
-    return static_cast<mslb::CompareOp>(flatbuffers::EndianScalar(compareOp_));
+    return static_cast<mslb::CompareOp>(::flatbuffers::EndianScalar(compareOp_));
   }
   void mutate_compareOp(mslb::CompareOp _compareOp) {
-    flatbuffers::WriteScalar(&compareOp_, static_cast<int8_t>(_compareOp));
+    ::flatbuffers::WriteScalar(&compareOp_, static_cast<int8_t>(_compareOp));
   }
   uint32_t compareMask() const {
-    return flatbuffers::EndianScalar(compareMask_);
+    return ::flatbuffers::EndianScalar(compareMask_);
   }
   void mutate_compareMask(uint32_t _compareMask) {
-    flatbuffers::WriteScalar(&compareMask_, _compareMask);
+    ::flatbuffers::WriteScalar(&compareMask_, _compareMask);
   }
   uint32_t writeMask() const {
-    return flatbuffers::EndianScalar(writeMask_);
+    return ::flatbuffers::EndianScalar(writeMask_);
   }
   void mutate_writeMask(uint32_t _writeMask) {
-    flatbuffers::WriteScalar(&writeMask_, _writeMask);
+    ::flatbuffers::WriteScalar(&writeMask_, _writeMask);
   }
   uint32_t reference() const {
-    return flatbuffers::EndianScalar(reference_);
+    return ::flatbuffers::EndianScalar(reference_);
   }
   void mutate_reference(uint32_t _reference) {
-    flatbuffers::WriteScalar(&reference_, _reference);
+    ::flatbuffers::WriteScalar(&reference_, _reference);
   }
 };
 FLATBUFFERS_STRUCT_END(StencilOpState, 16);
@@ -1422,49 +1422,49 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) DepthStencilState FLATBUFFERS_FINAL_CLASS
     (void)padding1__;
   }
   DepthStencilState(mslb::Bool _depthTestEnable, mslb::Bool _depthWriteEnable, mslb::CompareOp _depthCompareOp, mslb::Bool _depthBoundsTestEnable, mslb::Bool _stencilTestEnable, const mslb::StencilOpState &_frontStencil, const mslb::StencilOpState &_backStencil, float _minDepthBounds, float _maxDepthBounds)
-      : depthTestEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthTestEnable))),
-        depthWriteEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthWriteEnable))),
-        depthCompareOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthCompareOp))),
-        depthBoundsTestEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_depthBoundsTestEnable))),
-        stencilTestEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_stencilTestEnable))),
+      : depthTestEnable_(::flatbuffers::EndianScalar(static_cast<int8_t>(_depthTestEnable))),
+        depthWriteEnable_(::flatbuffers::EndianScalar(static_cast<int8_t>(_depthWriteEnable))),
+        depthCompareOp_(::flatbuffers::EndianScalar(static_cast<int8_t>(_depthCompareOp))),
+        depthBoundsTestEnable_(::flatbuffers::EndianScalar(static_cast<int8_t>(_depthBoundsTestEnable))),
+        stencilTestEnable_(::flatbuffers::EndianScalar(static_cast<int8_t>(_stencilTestEnable))),
         padding0__(0),
         padding1__(0),
         frontStencil_(_frontStencil),
         backStencil_(_backStencil),
-        minDepthBounds_(flatbuffers::EndianScalar(_minDepthBounds)),
-        maxDepthBounds_(flatbuffers::EndianScalar(_maxDepthBounds)) {
+        minDepthBounds_(::flatbuffers::EndianScalar(_minDepthBounds)),
+        maxDepthBounds_(::flatbuffers::EndianScalar(_maxDepthBounds)) {
     (void)padding0__;
     (void)padding1__;
   }
   mslb::Bool depthTestEnable() const {
-    return static_cast<mslb::Bool>(flatbuffers::EndianScalar(depthTestEnable_));
+    return static_cast<mslb::Bool>(::flatbuffers::EndianScalar(depthTestEnable_));
   }
   void mutate_depthTestEnable(mslb::Bool _depthTestEnable) {
-    flatbuffers::WriteScalar(&depthTestEnable_, static_cast<int8_t>(_depthTestEnable));
+    ::flatbuffers::WriteScalar(&depthTestEnable_, static_cast<int8_t>(_depthTestEnable));
   }
   mslb::Bool depthWriteEnable() const {
-    return static_cast<mslb::Bool>(flatbuffers::EndianScalar(depthWriteEnable_));
+    return static_cast<mslb::Bool>(::flatbuffers::EndianScalar(depthWriteEnable_));
   }
   void mutate_depthWriteEnable(mslb::Bool _depthWriteEnable) {
-    flatbuffers::WriteScalar(&depthWriteEnable_, static_cast<int8_t>(_depthWriteEnable));
+    ::flatbuffers::WriteScalar(&depthWriteEnable_, static_cast<int8_t>(_depthWriteEnable));
   }
   mslb::CompareOp depthCompareOp() const {
-    return static_cast<mslb::CompareOp>(flatbuffers::EndianScalar(depthCompareOp_));
+    return static_cast<mslb::CompareOp>(::flatbuffers::EndianScalar(depthCompareOp_));
   }
   void mutate_depthCompareOp(mslb::CompareOp _depthCompareOp) {
-    flatbuffers::WriteScalar(&depthCompareOp_, static_cast<int8_t>(_depthCompareOp));
+    ::flatbuffers::WriteScalar(&depthCompareOp_, static_cast<int8_t>(_depthCompareOp));
   }
   mslb::Bool depthBoundsTestEnable() const {
-    return static_cast<mslb::Bool>(flatbuffers::EndianScalar(depthBoundsTestEnable_));
+    return static_cast<mslb::Bool>(::flatbuffers::EndianScalar(depthBoundsTestEnable_));
   }
   void mutate_depthBoundsTestEnable(mslb::Bool _depthBoundsTestEnable) {
-    flatbuffers::WriteScalar(&depthBoundsTestEnable_, static_cast<int8_t>(_depthBoundsTestEnable));
+    ::flatbuffers::WriteScalar(&depthBoundsTestEnable_, static_cast<int8_t>(_depthBoundsTestEnable));
   }
   mslb::Bool stencilTestEnable() const {
-    return static_cast<mslb::Bool>(flatbuffers::EndianScalar(stencilTestEnable_));
+    return static_cast<mslb::Bool>(::flatbuffers::EndianScalar(stencilTestEnable_));
   }
   void mutate_stencilTestEnable(mslb::Bool _stencilTestEnable) {
-    flatbuffers::WriteScalar(&stencilTestEnable_, static_cast<int8_t>(_stencilTestEnable));
+    ::flatbuffers::WriteScalar(&stencilTestEnable_, static_cast<int8_t>(_stencilTestEnable));
   }
   const mslb::StencilOpState &frontStencil() const {
     return frontStencil_;
@@ -1479,16 +1479,16 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) DepthStencilState FLATBUFFERS_FINAL_CLASS
     return backStencil_;
   }
   float minDepthBounds() const {
-    return flatbuffers::EndianScalar(minDepthBounds_);
+    return ::flatbuffers::EndianScalar(minDepthBounds_);
   }
   void mutate_minDepthBounds(float _minDepthBounds) {
-    flatbuffers::WriteScalar(&minDepthBounds_, _minDepthBounds);
+    ::flatbuffers::WriteScalar(&minDepthBounds_, _minDepthBounds);
   }
   float maxDepthBounds() const {
-    return flatbuffers::EndianScalar(maxDepthBounds_);
+    return ::flatbuffers::EndianScalar(maxDepthBounds_);
   }
   void mutate_maxDepthBounds(float _maxDepthBounds) {
-    flatbuffers::WriteScalar(&maxDepthBounds_, _maxDepthBounds);
+    ::flatbuffers::WriteScalar(&maxDepthBounds_, _maxDepthBounds);
   }
 };
 FLATBUFFERS_STRUCT_END(DepthStencilState, 48);
@@ -1516,62 +1516,62 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(1) BlendAttachmentState FLATBUFFERS_FINAL_CL
         colorWriteMask_(0) {
   }
   BlendAttachmentState(mslb::Bool _blendEnable, mslb::BlendFactor _srcColorBlendFactor, mslb::BlendFactor _dstColorBlendFactor, mslb::BlendOp _colorBlendOp, mslb::BlendFactor _srcAlphaBlendFactor, mslb::BlendFactor _dstAlphaBlendFactor, mslb::BlendOp _alphaBlendOp, mslb::ColorMask _colorWriteMask)
-      : blendEnable_(flatbuffers::EndianScalar(static_cast<int8_t>(_blendEnable))),
-        srcColorBlendFactor_(flatbuffers::EndianScalar(static_cast<int8_t>(_srcColorBlendFactor))),
-        dstColorBlendFactor_(flatbuffers::EndianScalar(static_cast<int8_t>(_dstColorBlendFactor))),
-        colorBlendOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_colorBlendOp))),
-        srcAlphaBlendFactor_(flatbuffers::EndianScalar(static_cast<int8_t>(_srcAlphaBlendFactor))),
-        dstAlphaBlendFactor_(flatbuffers::EndianScalar(static_cast<int8_t>(_dstAlphaBlendFactor))),
-        alphaBlendOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_alphaBlendOp))),
-        colorWriteMask_(flatbuffers::EndianScalar(static_cast<int8_t>(_colorWriteMask))) {
+      : blendEnable_(::flatbuffers::EndianScalar(static_cast<int8_t>(_blendEnable))),
+        srcColorBlendFactor_(::flatbuffers::EndianScalar(static_cast<int8_t>(_srcColorBlendFactor))),
+        dstColorBlendFactor_(::flatbuffers::EndianScalar(static_cast<int8_t>(_dstColorBlendFactor))),
+        colorBlendOp_(::flatbuffers::EndianScalar(static_cast<int8_t>(_colorBlendOp))),
+        srcAlphaBlendFactor_(::flatbuffers::EndianScalar(static_cast<int8_t>(_srcAlphaBlendFactor))),
+        dstAlphaBlendFactor_(::flatbuffers::EndianScalar(static_cast<int8_t>(_dstAlphaBlendFactor))),
+        alphaBlendOp_(::flatbuffers::EndianScalar(static_cast<int8_t>(_alphaBlendOp))),
+        colorWriteMask_(::flatbuffers::EndianScalar(static_cast<int8_t>(_colorWriteMask))) {
   }
   mslb::Bool blendEnable() const {
-    return static_cast<mslb::Bool>(flatbuffers::EndianScalar(blendEnable_));
+    return static_cast<mslb::Bool>(::flatbuffers::EndianScalar(blendEnable_));
   }
   void mutate_blendEnable(mslb::Bool _blendEnable) {
-    flatbuffers::WriteScalar(&blendEnable_, static_cast<int8_t>(_blendEnable));
+    ::flatbuffers::WriteScalar(&blendEnable_, static_cast<int8_t>(_blendEnable));
   }
   mslb::BlendFactor srcColorBlendFactor() const {
-    return static_cast<mslb::BlendFactor>(flatbuffers::EndianScalar(srcColorBlendFactor_));
+    return static_cast<mslb::BlendFactor>(::flatbuffers::EndianScalar(srcColorBlendFactor_));
   }
   void mutate_srcColorBlendFactor(mslb::BlendFactor _srcColorBlendFactor) {
-    flatbuffers::WriteScalar(&srcColorBlendFactor_, static_cast<int8_t>(_srcColorBlendFactor));
+    ::flatbuffers::WriteScalar(&srcColorBlendFactor_, static_cast<int8_t>(_srcColorBlendFactor));
   }
   mslb::BlendFactor dstColorBlendFactor() const {
-    return static_cast<mslb::BlendFactor>(flatbuffers::EndianScalar(dstColorBlendFactor_));
+    return static_cast<mslb::BlendFactor>(::flatbuffers::EndianScalar(dstColorBlendFactor_));
   }
   void mutate_dstColorBlendFactor(mslb::BlendFactor _dstColorBlendFactor) {
-    flatbuffers::WriteScalar(&dstColorBlendFactor_, static_cast<int8_t>(_dstColorBlendFactor));
+    ::flatbuffers::WriteScalar(&dstColorBlendFactor_, static_cast<int8_t>(_dstColorBlendFactor));
   }
   mslb::BlendOp colorBlendOp() const {
-    return static_cast<mslb::BlendOp>(flatbuffers::EndianScalar(colorBlendOp_));
+    return static_cast<mslb::BlendOp>(::flatbuffers::EndianScalar(colorBlendOp_));
   }
   void mutate_colorBlendOp(mslb::BlendOp _colorBlendOp) {
-    flatbuffers::WriteScalar(&colorBlendOp_, static_cast<int8_t>(_colorBlendOp));
+    ::flatbuffers::WriteScalar(&colorBlendOp_, static_cast<int8_t>(_colorBlendOp));
   }
   mslb::BlendFactor srcAlphaBlendFactor() const {
-    return static_cast<mslb::BlendFactor>(flatbuffers::EndianScalar(srcAlphaBlendFactor_));
+    return static_cast<mslb::BlendFactor>(::flatbuffers::EndianScalar(srcAlphaBlendFactor_));
   }
   void mutate_srcAlphaBlendFactor(mslb::BlendFactor _srcAlphaBlendFactor) {
-    flatbuffers::WriteScalar(&srcAlphaBlendFactor_, static_cast<int8_t>(_srcAlphaBlendFactor));
+    ::flatbuffers::WriteScalar(&srcAlphaBlendFactor_, static_cast<int8_t>(_srcAlphaBlendFactor));
   }
   mslb::BlendFactor dstAlphaBlendFactor() const {
-    return static_cast<mslb::BlendFactor>(flatbuffers::EndianScalar(dstAlphaBlendFactor_));
+    return static_cast<mslb::BlendFactor>(::flatbuffers::EndianScalar(dstAlphaBlendFactor_));
   }
   void mutate_dstAlphaBlendFactor(mslb::BlendFactor _dstAlphaBlendFactor) {
-    flatbuffers::WriteScalar(&dstAlphaBlendFactor_, static_cast<int8_t>(_dstAlphaBlendFactor));
+    ::flatbuffers::WriteScalar(&dstAlphaBlendFactor_, static_cast<int8_t>(_dstAlphaBlendFactor));
   }
   mslb::BlendOp alphaBlendOp() const {
-    return static_cast<mslb::BlendOp>(flatbuffers::EndianScalar(alphaBlendOp_));
+    return static_cast<mslb::BlendOp>(::flatbuffers::EndianScalar(alphaBlendOp_));
   }
   void mutate_alphaBlendOp(mslb::BlendOp _alphaBlendOp) {
-    flatbuffers::WriteScalar(&alphaBlendOp_, static_cast<int8_t>(_alphaBlendOp));
+    ::flatbuffers::WriteScalar(&alphaBlendOp_, static_cast<int8_t>(_alphaBlendOp));
   }
   mslb::ColorMask colorWriteMask() const {
-    return static_cast<mslb::ColorMask>(flatbuffers::EndianScalar(colorWriteMask_));
+    return static_cast<mslb::ColorMask>(::flatbuffers::EndianScalar(colorWriteMask_));
   }
   void mutate_colorWriteMask(mslb::ColorMask _colorWriteMask) {
-    flatbuffers::WriteScalar(&colorWriteMask_, static_cast<int8_t>(_colorWriteMask));
+    ::flatbuffers::WriteScalar(&colorWriteMask_, static_cast<int8_t>(_colorWriteMask));
   }
 };
 FLATBUFFERS_STRUCT_END(BlendAttachmentState, 8);
@@ -1613,94 +1613,94 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) SamplerState FLATBUFFERS_FINAL_CLASS {
     (void)padding1__;
   }
   SamplerState(mslb::Filter _minFilter, mslb::Filter _magFilter, mslb::MipFilter _mipFilter, mslb::AddressMode _addressModeU, mslb::AddressMode _addressModeV, mslb::AddressMode _addressModeW, float _mipLodBias, float _maxAnisotropy, float _minLod, float _maxLod, mslb::BorderColor _borderColor, mslb::CompareOp _compareOp)
-      : minFilter_(flatbuffers::EndianScalar(static_cast<int8_t>(_minFilter))),
-        magFilter_(flatbuffers::EndianScalar(static_cast<int8_t>(_magFilter))),
-        mipFilter_(flatbuffers::EndianScalar(static_cast<int8_t>(_mipFilter))),
-        addressModeU_(flatbuffers::EndianScalar(static_cast<int8_t>(_addressModeU))),
-        addressModeV_(flatbuffers::EndianScalar(static_cast<int8_t>(_addressModeV))),
-        addressModeW_(flatbuffers::EndianScalar(static_cast<int8_t>(_addressModeW))),
+      : minFilter_(::flatbuffers::EndianScalar(static_cast<int8_t>(_minFilter))),
+        magFilter_(::flatbuffers::EndianScalar(static_cast<int8_t>(_magFilter))),
+        mipFilter_(::flatbuffers::EndianScalar(static_cast<int8_t>(_mipFilter))),
+        addressModeU_(::flatbuffers::EndianScalar(static_cast<int8_t>(_addressModeU))),
+        addressModeV_(::flatbuffers::EndianScalar(static_cast<int8_t>(_addressModeV))),
+        addressModeW_(::flatbuffers::EndianScalar(static_cast<int8_t>(_addressModeW))),
         padding0__(0),
-        mipLodBias_(flatbuffers::EndianScalar(_mipLodBias)),
-        maxAnisotropy_(flatbuffers::EndianScalar(_maxAnisotropy)),
-        minLod_(flatbuffers::EndianScalar(_minLod)),
-        maxLod_(flatbuffers::EndianScalar(_maxLod)),
-        borderColor_(flatbuffers::EndianScalar(static_cast<int8_t>(_borderColor))),
-        compareOp_(flatbuffers::EndianScalar(static_cast<int8_t>(_compareOp))),
+        mipLodBias_(::flatbuffers::EndianScalar(_mipLodBias)),
+        maxAnisotropy_(::flatbuffers::EndianScalar(_maxAnisotropy)),
+        minLod_(::flatbuffers::EndianScalar(_minLod)),
+        maxLod_(::flatbuffers::EndianScalar(_maxLod)),
+        borderColor_(::flatbuffers::EndianScalar(static_cast<int8_t>(_borderColor))),
+        compareOp_(::flatbuffers::EndianScalar(static_cast<int8_t>(_compareOp))),
         padding1__(0) {
     (void)padding0__;
     (void)padding1__;
   }
   mslb::Filter minFilter() const {
-    return static_cast<mslb::Filter>(flatbuffers::EndianScalar(minFilter_));
+    return static_cast<mslb::Filter>(::flatbuffers::EndianScalar(minFilter_));
   }
   void mutate_minFilter(mslb::Filter _minFilter) {
-    flatbuffers::WriteScalar(&minFilter_, static_cast<int8_t>(_minFilter));
+    ::flatbuffers::WriteScalar(&minFilter_, static_cast<int8_t>(_minFilter));
   }
   mslb::Filter magFilter() const {
-    return static_cast<mslb::Filter>(flatbuffers::EndianScalar(magFilter_));
+    return static_cast<mslb::Filter>(::flatbuffers::EndianScalar(magFilter_));
   }
   void mutate_magFilter(mslb::Filter _magFilter) {
-    flatbuffers::WriteScalar(&magFilter_, static_cast<int8_t>(_magFilter));
+    ::flatbuffers::WriteScalar(&magFilter_, static_cast<int8_t>(_magFilter));
   }
   mslb::MipFilter mipFilter() const {
-    return static_cast<mslb::MipFilter>(flatbuffers::EndianScalar(mipFilter_));
+    return static_cast<mslb::MipFilter>(::flatbuffers::EndianScalar(mipFilter_));
   }
   void mutate_mipFilter(mslb::MipFilter _mipFilter) {
-    flatbuffers::WriteScalar(&mipFilter_, static_cast<int8_t>(_mipFilter));
+    ::flatbuffers::WriteScalar(&mipFilter_, static_cast<int8_t>(_mipFilter));
   }
   mslb::AddressMode addressModeU() const {
-    return static_cast<mslb::AddressMode>(flatbuffers::EndianScalar(addressModeU_));
+    return static_cast<mslb::AddressMode>(::flatbuffers::EndianScalar(addressModeU_));
   }
   void mutate_addressModeU(mslb::AddressMode _addressModeU) {
-    flatbuffers::WriteScalar(&addressModeU_, static_cast<int8_t>(_addressModeU));
+    ::flatbuffers::WriteScalar(&addressModeU_, static_cast<int8_t>(_addressModeU));
   }
   mslb::AddressMode addressModeV() const {
-    return static_cast<mslb::AddressMode>(flatbuffers::EndianScalar(addressModeV_));
+    return static_cast<mslb::AddressMode>(::flatbuffers::EndianScalar(addressModeV_));
   }
   void mutate_addressModeV(mslb::AddressMode _addressModeV) {
-    flatbuffers::WriteScalar(&addressModeV_, static_cast<int8_t>(_addressModeV));
+    ::flatbuffers::WriteScalar(&addressModeV_, static_cast<int8_t>(_addressModeV));
   }
   mslb::AddressMode addressModeW() const {
-    return static_cast<mslb::AddressMode>(flatbuffers::EndianScalar(addressModeW_));
+    return static_cast<mslb::AddressMode>(::flatbuffers::EndianScalar(addressModeW_));
   }
   void mutate_addressModeW(mslb::AddressMode _addressModeW) {
-    flatbuffers::WriteScalar(&addressModeW_, static_cast<int8_t>(_addressModeW));
+    ::flatbuffers::WriteScalar(&addressModeW_, static_cast<int8_t>(_addressModeW));
   }
   float mipLodBias() const {
-    return flatbuffers::EndianScalar(mipLodBias_);
+    return ::flatbuffers::EndianScalar(mipLodBias_);
   }
   void mutate_mipLodBias(float _mipLodBias) {
-    flatbuffers::WriteScalar(&mipLodBias_, _mipLodBias);
+    ::flatbuffers::WriteScalar(&mipLodBias_, _mipLodBias);
   }
   float maxAnisotropy() const {
-    return flatbuffers::EndianScalar(maxAnisotropy_);
+    return ::flatbuffers::EndianScalar(maxAnisotropy_);
   }
   void mutate_maxAnisotropy(float _maxAnisotropy) {
-    flatbuffers::WriteScalar(&maxAnisotropy_, _maxAnisotropy);
+    ::flatbuffers::WriteScalar(&maxAnisotropy_, _maxAnisotropy);
   }
   float minLod() const {
-    return flatbuffers::EndianScalar(minLod_);
+    return ::flatbuffers::EndianScalar(minLod_);
   }
   void mutate_minLod(float _minLod) {
-    flatbuffers::WriteScalar(&minLod_, _minLod);
+    ::flatbuffers::WriteScalar(&minLod_, _minLod);
   }
   float maxLod() const {
-    return flatbuffers::EndianScalar(maxLod_);
+    return ::flatbuffers::EndianScalar(maxLod_);
   }
   void mutate_maxLod(float _maxLod) {
-    flatbuffers::WriteScalar(&maxLod_, _maxLod);
+    ::flatbuffers::WriteScalar(&maxLod_, _maxLod);
   }
   mslb::BorderColor borderColor() const {
-    return static_cast<mslb::BorderColor>(flatbuffers::EndianScalar(borderColor_));
+    return static_cast<mslb::BorderColor>(::flatbuffers::EndianScalar(borderColor_));
   }
   void mutate_borderColor(mslb::BorderColor _borderColor) {
-    flatbuffers::WriteScalar(&borderColor_, static_cast<int8_t>(_borderColor));
+    ::flatbuffers::WriteScalar(&borderColor_, static_cast<int8_t>(_borderColor));
   }
   mslb::CompareOp compareOp() const {
-    return static_cast<mslb::CompareOp>(flatbuffers::EndianScalar(compareOp_));
+    return static_cast<mslb::CompareOp>(::flatbuffers::EndianScalar(compareOp_));
   }
   void mutate_compareOp(mslb::CompareOp _compareOp) {
-    flatbuffers::WriteScalar(&compareOp_, static_cast<int8_t>(_compareOp));
+    ::flatbuffers::WriteScalar(&compareOp_, static_cast<int8_t>(_compareOp));
   }
 };
 FLATBUFFERS_STRUCT_END(SamplerState, 28);
@@ -1716,20 +1716,20 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) ArrayInfo FLATBUFFERS_FINAL_CLASS {
         stride_(0) {
   }
   ArrayInfo(uint32_t _length, uint32_t _stride)
-      : length_(flatbuffers::EndianScalar(_length)),
-        stride_(flatbuffers::EndianScalar(_stride)) {
+      : length_(::flatbuffers::EndianScalar(_length)),
+        stride_(::flatbuffers::EndianScalar(_stride)) {
   }
   uint32_t length() const {
-    return flatbuffers::EndianScalar(length_);
+    return ::flatbuffers::EndianScalar(length_);
   }
   void mutate_length(uint32_t _length) {
-    flatbuffers::WriteScalar(&length_, _length);
+    ::flatbuffers::WriteScalar(&length_, _length);
   }
   uint32_t stride() const {
-    return flatbuffers::EndianScalar(stride_);
+    return ::flatbuffers::EndianScalar(stride_);
   }
   void mutate_stride(uint32_t _stride) {
-    flatbuffers::WriteScalar(&stride_, _stride);
+    ::flatbuffers::WriteScalar(&stride_, _stride);
   }
 };
 FLATBUFFERS_STRUCT_END(ArrayInfo, 8);
@@ -1747,32 +1747,32 @@ FLATBUFFERS_MANUALLY_ALIGNED_STRUCT(4) ComputeLocalSize FLATBUFFERS_FINAL_CLASS 
         z_(0) {
   }
   ComputeLocalSize(uint32_t _x, uint32_t _y, uint32_t _z)
-      : x_(flatbuffers::EndianScalar(_x)),
-        y_(flatbuffers::EndianScalar(_y)),
-        z_(flatbuffers::EndianScalar(_z)) {
+      : x_(::flatbuffers::EndianScalar(_x)),
+        y_(::flatbuffers::EndianScalar(_y)),
+        z_(::flatbuffers::EndianScalar(_z)) {
   }
   uint32_t x() const {
-    return flatbuffers::EndianScalar(x_);
+    return ::flatbuffers::EndianScalar(x_);
   }
   void mutate_x(uint32_t _x) {
-    flatbuffers::WriteScalar(&x_, _x);
+    ::flatbuffers::WriteScalar(&x_, _x);
   }
   uint32_t y() const {
-    return flatbuffers::EndianScalar(y_);
+    return ::flatbuffers::EndianScalar(y_);
   }
   void mutate_y(uint32_t _y) {
-    flatbuffers::WriteScalar(&y_, _y);
+    ::flatbuffers::WriteScalar(&y_, _y);
   }
   uint32_t z() const {
-    return flatbuffers::EndianScalar(z_);
+    return ::flatbuffers::EndianScalar(z_);
   }
   void mutate_z(uint32_t _z) {
-    flatbuffers::WriteScalar(&z_, _z);
+    ::flatbuffers::WriteScalar(&z_, _z);
   }
 };
 FLATBUFFERS_STRUCT_END(ComputeLocalSize, 12);
 
-struct BlendState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct BlendState FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef BlendStateBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_LOGICALOPENABLE = 4,
@@ -1799,19 +1799,19 @@ struct BlendState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_separateAttachmentBlendingEnable(mslb::Bool _separateAttachmentBlendingEnable = static_cast<mslb::Bool>(0)) {
     return SetField<int8_t>(VT_SEPARATEATTACHMENTBLENDINGENABLE, static_cast<int8_t>(_separateAttachmentBlendingEnable), 0);
   }
-  const flatbuffers::Vector<const mslb::BlendAttachmentState *> *blendAttachments() const {
-    return GetPointer<const flatbuffers::Vector<const mslb::BlendAttachmentState *> *>(VT_BLENDATTACHMENTS);
+  const ::flatbuffers::Vector<const mslb::BlendAttachmentState *> *blendAttachments() const {
+    return GetPointer<const ::flatbuffers::Vector<const mslb::BlendAttachmentState *> *>(VT_BLENDATTACHMENTS);
   }
-  flatbuffers::Vector<const mslb::BlendAttachmentState *> *mutable_blendAttachments() {
-    return GetPointer<flatbuffers::Vector<const mslb::BlendAttachmentState *> *>(VT_BLENDATTACHMENTS);
+  ::flatbuffers::Vector<const mslb::BlendAttachmentState *> *mutable_blendAttachments() {
+    return GetPointer<::flatbuffers::Vector<const mslb::BlendAttachmentState *> *>(VT_BLENDATTACHMENTS);
   }
-  const flatbuffers::Vector<float> *blendConstants() const {
-    return GetPointer<const flatbuffers::Vector<float> *>(VT_BLENDCONSTANTS);
+  const ::flatbuffers::Vector<float> *blendConstants() const {
+    return GetPointer<const ::flatbuffers::Vector<float> *>(VT_BLENDCONSTANTS);
   }
-  flatbuffers::Vector<float> *mutable_blendConstants() {
-    return GetPointer<flatbuffers::Vector<float> *>(VT_BLENDCONSTANTS);
+  ::flatbuffers::Vector<float> *mutable_blendConstants() {
+    return GetPointer<::flatbuffers::Vector<float> *>(VT_BLENDCONSTANTS);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<int8_t>(verifier, VT_LOGICALOPENABLE, 1) &&
            VerifyField<int8_t>(verifier, VT_LOGICALOP, 1) &&
@@ -1826,8 +1826,8 @@ struct BlendState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct BlendStateBuilder {
   typedef BlendState Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
   void add_logicalOpEnable(mslb::Bool logicalOpEnable) {
     fbb_.AddElement<int8_t>(BlendState::VT_LOGICALOPENABLE, static_cast<int8_t>(logicalOpEnable), 0);
   }
@@ -1837,32 +1837,32 @@ struct BlendStateBuilder {
   void add_separateAttachmentBlendingEnable(mslb::Bool separateAttachmentBlendingEnable) {
     fbb_.AddElement<int8_t>(BlendState::VT_SEPARATEATTACHMENTBLENDINGENABLE, static_cast<int8_t>(separateAttachmentBlendingEnable), 0);
   }
-  void add_blendAttachments(flatbuffers::Offset<flatbuffers::Vector<const mslb::BlendAttachmentState *>> blendAttachments) {
+  void add_blendAttachments(::flatbuffers::Offset<::flatbuffers::Vector<const mslb::BlendAttachmentState *>> blendAttachments) {
     fbb_.AddOffset(BlendState::VT_BLENDATTACHMENTS, blendAttachments);
   }
-  void add_blendConstants(flatbuffers::Offset<flatbuffers::Vector<float>> blendConstants) {
+  void add_blendConstants(::flatbuffers::Offset<::flatbuffers::Vector<float>> blendConstants) {
     fbb_.AddOffset(BlendState::VT_BLENDCONSTANTS, blendConstants);
   }
-  explicit BlendStateBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit BlendStateBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<BlendState> Finish() {
+  ::flatbuffers::Offset<BlendState> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<BlendState>(end);
+    auto o = ::flatbuffers::Offset<BlendState>(end);
     fbb_.Required(o, BlendState::VT_BLENDATTACHMENTS);
     fbb_.Required(o, BlendState::VT_BLENDCONSTANTS);
     return o;
   }
 };
 
-inline flatbuffers::Offset<BlendState> CreateBlendState(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<BlendState> CreateBlendState(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     mslb::Bool logicalOpEnable = mslb::Bool::False,
     mslb::LogicOp logicalOp = mslb::LogicOp::Clear,
     mslb::Bool separateAttachmentBlendingEnable = mslb::Bool::False,
-    flatbuffers::Offset<flatbuffers::Vector<const mslb::BlendAttachmentState *>> blendAttachments = 0,
-    flatbuffers::Offset<flatbuffers::Vector<float>> blendConstants = 0) {
+    ::flatbuffers::Offset<::flatbuffers::Vector<const mslb::BlendAttachmentState *>> blendAttachments = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<float>> blendConstants = 0) {
   BlendStateBuilder builder_(_fbb);
   builder_.add_blendConstants(blendConstants);
   builder_.add_blendAttachments(blendAttachments);
@@ -1872,8 +1872,8 @@ inline flatbuffers::Offset<BlendState> CreateBlendState(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<BlendState> CreateBlendStateDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<BlendState> CreateBlendStateDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     mslb::Bool logicalOpEnable = mslb::Bool::False,
     mslb::LogicOp logicalOp = mslb::LogicOp::Clear,
     mslb::Bool separateAttachmentBlendingEnable = mslb::Bool::False,
@@ -1890,7 +1890,7 @@ inline flatbuffers::Offset<BlendState> CreateBlendStateDirect(
       blendConstants__);
 }
 
-struct RenderState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct RenderState FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef RenderStateBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_RASTERIZATIONSTATE = 4,
@@ -1950,7 +1950,7 @@ struct RenderState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_fragmentGroup(uint32_t _fragmentGroup = 4294967295) {
     return SetField<uint32_t>(VT_FRAGMENTGROUP, _fragmentGroup, 4294967295);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyFieldRequired<mslb::RasterizationState>(verifier, VT_RASTERIZATIONSTATE, 4) &&
            VerifyFieldRequired<mslb::MultisampleState>(verifier, VT_MULTISAMPLESTATE, 4) &&
@@ -1967,8 +1967,8 @@ struct RenderState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct RenderStateBuilder {
   typedef RenderState Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
   void add_rasterizationState(const mslb::RasterizationState *rasterizationState) {
     fbb_.AddStruct(RenderState::VT_RASTERIZATIONSTATE, rasterizationState);
   }
@@ -1978,7 +1978,7 @@ struct RenderStateBuilder {
   void add_depthStencilState(const mslb::DepthStencilState *depthStencilState) {
     fbb_.AddStruct(RenderState::VT_DEPTHSTENCILSTATE, depthStencilState);
   }
-  void add_blendState(flatbuffers::Offset<mslb::BlendState> blendState) {
+  void add_blendState(::flatbuffers::Offset<mslb::BlendState> blendState) {
     fbb_.AddOffset(RenderState::VT_BLENDSTATE, blendState);
   }
   void add_patchControlPoints(uint32_t patchControlPoints) {
@@ -1993,13 +1993,13 @@ struct RenderStateBuilder {
   void add_fragmentGroup(uint32_t fragmentGroup) {
     fbb_.AddElement<uint32_t>(RenderState::VT_FRAGMENTGROUP, fragmentGroup, 4294967295);
   }
-  explicit RenderStateBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit RenderStateBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<RenderState> Finish() {
+  ::flatbuffers::Offset<RenderState> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<RenderState>(end);
+    auto o = ::flatbuffers::Offset<RenderState>(end);
     fbb_.Required(o, RenderState::VT_RASTERIZATIONSTATE);
     fbb_.Required(o, RenderState::VT_MULTISAMPLESTATE);
     fbb_.Required(o, RenderState::VT_DEPTHSTENCILSTATE);
@@ -2008,12 +2008,12 @@ struct RenderStateBuilder {
   }
 };
 
-inline flatbuffers::Offset<RenderState> CreateRenderState(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<RenderState> CreateRenderState(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const mslb::RasterizationState *rasterizationState = nullptr,
     const mslb::MultisampleState *multisampleState = nullptr,
     const mslb::DepthStencilState *depthStencilState = nullptr,
-    flatbuffers::Offset<mslb::BlendState> blendState = 0,
+    ::flatbuffers::Offset<mslb::BlendState> blendState = 0,
     uint32_t patchControlPoints = 0,
     uint32_t clipDistanceCount = 0,
     uint32_t cullDistanceCount = 0,
@@ -2030,7 +2030,7 @@ inline flatbuffers::Offset<RenderState> CreateRenderState(
   return builder_.Finish();
 }
 
-struct StructMember FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct StructMember FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef StructMemberBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
@@ -2041,11 +2041,11 @@ struct StructMember FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_ARRAYELEMENTS = 14,
     VT_ROWMAJOR = 16
   };
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
-  flatbuffers::String *mutable_name() {
-    return GetPointer<flatbuffers::String *>(VT_NAME);
+  ::flatbuffers::String *mutable_name() {
+    return GetPointer<::flatbuffers::String *>(VT_NAME);
   }
   uint32_t offset() const {
     return GetField<uint32_t>(VT_OFFSET, 0);
@@ -2071,11 +2071,11 @@ struct StructMember FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_structIndex(uint32_t _structIndex = 0) {
     return SetField<uint32_t>(VT_STRUCTINDEX, _structIndex, 0);
   }
-  const flatbuffers::Vector<const mslb::ArrayInfo *> *arrayElements() const {
-    return GetPointer<const flatbuffers::Vector<const mslb::ArrayInfo *> *>(VT_ARRAYELEMENTS);
+  const ::flatbuffers::Vector<const mslb::ArrayInfo *> *arrayElements() const {
+    return GetPointer<const ::flatbuffers::Vector<const mslb::ArrayInfo *> *>(VT_ARRAYELEMENTS);
   }
-  flatbuffers::Vector<const mslb::ArrayInfo *> *mutable_arrayElements() {
-    return GetPointer<flatbuffers::Vector<const mslb::ArrayInfo *> *>(VT_ARRAYELEMENTS);
+  ::flatbuffers::Vector<const mslb::ArrayInfo *> *mutable_arrayElements() {
+    return GetPointer<::flatbuffers::Vector<const mslb::ArrayInfo *> *>(VT_ARRAYELEMENTS);
   }
   bool rowMajor() const {
     return GetField<uint8_t>(VT_ROWMAJOR, 0) != 0;
@@ -2083,7 +2083,7 @@ struct StructMember FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_rowMajor(bool _rowMajor = 0) {
     return SetField<uint8_t>(VT_ROWMAJOR, static_cast<uint8_t>(_rowMajor), 0);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
@@ -2100,9 +2100,9 @@ struct StructMember FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct StructMemberBuilder {
   typedef StructMember Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
     fbb_.AddOffset(StructMember::VT_NAME, name);
   }
   void add_offset(uint32_t offset) {
@@ -2117,32 +2117,32 @@ struct StructMemberBuilder {
   void add_structIndex(uint32_t structIndex) {
     fbb_.AddElement<uint32_t>(StructMember::VT_STRUCTINDEX, structIndex, 0);
   }
-  void add_arrayElements(flatbuffers::Offset<flatbuffers::Vector<const mslb::ArrayInfo *>> arrayElements) {
+  void add_arrayElements(::flatbuffers::Offset<::flatbuffers::Vector<const mslb::ArrayInfo *>> arrayElements) {
     fbb_.AddOffset(StructMember::VT_ARRAYELEMENTS, arrayElements);
   }
   void add_rowMajor(bool rowMajor) {
     fbb_.AddElement<uint8_t>(StructMember::VT_ROWMAJOR, static_cast<uint8_t>(rowMajor), 0);
   }
-  explicit StructMemberBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit StructMemberBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<StructMember> Finish() {
+  ::flatbuffers::Offset<StructMember> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<StructMember>(end);
+    auto o = ::flatbuffers::Offset<StructMember>(end);
     fbb_.Required(o, StructMember::VT_NAME);
     return o;
   }
 };
 
-inline flatbuffers::Offset<StructMember> CreateStructMember(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> name = 0,
+inline ::flatbuffers::Offset<StructMember> CreateStructMember(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> name = 0,
     uint32_t offset = 0,
     uint32_t size = 0,
     mslb::Type type = mslb::Type::Float,
     uint32_t structIndex = 0,
-    flatbuffers::Offset<flatbuffers::Vector<const mslb::ArrayInfo *>> arrayElements = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<const mslb::ArrayInfo *>> arrayElements = 0,
     bool rowMajor = false) {
   StructMemberBuilder builder_(_fbb);
   builder_.add_arrayElements(arrayElements);
@@ -2155,8 +2155,8 @@ inline flatbuffers::Offset<StructMember> CreateStructMember(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<StructMember> CreateStructMemberDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<StructMember> CreateStructMemberDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
     uint32_t offset = 0,
     uint32_t size = 0,
@@ -2177,18 +2177,18 @@ inline flatbuffers::Offset<StructMember> CreateStructMemberDirect(
       rowMajor);
 }
 
-struct Struct FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct Struct FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef StructBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_SIZE = 6,
     VT_MEMBERS = 8
   };
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
-  flatbuffers::String *mutable_name() {
-    return GetPointer<flatbuffers::String *>(VT_NAME);
+  ::flatbuffers::String *mutable_name() {
+    return GetPointer<::flatbuffers::String *>(VT_NAME);
   }
   uint32_t size() const {
     return GetField<uint32_t>(VT_SIZE, 0);
@@ -2196,13 +2196,13 @@ struct Struct FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_size(uint32_t _size = 0) {
     return SetField<uint32_t>(VT_SIZE, _size, 0);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<mslb::StructMember>> *members() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<mslb::StructMember>> *>(VT_MEMBERS);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<mslb::StructMember>> *members() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<mslb::StructMember>> *>(VT_MEMBERS);
   }
-  flatbuffers::Vector<flatbuffers::Offset<mslb::StructMember>> *mutable_members() {
-    return GetPointer<flatbuffers::Vector<flatbuffers::Offset<mslb::StructMember>> *>(VT_MEMBERS);
+  ::flatbuffers::Vector<::flatbuffers::Offset<mslb::StructMember>> *mutable_members() {
+    return GetPointer<::flatbuffers::Vector<::flatbuffers::Offset<mslb::StructMember>> *>(VT_MEMBERS);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
@@ -2216,35 +2216,35 @@ struct Struct FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct StructBuilder {
   typedef Struct Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
     fbb_.AddOffset(Struct::VT_NAME, name);
   }
   void add_size(uint32_t size) {
     fbb_.AddElement<uint32_t>(Struct::VT_SIZE, size, 0);
   }
-  void add_members(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::StructMember>>> members) {
+  void add_members(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<mslb::StructMember>>> members) {
     fbb_.AddOffset(Struct::VT_MEMBERS, members);
   }
-  explicit StructBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit StructBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<Struct> Finish() {
+  ::flatbuffers::Offset<Struct> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Struct>(end);
+    auto o = ::flatbuffers::Offset<Struct>(end);
     fbb_.Required(o, Struct::VT_NAME);
     fbb_.Required(o, Struct::VT_MEMBERS);
     return o;
   }
 };
 
-inline flatbuffers::Offset<Struct> CreateStruct(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> name = 0,
+inline ::flatbuffers::Offset<Struct> CreateStruct(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> name = 0,
     uint32_t size = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::StructMember>>> members = 0) {
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<mslb::StructMember>>> members = 0) {
   StructBuilder builder_(_fbb);
   builder_.add_members(members);
   builder_.add_size(size);
@@ -2252,13 +2252,13 @@ inline flatbuffers::Offset<Struct> CreateStruct(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<Struct> CreateStructDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Struct> CreateStructDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
     uint32_t size = 0,
-    const std::vector<flatbuffers::Offset<mslb::StructMember>> *members = nullptr) {
+    const std::vector<::flatbuffers::Offset<mslb::StructMember>> *members = nullptr) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
-  auto members__ = members ? _fbb.CreateVector<flatbuffers::Offset<mslb::StructMember>>(*members) : 0;
+  auto members__ = members ? _fbb.CreateVector<::flatbuffers::Offset<mslb::StructMember>>(*members) : 0;
   return mslb::CreateStruct(
       _fbb,
       name__,
@@ -2266,7 +2266,7 @@ inline flatbuffers::Offset<Struct> CreateStructDirect(
       members__);
 }
 
-struct Uniform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct Uniform FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef UniformBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
@@ -2279,11 +2279,11 @@ struct Uniform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_INPUTATTACHMENTINDEX = 18,
     VT_SAMPLERINDEX = 20
   };
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
-  flatbuffers::String *mutable_name() {
-    return GetPointer<flatbuffers::String *>(VT_NAME);
+  ::flatbuffers::String *mutable_name() {
+    return GetPointer<::flatbuffers::String *>(VT_NAME);
   }
   mslb::UniformType uniformType() const {
     return static_cast<mslb::UniformType>(GetField<uint8_t>(VT_UNIFORMTYPE, 0));
@@ -2303,11 +2303,11 @@ struct Uniform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_structIndex(uint32_t _structIndex = 0) {
     return SetField<uint32_t>(VT_STRUCTINDEX, _structIndex, 0);
   }
-  const flatbuffers::Vector<const mslb::ArrayInfo *> *arrayElements() const {
-    return GetPointer<const flatbuffers::Vector<const mslb::ArrayInfo *> *>(VT_ARRAYELEMENTS);
+  const ::flatbuffers::Vector<const mslb::ArrayInfo *> *arrayElements() const {
+    return GetPointer<const ::flatbuffers::Vector<const mslb::ArrayInfo *> *>(VT_ARRAYELEMENTS);
   }
-  flatbuffers::Vector<const mslb::ArrayInfo *> *mutable_arrayElements() {
-    return GetPointer<flatbuffers::Vector<const mslb::ArrayInfo *> *>(VT_ARRAYELEMENTS);
+  ::flatbuffers::Vector<const mslb::ArrayInfo *> *mutable_arrayElements() {
+    return GetPointer<::flatbuffers::Vector<const mslb::ArrayInfo *> *>(VT_ARRAYELEMENTS);
   }
   uint32_t descriptorSet() const {
     return GetField<uint32_t>(VT_DESCRIPTORSET, 0);
@@ -2333,7 +2333,7 @@ struct Uniform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_samplerIndex(uint32_t _samplerIndex = 0) {
     return SetField<uint32_t>(VT_SAMPLERINDEX, _samplerIndex, 0);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
@@ -2352,9 +2352,9 @@ struct Uniform FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct UniformBuilder {
   typedef Uniform Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
     fbb_.AddOffset(Uniform::VT_NAME, name);
   }
   void add_uniformType(mslb::UniformType uniformType) {
@@ -2366,7 +2366,7 @@ struct UniformBuilder {
   void add_structIndex(uint32_t structIndex) {
     fbb_.AddElement<uint32_t>(Uniform::VT_STRUCTINDEX, structIndex, 0);
   }
-  void add_arrayElements(flatbuffers::Offset<flatbuffers::Vector<const mslb::ArrayInfo *>> arrayElements) {
+  void add_arrayElements(::flatbuffers::Offset<::flatbuffers::Vector<const mslb::ArrayInfo *>> arrayElements) {
     fbb_.AddOffset(Uniform::VT_ARRAYELEMENTS, arrayElements);
   }
   void add_descriptorSet(uint32_t descriptorSet) {
@@ -2381,25 +2381,25 @@ struct UniformBuilder {
   void add_samplerIndex(uint32_t samplerIndex) {
     fbb_.AddElement<uint32_t>(Uniform::VT_SAMPLERINDEX, samplerIndex, 0);
   }
-  explicit UniformBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit UniformBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<Uniform> Finish() {
+  ::flatbuffers::Offset<Uniform> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Uniform>(end);
+    auto o = ::flatbuffers::Offset<Uniform>(end);
     fbb_.Required(o, Uniform::VT_NAME);
     return o;
   }
 };
 
-inline flatbuffers::Offset<Uniform> CreateUniform(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> name = 0,
+inline ::flatbuffers::Offset<Uniform> CreateUniform(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> name = 0,
     mslb::UniformType uniformType = mslb::UniformType::PushConstant,
     mslb::Type type = mslb::Type::Float,
     uint32_t structIndex = 0,
-    flatbuffers::Offset<flatbuffers::Vector<const mslb::ArrayInfo *>> arrayElements = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<const mslb::ArrayInfo *>> arrayElements = 0,
     uint32_t descriptorSet = 0,
     uint32_t binding = 0,
     uint32_t inputAttachmentIndex = 0,
@@ -2417,8 +2417,8 @@ inline flatbuffers::Offset<Uniform> CreateUniform(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<Uniform> CreateUniformDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Uniform> CreateUniformDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
     mslb::UniformType uniformType = mslb::UniformType::PushConstant,
     mslb::Type type = mslb::Type::Float,
@@ -2443,7 +2443,7 @@ inline flatbuffers::Offset<Uniform> CreateUniformDirect(
       samplerIndex);
 }
 
-struct Attribute FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct Attribute FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef AttributeBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
@@ -2452,11 +2452,11 @@ struct Attribute FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_LOCATION = 10,
     VT_COMPONENT = 12
   };
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
-  flatbuffers::String *mutable_name() {
-    return GetPointer<flatbuffers::String *>(VT_NAME);
+  ::flatbuffers::String *mutable_name() {
+    return GetPointer<::flatbuffers::String *>(VT_NAME);
   }
   mslb::Type type() const {
     return static_cast<mslb::Type>(GetField<uint8_t>(VT_TYPE, 0));
@@ -2464,11 +2464,11 @@ struct Attribute FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_type(mslb::Type _type = static_cast<mslb::Type>(0)) {
     return SetField<uint8_t>(VT_TYPE, static_cast<uint8_t>(_type), 0);
   }
-  const flatbuffers::Vector<uint32_t> *arrayElements() const {
-    return GetPointer<const flatbuffers::Vector<uint32_t> *>(VT_ARRAYELEMENTS);
+  const ::flatbuffers::Vector<uint32_t> *arrayElements() const {
+    return GetPointer<const ::flatbuffers::Vector<uint32_t> *>(VT_ARRAYELEMENTS);
   }
-  flatbuffers::Vector<uint32_t> *mutable_arrayElements() {
-    return GetPointer<flatbuffers::Vector<uint32_t> *>(VT_ARRAYELEMENTS);
+  ::flatbuffers::Vector<uint32_t> *mutable_arrayElements() {
+    return GetPointer<::flatbuffers::Vector<uint32_t> *>(VT_ARRAYELEMENTS);
   }
   uint32_t location() const {
     return GetField<uint32_t>(VT_LOCATION, 0);
@@ -2482,7 +2482,7 @@ struct Attribute FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_component(uint32_t _component = 0) {
     return SetField<uint32_t>(VT_COMPONENT, _component, 0);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
@@ -2497,15 +2497,15 @@ struct Attribute FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct AttributeBuilder {
   typedef Attribute Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
     fbb_.AddOffset(Attribute::VT_NAME, name);
   }
   void add_type(mslb::Type type) {
     fbb_.AddElement<uint8_t>(Attribute::VT_TYPE, static_cast<uint8_t>(type), 0);
   }
-  void add_arrayElements(flatbuffers::Offset<flatbuffers::Vector<uint32_t>> arrayElements) {
+  void add_arrayElements(::flatbuffers::Offset<::flatbuffers::Vector<uint32_t>> arrayElements) {
     fbb_.AddOffset(Attribute::VT_ARRAYELEMENTS, arrayElements);
   }
   void add_location(uint32_t location) {
@@ -2514,23 +2514,23 @@ struct AttributeBuilder {
   void add_component(uint32_t component) {
     fbb_.AddElement<uint32_t>(Attribute::VT_COMPONENT, component, 0);
   }
-  explicit AttributeBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit AttributeBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<Attribute> Finish() {
+  ::flatbuffers::Offset<Attribute> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Attribute>(end);
+    auto o = ::flatbuffers::Offset<Attribute>(end);
     fbb_.Required(o, Attribute::VT_NAME);
     return o;
   }
 };
 
-inline flatbuffers::Offset<Attribute> CreateAttribute(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> name = 0,
+inline ::flatbuffers::Offset<Attribute> CreateAttribute(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> name = 0,
     mslb::Type type = mslb::Type::Float,
-    flatbuffers::Offset<flatbuffers::Vector<uint32_t>> arrayElements = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<uint32_t>> arrayElements = 0,
     uint32_t location = 0,
     uint32_t component = 0) {
   AttributeBuilder builder_(_fbb);
@@ -2542,8 +2542,8 @@ inline flatbuffers::Offset<Attribute> CreateAttribute(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<Attribute> CreateAttributeDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Attribute> CreateAttributeDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
     mslb::Type type = mslb::Type::Float,
     const std::vector<uint32_t> *arrayElements = nullptr,
@@ -2560,17 +2560,17 @@ inline flatbuffers::Offset<Attribute> CreateAttributeDirect(
       component);
 }
 
-struct FragmentOutput FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct FragmentOutput FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef FragmentOutputBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
     VT_LOCATION = 6
   };
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
-  flatbuffers::String *mutable_name() {
-    return GetPointer<flatbuffers::String *>(VT_NAME);
+  ::flatbuffers::String *mutable_name() {
+    return GetPointer<::flatbuffers::String *>(VT_NAME);
   }
   uint32_t location() const {
     return GetField<uint32_t>(VT_LOCATION, 0);
@@ -2578,7 +2578,7 @@ struct FragmentOutput FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_location(uint32_t _location = 0) {
     return SetField<uint32_t>(VT_LOCATION, _location, 0);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
@@ -2589,29 +2589,29 @@ struct FragmentOutput FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct FragmentOutputBuilder {
   typedef FragmentOutput Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
     fbb_.AddOffset(FragmentOutput::VT_NAME, name);
   }
   void add_location(uint32_t location) {
     fbb_.AddElement<uint32_t>(FragmentOutput::VT_LOCATION, location, 0);
   }
-  explicit FragmentOutputBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit FragmentOutputBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<FragmentOutput> Finish() {
+  ::flatbuffers::Offset<FragmentOutput> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<FragmentOutput>(end);
+    auto o = ::flatbuffers::Offset<FragmentOutput>(end);
     fbb_.Required(o, FragmentOutput::VT_NAME);
     return o;
   }
 };
 
-inline flatbuffers::Offset<FragmentOutput> CreateFragmentOutput(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> name = 0,
+inline ::flatbuffers::Offset<FragmentOutput> CreateFragmentOutput(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> name = 0,
     uint32_t location = 0) {
   FragmentOutputBuilder builder_(_fbb);
   builder_.add_location(location);
@@ -2619,8 +2619,8 @@ inline flatbuffers::Offset<FragmentOutput> CreateFragmentOutput(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<FragmentOutput> CreateFragmentOutputDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<FragmentOutput> CreateFragmentOutputDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
     uint32_t location = 0) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
@@ -2630,7 +2630,7 @@ inline flatbuffers::Offset<FragmentOutput> CreateFragmentOutputDirect(
       location);
 }
 
-struct Shader FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct Shader FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef ShaderBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_SHADER = 4,
@@ -2642,13 +2642,13 @@ struct Shader FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_shader(uint32_t _shader = 0) {
     return SetField<uint32_t>(VT_SHADER, _shader, 0);
   }
-  const flatbuffers::Vector<uint32_t> *uniformIds() const {
-    return GetPointer<const flatbuffers::Vector<uint32_t> *>(VT_UNIFORMIDS);
+  const ::flatbuffers::Vector<uint32_t> *uniformIds() const {
+    return GetPointer<const ::flatbuffers::Vector<uint32_t> *>(VT_UNIFORMIDS);
   }
-  flatbuffers::Vector<uint32_t> *mutable_uniformIds() {
-    return GetPointer<flatbuffers::Vector<uint32_t> *>(VT_UNIFORMIDS);
+  ::flatbuffers::Vector<uint32_t> *mutable_uniformIds() {
+    return GetPointer<::flatbuffers::Vector<uint32_t> *>(VT_UNIFORMIDS);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_SHADER, 4) &&
            VerifyOffset(verifier, VT_UNIFORMIDS) &&
@@ -2659,37 +2659,37 @@ struct Shader FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct ShaderBuilder {
   typedef Shader Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
   void add_shader(uint32_t shader) {
     fbb_.AddElement<uint32_t>(Shader::VT_SHADER, shader, 0);
   }
-  void add_uniformIds(flatbuffers::Offset<flatbuffers::Vector<uint32_t>> uniformIds) {
+  void add_uniformIds(::flatbuffers::Offset<::flatbuffers::Vector<uint32_t>> uniformIds) {
     fbb_.AddOffset(Shader::VT_UNIFORMIDS, uniformIds);
   }
-  explicit ShaderBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit ShaderBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<Shader> Finish() {
+  ::flatbuffers::Offset<Shader> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Shader>(end);
+    auto o = ::flatbuffers::Offset<Shader>(end);
     return o;
   }
 };
 
-inline flatbuffers::Offset<Shader> CreateShader(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Shader> CreateShader(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t shader = 0,
-    flatbuffers::Offset<flatbuffers::Vector<uint32_t>> uniformIds = 0) {
+    ::flatbuffers::Offset<::flatbuffers::Vector<uint32_t>> uniformIds = 0) {
   ShaderBuilder builder_(_fbb);
   builder_.add_uniformIds(uniformIds);
   builder_.add_shader(shader);
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<Shader> CreateShaderDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Shader> CreateShaderDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t shader = 0,
     const std::vector<uint32_t> *uniformIds = nullptr) {
   auto uniformIds__ = uniformIds ? _fbb.CreateVector<uint32_t>(*uniformIds) : 0;
@@ -2699,7 +2699,7 @@ inline flatbuffers::Offset<Shader> CreateShaderDirect(
       uniformIds__);
 }
 
-struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct Pipeline FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef PipelineBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_NAME = 4,
@@ -2713,41 +2713,41 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_SHADERS = 20,
     VT_COMPUTLOCALSIZE = 22
   };
-  const flatbuffers::String *name() const {
-    return GetPointer<const flatbuffers::String *>(VT_NAME);
+  const ::flatbuffers::String *name() const {
+    return GetPointer<const ::flatbuffers::String *>(VT_NAME);
   }
-  flatbuffers::String *mutable_name() {
-    return GetPointer<flatbuffers::String *>(VT_NAME);
+  ::flatbuffers::String *mutable_name() {
+    return GetPointer<::flatbuffers::String *>(VT_NAME);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<mslb::Struct>> *structs() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<mslb::Struct>> *>(VT_STRUCTS);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<mslb::Struct>> *structs() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<mslb::Struct>> *>(VT_STRUCTS);
   }
-  flatbuffers::Vector<flatbuffers::Offset<mslb::Struct>> *mutable_structs() {
-    return GetPointer<flatbuffers::Vector<flatbuffers::Offset<mslb::Struct>> *>(VT_STRUCTS);
+  ::flatbuffers::Vector<::flatbuffers::Offset<mslb::Struct>> *mutable_structs() {
+    return GetPointer<::flatbuffers::Vector<::flatbuffers::Offset<mslb::Struct>> *>(VT_STRUCTS);
   }
-  const flatbuffers::Vector<const mslb::SamplerState *> *samplerStates() const {
-    return GetPointer<const flatbuffers::Vector<const mslb::SamplerState *> *>(VT_SAMPLERSTATES);
+  const ::flatbuffers::Vector<const mslb::SamplerState *> *samplerStates() const {
+    return GetPointer<const ::flatbuffers::Vector<const mslb::SamplerState *> *>(VT_SAMPLERSTATES);
   }
-  flatbuffers::Vector<const mslb::SamplerState *> *mutable_samplerStates() {
-    return GetPointer<flatbuffers::Vector<const mslb::SamplerState *> *>(VT_SAMPLERSTATES);
+  ::flatbuffers::Vector<const mslb::SamplerState *> *mutable_samplerStates() {
+    return GetPointer<::flatbuffers::Vector<const mslb::SamplerState *> *>(VT_SAMPLERSTATES);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<mslb::Uniform>> *uniforms() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<mslb::Uniform>> *>(VT_UNIFORMS);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<mslb::Uniform>> *uniforms() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<mslb::Uniform>> *>(VT_UNIFORMS);
   }
-  flatbuffers::Vector<flatbuffers::Offset<mslb::Uniform>> *mutable_uniforms() {
-    return GetPointer<flatbuffers::Vector<flatbuffers::Offset<mslb::Uniform>> *>(VT_UNIFORMS);
+  ::flatbuffers::Vector<::flatbuffers::Offset<mslb::Uniform>> *mutable_uniforms() {
+    return GetPointer<::flatbuffers::Vector<::flatbuffers::Offset<mslb::Uniform>> *>(VT_UNIFORMS);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<mslb::Attribute>> *attributes() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<mslb::Attribute>> *>(VT_ATTRIBUTES);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<mslb::Attribute>> *attributes() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<mslb::Attribute>> *>(VT_ATTRIBUTES);
   }
-  flatbuffers::Vector<flatbuffers::Offset<mslb::Attribute>> *mutable_attributes() {
-    return GetPointer<flatbuffers::Vector<flatbuffers::Offset<mslb::Attribute>> *>(VT_ATTRIBUTES);
+  ::flatbuffers::Vector<::flatbuffers::Offset<mslb::Attribute>> *mutable_attributes() {
+    return GetPointer<::flatbuffers::Vector<::flatbuffers::Offset<mslb::Attribute>> *>(VT_ATTRIBUTES);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<mslb::FragmentOutput>> *fragmentOutputs() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<mslb::FragmentOutput>> *>(VT_FRAGMENTOUTPUTS);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<mslb::FragmentOutput>> *fragmentOutputs() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<mslb::FragmentOutput>> *>(VT_FRAGMENTOUTPUTS);
   }
-  flatbuffers::Vector<flatbuffers::Offset<mslb::FragmentOutput>> *mutable_fragmentOutputs() {
-    return GetPointer<flatbuffers::Vector<flatbuffers::Offset<mslb::FragmentOutput>> *>(VT_FRAGMENTOUTPUTS);
+  ::flatbuffers::Vector<::flatbuffers::Offset<mslb::FragmentOutput>> *mutable_fragmentOutputs() {
+    return GetPointer<::flatbuffers::Vector<::flatbuffers::Offset<mslb::FragmentOutput>> *>(VT_FRAGMENTOUTPUTS);
   }
   uint32_t pushConstantStruct() const {
     return GetField<uint32_t>(VT_PUSHCONSTANTSTRUCT, 0);
@@ -2761,11 +2761,11 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   mslb::RenderState *mutable_renderState() {
     return GetPointer<mslb::RenderState *>(VT_RENDERSTATE);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<mslb::Shader>> *shaders() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<mslb::Shader>> *>(VT_SHADERS);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<mslb::Shader>> *shaders() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<mslb::Shader>> *>(VT_SHADERS);
   }
-  flatbuffers::Vector<flatbuffers::Offset<mslb::Shader>> *mutable_shaders() {
-    return GetPointer<flatbuffers::Vector<flatbuffers::Offset<mslb::Shader>> *>(VT_SHADERS);
+  ::flatbuffers::Vector<::flatbuffers::Offset<mslb::Shader>> *mutable_shaders() {
+    return GetPointer<::flatbuffers::Vector<::flatbuffers::Offset<mslb::Shader>> *>(VT_SHADERS);
   }
   const mslb::ComputeLocalSize *computLocalSize() const {
     return GetStruct<const mslb::ComputeLocalSize *>(VT_COMPUTLOCALSIZE);
@@ -2773,7 +2773,7 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   mslb::ComputeLocalSize *mutable_computLocalSize() {
     return GetStruct<mslb::ComputeLocalSize *>(VT_COMPUTLOCALSIZE);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
@@ -2804,45 +2804,45 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct PipelineBuilder {
   typedef Pipeline Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_name(flatbuffers::Offset<flatbuffers::String> name) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_name(::flatbuffers::Offset<::flatbuffers::String> name) {
     fbb_.AddOffset(Pipeline::VT_NAME, name);
   }
-  void add_structs(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::Struct>>> structs) {
+  void add_structs(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<mslb::Struct>>> structs) {
     fbb_.AddOffset(Pipeline::VT_STRUCTS, structs);
   }
-  void add_samplerStates(flatbuffers::Offset<flatbuffers::Vector<const mslb::SamplerState *>> samplerStates) {
+  void add_samplerStates(::flatbuffers::Offset<::flatbuffers::Vector<const mslb::SamplerState *>> samplerStates) {
     fbb_.AddOffset(Pipeline::VT_SAMPLERSTATES, samplerStates);
   }
-  void add_uniforms(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::Uniform>>> uniforms) {
+  void add_uniforms(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<mslb::Uniform>>> uniforms) {
     fbb_.AddOffset(Pipeline::VT_UNIFORMS, uniforms);
   }
-  void add_attributes(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::Attribute>>> attributes) {
+  void add_attributes(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<mslb::Attribute>>> attributes) {
     fbb_.AddOffset(Pipeline::VT_ATTRIBUTES, attributes);
   }
-  void add_fragmentOutputs(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::FragmentOutput>>> fragmentOutputs) {
+  void add_fragmentOutputs(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<mslb::FragmentOutput>>> fragmentOutputs) {
     fbb_.AddOffset(Pipeline::VT_FRAGMENTOUTPUTS, fragmentOutputs);
   }
   void add_pushConstantStruct(uint32_t pushConstantStruct) {
     fbb_.AddElement<uint32_t>(Pipeline::VT_PUSHCONSTANTSTRUCT, pushConstantStruct, 0);
   }
-  void add_renderState(flatbuffers::Offset<mslb::RenderState> renderState) {
+  void add_renderState(::flatbuffers::Offset<mslb::RenderState> renderState) {
     fbb_.AddOffset(Pipeline::VT_RENDERSTATE, renderState);
   }
-  void add_shaders(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::Shader>>> shaders) {
+  void add_shaders(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<mslb::Shader>>> shaders) {
     fbb_.AddOffset(Pipeline::VT_SHADERS, shaders);
   }
   void add_computLocalSize(const mslb::ComputeLocalSize *computLocalSize) {
     fbb_.AddStruct(Pipeline::VT_COMPUTLOCALSIZE, computLocalSize);
   }
-  explicit PipelineBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit PipelineBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<Pipeline> Finish() {
+  ::flatbuffers::Offset<Pipeline> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Pipeline>(end);
+    auto o = ::flatbuffers::Offset<Pipeline>(end);
     fbb_.Required(o, Pipeline::VT_NAME);
     fbb_.Required(o, Pipeline::VT_STRUCTS);
     fbb_.Required(o, Pipeline::VT_SAMPLERSTATES);
@@ -2855,17 +2855,17 @@ struct PipelineBuilder {
   }
 };
 
-inline flatbuffers::Offset<Pipeline> CreatePipeline(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::String> name = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::Struct>>> structs = 0,
-    flatbuffers::Offset<flatbuffers::Vector<const mslb::SamplerState *>> samplerStates = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::Uniform>>> uniforms = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::Attribute>>> attributes = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::FragmentOutput>>> fragmentOutputs = 0,
+inline ::flatbuffers::Offset<Pipeline> CreatePipeline(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::String> name = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<mslb::Struct>>> structs = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<const mslb::SamplerState *>> samplerStates = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<mslb::Uniform>>> uniforms = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<mslb::Attribute>>> attributes = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<mslb::FragmentOutput>>> fragmentOutputs = 0,
     uint32_t pushConstantStruct = 0,
-    flatbuffers::Offset<mslb::RenderState> renderState = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::Shader>>> shaders = 0,
+    ::flatbuffers::Offset<mslb::RenderState> renderState = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<mslb::Shader>>> shaders = 0,
     const mslb::ComputeLocalSize *computLocalSize = nullptr) {
   PipelineBuilder builder_(_fbb);
   builder_.add_computLocalSize(computLocalSize);
@@ -2881,25 +2881,25 @@ inline flatbuffers::Offset<Pipeline> CreatePipeline(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<Pipeline> CreatePipelineDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Pipeline> CreatePipelineDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const char *name = nullptr,
-    const std::vector<flatbuffers::Offset<mslb::Struct>> *structs = nullptr,
+    const std::vector<::flatbuffers::Offset<mslb::Struct>> *structs = nullptr,
     const std::vector<mslb::SamplerState> *samplerStates = nullptr,
-    const std::vector<flatbuffers::Offset<mslb::Uniform>> *uniforms = nullptr,
-    const std::vector<flatbuffers::Offset<mslb::Attribute>> *attributes = nullptr,
-    const std::vector<flatbuffers::Offset<mslb::FragmentOutput>> *fragmentOutputs = nullptr,
+    const std::vector<::flatbuffers::Offset<mslb::Uniform>> *uniforms = nullptr,
+    const std::vector<::flatbuffers::Offset<mslb::Attribute>> *attributes = nullptr,
+    const std::vector<::flatbuffers::Offset<mslb::FragmentOutput>> *fragmentOutputs = nullptr,
     uint32_t pushConstantStruct = 0,
-    flatbuffers::Offset<mslb::RenderState> renderState = 0,
-    const std::vector<flatbuffers::Offset<mslb::Shader>> *shaders = nullptr,
+    ::flatbuffers::Offset<mslb::RenderState> renderState = 0,
+    const std::vector<::flatbuffers::Offset<mslb::Shader>> *shaders = nullptr,
     const mslb::ComputeLocalSize *computLocalSize = nullptr) {
   auto name__ = name ? _fbb.CreateString(name) : 0;
-  auto structs__ = structs ? _fbb.CreateVector<flatbuffers::Offset<mslb::Struct>>(*structs) : 0;
+  auto structs__ = structs ? _fbb.CreateVector<::flatbuffers::Offset<mslb::Struct>>(*structs) : 0;
   auto samplerStates__ = samplerStates ? _fbb.CreateVectorOfStructs<mslb::SamplerState>(*samplerStates) : 0;
-  auto uniforms__ = uniforms ? _fbb.CreateVector<flatbuffers::Offset<mslb::Uniform>>(*uniforms) : 0;
-  auto attributes__ = attributes ? _fbb.CreateVector<flatbuffers::Offset<mslb::Attribute>>(*attributes) : 0;
-  auto fragmentOutputs__ = fragmentOutputs ? _fbb.CreateVector<flatbuffers::Offset<mslb::FragmentOutput>>(*fragmentOutputs) : 0;
-  auto shaders__ = shaders ? _fbb.CreateVector<flatbuffers::Offset<mslb::Shader>>(*shaders) : 0;
+  auto uniforms__ = uniforms ? _fbb.CreateVector<::flatbuffers::Offset<mslb::Uniform>>(*uniforms) : 0;
+  auto attributes__ = attributes ? _fbb.CreateVector<::flatbuffers::Offset<mslb::Attribute>>(*attributes) : 0;
+  auto fragmentOutputs__ = fragmentOutputs ? _fbb.CreateVector<::flatbuffers::Offset<mslb::FragmentOutput>>(*fragmentOutputs) : 0;
+  auto shaders__ = shaders ? _fbb.CreateVector<::flatbuffers::Offset<mslb::Shader>>(*shaders) : 0;
   return mslb::CreatePipeline(
       _fbb,
       name__,
@@ -2914,17 +2914,17 @@ inline flatbuffers::Offset<Pipeline> CreatePipelineDirect(
       computLocalSize);
 }
 
-struct ShaderData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct ShaderData FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef ShaderDataBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_DATA = 4,
     VT_USESPUSHCONSTANTS = 6
   };
-  const flatbuffers::Vector<uint8_t> *data() const {
-    return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_DATA);
+  const ::flatbuffers::Vector<uint8_t> *data() const {
+    return GetPointer<const ::flatbuffers::Vector<uint8_t> *>(VT_DATA);
   }
-  flatbuffers::Vector<uint8_t> *mutable_data() {
-    return GetPointer<flatbuffers::Vector<uint8_t> *>(VT_DATA);
+  ::flatbuffers::Vector<uint8_t> *mutable_data() {
+    return GetPointer<::flatbuffers::Vector<uint8_t> *>(VT_DATA);
   }
   bool usesPushConstants() const {
     return GetField<uint8_t>(VT_USESPUSHCONSTANTS, 1) != 0;
@@ -2932,7 +2932,7 @@ struct ShaderData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_usesPushConstants(bool _usesPushConstants = 1) {
     return SetField<uint8_t>(VT_USESPUSHCONSTANTS, static_cast<uint8_t>(_usesPushConstants), 1);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_DATA) &&
            verifier.VerifyVector(data()) &&
@@ -2943,29 +2943,29 @@ struct ShaderData FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct ShaderDataBuilder {
   typedef ShaderData Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
-  void add_data(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> data) {
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
+  void add_data(::flatbuffers::Offset<::flatbuffers::Vector<uint8_t>> data) {
     fbb_.AddOffset(ShaderData::VT_DATA, data);
   }
   void add_usesPushConstants(bool usesPushConstants) {
     fbb_.AddElement<uint8_t>(ShaderData::VT_USESPUSHCONSTANTS, static_cast<uint8_t>(usesPushConstants), 1);
   }
-  explicit ShaderDataBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit ShaderDataBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<ShaderData> Finish() {
+  ::flatbuffers::Offset<ShaderData> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<ShaderData>(end);
+    auto o = ::flatbuffers::Offset<ShaderData>(end);
     fbb_.Required(o, ShaderData::VT_DATA);
     return o;
   }
 };
 
-inline flatbuffers::Offset<ShaderData> CreateShaderData(
-    flatbuffers::FlatBufferBuilder &_fbb,
-    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> data = 0,
+inline ::flatbuffers::Offset<ShaderData> CreateShaderData(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
+    ::flatbuffers::Offset<::flatbuffers::Vector<uint8_t>> data = 0,
     bool usesPushConstants = true) {
   ShaderDataBuilder builder_(_fbb);
   builder_.add_data(data);
@@ -2973,8 +2973,8 @@ inline flatbuffers::Offset<ShaderData> CreateShaderData(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<ShaderData> CreateShaderDataDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<ShaderData> CreateShaderDataDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     const std::vector<uint8_t> *data = nullptr,
     bool usesPushConstants = true) {
   auto data__ = data ? _fbb.CreateVector<uint8_t>(*data) : 0;
@@ -2984,7 +2984,7 @@ inline flatbuffers::Offset<ShaderData> CreateShaderDataDirect(
       usesPushConstants);
 }
 
-struct Module FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+struct Module FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   typedef ModuleBuilder Builder;
   enum FlatBuffersVTableOffset FLATBUFFERS_VTABLE_UNDERLYING_TYPE {
     VT_VERSION = 4,
@@ -3019,25 +3019,25 @@ struct Module FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool mutate_adjustableBindings(bool _adjustableBindings = 0) {
     return SetField<uint8_t>(VT_ADJUSTABLEBINDINGS, static_cast<uint8_t>(_adjustableBindings), 0);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<mslb::Pipeline>> *pipelines() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<mslb::Pipeline>> *>(VT_PIPELINES);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<mslb::Pipeline>> *pipelines() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<mslb::Pipeline>> *>(VT_PIPELINES);
   }
-  flatbuffers::Vector<flatbuffers::Offset<mslb::Pipeline>> *mutable_pipelines() {
-    return GetPointer<flatbuffers::Vector<flatbuffers::Offset<mslb::Pipeline>> *>(VT_PIPELINES);
+  ::flatbuffers::Vector<::flatbuffers::Offset<mslb::Pipeline>> *mutable_pipelines() {
+    return GetPointer<::flatbuffers::Vector<::flatbuffers::Offset<mslb::Pipeline>> *>(VT_PIPELINES);
   }
-  const flatbuffers::Vector<flatbuffers::Offset<mslb::ShaderData>> *shaders() const {
-    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<mslb::ShaderData>> *>(VT_SHADERS);
+  const ::flatbuffers::Vector<::flatbuffers::Offset<mslb::ShaderData>> *shaders() const {
+    return GetPointer<const ::flatbuffers::Vector<::flatbuffers::Offset<mslb::ShaderData>> *>(VT_SHADERS);
   }
-  flatbuffers::Vector<flatbuffers::Offset<mslb::ShaderData>> *mutable_shaders() {
-    return GetPointer<flatbuffers::Vector<flatbuffers::Offset<mslb::ShaderData>> *>(VT_SHADERS);
+  ::flatbuffers::Vector<::flatbuffers::Offset<mslb::ShaderData>> *mutable_shaders() {
+    return GetPointer<::flatbuffers::Vector<::flatbuffers::Offset<mslb::ShaderData>> *>(VT_SHADERS);
   }
-  const flatbuffers::Vector<uint8_t> *sharedData() const {
-    return GetPointer<const flatbuffers::Vector<uint8_t> *>(VT_SHAREDDATA);
+  const ::flatbuffers::Vector<uint8_t> *sharedData() const {
+    return GetPointer<const ::flatbuffers::Vector<uint8_t> *>(VT_SHAREDDATA);
   }
-  flatbuffers::Vector<uint8_t> *mutable_sharedData() {
-    return GetPointer<flatbuffers::Vector<uint8_t> *>(VT_SHAREDDATA);
+  ::flatbuffers::Vector<uint8_t> *mutable_sharedData() {
+    return GetPointer<::flatbuffers::Vector<uint8_t> *>(VT_SHAREDDATA);
   }
-  bool Verify(flatbuffers::Verifier &verifier) const {
+  bool Verify(::flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_VERSION, 4) &&
            VerifyField<uint32_t>(verifier, VT_TARGETID, 4) &&
@@ -3057,8 +3057,8 @@ struct Module FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
 
 struct ModuleBuilder {
   typedef Module Table;
-  flatbuffers::FlatBufferBuilder &fbb_;
-  flatbuffers::uoffset_t start_;
+  ::flatbuffers::FlatBufferBuilder &fbb_;
+  ::flatbuffers::uoffset_t start_;
   void add_version(uint32_t version) {
     fbb_.AddElement<uint32_t>(Module::VT_VERSION, version, 0);
   }
@@ -3071,22 +3071,22 @@ struct ModuleBuilder {
   void add_adjustableBindings(bool adjustableBindings) {
     fbb_.AddElement<uint8_t>(Module::VT_ADJUSTABLEBINDINGS, static_cast<uint8_t>(adjustableBindings), 0);
   }
-  void add_pipelines(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::Pipeline>>> pipelines) {
+  void add_pipelines(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<mslb::Pipeline>>> pipelines) {
     fbb_.AddOffset(Module::VT_PIPELINES, pipelines);
   }
-  void add_shaders(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::ShaderData>>> shaders) {
+  void add_shaders(::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<mslb::ShaderData>>> shaders) {
     fbb_.AddOffset(Module::VT_SHADERS, shaders);
   }
-  void add_sharedData(flatbuffers::Offset<flatbuffers::Vector<uint8_t>> sharedData) {
+  void add_sharedData(::flatbuffers::Offset<::flatbuffers::Vector<uint8_t>> sharedData) {
     fbb_.AddOffset(Module::VT_SHAREDDATA, sharedData);
   }
-  explicit ModuleBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+  explicit ModuleBuilder(::flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
   }
-  flatbuffers::Offset<Module> Finish() {
+  ::flatbuffers::Offset<Module> Finish() {
     const auto end = fbb_.EndTable(start_);
-    auto o = flatbuffers::Offset<Module>(end);
+    auto o = ::flatbuffers::Offset<Module>(end);
     fbb_.Required(o, Module::VT_PIPELINES);
     fbb_.Required(o, Module::VT_SHADERS);
     fbb_.Required(o, Module::VT_SHAREDDATA);
@@ -3094,15 +3094,15 @@ struct ModuleBuilder {
   }
 };
 
-inline flatbuffers::Offset<Module> CreateModule(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Module> CreateModule(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t version = 0,
     uint32_t targetId = 0,
     uint32_t targetVersion = 0,
     bool adjustableBindings = false,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::Pipeline>>> pipelines = 0,
-    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<mslb::ShaderData>>> shaders = 0,
-    flatbuffers::Offset<flatbuffers::Vector<uint8_t>> sharedData = 0) {
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<mslb::Pipeline>>> pipelines = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<::flatbuffers::Offset<mslb::ShaderData>>> shaders = 0,
+    ::flatbuffers::Offset<::flatbuffers::Vector<uint8_t>> sharedData = 0) {
   ModuleBuilder builder_(_fbb);
   builder_.add_sharedData(sharedData);
   builder_.add_shaders(shaders);
@@ -3114,17 +3114,17 @@ inline flatbuffers::Offset<Module> CreateModule(
   return builder_.Finish();
 }
 
-inline flatbuffers::Offset<Module> CreateModuleDirect(
-    flatbuffers::FlatBufferBuilder &_fbb,
+inline ::flatbuffers::Offset<Module> CreateModuleDirect(
+    ::flatbuffers::FlatBufferBuilder &_fbb,
     uint32_t version = 0,
     uint32_t targetId = 0,
     uint32_t targetVersion = 0,
     bool adjustableBindings = false,
-    const std::vector<flatbuffers::Offset<mslb::Pipeline>> *pipelines = nullptr,
-    const std::vector<flatbuffers::Offset<mslb::ShaderData>> *shaders = nullptr,
+    const std::vector<::flatbuffers::Offset<mslb::Pipeline>> *pipelines = nullptr,
+    const std::vector<::flatbuffers::Offset<mslb::ShaderData>> *shaders = nullptr,
     const std::vector<uint8_t> *sharedData = nullptr) {
-  auto pipelines__ = pipelines ? _fbb.CreateVector<flatbuffers::Offset<mslb::Pipeline>>(*pipelines) : 0;
-  auto shaders__ = shaders ? _fbb.CreateVector<flatbuffers::Offset<mslb::ShaderData>>(*shaders) : 0;
+  auto pipelines__ = pipelines ? _fbb.CreateVector<::flatbuffers::Offset<mslb::Pipeline>>(*pipelines) : 0;
+  auto shaders__ = shaders ? _fbb.CreateVector<::flatbuffers::Offset<mslb::ShaderData>>(*shaders) : 0;
   auto sharedData__ = sharedData ? _fbb.CreateVector<uint8_t>(*sharedData) : 0;
   return mslb::CreateModule(
       _fbb,
@@ -3138,40 +3138,40 @@ inline flatbuffers::Offset<Module> CreateModuleDirect(
 }
 
 inline const mslb::Module *GetModule(const void *buf) {
-  return flatbuffers::GetRoot<mslb::Module>(buf);
+  return ::flatbuffers::GetRoot<mslb::Module>(buf);
 }
 
 inline const mslb::Module *GetSizePrefixedModule(const void *buf) {
-  return flatbuffers::GetSizePrefixedRoot<mslb::Module>(buf);
+  return ::flatbuffers::GetSizePrefixedRoot<mslb::Module>(buf);
 }
 
 inline Module *GetMutableModule(void *buf) {
-  return flatbuffers::GetMutableRoot<Module>(buf);
+  return ::flatbuffers::GetMutableRoot<Module>(buf);
 }
 
 inline mslb::Module *GetMutableSizePrefixedModule(void *buf) {
-  return flatbuffers::GetMutableSizePrefixedRoot<mslb::Module>(buf);
+  return ::flatbuffers::GetMutableSizePrefixedRoot<mslb::Module>(buf);
 }
 
 inline bool VerifyModuleBuffer(
-    flatbuffers::Verifier &verifier) {
+    ::flatbuffers::Verifier &verifier) {
   return verifier.VerifyBuffer<mslb::Module>(nullptr);
 }
 
 inline bool VerifySizePrefixedModuleBuffer(
-    flatbuffers::Verifier &verifier) {
+    ::flatbuffers::Verifier &verifier) {
   return verifier.VerifySizePrefixedBuffer<mslb::Module>(nullptr);
 }
 
 inline void FinishModuleBuffer(
-    flatbuffers::FlatBufferBuilder &fbb,
-    flatbuffers::Offset<mslb::Module> root) {
+    ::flatbuffers::FlatBufferBuilder &fbb,
+    ::flatbuffers::Offset<mslb::Module> root) {
   fbb.Finish(root);
 }
 
 inline void FinishSizePrefixedModuleBuffer(
-    flatbuffers::FlatBufferBuilder &fbb,
-    flatbuffers::Offset<mslb::Module> root) {
+    ::flatbuffers::FlatBufferBuilder &fbb,
+    ::flatbuffers::Offset<mslb::Module> root) {
   fbb.FinishSizePrefixed(root);
 }
 
