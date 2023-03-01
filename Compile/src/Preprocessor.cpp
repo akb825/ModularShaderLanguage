@@ -85,7 +85,7 @@ void handleException(Output& output, Output::Level level,
 	std::size_t line = e.line_no();
 	if (extraLineFile && std::strcmp(extraLineFile, e.file_name()) == 0)
 		--line;
-	output.addMessage(level, e.file_name(), e.line_no(), e.column_no(), false, message);
+	output.addMessage(level, e.file_name(), line, e.column_no(), false, message);
 }
 
 class Hooks : public boost::wave::context_policies::default_preprocessing_hooks
