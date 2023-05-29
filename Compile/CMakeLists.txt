@@ -27,10 +27,9 @@ endif()
 file(GLOB_RECURSE glslangSources
 	${GLSLANG_DIR}/glslang/MachineIndependent/*.cpp ${GLSLANG_DIR}/glslang/GenericCodeGen/*.cpp
 	${GLSLANG_DIR}/glslang/Public/*.h ${GLSLANG_DIR}/glslang/Include/*.h
+	${GLSLANG_DIR}/glslang/ResourceLimits/*.cpp ${GLSLANG_DIR}/glslang/ResourceLimits/*.h
 	${GLSLANG_DIR}/OGLCompilersDLL/*.cpp ${GLSLANG_DIR}/OGLCompilersDLL/*.h
 	${GLSLANG_DIR}/SPIRV/*.cpp ${GLSLANG_DIR}/SPIRV/*.h)
-set(glslResourceSources
-	${GLSLANG_DIR}/StandAlone/ResourceLimits.cpp ${GLSLANG_DIR}/glslang/Public/ResourceLimits.h)
 file(GLOB spirvCrossSources ${SPIRV_CROSS_DIR}/spirv_*.cpp ${SPIRV_CROSS_DIR}/spirv_*.hpp)
 
 # SPIRV-Tools has too complex of a build configuration to just embed the source in this library,
@@ -39,11 +38,18 @@ file(GLOB spirvCrossSources ${SPIRV_CROSS_DIR}/spirv_*.cpp ${SPIRV_CROSS_DIR}/sp
 set(SPIRV_SKIP_EXECUTABLES ON CACHE BOOL "" FORCE)
 set(SPIRV_SKIP_TESTS ON CACHE BOOL "" FORCE)
 set(SKIP_SPIRV_TOOLS_INSTALL ${MSL_SHARED} CACHE BOOL "" FORCE)
+# Ignore warnings for SPIRV-Tools.
+if (NOT MSVC)
+	set(origCxxFlags ${CMAKE_CXX_FLAGS})
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
+endif()
 add_subdirectory(SPIRV-Tools)
+if (NOT MSVC)
+	set(CMAKE_CXX_FLAGS ${origCxxFlags})
+endif()
 
 # Don't care about warnings for external files.
-set(externalSources
-	${glslangSources} ${glslangOsSources} ${glslResourceSources} ${spirvCrossSources})
+set(externalSources ${glslangSources} ${glslangOsSources} ${spirvCrossSources})
 if (MSVC)
 	set_source_files_properties(${externalSources} PROPERTIES COMPILE_FLAGS /w)
 else()

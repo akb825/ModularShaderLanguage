@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2019 Aaron Barany
+ * Copyright 2016-2023 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,12 +20,17 @@
 #if MSL_GCC || MSL_CLANG
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wconversion"
+#elif MSL_MSC
+#pragma warning(push)
+#pragma warning(disable: 4244)
 #endif
 
 #include "mslb_generated.h"
 
 #if MSL_GCC || MSL_CLANG
 #pragma GCC diagnostic pop
+#elif MSL_MSC
+#pragma warning(pop)
 #endif
 
 #include <fstream>

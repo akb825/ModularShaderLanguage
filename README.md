@@ -55,15 +55,17 @@ The following software is required to build MSL:
 
 The glslang, SPIRV-Cross, and SPIRV-Tools submodules can be grabbed by running `git submodule update --init --recursive`.
 
-Additionally, additional tools such as Microsoft's HLSL compiler and Apple's Metal compiler will be required when compiling shaders for certain platforms.
+Additional tools such as Microsoft's HLSL compiler and Apple's Metal compiler will be required when compiling shaders for certain platforms.
 
 # Platforms
 
 MSL has been built for and tested on the following platforms:
 
 * Linux (GCC and LLVM clang)
-* Windows (requires Visual Studio 2015 or later)
-* Mac OS X
+* Windows (requires Visual Studio 2017 or later)
+* macOS
+
+C++17 must be supported by the compiler being used.
 
 # Building
 
