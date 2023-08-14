@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2023 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,9 +30,13 @@
 #pragma GCC diagnostic ignored "-Wunused-local-typedef"
 #endif
 
+#define BOOST_FILESYSTEM_NO_DEPRECATED 1
+
 #include <boost/algorithm/string/replace.hpp>
-#include <boost/wave.hpp>
+#include <boost/wave/cpplexer/cpplexer_exceptions.hpp>
 #include <boost/wave/cpplexer/cpp_lex_iterator.hpp>
+#include <boost/wave/cpp_context.hpp>
+#include <boost/wave/cpp_exceptions.hpp>
 
 #if MSL_MSC
 #pragma warning(pop)
