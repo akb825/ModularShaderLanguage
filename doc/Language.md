@@ -38,7 +38,7 @@ The shader file is first run through a C99 preprocessor. The following \#defines
 
 ### Storage
 
-* `HAS_UNIFORM_BUFFERS`: Set to 1 if uniform buffers are available, 0 if not. If disabled, uniform buffers will be converted to push constants.(equivalent to individual uniforms)
+* `HAS_UNIFORM_BLOCKS`: Set to 1 if uniform blocks are available, 0 if not. If disabled, uniform blocks will be converted to push constants. (equivalent to individual uniforms)
 * `HAS_BUFFERS`: Set to 1 if shader storage buffers are available, 0 if not.
 * `HAS_STD140`: Set to 1 if the `std140` block layout is available, 0 if not.
 * `HAS_STD430`: Set to 1 if the `std430` block layout is available, 0 if not.
