@@ -32,7 +32,7 @@ jobs:
           cmake_args: "-DMSL_SHARED=ON"
     steps:
     - name: checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Download submodules
       run: |-
         git submodule update --init --recursive
@@ -101,7 +101,7 @@ jobs:
           cmake_args: "-DMSL_SHARED=ON"
     steps:
     - name: checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Download submodules
       run: |-
         git submodule update --init --recursive
@@ -180,7 +180,7 @@ jobs:
           cmake_args: "-DMSL_SHARED=ON -DBOOST_ROOT=D:/boost"
     steps:
     - name: checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Download submodules
       run: git submodule update --init --recursive
       shell: bash
