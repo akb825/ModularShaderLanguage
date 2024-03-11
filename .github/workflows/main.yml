@@ -9,7 +9,7 @@ on:
 env:
   CTEST_OUTPUT_ON_FAILURE: '1'
   GTEST_OUTPUT: xml:${{ github.workspace }}/test-results/
-  boost_version: 1.83.0
+  boost_version: 1.84.0
   cmake_common_args: >-
     -DCMAKE_FIND_ROOT_PATH=${{ github.workspace }}/dependencies
     -DCMAKE_PREFIX_PATH=${{ github.workspace }}/dependencies
@@ -132,7 +132,7 @@ jobs:
       run: ctest
       working-directory: "${{ github.workspace }}/build/Debug"
     - name: Publish test results
-      uses: EnricoMi/publish-unit-test-result-action/composite@v2
+      uses: EnricoMi/publish-unit-test-result-action/macos@v2
       with:
         check_name: Tests( Mac ${{ matrix.lib_type }} Debug)
         junit_files: "${{ env.test_results_location }}/*.xml"
@@ -153,7 +153,7 @@ jobs:
       run: ctest
       working-directory: "${{ github.workspace }}/build/Release"
     - name: Publish test results
-      uses: EnricoMi/publish-unit-test-result-action/composite@v2
+      uses: EnricoMi/publish-unit-test-result-action/macos@v2
       with:
         check_name: Mac-${{ matrix.lib_type }}-Release
         junit_files: "${{ env.test_results_location }}/*.xml"
@@ -231,7 +231,7 @@ jobs:
         ctest -C Debug
       working-directory: "${{ github.workspace }}/build"
     - name: Publish test results
-      uses: EnricoMi/publish-unit-test-result-action/composite@v2
+      uses: EnricoMi/publish-unit-test-result-action/windows@v2
       with:
         check_name: Tests (Windows ${{ matrix.arch }} ${{ matrix.lib_type }} Debug)
         junit_files: "${{ env.test_results_location }}/*.xml"
@@ -250,7 +250,7 @@ jobs:
         ctest -C Release
       working-directory: "${{ github.workspace }}/build"
     - name: Publish test results
-      uses: EnricoMi/publish-unit-test-result-action/composite@v2
+      uses: EnricoMi/publish-unit-test-result-action/windows@v2
       with:
         check_name: Tests (Windows ${{ matrix.arch }} ${{ matrix.lib_type }} Release)
         junit_files: "${{ env.test_results_location }}/*.xml"
