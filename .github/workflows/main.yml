@@ -155,7 +155,7 @@ jobs:
     - name: Publish test results
       uses: EnricoMi/publish-unit-test-result-action/macos@v2
       with:
-        check_name: Mac (${{ matrix.lib_type }} Release)
+        check_name: Tests (Mac ${{ matrix.lib_type }} Release)
         junit_files: "${{ env.test_results_location }}/*.xml"
   Windows:
     runs-on: windows-latest
