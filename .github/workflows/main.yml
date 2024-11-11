@@ -9,14 +9,14 @@ on:
 env:
   CTEST_OUTPUT_ON_FAILURE: '1'
   GTEST_OUTPUT: xml:${{ github.workspace }}/test-results/
-  boost_version: 1.84.0
+  boost_version: 1.86.0
   cmake_common_args: >-
     -DCMAKE_FIND_ROOT_PATH=${{ github.workspace }}/dependencies
     -DCMAKE_PREFIX_PATH=${{ github.workspace }}/dependencies
   cores_count: '4'
   cores_mac_count: '3'
   dependency_location: "${{ github.workspace }}/dependencies"
-  gtest_version: release-1.12.1
+  gtest_version: v1.15.2
   msvc_version: 14.2
   msvc_toolset: 142
   test_results_location: "${{ github.workspace }}/test-results"
@@ -134,7 +134,7 @@ jobs:
     - name: Publish test results
       uses: EnricoMi/publish-unit-test-result-action/macos@v2
       with:
-        check_name: Tests( Mac ${{ matrix.lib_type }} Debug)
+        check_name: Tests (Mac ${{ matrix.lib_type }} Debug)
         junit_files: "${{ env.test_results_location }}/*.xml"
     - name: Clear test results
       run: rm *.xml
@@ -155,7 +155,7 @@ jobs:
     - name: Publish test results
       uses: EnricoMi/publish-unit-test-result-action/macos@v2
       with:
-        check_name: Mac-${{ matrix.lib_type }}-Release
+        check_name: Mac (${{ matrix.lib_type }} Release)
         junit_files: "${{ env.test_results_location }}/*.xml"
   Windows:
     runs-on: windows-latest
@@ -192,7 +192,7 @@ jobs:
         max_attempts: 5
         command: |-
           $underscoreVersion = "${{ env.boost_version }}".replace(".", "_")
-          $url = "https://sourceforge.net/projects/boost/files/boost-binaries/${{ env.boost_version }}/boost_$underscoreVersion-msvc-${{ env.msvc_version }}-${{ matrix.bits }}.exe"
+          $url = "https://versaweb.dl.sourceforge.net/project/boost/boost-binaries/${{ env.boost_version }}/boost_$underscoreVersion-msvc-${{ env.msvc_version }}-${{ matrix.bits }}.exe"
           (New-Object System.Net.WebClient).DownloadFile($url, "$env:TEMP\boost.exe")
           Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=D:\boost"
     - name: Checkout gtest

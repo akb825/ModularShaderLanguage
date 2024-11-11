@@ -19,7 +19,6 @@
 #include <MSL/Config.h>
 #include <MSL/Compile/Export.h>
 #include <MSL/Compile/Target.h>
-#include <map>
 
 /**
  * @file
