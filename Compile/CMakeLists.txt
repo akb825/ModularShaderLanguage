@@ -1,4 +1,4 @@
-find_package(Boost COMPONENTS filesystem wave REQUIRED)
+find_package(Boost CONFIG COMPONENTS filesystem wave REQUIRED)
 find_package(Threads)
 
 set(GLSLANG_DIR ${CMAKE_CURRENT_SOURCE_DIR}/glslang)

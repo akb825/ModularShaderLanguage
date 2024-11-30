@@ -1,4 +1,4 @@
-find_package(Boost COMPONENTS program_options filesystem)
+find_package(Boost CONFIG COMPONENTS program_options filesystem)
 
 file(GLOB_RECURSE sources *.cpp *.h)
 add_executable(mslb-extract ${sources})

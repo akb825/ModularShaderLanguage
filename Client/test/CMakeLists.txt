@@ -2,7 +2,7 @@ if (NOT GTEST_FOUND OR NOT MSL_BUILD_TESTS)
 	return()
 endif()
 
-find_package(Boost COMPONENTS filesystem REQUIRED)
+find_package(Boost CONFIG COMPONENTS filesystem REQUIRED)
 find_package(Threads)
 
 file(GLOB_RECURSE sources *.cpp *.h)

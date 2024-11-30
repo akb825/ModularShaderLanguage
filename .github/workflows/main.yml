@@ -165,19 +165,19 @@ jobs:
         - arch: Win32
           bits: 32
           lib_type: Static
-          cmake_args: "-DMSL_SHARED=OFF -DBOOST_ROOT=D:/boost"
+          cmake_args: "-DMSL_SHARED=OFF"
         - arch: Win32
           bits: 32
           lib_type: Shared
-          cmake_args: "-DMSL_SHARED=ON -DBOOST_ROOT=D:/boost"
+          cmake_args: "-DMSL_SHARED=ON"
         - arch: x64
           bits: 64
           lib_type: Static
-          cmake_args: "-DMSL_SHARED=OFF -DBOOST_ROOT=D:/boost"
+          cmake_args: "-DMSL_SHARED=OFF"
         - arch: x64
           bits: 64
           lib_type: Shared
-          cmake_args: "-DMSL_SHARED=ON -DBOOST_ROOT=D:/boost"
+          cmake_args: "-DMSL_SHARED=ON"
     steps:
     - name: checkout
       uses: actions/checkout@v4
@@ -217,7 +217,8 @@ jobs:
       run: |-
         mkdir build
         cd build
-        cmake ${{ env.cmake_common_args }} ${{ matrix.cmake_args }} -A ${{ matrix.arch }} `
+        cmake ${{ env.cmake_common_args }} ${{ matrix.cmake_args }} `
+          -DBoost_DIR=D:/boost/lib${{ matrix.bits }}-msvc-${{ env.msvc_version }}/cmake/Boost-${{ env.boost_version }} -A ${{ matrix.arch }} `
           -T v${{ env.msvc_toolset }} ${{ github.workspace }}
       working-directory: "${{ github.workspace }}"
     - name: Build debug

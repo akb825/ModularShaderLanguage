@@ -1,4 +1,4 @@
-# Copyright 2018-2022 Aaron Barany
+# Copyright 2018-2024 Aaron Barany
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,6 +19,13 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 if (MSVC)
+	if (MSL_STATIC_RUNTIME)
+		set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+		if (MSL_SHARED)
+			message(WARNING
+				"It is not recommended to have MSL_SHARED and MSL_STATIC_RUNTIME both set to ON.")
+		endif()
+	endif()
 	add_compile_options(/W3 /WX /wd4200 /MP /bigobj)
 	add_definitions(-D_CRT_SECURE_NO_WARNINGS -D_SCL_SECURE_NO_WARNINGS
 		-D_CRT_NONSTDC_NO_WARNINGS -DBOOST_ALL_NO_LIB)

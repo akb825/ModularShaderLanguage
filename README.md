@@ -39,7 +39,7 @@ Multiple shader files may be compiled into a module. Examples for combining modu
 
 The following software is required to build MSL:
 
-* [cmake](https://cmake.org/) 3.5 or later
+* [cmake](https://cmake.org/) 3.10 or later
 * [boost](https://www.boost.org/) (required unless only building client library without tests)
 * [Python](https://www.python.org/) 3 or later (required unless only building client library)
 * [glslang](https://github.com/KhronosGroup/glslang) (required for compiler, provided as submodule)
@@ -51,7 +51,7 @@ The following software is required to build MSL:
 
 > **Note:** Boost must be built with C++11 support. For example, when building and installing through the b2 bootstrap command: `./b2 "-std=c++11" -j4 install`
 
-> **Note:** When Boost is manually installed, the appropriate variables should be set. In the case of Windows, the `BOOST_LIBRARYDIR` and `BOOST_ROOT` variables should be set. (examples: `BOOST_LIBRARYDIR=C:\local\boost_1_64_0\lib64-msvc-14.1` and `BOOST_ROOT=C:\local\boost_1_64_0`) In Windows, the value of `BOOST_LIBRARYDIR` should also be on `PATH` to ensure the DLLs can be loaded.
+> **Note:** When Boost is manually installed, the appropriate variables should be set. In the case of Windows, the `Boost_DIR` variable should be set. (example: `Boost_DIR=C:\local\boost_1_83_0\lib64-msvc-14.1\cmake\Boost-1.83.0`) In Windows, the path to the libraries (e.g. `C:\local\boost_1_83_0\lib64-msvc-14.1`) should be set on `PATH` to ensure the DLLs can be loaded.
 
 The glslang, SPIRV-Cross, and SPIRV-Tools submodules can be grabbed by running `git submodule update --init --recursive`.
 
@@ -87,6 +87,7 @@ The following options may be used when running cmake:
 * `-DCMAKE_BUILD_TYPE=Debug|Release`: Building in `Debug` or `Release`. This should always be specified.
 * `-DCMAKE_INSTALL_PREFIX=path`: Sets the path to install to when running make install.
 * `-DMSL_SHARED=ON|OFF`: Set to `ON` to build with shared libraries, `OFF` to build with static libraries. Default is `OFF`.
+* `-DMSL_STATIC_RUNTIME=ON|OFF`: Set to `ON` to use the static runtime library on Windows. When `OFF`, it will respect the existing value of `CMAKE_MSVC_RUNTIME_LIBRARY`, or use dynamic runtime if otherwise unset. It is not recommended to set this to `ON` when `MSL_SHARED` is also `ON`. Default is `OFF`.
 
 ## Enabled Builds
 
