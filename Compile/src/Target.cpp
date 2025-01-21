@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Aaron Barany
+ * Copyright 2016-2025 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,13 +29,13 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <SPIRV/spirv.hpp>
+
 #include <algorithm>
 #include <cassert>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
-#include <sstream>
-#include <unordered_map>
 
 namespace msl
 {
@@ -666,6 +666,11 @@ bool Target::needsReflectionNames() const
 	return true;
 }
 
+std::uint32_t Target::getSpirVVersion() const
+{
+	return spv::Version;
+}
+
 void Target::willCompile()
 {
 }
@@ -823,8 +828,11 @@ bool Target::compileImpl(CompiledResult& result, Output& output, Parser& parser,
 					pipeline.renderState.earlyFragmentTests == Bool::True);
 			if (glsl.empty())
 				return false;
-			if (!Compiler::compile(stages, output, fileName, glsl, lineMappings, stage, resources))
+			if (!Compiler::compile(stages, output, fileName, glsl, lineMappings, stage, resources,
+					getSpirVVersion()))
+			{
 				return false;
+			}
 		}
 
 		// Link the program.

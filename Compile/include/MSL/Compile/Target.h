@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Aaron Barany
+ * Copyright 2016-2025 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -435,6 +435,12 @@ protected:
 	 * @return True if reflection names should be kept. Default implementation returns true.
 	 */
 	virtual bool needsReflectionNames() const;
+
+	/**
+	 * @brief Gets the SPIR-V version to compile with.
+	 * @return The SPIR-V version. Defaults to the latest supported version.
+	 */
+	virtual std::uint32_t getSpirVVersion() const;
 
 	/**
 	 * @brief Function called when about to compile a shader.

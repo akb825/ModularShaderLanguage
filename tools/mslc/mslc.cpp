@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Aaron Barany
+ * Copyright 2016-2025 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,41 @@ static std::string filterHeader(const std::string& line)
 	std::string filtered = line;
 	std::replace(filtered.begin(), filtered.end(), '@', '#');
 	return filtered;
+}
+
+static std::unique_ptr<msl::Target> createSpirVTarget(const std::string& targetName,
+	const variables_map& config, const std::string& configFilePath)
+{
+	// Default to 1.0 if no version specified.
+	unsigned int version = 0x10000;
+	if (config.count("version"))
+	{
+		// Currently glslang doesn't support patch versions, so only parse out major and minor.
+		std::string versionStr = config["version"].as<std::string>();
+		std::size_t dot = versionStr.find('.');
+		if (dot == std::string::npos)
+		{
+			std::cerr << configFilePath << " error: invalid version: " << versionStr <<
+				std::endl << std::endl;
+			return nullptr;
+		}
+
+		unsigned int majorVersion, minorVersion;
+		try
+		{
+			majorVersion = boost::lexical_cast<unsigned int>(versionStr.substr(0, dot));
+			minorVersion = boost::lexical_cast<unsigned int>(versionStr.substr(dot + 1));
+		}
+		catch (...)
+		{
+			std::cerr << configFilePath << " error: invalid version: " << versionStr <<
+				std::endl << std::endl;
+			return nullptr;
+		}
+		version = (majorVersion << 16) | (minorVersion << 8);
+	}
+
+	return std::unique_ptr<msl::Target>(new msl::TargetSpirV(version));
 }
 
 static std::unique_ptr<msl::Target> createGlslTarget(const std::string& targetName,
@@ -276,9 +311,7 @@ static std::unique_ptr<msl::Target> createMetalTarget(const std::string& targetN
 		return nullptr;
 	}
 
-	std::unique_ptr<msl::TargetMetal> target(new msl::TargetMetal(version, platform));
-
-	return std::move(target);
+	return std::unique_ptr<msl::Target>(new msl::TargetMetal(version, platform));
 }
 
 static std::pair<std::string, std::string> splitDefineString(const std::string& str)
@@ -603,7 +636,7 @@ int main(int argc, char** argv)
 	{
 		std::string targetName = config["target"].as<std::string>();
 		if (targetName == "spirv")
-			target.reset(new msl::TargetSpirV);
+			target = createSpirVTarget(targetName, config, configFilePath);
 		else if (targetName == "glsl" || targetName== "glsl-es")
 			target = createGlslTarget(targetName, config, configFilePath);
 		else if (targetName == "metal-osx" || targetName == "metal-macos" ||

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Aaron Barany
+ * Copyright 2016-2025 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,12 @@ namespace msl
 class MSL_COMPILE_EXPORT TargetSpirV : public Target
 {
 public:
+	/**
+	 * @brief Constructs this with the version number.
+	 * @param version The Metal version number.
+	 */
+	explicit TargetSpirV(std::uint32_t version);
+
 	std::uint32_t getId() const override;
 	std::uint32_t getVersion() const override;
 	bool featureSupported(Feature feature) const override;
@@ -46,6 +52,7 @@ public:
 
 protected:
 	bool needsReflectionNames() const override;
+	std::uint32_t getSpirVVersion() const override;
 	bool crossCompile(std::vector<std::uint8_t>& data, Output& output,
 		const std::string& fileName, std::size_t line, std::size_t column,
 		const std::array<bool, compile::stageCount>& pipelineStages, compile::Stage stage,
@@ -53,6 +60,9 @@ protected:
 		const std::vector<compile::Uniform>& uniforms, std::vector<std::uint32_t>& uniformIds,
 		const std::vector<compile::FragmentInputGroup>& fragmentInputs,
 		std::uint32_t fragmentGroup) override;
+
+private:
+	std::uint32_t m_version;
 };
 
 } // namespace msl

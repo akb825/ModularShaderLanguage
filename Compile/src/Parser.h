@@ -21,7 +21,6 @@
 #include <MSL/Compile/Types.h>
 #include "TokenList.h"
 #include <array>
-#include <float.h>
 
 namespace msl
 {

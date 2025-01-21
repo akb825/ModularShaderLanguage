@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2025 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ std::string MetalOutput::disassemble(Output& output, const Compiler::SpirV& spir
 	spirv_cross::CompilerMSL::Options options;
 	options.platform = ios ? spirv_cross::CompilerMSL::Options::iOS :
 		spirv_cross::CompilerMSL::Options::macOS;
-	options.msl_version = spirv_cross::CompilerMSL::Options::make_msl_version(version/10,
-		version%10);
+	options.msl_version = spirv_cross::CompilerMSL::Options::make_msl_version(version/100,
+		version%100);
 	options.capture_output_to_buffer = outputToBuffer;
 
 	spirv_cross::CompilerMSL compiler(spirv);

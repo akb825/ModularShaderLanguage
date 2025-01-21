@@ -22,6 +22,7 @@
 #include <cassert>
 #include <cstring>
 #include <map>
+#include <sstream>
 #include <unordered_map>
 #include <unordered_set>
 
@@ -141,6 +142,7 @@ struct IntermediateData
 	std::map<std::uint32_t, std::uint32_t> inputVars;
 	std::map<std::uint32_t, std::uint32_t> outputVars;
 	std::map<std::uint32_t, std::uint32_t> imageVars;
+	std::map<std::uint32_t, std::uint32_t> storageBufferVars;
 	std::pair<std::uint32_t, std::uint32_t> pushConstantPointer = std::make_pair(unknown, unknown);
 	std::pair<std::uint32_t, std::uint32_t> clipDistanceMember = std::make_pair(unknown, unknown);
 	std::pair<std::uint32_t, std::uint32_t> cullDistanceMember = std::make_pair(unknown, unknown);
@@ -1127,10 +1129,27 @@ std::vector<std::uint32_t> makeArrayLengths(const std::vector<ArrayInfo>& arrayE
 	return lengths;
 }
 
+void findUniformDescriptorSetAndBinding(const SpirVProcessor& processor,
+	const IntermediateData& data, Uniform& uniform, std::uint32_t uniformId)
+{
+	auto foundDescriptorSet = data.descriptorSets.find(uniformId);
+	if (foundDescriptorSet == data.descriptorSets.end())
+		uniform.descriptorSet = unknown;
+	else
+		uniform.descriptorSet = foundDescriptorSet->second;
+
+	auto foundBinding = data.bindings.find(uniformId);
+	if (foundBinding == data.bindings.end())
+		uniform.binding = unknown;
+	else
+		uniform.binding = foundBinding->second;
+}
+
 void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 {
 	bool hasPushConstant = data.pushConstantPointer.first != unknown;
-	std::size_t totalUniforms = data.uniformVars.size() + data.imageVars.size() + hasPushConstant;
+	std::size_t totalUniforms = data.uniformVars.size() + data.imageVars.size() +
+		data.storageBufferVars.size() + hasPushConstant;
 	processor.uniforms.resize(totalUniforms);
 	processor.uniformIds.resize(totalUniforms);
 	std::size_t i = 0;
@@ -1179,18 +1198,7 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 			uniform.uniformType = UniformType::BlockBuffer;
 		}
 
-		auto foundDescriptorSet = data.descriptorSets.find(uniformIndices.first);
-		if (foundDescriptorSet == data.descriptorSets.end())
-			uniform.descriptorSet = unknown;
-		else
-			uniform.descriptorSet = foundDescriptorSet->second;
-
-		auto foundBinding = data.bindings.find(uniformIndices.first);
-		if (foundBinding == data.bindings.end())
-			uniform.binding = unknown;
-		else
-			uniform.binding = foundBinding->second;
-
+		findUniformDescriptorSetAndBinding(processor, data, uniform, uniformIndices.first);
 		uniform.inputAttachmentIndex = unknown;
 		uniform.samplerIndex = unknown;
 
@@ -1217,17 +1225,7 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 		else
 			uniform.uniformType = UniformType::Image;
 
-		auto foundDescriptorSet = data.descriptorSets.find(imageIndices.first);
-		if (foundDescriptorSet == data.descriptorSets.end())
-			uniform.descriptorSet = unknown;
-		else
-			uniform.descriptorSet = foundDescriptorSet->second;
-
-		auto foundBinding = data.bindings.find(imageIndices.first);
-		if (foundBinding == data.bindings.end())
-			uniform.binding = unknown;
-		else
-			uniform.binding = foundBinding->second;
+		findUniformDescriptorSetAndBinding(processor, data, uniform, imageIndices.first);
 
 		auto foundInputAttachmentIndex = data.inputAttachmentIndices.find(imageIndices.first);
 		if (foundInputAttachmentIndex == data.inputAttachmentIndices.end())
@@ -1235,6 +1233,31 @@ void addUniforms(SpirVProcessor& processor, const IntermediateData& data)
 		else
 			uniform.inputAttachmentIndex = foundInputAttachmentIndex->second;
 
+		uniform.samplerIndex = unknown;
+
+		++i;
+	}
+
+	for (const auto& storageBufferIndices : data.storageBufferVars)
+	{
+		processor.uniformIds[i] = storageBufferIndices.first;
+		std::uint32_t typeId = storageBufferIndices.second;
+
+		Uniform& uniform = processor.uniforms[i];
+		uniform.type = getType(uniform.arrayElements, uniform.structIndex, processor, data, typeId);
+		if (uniform.type == Type::Struct)
+			uniform.name = processor.structs[uniform.structIndex].name;
+		else
+		{
+			auto foundName = data.names.find(storageBufferIndices.first);
+			assert(foundName != data.names.end());
+			uniform.name = foundName->second;
+		}
+
+		uniform.uniformType = UniformType::BlockBuffer;
+
+		findUniformDescriptorSetAndBinding(processor, data, uniform, storageBufferIndices.first);
+		uniform.inputAttachmentIndex = unknown;
 		uniform.samplerIndex = unknown;
 
 		++i;
@@ -1985,10 +2008,16 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 	this->column = column;
 	this->spirv = &spirv;
 
-	MSL_UNUSED(minVersion);
 	assert(spirv.size() > firstInstruction);
 	assert(spirv[0] == spv::MagicNumber);
-	assert(spirv[1] >= minVersion && spirv[1] <= spv::Version);
+	if (spirv[1] < minVersion || spirv[1] > spv::Version)
+	{
+		std::stringstream versionStr;
+		versionStr << std::hex << spirv[1];
+		output.addMessage(Output::Level::Error, fileName, line,
+			column, false, "linker error: invalid SPIR-V version 0x" + versionStr.str());
+		return false;
+	}
 	std::vector<char> tempBuffer;
 
 	IntermediateData data;
@@ -2257,6 +2286,7 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 					case spv::StorageClassImage:
 					case spv::StorageClassUniformConstant:
 					case spv::StorageClassPushConstant:
+					case spv::StorageClassStorageBuffer:
 						if (data.types.find(type) != data.types.end() ||
 							data.arrayTypes.find(type) != data.arrayTypes.end() ||
 							data.structTypes.find(type) != data.structTypes.end())
@@ -2324,6 +2354,13 @@ bool SpirVProcessor::extract(Output& output, const std::string& fileName, std::s
 						assert(foundPointer != data.pointers.end());
 						assert(data.pushConstantPointer.first == unknown);
 						data.pushConstantPointer = std::make_pair(id, foundPointer->second);
+						break;
+					}
+					case spv::StorageClassStorageBuffer:
+					{
+						auto foundPointer = data.pointers.find(pointerType);
+						assert(foundPointer != data.pointers.end());
+						data.storageBufferVars[id] = foundPointer->second;
 						break;
 					}
 					default:

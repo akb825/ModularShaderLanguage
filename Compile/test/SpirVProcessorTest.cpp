@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2025 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,6 +50,8 @@ public:
 	}
 };
 
+static constexpr std::uint32_t spirvVersion = 0x10600;
+
 TEST_F(SpirVProcessorTest, PrimitiveTypes)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
@@ -75,7 +77,7 @@ TEST_F(SpirVProcessorTest, PrimitiveTypes)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -535,8 +537,9 @@ TEST_F(SpirVProcessorTest, PrimitiveTypes)
 	EXPECT_EQ(5U, processor.uniforms[68].inputAttachmentIndex);
 }
 
-TEST_F(SpirVProcessorTest, StructArrayReflection)
+TEST_F(SpirVProcessorTest, StructArrayReflection10)
 {
+	// Buffer blocks are treated differently starting SPIR-V 1.3.
 	boost::filesystem::path inputDir = exeDir/"inputs";
 	std::string shaderName = pathStr(inputDir/"StructArrayReflection.msl");
 
@@ -560,7 +563,7 @@ TEST_F(SpirVProcessorTest, StructArrayReflection)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), 0x10000));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -744,6 +747,216 @@ TEST_F(SpirVProcessorTest, StructArrayReflection)
 	EXPECT_EQ(unknown, processor.uniforms[2].samplerIndex);
 }
 
+TEST_F(SpirVProcessorTest, StructArrayReflectionLatest)
+{
+	// Buffer blocks are treated differently starting SPIR-V 1.3.
+	boost::filesystem::path inputDir = exeDir/"inputs";
+	std::string shaderName = pathStr(inputDir/"StructArrayReflection.msl");
+
+	Parser parser;
+	Preprocessor preprocessor;
+	Output output;
+	EXPECT_TRUE(preprocessor.preprocess(parser.getTokens(), output, shaderName));
+	EXPECT_TRUE(parser.parse(output));
+
+	ASSERT_EQ(1U, parser.getPipelines().size());
+	const Parser::Pipeline& pipeline = parser.getPipelines()[0];
+	Compiler::Stages stages;
+	bool compiledStage = false;
+	for (unsigned int i = 0; i < stageCount; ++i)
+	{
+		if (pipeline.entryPoints[i].value.empty())
+			continue;
+
+		auto stage = static_cast<Stage>(i);
+		std::vector<Parser::LineMapping> lineMappings;
+		std::string glsl =
+			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
+		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
+			Compiler::getDefaultResources(), spirvVersion));
+		compiledStage = true;
+	}
+	EXPECT_TRUE(compiledStage);
+
+	Compiler::Program program;
+	EXPECT_TRUE(Compiler::link(program, output, pipeline, stages));
+	Compiler::SpirV spirv = Compiler::assemble(output, program, Stage::Fragment, pipeline);
+
+	SpirVProcessor processor;
+	EXPECT_TRUE(processor.extract(output, pipeline.token->fileName, pipeline.token->line,
+		pipeline.token->column, spirv, Stage::Fragment));
+	EXPECT_TRUE(output.getMessages().empty());
+
+	std::uint32_t unknown = msl::compile::unknown;
+	ASSERT_EQ(4U, processor.structs.size());
+	EXPECT_EQ("TestStruct", processor.structs[0].name);
+	EXPECT_EQ(96U, processor.structs[0].size);
+	ASSERT_EQ(3U, processor.structs[0].members.size());
+
+	EXPECT_EQ("floatVar", processor.structs[0].members[0].name);
+	EXPECT_EQ(0U, processor.structs[0].members[0].offset);
+	EXPECT_EQ(sizeof(float), processor.structs[0].members[0].size);
+	EXPECT_EQ(Type::Float, processor.structs[0].members[0].type);
+	EXPECT_EQ(unknown, processor.structs[0].members[0].structIndex);
+	EXPECT_TRUE(processor.structs[0].members[0].arrayElements.empty());
+	EXPECT_FALSE(processor.structs[0].members[0].rowMajor);
+
+	EXPECT_EQ("vec3Array", processor.structs[0].members[1].name);
+	EXPECT_EQ(16U, processor.structs[0].members[1].offset);
+	EXPECT_EQ(32U, processor.structs[0].members[1].size);
+	EXPECT_EQ(Type::Vec3, processor.structs[0].members[1].type);
+	EXPECT_EQ(unknown, processor.structs[0].members[1].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{2, 16U}}), processor.structs[0].members[1].arrayElements);
+	EXPECT_FALSE(processor.structs[0].members[1].rowMajor);
+
+	EXPECT_EQ("mat4x3Var", processor.structs[0].members[2].name);
+	EXPECT_EQ(48U, processor.structs[0].members[2].offset);
+	EXPECT_EQ(48U, processor.structs[0].members[2].size);
+	EXPECT_EQ(Type::Mat4x3, processor.structs[0].members[2].type);
+	EXPECT_EQ(unknown, processor.structs[0].members[2].structIndex);
+	EXPECT_TRUE(processor.structs[0].members[2].arrayElements.empty());
+	EXPECT_TRUE(processor.structs[0].members[2].rowMajor);
+
+	EXPECT_EQ("TestBlock", processor.structs[1].name);
+	EXPECT_EQ(512U, processor.structs[1].size);
+	ASSERT_EQ(4U, processor.structs[1].members.size());
+
+	EXPECT_EQ("vec2Array2D", processor.structs[1].members[0].name);
+	EXPECT_EQ(0U, processor.structs[1].members[0].offset);
+	EXPECT_EQ(96U, processor.structs[1].members[0].size);
+	EXPECT_EQ(Type::Vec2, processor.structs[1].members[0].type);
+	EXPECT_EQ(unknown, processor.structs[1].members[0].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{3, 32U}, {2, 16U}}),
+		processor.structs[1].members[0].arrayElements);
+	EXPECT_FALSE(processor.structs[1].members[0].rowMajor);
+
+	EXPECT_EQ("structMember", processor.structs[1].members[1].name);
+	EXPECT_EQ(96U, processor.structs[1].members[1].offset);
+	EXPECT_EQ(96U, processor.structs[1].members[1].size);
+	EXPECT_EQ(Type::Struct, processor.structs[1].members[1].type);
+	EXPECT_EQ(0U, processor.structs[1].members[1].structIndex);
+	EXPECT_TRUE(processor.structs[1].members[1].arrayElements.empty());
+	EXPECT_FALSE(processor.structs[1].members[1].rowMajor);
+
+	EXPECT_EQ("structArray", processor.structs[1].members[2].name);
+	EXPECT_EQ(192U, processor.structs[1].members[2].offset);
+	EXPECT_EQ(288U, processor.structs[1].members[2].size);
+	EXPECT_EQ(Type::Struct, processor.structs[1].members[2].type);
+	EXPECT_EQ(0U, processor.structs[1].members[2].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{3, 96U}}), processor.structs[1].members[2].arrayElements);
+	EXPECT_FALSE(processor.structs[1].members[2].rowMajor);
+
+	EXPECT_EQ("dvec3Var", processor.structs[1].members[3].name);
+	EXPECT_EQ(480U, processor.structs[1].members[3].offset);
+	EXPECT_EQ(3*sizeof(double), processor.structs[1].members[3].size);
+	EXPECT_EQ(Type::DVec3, processor.structs[1].members[3].type);
+	EXPECT_EQ(unknown, processor.structs[1].members[3].structIndex);
+	EXPECT_TRUE(processor.structs[1].members[3].arrayElements.empty());
+	EXPECT_FALSE(processor.structs[1].members[3].rowMajor);
+
+	EXPECT_EQ("TestBufferStruct", processor.structs[2].name);
+	EXPECT_EQ(112U, processor.structs[2].size);
+	ASSERT_EQ(3U, processor.structs[2].members.size());
+
+	EXPECT_EQ("floatVar", processor.structs[2].members[0].name);
+	EXPECT_EQ(0U, processor.structs[2].members[0].offset);
+	EXPECT_EQ(sizeof(float), processor.structs[2].members[0].size);
+	EXPECT_EQ(Type::Float, processor.structs[2].members[0].type);
+	EXPECT_EQ(unknown, processor.structs[2].members[0].structIndex);
+	EXPECT_TRUE(processor.structs[2].members[0].arrayElements.empty());
+	EXPECT_FALSE(processor.structs[2].members[0].rowMajor);
+
+	EXPECT_EQ("vec3Array", processor.structs[2].members[1].name);
+	EXPECT_EQ(16U, processor.structs[2].members[1].offset);
+	EXPECT_EQ(32U, processor.structs[2].members[1].size);
+	EXPECT_EQ(Type::Vec3, processor.structs[2].members[1].type);
+	EXPECT_EQ(unknown, processor.structs[2].members[1].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{2, 16U}}), processor.structs[2].members[1].arrayElements);
+	EXPECT_FALSE(processor.structs[2].members[1].rowMajor);
+
+	EXPECT_EQ("mat4x3Var", processor.structs[2].members[2].name);
+	EXPECT_EQ(48U, processor.structs[2].members[2].offset);
+	EXPECT_EQ(64U, processor.structs[2].members[2].size);
+	EXPECT_EQ(Type::Mat4x3, processor.structs[2].members[2].type);
+	EXPECT_EQ(unknown, processor.structs[2].members[2].structIndex);
+	EXPECT_TRUE(processor.structs[2].members[2].arrayElements.empty());
+	EXPECT_FALSE(processor.structs[2].members[2].rowMajor);
+
+	EXPECT_EQ("TestBuffer", processor.structs[3].name);
+	EXPECT_EQ(536U, processor.structs[3].size);
+	ASSERT_EQ(5U, processor.structs[3].members.size());
+
+	EXPECT_EQ("vec2Array2D", processor.structs[3].members[0].name);
+	EXPECT_EQ(0U, processor.structs[3].members[0].offset);
+	EXPECT_EQ(48U, processor.structs[3].members[0].size);
+	EXPECT_EQ(Type::Vec2, processor.structs[3].members[0].type);
+	EXPECT_EQ(unknown, processor.structs[3].members[0].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{3, 16U}, {2, 8U}}),
+		processor.structs[3].members[0].arrayElements);
+	EXPECT_FALSE(processor.structs[3].members[0].rowMajor);
+
+	EXPECT_EQ("structMember", processor.structs[3].members[1].name);
+	EXPECT_EQ(48U, processor.structs[3].members[1].offset);
+	EXPECT_EQ(112U, processor.structs[3].members[1].size);
+	EXPECT_EQ(Type::Struct, processor.structs[3].members[1].type);
+	EXPECT_EQ(2U, processor.structs[3].members[1].structIndex);
+	EXPECT_TRUE(processor.structs[3].members[1].arrayElements.empty());
+	EXPECT_FALSE(processor.structs[3].members[1].rowMajor);
+
+	EXPECT_EQ("structArray", processor.structs[3].members[2].name);
+	EXPECT_EQ(160U, processor.structs[3].members[2].offset);
+	EXPECT_EQ(336U, processor.structs[3].members[2].size);
+	EXPECT_EQ(Type::Struct, processor.structs[3].members[2].type);
+	EXPECT_EQ(2U, processor.structs[3].members[2].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{3, 112U}}), processor.structs[3].members[2].arrayElements);
+	EXPECT_FALSE(processor.structs[3].members[2].rowMajor);
+
+	EXPECT_EQ("dvec3Var", processor.structs[3].members[3].name);
+	EXPECT_EQ(512U, processor.structs[3].members[3].offset);
+	EXPECT_EQ(3*sizeof(double), processor.structs[3].members[3].size);
+	EXPECT_EQ(Type::DVec3, processor.structs[3].members[3].type);
+	EXPECT_EQ(unknown, processor.structs[3].members[3].structIndex);
+	EXPECT_TRUE(processor.structs[3].members[3].arrayElements.empty());
+	EXPECT_FALSE(processor.structs[3].members[3].rowMajor);
+
+	EXPECT_EQ("dynamicArray", processor.structs[3].members[4].name);
+	EXPECT_EQ(536U, processor.structs[3].members[4].offset);
+	EXPECT_EQ(unknown, processor.structs[3].members[4].size);
+	EXPECT_EQ(Type::Float, processor.structs[3].members[4].type);
+	EXPECT_EQ(unknown, processor.structs[3].members[4].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{unknown, (std::uint32_t)(3*sizeof(float))},
+		{3, (std::uint32_t)sizeof(float)}}), processor.structs[3].members[4].arrayElements);
+	EXPECT_FALSE(processor.structs[3].members[4].rowMajor);
+
+	ASSERT_EQ(3U, processor.uniforms.size());
+	EXPECT_EQ("TestBlock", processor.uniforms[0].name);
+	EXPECT_EQ(UniformType::Block, processor.uniforms[0].uniformType);
+	EXPECT_EQ(Type::Struct, processor.uniforms[0].type);
+	EXPECT_EQ(1U, processor.uniforms[0].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{3, unknown}}), processor.uniforms[0].arrayElements);
+	EXPECT_EQ(1U, processor.uniforms[0].descriptorSet);
+	EXPECT_EQ(0U, processor.uniforms[0].binding);
+	EXPECT_EQ(unknown, processor.uniforms[0].samplerIndex);
+
+	EXPECT_EQ("samplerArray", processor.uniforms[1].name);
+	EXPECT_EQ(UniformType::SampledImage, processor.uniforms[1].uniformType);
+	EXPECT_EQ(Type::Sampler2D, processor.uniforms[1].type);
+	EXPECT_EQ(unknown, processor.uniforms[1].structIndex);
+	EXPECT_EQ((std::vector<ArrayInfo>{{4, unknown}}), processor.uniforms[1].arrayElements);
+	EXPECT_EQ(3U, processor.uniforms[1].descriptorSet);
+	EXPECT_EQ(2U, processor.uniforms[1].binding);
+	EXPECT_EQ(unknown, processor.uniforms[1].samplerIndex);
+
+	EXPECT_EQ("TestBuffer", processor.uniforms[2].name);
+	EXPECT_EQ(UniformType::BlockBuffer, processor.uniforms[2].uniformType);
+	EXPECT_EQ(Type::Struct, processor.uniforms[2].type);
+	EXPECT_EQ(3U, processor.uniforms[2].structIndex);
+	EXPECT_TRUE(processor.uniforms[2].arrayElements.empty());
+	EXPECT_EQ(2U, processor.uniforms[2].descriptorSet);
+	EXPECT_EQ(1U, processor.uniforms[2].binding);
+	EXPECT_EQ(unknown, processor.uniforms[2].samplerIndex);
+}
+
 TEST_F(SpirVProcessorTest, InputsOutputs)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
@@ -769,7 +982,7 @@ TEST_F(SpirVProcessorTest, InputsOutputs)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -1159,7 +1372,7 @@ TEST_F(SpirVProcessorTest, ExplicitInputsOutputs)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -1341,7 +1554,7 @@ TEST_F(SpirVProcessorTest, ExplicitInputsOutputsVarying)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -1523,7 +1736,7 @@ TEST_F(SpirVProcessorTest, LinkAllStages)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -2050,7 +2263,7 @@ TEST_F(SpirVProcessorTest, LinkStructArray)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -2176,7 +2389,7 @@ TEST_F(SpirVProcessorTest, LinkStructWithinOutputBlock)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -2316,7 +2529,7 @@ TEST_F(SpirVProcessorTest, LinkNestedStructs)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -2466,7 +2679,7 @@ TEST_F(SpirVProcessorTest, ComputeLocalSize)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -2509,7 +2722,7 @@ TEST_F(SpirVProcessorTest, ClipAndCullDistances)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -2551,7 +2764,7 @@ TEST_F(SpirVProcessorTest, LinkDifferentType)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -2608,7 +2821,7 @@ TEST_F(SpirVProcessorTest, LinkDifferentInlineStructType)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -2666,7 +2879,7 @@ TEST_F(SpirVProcessorTest, LinkDifferentStructType)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -2724,7 +2937,7 @@ TEST_F(SpirVProcessorTest, LinkNotPresent)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -2781,7 +2994,7 @@ TEST_F(SpirVProcessorTest, LinkStructNotPresent)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -2838,7 +3051,7 @@ TEST_F(SpirVProcessorTest, MultipleLinkMembers)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -2895,7 +3108,7 @@ TEST_F(SpirVProcessorTest, MixedExplicitImplicitLocations)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -2951,7 +3164,7 @@ TEST_F(SpirVProcessorTest, StructInBlockAndBuffer)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Aaron Barany
+ * Copyright 2016-2025 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,8 @@ public:
 	}
 };
 
+static constexpr std::uint32_t spirvVersion = 0x10000;
+
 TEST_F(CompilerTest, CompleteShader)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
@@ -64,7 +66,7 @@ TEST_F(CompilerTest, CompleteShader)
 		std::string glsl =
 			parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 		EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-			Compiler::getDefaultResources()));
+			Compiler::getDefaultResources(), spirvVersion));
 		compiledStage = true;
 	}
 	EXPECT_TRUE(compiledStage);
@@ -106,7 +108,7 @@ TEST_F(CompilerTest, CompileError)
 	std::string glsl =
 		parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 	EXPECT_FALSE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-		Compiler::getDefaultResources()));
+		Compiler::getDefaultResources(), spirvVersion));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
@@ -138,7 +140,7 @@ TEST_F(CompilerTest, CompileErrorWithEarlyFragmentTests)
 	std::string glsl =
 		parser.createShaderString(lineMappings, output, pipeline, stage, false, true);
 	EXPECT_FALSE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-		Compiler::getDefaultResources()));
+		Compiler::getDefaultResources(), spirvVersion));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());
@@ -170,7 +172,7 @@ TEST_F(CompilerTest, CompileWarning)
 	std::string glsl =
 		parser.createShaderString(lineMappings, output, pipeline, stage, false, false);
 	EXPECT_TRUE(Compiler::compile(stages, output, shaderName, glsl, lineMappings, stage,
-		Compiler::getDefaultResources()));
+		Compiler::getDefaultResources(), spirvVersion));
 
 	const std::vector<Output::Message>& messages = output.getMessages();
 	ASSERT_LE(1U, messages.size());

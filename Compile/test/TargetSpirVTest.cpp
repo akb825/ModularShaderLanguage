@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Aaron Barany
+ * Copyright 2016-2025 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,12 +27,14 @@ namespace msl
 
 using namespace compile;
 
+static constexpr std::uint32_t spirvVersion = 0x10000;
+
 TEST(TargetSpirVTest, CompleteShader)
 {
 	boost::filesystem::path inputDir = exeDir/"inputs";
 	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
-	TargetSpirV target;
+	TargetSpirV target(0x10100);
 	target.addIncludePath(inputDir.string());
 
 	Output output;
@@ -43,6 +45,12 @@ TEST(TargetSpirVTest, CompleteShader)
 	EXPECT_TRUE(target.finish(result, output));
 
 	EXPECT_EQ(0U, output.getMessages().size());
+
+	const CompiledResult::ShaderData& shaderData =
+		result.getShaders()[static_cast<int>(Stage::Vertex)];
+	ASSERT_LE(sizeof(std::uint32_t), shaderData.data.size());
+	std::uint32_t version = reinterpret_cast<const std::uint32_t*>(shaderData.data.data())[1];
+	EXPECT_EQ(target.getVersion(), version);
 
 	auto unknown = msl::compile::unknown;
 	EXPECT_EQ(2U, result.getPipelines().size());
@@ -204,7 +212,7 @@ TEST(TargetSpirVTest, CombineReflection)
 	boost::filesystem::path inputDir = exeDir/"inputs";
 	std::string shaderName = pathStr(inputDir/"CombineReflection.msl");
 
-	TargetSpirV target;
+	TargetSpirV target(0x10200);
 	target.addIncludePath(inputDir.string());
 
 	Output output;
@@ -213,6 +221,12 @@ TEST(TargetSpirVTest, CombineReflection)
 	EXPECT_TRUE(target.finish(result, output));
 
 	EXPECT_EQ(0U, output.getMessages().size());
+
+	const CompiledResult::ShaderData& shaderData =
+		result.getShaders()[static_cast<int>(Stage::Vertex)];
+	ASSERT_LE(sizeof(std::uint32_t), shaderData.data.size());
+	std::uint32_t version = reinterpret_cast<const std::uint32_t*>(shaderData.data.data())[1];
+	EXPECT_EQ(target.getVersion(), version);
 
 	auto unknown = msl::compile::unknown;
 	EXPECT_EQ(1U, result.getPipelines().size());
@@ -325,7 +339,7 @@ TEST(TargetSpirVTest, VersionNumber)
 		"#if SPIRV_VERSION >= 100\n"
 		"#error Version correctly set.\n"
 		"#endif");
-	TargetSpirV target;
+	TargetSpirV target(spirvVersion);
 
 	Output output;
 	CompiledResult result;
@@ -344,7 +358,7 @@ TEST(TargetSpirVTest, CompileError)
 	boost::filesystem::path inputDir = exeDir/"inputs";
 	std::string shaderName = pathStr(inputDir/"CompileError.msl");
 
-	TargetSpirV target;
+	TargetSpirV target(spirvVersion);
 	target.addIncludePath(pathStr(inputDir));
 
 	Output output;
@@ -365,7 +379,7 @@ TEST(TargetSpirVTest, CompileWarning)
 	boost::filesystem::path inputDir = exeDir/"inputs";
 	std::string shaderName = pathStr(inputDir/"CompileWarning.msl");
 
-	TargetSpirV target;
+	TargetSpirV target(spirvVersion);
 	target.addIncludePath(pathStr(inputDir));
 
 	Output output;
@@ -386,7 +400,7 @@ TEST(TargetSpirVTest, MissingEntryPoint)
 	boost::filesystem::path inputDir = exeDir/"inputs";
 	std::string shaderName = pathStr(inputDir/"MissingEntryPoint.msl");
 
-	TargetSpirV target;
+	TargetSpirV target(spirvVersion);
 	target.addIncludePath(pathStr(inputDir));
 
 	Output output;
@@ -407,7 +421,7 @@ TEST(TargetSpirVTest, DuplicateEntryPoint)
 	boost::filesystem::path inputDir = exeDir/"inputs";
 	std::string shaderName = pathStr(inputDir/"DuplicateEntryPoint.msl");
 
-	TargetSpirV target;
+	TargetSpirV target(spirvVersion);
 	target.addIncludePath(pathStr(inputDir));
 
 	Output output;
@@ -428,7 +442,7 @@ TEST(TargetSpirVTest, PushConstantMismatch)
 	boost::filesystem::path inputDir = exeDir/"inputs";
 	std::string shaderName = pathStr(inputDir/"PushConstantMismatch.msl");
 
-	TargetSpirV target;
+	TargetSpirV target(spirvVersion);
 
 	Output output;
 	CompiledResult result;
@@ -449,7 +463,7 @@ TEST(TargetSpirVTest, ResourcesNotFound)
 	boost::filesystem::path inputDir = exeDir/"inputs";
 	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
-	TargetSpirV target;
+	TargetSpirV target(spirvVersion);
 	target.setResourcesFileName("asdf");
 
 	Output output;
@@ -467,7 +481,7 @@ TEST(TargetSpirVTest, Resources)
 	boost::filesystem::path inputDir = exeDir/"inputs";
 	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
-	TargetSpirV target;
+	TargetSpirV target(spirvVersion);
 	target.setResourcesFileName(pathStr(inputDir/"Resources.conf"));
 
 	Output output;
@@ -480,7 +494,7 @@ TEST(TargetSpirVTest, InvalidResources)
 	boost::filesystem::path inputDir = exeDir/"inputs";
 	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
-	TargetSpirV target;
+	TargetSpirV target(spirvVersion);
 	target.addIncludePath(inputDir.string());
 	target.setResourcesFileName(pathStr(inputDir/"InvalidResources.conf"));
 
@@ -503,7 +517,7 @@ TEST(TargetSpirVTest, DuplicatePipeline)
 	boost::filesystem::path inputDir = exeDir/"inputs";
 	std::string shaderName = pathStr(inputDir/"CompleteShader.msl");
 
-	TargetSpirV target;
+	TargetSpirV target(spirvVersion);
 	target.addIncludePath(inputDir.string());
 
 	Output output;

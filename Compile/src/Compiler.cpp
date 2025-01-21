@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 Aaron Barany
+ * Copyright 2016-2025 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -281,11 +281,13 @@ const TBuiltInResource& Compiler::getDefaultResources()
 
 bool Compiler::compile(Stages& stages, Output &output, const std::string& baseFileName,
 	const std::string& glsl, const std::vector<Parser::LineMapping>& lineMappings,
-	Stage stage, const TBuiltInResource& resources)
+	Stage stage, const TBuiltInResource& resources, std::uint32_t spirvVersion)
 {
 	const char* glslStr = glsl.c_str();
 	std::unique_ptr<glslang::TShader> shader(
 		new glslang::TShader(stageMap[static_cast<unsigned int>(stage)]));
+	shader->setEnvTarget(glslang::EShTargetSpv,
+		static_cast<glslang::EShTargetLanguageVersion>(spirvVersion));
 	shader->setStrings(&glslStr, 1);
 	shader->setAutoMapBindings(true);
 	shader->setAutoMapLocations(true);
@@ -325,6 +327,8 @@ Compiler::SpirV Compiler::assemble(Output& output, const Program& program,
 
 	SpirV spirv;
 	spv::SpvBuildLogger logger;
+	glslang::SpvOptions options;
+	options.generateDebugInfo = true;
 	glslang::GlslangToSpv(*intermediate, spirv, &logger);
 	if (addToOutput(output, logger, pipeline.token->fileName, pipeline.token->line,
 		pipeline.token->column))

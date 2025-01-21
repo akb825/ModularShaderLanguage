@@ -40,6 +40,9 @@ add_test(NAME MSLCInvalidConfig
 add_test(NAME MSLCCompile
 	WORKING_DIRECTORY ${testPath}
 	COMMAND ${commandPath} ${mslcPath} "-c spirv.conf -o test.mslb shaders/CompleteShader.msl" 0)
+add_test(NAME MSLCCompileSpirV1.6
+	WORKING_DIRECTORY ${testPath}
+	COMMAND ${commandPath} ${mslcPath} "-c spirv-1.6.conf -o test.mslb shaders/CompleteShader.msl" 0)
 add_test(NAME MSLCCompileGLSL
 	WORKING_DIRECTORY ${testPath}
 	COMMAND ${commandPath} ${mslcPath} "-c glsl.conf -o test.mslb shaders/CompleteShader.msl" 0)
