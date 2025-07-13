@@ -68,7 +68,7 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action@v2
       with:
         check_name: Tests (Linux ${{ matrix.lib_type }} Debug)
-        junit_files: "${{ env.test_results_location }}/*.xml"
+        files: "${{ env.test_results_location }}/*.xml"
     - name: Clear test results
       run: rm *.xml
       working-directory: "${{ env.test_results_location }}"
@@ -89,7 +89,7 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action@v2
       with:
         check_name: Tests (Linux ${{ matrix.lib_type }} Release)
-        junit_files: "${{ env.test_results_location }}/*.xml"
+        files: "${{ env.test_results_location }}/*.xml"
   Mac:
     runs-on: macos-latest
     strategy:
@@ -136,7 +136,7 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action/macos@v2
       with:
         check_name: Tests (Mac ${{ matrix.lib_type }} Debug)
-        junit_files: "${{ env.test_results_location }}/*.xml"
+        files: "${{ env.test_results_location }}/*.xml"
     - name: Clear test results
       run: rm *.xml
       working-directory: "${{ env.test_results_location }}"
@@ -157,7 +157,7 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action/macos@v2
       with:
         check_name: Tests (Mac ${{ matrix.lib_type }} Release)
-        junit_files: "${{ env.test_results_location }}/*.xml"
+        files: "${{ env.test_results_location }}/*.xml"
   Windows:
     runs-on: windows-2025
     strategy:
@@ -236,7 +236,7 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action/windows@v2
       with:
         check_name: Tests (Windows ${{ matrix.arch }} ${{ matrix.lib_type }} Debug)
-        junit_files: "${{ env.test_results_location }}/*.xml"
+        files: "${{ env.test_results_location }}/*.xml"
     - name: Clear test results
       run: rm *.xml
       shell: bash
@@ -255,6 +255,6 @@ jobs:
       uses: EnricoMi/publish-unit-test-result-action/windows@v2
       with:
         check_name: Tests (Windows ${{ matrix.arch }} ${{ matrix.lib_type }} Release)
-        junit_files: "${{ env.test_results_location }}/*.xml"
+        files: "${{ env.test_results_location }}/*.xml"
 
 # vim: ts=2 sts=2 sw=2 et
