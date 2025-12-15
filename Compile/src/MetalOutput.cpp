@@ -15,8 +15,18 @@
  */
 
 #include "MetalOutput.h"
-#include "spirv_msl.hpp"
 #include <MSL/Compile/Output.h>
+
+#if MSL_GCC || MSL_CLANG
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wconversion"
+#endif
+
+#include "spirv_msl.hpp"
+
+#if MSL_GCC || MSL_CLANG
+#pragma GCC diagnostic pop
+#endif
 
 namespace msl
 {

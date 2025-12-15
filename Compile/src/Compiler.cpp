@@ -34,7 +34,6 @@
 #endif
 
 #include "SPIRV/GlslangToSpv.h"
-#include "SPIRV/SPVRemapper.h"
 #include "glslang/Public/ResourceLimits.h"
 
 #if MSL_GCC || MSL_CLANG
@@ -344,30 +343,26 @@ void Compiler::process(SpirV& spirv, int processOptions)
 	if (processOptions == 0)
 		return;
 
-	std::uint32_t options = 0;
+	// NOTE: We have some known invalid code, such as missing bindings. Therefore we need to skip
+	// validation.
+	spv_optimizer_options options = spvOptimizerOptionsCreate();
+	spvOptimizerOptionsSetRunValidator(options, false);
+	spvtools::Optimizer optimizer(SPV_ENV_VULKAN_1_0);
 	if (processOptions & RemapVariables)
-		options |= spv::spirvbin_t::MAP_ALL;
+		optimizer.RegisterPass(spvtools::CreateCanonicalizeIdsPass());
 	if (processOptions & DeadCodeElimination)
-		options |= spv::spirvbin_t::DCE_ALL;
-	if (processOptions & StripDebug)
-		options |= spv::spirvbin_t::STRIP;
-
-	spv::spirvbin_t remapper;
-	remapper.remap(spirv, options);
-
-	if (processOptions & Optimize)
 	{
-		// NOTE: We have some known invalid code, such as missing bindings. Therefore we need to
-		// skip validation.
-		spv_optimizer_options options = spvOptimizerOptionsCreate();
-		spvOptimizerOptionsSetRunValidator(options, false);
-		spvtools::Optimizer optimizer(SPV_ENV_VULKAN_1_0);
-		optimizer.RegisterPerformancePasses();
-		SpirV optimizedSpirV;
-		if (optimizer.Run(spirv.data(), spirv.size(), &optimizedSpirV, options))
-			spirv = std::move(optimizedSpirV);
-		spvOptimizerOptionsDestroy(options);
+		optimizer.RegisterPass(spvtools::CreateEliminateDeadFunctionsPass());
+		optimizer.RegisterPass(spvtools::CreateEliminateDeadConstantPass());
 	}
+	if (processOptions & StripDebug)
+		optimizer.RegisterPass(spvtools::CreateStripDebugInfoPass());
+	if (processOptions & Optimize)
+		optimizer.RegisterPerformancePasses();
+	SpirV optimizedSpirV;
+	if (optimizer.Run(spirv.data(), spirv.size(), &optimizedSpirV, options))
+		spirv = std::move(optimizedSpirV);
+	spvOptimizerOptionsDestroy(options);
 }
 
 } // namespace msl

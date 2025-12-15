@@ -29,7 +29,7 @@
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <SPIRV/spirv.hpp>
+#include <spirv/unified1/spirv.hpp>
 
 #include <algorithm>
 #include <cassert>

@@ -31,6 +31,24 @@
 
 using namespace boost::program_options;
 
+static const char* programName(const char* programPath)
+{
+	std::size_t length = std::strlen(programPath);
+	for (std::size_t i = length; i-- > 0;)
+	{
+#if MSL_WINDOWS
+		if (programPath[i] == '/' || programPath[i] == '\\')
+#else
+		if (programPath[i] == '/')
+#endif
+		{
+			return programPath + i + 1;
+		}
+	}
+
+	return programPath;
+}
+
 static std::string filterHeader(const std::string& line)
 {
 	std::string filtered = line;
@@ -51,7 +69,7 @@ static std::unique_ptr<msl::Target> createSpirVTarget(const std::string& targetN
 		if (dot == std::string::npos)
 		{
 			std::cerr << configFilePath << " error: invalid version: " << versionStr <<
-				std::endl << std::endl;
+				std::endl;
 			return nullptr;
 		}
 
@@ -64,7 +82,7 @@ static std::unique_ptr<msl::Target> createSpirVTarget(const std::string& targetN
 		catch (...)
 		{
 			std::cerr << configFilePath << " error: invalid version: " << versionStr <<
-				std::endl << std::endl;
+				std::endl;
 			return nullptr;
 		}
 		version = (majorVersion << 16) | (minorVersion << 8);
@@ -88,14 +106,13 @@ static std::unique_ptr<msl::Target> createGlslTarget(const std::string& targetNa
 		catch (...)
 		{
 			std::cerr << configFilePath << " error: invalid version: " << versionStr <<
-				std::endl << std::endl;
+				std::endl;
 			return nullptr;
 		}
 	}
 	else
 	{
-		std::cerr << configFilePath << " error: version not provided" << std::endl <<
-			std::endl;
+		std::cerr << configFilePath << " error: version not provided" << std::endl;
 		return nullptr;
 	}
 
@@ -118,7 +135,7 @@ static std::unique_ptr<msl::Target> createGlslTarget(const std::string& targetNa
 		else
 		{
 			std::cerr << configFilePath << " error: unknown precision: " << precision <<
-				std::endl << std::endl;
+				std::endl;
 			return nullptr;
 		}
 	}
@@ -137,7 +154,7 @@ static std::unique_ptr<msl::Target> createGlslTarget(const std::string& targetNa
 		else
 		{
 			std::cerr << configFilePath << " error: unknown precision: " << precision <<
-				std::endl << std::endl;
+				std::endl;
 			return nullptr;
 		}
 	}
@@ -286,7 +303,7 @@ static std::unique_ptr<msl::Target> createMetalTarget(const std::string& targetN
 		if (dot == std::string::npos)
 		{
 			std::cerr << configFilePath << " error: invalid version: " << versionStr <<
-				std::endl << std::endl;
+				std::endl;
 			return nullptr;
 		}
 
@@ -299,7 +316,7 @@ static std::unique_ptr<msl::Target> createMetalTarget(const std::string& targetN
 		catch (...)
 		{
 			std::cerr << configFilePath << " error: invalid version: " << versionStr <<
-				std::endl << std::endl;
+				std::endl;
 			return nullptr;
 		}
 		version = majorVersion*100 + minorVersion;
@@ -604,12 +621,13 @@ int main(int argc, char** argv)
 	{
 		if (!options.count("help") && !options.count("version"))
 		{
-			std::cerr << "error: " << e.what() << std::endl << std::endl;
+			if (argc > 1)
+				std::cerr << "error: " << e.what() << std::endl;
 			exitCode = 1;
 		}
 	}
 
-	bool printHelp = options.count("help") > 0;
+	bool printHelp = options.count("help") > 0 || argc <= 1;
 	bool printVersion = options.count("version") > 0;
 
 	// Parse the config file.
@@ -625,7 +643,7 @@ int main(int argc, char** argv)
 		}
 		catch (std::exception& e)
 		{
-			std::cerr << configFilePath << " error: " << e.what() << std::endl << std::endl;
+			std::cerr << configFilePath << " error: " << e.what() << std::endl;
 			exitCode = 1;
 		}
 	}
@@ -646,7 +664,7 @@ int main(int argc, char** argv)
 		}
 		else
 		{
-			std::cerr << "error: unkown target: " << targetName << std::endl << std::endl;
+			std::cerr << "error: unkown target: " << targetName << std::endl;
 			exitCode = 1;
 		}
 
@@ -654,7 +672,7 @@ int main(int argc, char** argv)
 			exitCode = 1;
 	}
 
-	if (printHelp || exitCode != 0)
+	if (printHelp)
 	{
 		std::cout << "Usage: mslc [options] -c config -o output file1 [file2...]" << std::endl <<
 			std::endl;
@@ -697,6 +715,11 @@ int main(int argc, char** argv)
 	{
 		std::cout << "mslc version " << MSL_MAJOR_VERSION << "." << MSL_MINOR_VERSION << "." <<
 			MSL_PATCH_VERSION << std::endl;
+		return exitCode;
+	}
+	else if (exitCode != 0)
+	{
+		std::cerr << "Run " << programName(argv[0]) << " -h for usage." << std::endl;
 		return exitCode;
 	}
 

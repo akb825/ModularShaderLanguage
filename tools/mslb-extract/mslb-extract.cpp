@@ -359,6 +359,24 @@ static const char* stageNames[] =
 static_assert(sizeof(stageNames)/sizeof(*stageNames) == msl::stageCount,
 	"stageNames out of sync with enum");
 
+static const char* programName(const char* programPath)
+{
+	std::size_t length = std::strlen(programPath);
+	for (std::size_t i = length; i-- > 0;)
+	{
+#if MSL_WINDOWS
+		if (programPath[i] == '/' || programPath[i] == '\\')
+#else
+		if (programPath[i] == '/')
+#endif
+		{
+			return programPath + i + 1;
+		}
+	}
+
+	return programPath;
+}
+
 static bool shadersAreText(const msl::Module& module)
 {
 	uint32_t targetId = module.targetId();
@@ -1188,12 +1206,13 @@ int main(int argc, char** argv)
 	{
 		if (!options.count("help") && !options.count("version"))
 		{
-			std::cerr << "error: " << e.what() << std::endl << std::endl;
+			if (argc > 1)
+				std::cerr << "error: " << e.what() << std::endl;
 			exitCode = 1;
 		}
 	}
 
-	if (options.count("help") || exitCode != 0)
+	if (options.count("help") || argc <= 1)
 	{
 		std::cout << "Usage: mslb-extract -i input -o output" << std::endl <<
 			std::endl;
@@ -1225,6 +1244,11 @@ int main(int argc, char** argv)
 	{
 		std::cout << "mslb-extract version " << MSL_MAJOR_VERSION << "." << MSL_MINOR_VERSION <<
 			"." << MSL_PATCH_VERSION << std::endl;
+		return exitCode;
+	}
+	else if (exitCode != 0)
+	{
+		std::cerr << "Run " << programName(argv[0]) << " -h for usage." << std::endl;
 		return exitCode;
 	}
 

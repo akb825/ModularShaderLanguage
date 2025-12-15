@@ -3,6 +3,11 @@ find_package(Boost CONFIG COMPONENTS program_options)
 file(GLOB_RECURSE sources *.cpp *.h)
 add_executable(mslc ${sources})
 
+if (WIN32)
+	configure_file(mslc.manifest.in ${CMAKE_CURRENT_BINARY_DIR}/mslc.manifest @ONLY)
+	target_sources(mslc PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/mslc.manifest)
+endif()
+
 target_link_libraries(mslc PRIVATE MSL::Compile Boost::program_options)
 target_compile_definitions(mslc PRIVATE BOOST_ALL_NO_LIB
 	MSL_MAJOR_VERSION=${MSL_MAJOR_VERSION} MSL_MINOR_VERSION=${MSL_MINOR_VERSION}

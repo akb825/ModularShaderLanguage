@@ -17,7 +17,7 @@
 #include "SpirVProcessor.h"
 #include <MSL/Compile/CompiledResult.h>
 #include <MSL/Compile/Output.h>
-#include <SPIRV/spirv.hpp>
+#include <spirv/unified1/spirv.hpp>
 #include <algorithm>
 #include <cassert>
 #include <cstring>
