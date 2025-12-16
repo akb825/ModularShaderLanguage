@@ -9,7 +9,7 @@ on:
 env:
   CTEST_OUTPUT_ON_FAILURE: '1'
   GTEST_OUTPUT: xml:${{ github.workspace }}/test-results/
-  boost_version: 1.88.0
+  boost_version: 1.90.0
   cmake_common_args: >-
     -DCMAKE_FIND_ROOT_PATH=${{ github.workspace }}/dependencies
     -DCMAKE_PREFIX_PATH=${{ github.workspace }}/dependencies
