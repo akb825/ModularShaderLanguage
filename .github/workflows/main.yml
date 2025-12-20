@@ -193,7 +193,7 @@ jobs:
         max_attempts: 5
         command: |-
           $underscoreVersion = "${{ env.boost_version }}".replace(".", "_")
-          $url = "https://versaweb.dl.sourceforge.net/project/boost/boost-binaries/${{ env.boost_version }}/boost_$underscoreVersion-msvc-${{ env.msvc_version }}-${{ matrix.bits }}.exe"
+          $url = "https://psychz.dl.sourceforge.net/project/boost/boost-binaries/${{ env.boost_version }}/boost_$underscoreVersion-msvc-${{ env.msvc_version }}-${{ matrix.bits }}.exe"
           (New-Object System.Net.WebClient).DownloadFile($url, "$env:TEMP\boost.exe")
           Start-Process -Wait -FilePath "$env:TEMP\boost.exe" "/SILENT","/SP-","/SUPPRESSMSGBOXES","/DIR=D:\boost"
     - name: Checkout gtest
