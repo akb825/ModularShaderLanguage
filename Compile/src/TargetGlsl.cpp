@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Aaron Barany
+ * Copyright 2016-2025 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -333,6 +333,13 @@ std::vector<std::pair<std::string, std::string>> TargetGlsl::getExtraDefines() c
 		return {{"GLSLES_VERSION", stream.str()}};
 	else
 		return {{"GLSL_VERSION", stream.str()}};
+}
+
+std::uint32_t TargetGlsl::getSpirVVersion() const
+{
+	// SPV_EXT_demote_to_helper_invocation is core with SPIRV 1.6 and breaks when targeting GLSL,
+	// so force to SPIRV 1.5.
+	return 0x10500;
 }
 
 bool TargetGlsl::crossCompile(std::vector<std::uint8_t>& data, Output& output,

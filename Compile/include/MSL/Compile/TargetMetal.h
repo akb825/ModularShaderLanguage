@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Aaron Barany
+ * Copyright 2016-2025 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -95,9 +95,10 @@ protected:
 	 * @param metal The metal shader string.
 	 * @return False if the compilation failed.
 	 */
-	virtual bool compileMetal(std::vector<std::uint8_t>& data, Output& output,
-		const std::string& metal);
+	virtual bool compileMetal(
+        std::vector<std::uint8_t>& data, Output& output, const std::string& metal);
 
+	std::uint32_t getSpirVVersion() const override;
 	void willCompile() override;
 	bool crossCompile(std::vector<std::uint8_t>& data, Output& output, const std::string& fileName,
 		std::size_t line, std::size_t column,

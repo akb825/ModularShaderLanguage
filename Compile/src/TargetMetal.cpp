@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 Aaron Barany
+ * Copyright 2016-2025 Aaron Barany
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 #include <MSL/Compile/Output.h>
 #include "ExecuteCommand.h"
 #include "MetalOutput.h"
+#include <spirv/unified1/spirv.hpp>
 #include <cassert>
 #include <fstream>
 #include <sstream>
@@ -42,8 +43,8 @@ namespace msl
 
 using namespace compile;
 
-static void setBinding(std::vector<uint32_t>& spirv, std::uint32_t id, std::uint32_t set,
-	std::uint32_t binding)
+static void setBinding(
+	std::vector<uint32_t>& spirv, std::uint32_t id, std::uint32_t set, std::uint32_t binding)
 {
 	const unsigned int firstInstruction = 5;
 	const std::uint32_t opCodeMask = 0xFFFF;
@@ -131,8 +132,8 @@ static std::vector<std::uint32_t> setBindingIndices(const std::vector<std::uint3
 	return adjustedSpirv;
 }
 
-static std::string setFragmentGroup(const std::string& metal, const std::string& entryPoint,
-	std::uint32_t fragmentGroup)
+static std::string setFragmentGroup(
+    const std::string& metal, const std::string& entryPoint, std::uint32_t fragmentGroup)
 {
 	std::string structDecl = "struct " + entryPoint + "_out";
 	std::size_t outStructStart = metal.find(structDecl);
@@ -164,8 +165,8 @@ static std::string setFragmentGroup(const std::string& metal, const std::string&
 	return result;
 }
 
-static std::string patchEntryPointInputGroup(const std::string& metal,
-	const FragmentInputGroup& inputGroup)
+static std::string patchEntryPointInputGroup(
+    const std::string& metal, const FragmentInputGroup& inputGroup)
 {
 	// Expect one primary declaration in the entry point.
 	std::string declStart = "constant " + inputGroup.type + "& " + inputGroup.name + " [[buffer(";
@@ -279,14 +280,23 @@ std::vector<std::pair<std::string, std::string>> TargetMetal::getExtraDefines() 
 	return defines;
 }
 
+std::uint32_t TargetMetal::getSpirVVersion() const
+{
+	// SPV_EXT_demote_to_helper_invocation is core with SPIRV 1.6 and breaks discard operations
+	// when targeting Metal < 2.3, so force to SPIRV 1.5.
+	if (m_version < 203)
+		return 0x10500;
+	return spv::Version;
+}
+
 void TargetMetal::willCompile()
 {
 	// Need dummy bindings for internal usage.
 	setDummyBindings(true);
 }
 
-bool TargetMetal::compileMetal(std::vector<std::uint8_t>& data, Output& output,
-	const std::string& metal)
+bool TargetMetal::compileMetal(
+    std::vector<std::uint8_t>& data, Output& output, const std::string& metal)
 {
 	// Compile this entry point.
 	std::stringstream versionStr;
