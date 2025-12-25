@@ -9,8 +9,8 @@
 // Ensure the included flatbuffers.h is the same version as when this file was
 // generated, otherwise it may not be compatible.
 static_assert(FLATBUFFERS_VERSION_MAJOR == 25 &&
-              FLATBUFFERS_VERSION_MINOR == 9 &&
-              FLATBUFFERS_VERSION_REVISION == 23,
+              FLATBUFFERS_VERSION_MINOR == 12 &&
+              FLATBUFFERS_VERSION_REVISION == 19,
              "Non-compatible flatbuffers version included");
 
 namespace mslb {
@@ -1811,7 +1811,8 @@ struct BlendState FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   ::flatbuffers::Vector<float> *mutable_blendConstants() {
     return GetPointer<::flatbuffers::Vector<float> *>(VT_BLENDCONSTANTS);
   }
-  bool Verify(::flatbuffers::Verifier &verifier) const {
+  template <bool B = false>
+  bool Verify(::flatbuffers::VerifierTemplate<B> &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<int8_t>(verifier, VT_LOGICALOPENABLE, 1) &&
            VerifyField<int8_t>(verifier, VT_LOGICALOP, 1) &&
@@ -1950,7 +1951,8 @@ struct RenderState FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   bool mutate_fragmentGroup(uint32_t _fragmentGroup = 4294967295) {
     return SetField<uint32_t>(VT_FRAGMENTGROUP, _fragmentGroup, 4294967295);
   }
-  bool Verify(::flatbuffers::Verifier &verifier) const {
+  template <bool B = false>
+  bool Verify(::flatbuffers::VerifierTemplate<B> &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyFieldRequired<mslb::RasterizationState>(verifier, VT_RASTERIZATIONSTATE, 4) &&
            VerifyFieldRequired<mslb::MultisampleState>(verifier, VT_MULTISAMPLESTATE, 4) &&
@@ -2083,7 +2085,8 @@ struct StructMember FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   bool mutate_rowMajor(bool _rowMajor = 0) {
     return SetField<uint8_t>(VT_ROWMAJOR, static_cast<uint8_t>(_rowMajor), 0);
   }
-  bool Verify(::flatbuffers::Verifier &verifier) const {
+  template <bool B = false>
+  bool Verify(::flatbuffers::VerifierTemplate<B> &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
@@ -2202,7 +2205,8 @@ struct Struct FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   ::flatbuffers::Vector<::flatbuffers::Offset<mslb::StructMember>> *mutable_members() {
     return GetPointer<::flatbuffers::Vector<::flatbuffers::Offset<mslb::StructMember>> *>(VT_MEMBERS);
   }
-  bool Verify(::flatbuffers::Verifier &verifier) const {
+  template <bool B = false>
+  bool Verify(::flatbuffers::VerifierTemplate<B> &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
@@ -2333,7 +2337,8 @@ struct Uniform FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   bool mutate_samplerIndex(uint32_t _samplerIndex = 0) {
     return SetField<uint32_t>(VT_SAMPLERINDEX, _samplerIndex, 0);
   }
-  bool Verify(::flatbuffers::Verifier &verifier) const {
+  template <bool B = false>
+  bool Verify(::flatbuffers::VerifierTemplate<B> &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
@@ -2482,7 +2487,8 @@ struct Attribute FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   bool mutate_component(uint32_t _component = 0) {
     return SetField<uint32_t>(VT_COMPONENT, _component, 0);
   }
-  bool Verify(::flatbuffers::Verifier &verifier) const {
+  template <bool B = false>
+  bool Verify(::flatbuffers::VerifierTemplate<B> &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
@@ -2578,7 +2584,8 @@ struct FragmentOutput FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   bool mutate_location(uint32_t _location = 0) {
     return SetField<uint32_t>(VT_LOCATION, _location, 0);
   }
-  bool Verify(::flatbuffers::Verifier &verifier) const {
+  template <bool B = false>
+  bool Verify(::flatbuffers::VerifierTemplate<B> &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
@@ -2648,7 +2655,8 @@ struct Shader FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   ::flatbuffers::Vector<uint32_t> *mutable_uniformIds() {
     return GetPointer<::flatbuffers::Vector<uint32_t> *>(VT_UNIFORMIDS);
   }
-  bool Verify(::flatbuffers::Verifier &verifier) const {
+  template <bool B = false>
+  bool Verify(::flatbuffers::VerifierTemplate<B> &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_SHADER, 4) &&
            VerifyOffset(verifier, VT_UNIFORMIDS) &&
@@ -2773,7 +2781,8 @@ struct Pipeline FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   mslb::ComputeLocalSize *mutable_computLocalSize() {
     return GetStruct<mslb::ComputeLocalSize *>(VT_COMPUTLOCALSIZE);
   }
-  bool Verify(::flatbuffers::Verifier &verifier) const {
+  template <bool B = false>
+  bool Verify(::flatbuffers::VerifierTemplate<B> &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_NAME) &&
            verifier.VerifyString(name()) &&
@@ -2932,7 +2941,8 @@ struct ShaderData FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   bool mutate_usesPushConstants(bool _usesPushConstants = 1) {
     return SetField<uint8_t>(VT_USESPUSHCONSTANTS, static_cast<uint8_t>(_usesPushConstants), 1);
   }
-  bool Verify(::flatbuffers::Verifier &verifier) const {
+  template <bool B = false>
+  bool Verify(::flatbuffers::VerifierTemplate<B> &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyOffsetRequired(verifier, VT_DATA) &&
            verifier.VerifyVector(data()) &&
@@ -3037,7 +3047,8 @@ struct Module FLATBUFFERS_FINAL_CLASS : private ::flatbuffers::Table {
   ::flatbuffers::Vector<uint8_t> *mutable_sharedData() {
     return GetPointer<::flatbuffers::Vector<uint8_t> *>(VT_SHAREDDATA);
   }
-  bool Verify(::flatbuffers::Verifier &verifier) const {
+  template <bool B = false>
+  bool Verify(::flatbuffers::VerifierTemplate<B> &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<uint32_t>(verifier, VT_VERSION, 4) &&
            VerifyField<uint32_t>(verifier, VT_TARGETID, 4) &&
@@ -3153,14 +3164,16 @@ inline mslb::Module *GetMutableSizePrefixedModule(void *buf) {
   return ::flatbuffers::GetMutableSizePrefixedRoot<mslb::Module>(buf);
 }
 
+template <bool B = false>
 inline bool VerifyModuleBuffer(
-    ::flatbuffers::Verifier &verifier) {
-  return verifier.VerifyBuffer<mslb::Module>(nullptr);
+    ::flatbuffers::VerifierTemplate<B> &verifier) {
+  return verifier.template VerifyBuffer<mslb::Module>(nullptr);
 }
 
+template <bool B = false>
 inline bool VerifySizePrefixedModuleBuffer(
-    ::flatbuffers::Verifier &verifier) {
-  return verifier.VerifySizePrefixedBuffer<mslb::Module>(nullptr);
+    ::flatbuffers::VerifierTemplate<B> &verifier) {
+  return verifier.template VerifySizePrefixedBuffer<mslb::Module>(nullptr);
 }
 
 inline void FinishModuleBuffer(
