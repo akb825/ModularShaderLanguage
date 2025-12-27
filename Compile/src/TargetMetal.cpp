@@ -133,7 +133,7 @@ static std::vector<std::uint32_t> setBindingIndices(const std::vector<std::uint3
 }
 
 static std::string setFragmentGroup(
-    const std::string& metal, const std::string& entryPoint, std::uint32_t fragmentGroup)
+	const std::string& metal, const std::string& entryPoint, std::uint32_t fragmentGroup)
 {
 	std::string structDecl = "struct " + entryPoint + "_out";
 	std::size_t outStructStart = metal.find(structDecl);
@@ -166,7 +166,7 @@ static std::string setFragmentGroup(
 }
 
 static std::string patchEntryPointInputGroup(
-    const std::string& metal, const FragmentInputGroup& inputGroup)
+	const std::string& metal, const FragmentInputGroup& inputGroup)
 {
 	// Expect one primary declaration in the entry point.
 	std::string declStart = "constant " + inputGroup.type + "& " + inputGroup.name + " [[buffer(";
@@ -296,7 +296,7 @@ void TargetMetal::willCompile()
 }
 
 bool TargetMetal::compileMetal(
-    std::vector<std::uint8_t>& data, Output& output, const std::string& metal)
+	std::vector<std::uint8_t>& data, Output& output, const std::string& metal)
 {
 	// Compile this entry point.
 	std::stringstream versionStr;

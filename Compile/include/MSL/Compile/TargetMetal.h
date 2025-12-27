@@ -96,7 +96,7 @@ protected:
 	 * @return False if the compilation failed.
 	 */
 	virtual bool compileMetal(
-        std::vector<std::uint8_t>& data, Output& output, const std::string& metal);
+		std::vector<std::uint8_t>& data, Output& output, const std::string& metal);
 
 	std::uint32_t getSpirVVersion() const override;
 	void willCompile() override;
