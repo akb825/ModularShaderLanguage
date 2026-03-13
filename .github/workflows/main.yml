@@ -32,7 +32,7 @@ jobs:
           cmake_args: "-DMSL_SHARED=ON"
     steps:
     - name: checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     - name: Download submodules
       run: |-
         git submodule update --init --recursive
@@ -102,7 +102,7 @@ jobs:
           cmake_args: "-DMSL_SHARED=ON"
     steps:
     - name: checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     - name: Download submodules
       run: |-
         git submodule update --init --recursive
@@ -181,7 +181,7 @@ jobs:
           cmake_args: "-DMSL_SHARED=ON"
     steps:
     - name: checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
     - name: Download submodules
       run: git submodule update --init --recursive
       shell: bash
