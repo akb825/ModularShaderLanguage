@@ -28,6 +28,9 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wshorten-64-to-32"
 #pragma GCC diagnostic ignored "-Wunused-local-typedef"
+#elif MSL_GCC
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
 #endif
 
 #define BOOST_FILESYSTEM_NO_DEPRECATED 1
@@ -40,7 +43,7 @@
 
 #if MSL_MSC
 #pragma warning(pop)
-#elif MSL_CLANG
+#elif MSL_CLANG || MSL_GCC
 #pragma GCC diagnostic pop
 #endif
 
